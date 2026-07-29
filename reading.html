@@ -3,169 +3,169 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#6e58d3">
+<meta name="theme-color" content="#5e3aa4">
 <title>ELCraft | Reading Hall</title>
 <style>
 :root{
-  --ink:#25305b;
-  --purple:#6e58d3;
-  --purple2:#9e69e8;
-  --gold:#ffd64d;
-  --green:#69c94d;
-  --paper:#fffdf5;
-  --line:#e3def4;
-  --shadow:0 18px 50px rgba(37,48,91,.22);
+  --ink:#28315d;--purple:#6a4ac7;--purple-dark:#463080;--gold:#ffd75e;
+  --paper:#fffdf3;--cream:#fff8db;--wood:#8e5534;--wood2:#c88750;
+  --shadow:0 20px 60px rgba(33,26,76,.24)
 }
 *{box-sizing:border-box}
 html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
 body{
-  min-height:100vh;
   background:
-    radial-gradient(circle at 15% 8%,rgba(255,255,255,.9),transparent 18%),
-    radial-gradient(circle at 88% 12%,rgba(255,255,255,.7),transparent 20%),
-    linear-gradient(#91dcff 0 35%,#dff5ff 35% 54%,#7fcf66 54% 100%);
+    radial-gradient(circle at 50% -10%,rgba(255,255,255,.65),transparent 30%),
+    linear-gradient(#7b5bc5 0 18%,#ead8b6 18% 100%);
 }
 button{font:inherit;cursor:pointer}
 button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
-.app{min-height:100vh;position:relative;overflow:hidden}
-.cloud{position:fixed;z-index:0;opacity:.75;animation:float 20s linear infinite;pointer-events:none}
-.cloud.one{top:80px;left:-150px;font-size:90px}
-.cloud.two{top:190px;left:-220px;font-size:66px;animation-delay:-9s}
-@keyframes float{to{transform:translateX(calc(100vw + 360px))}}
+.app{min-height:100vh;position:relative;overflow-x:hidden}
+.stars{position:fixed;inset:0;pointer-events:none;opacity:.55;background-image:
+radial-gradient(circle,#fff 0 2px,transparent 3px),
+radial-gradient(circle,#ffd75e 0 2px,transparent 3px);
+background-size:95px 95px,135px 135px;background-position:10px 10px,40px 30px}
 .topbar{
-  position:sticky;top:0;z-index:20;display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:10px 14px;background:rgba(255,255,255,.94);box-shadow:0 7px 22px rgba(29,39,89,.15);
+  position:sticky;top:0;z-index:30;display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.95);box-shadow:0 8px 25px rgba(42,27,82,.18);
   backdrop-filter:blur(10px)
 }
-.left,.stats{display:flex;align-items:center;gap:10px}
-.back,.sound{
+.top-left,.stats{display:flex;align-items:center;gap:10px}
+.back,.sound,.passport-btn{
   border:0;border-radius:15px;padding:10px 13px;font-weight:1000;color:#5e3ca2;background:#eee7ff;
-  box-shadow:0 4px 0 #d3c6ed
+  box-shadow:0 4px 0 #d4c8ed
 }
-.title{
-  font-weight:1000;font-size:clamp(22px,3vw,38px);color:#ffc72c;
-  text-shadow:-2px -2px 0 #6e3ca8,2px -2px 0 #6e3ca8,-2px 2px 0 #6e3ca8,2px 2px 0 #6e3ca8,0 5px 0 #43277a
+.logo{
+  font-weight:1000;font-size:clamp(21px,3vw,38px);color:#ffd344;
+  text-shadow:-2px -2px 0 #5c3799,2px -2px 0 #5c3799,-2px 2px 0 #5c3799,2px 2px 0 #5c3799,0 5px 0 #3f2675
 }
-.stat{border-radius:999px;padding:9px 12px;background:#fff5c7;font-weight:1000;color:#5d4384}
-main{position:relative;z-index:2;width:min(1220px,100%);margin:auto;padding:16px}
-.hero{
-  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
-  padding:20px;border-radius:30px;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(238,232,255,.96));
-  border:3px solid #fff;box-shadow:var(--shadow)
+.stat{border-radius:999px;padding:9px 12px;background:#fff4c8;font-weight:1000;color:#5b4381}
+main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px}
+.welcome{
+  display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:center;
+  background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(245,236,255,.98));
+  border:4px solid #fff;border-radius:32px;padding:20px;box-shadow:var(--shadow)
 }
-.teacher{font-size:88px}
-.hero h1{margin:0;color:#5b3ba0;font-size:clamp(30px,4vw,50px)}
-.hero p{margin:7px 0 0;color:#6e7898;font-weight:900}
-.day-badge{
-  padding:14px;border-radius:22px;background:linear-gradient(#7661d9,#553ba4);color:#fff;
-  font-weight:1000;text-align:center;min-width:155px
+.owl{font-size:92px;filter:drop-shadow(0 8px 5px rgba(57,38,95,.18));animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(2deg)}}
+.welcome h1{margin:0;color:#5a399d;font-size:clamp(30px,4vw,50px)}
+.welcome p{margin:8px 0 0;font-weight:900;color:#727b9b}
+.daily{
+  min-width:190px;text-align:center;padding:14px;border-radius:23px;color:#fff;
+  background:linear-gradient(#765bcf,#533796);font-weight:1000;box-shadow:inset 0 0 0 2px rgba(255,255,255,.3)
 }
-.panel{
-  margin-top:15px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.96);
-  box-shadow:var(--shadow);overflow:hidden
+.hall{
+  margin-top:16px;padding:20px;border:6px solid #ead6b5;border-radius:32px;
+  background:
+    linear-gradient(rgba(255,255,255,.16),rgba(255,255,255,.16)),
+    repeating-linear-gradient(90deg,#e3c79f 0 120px,#dbbd93 120px 240px);
+  box-shadow:var(--shadow)
 }
-.panel-head{
-  display:flex;justify-content:space-between;align-items:center;gap:10px;padding:15px 18px;
-  border-bottom:1px solid var(--line);background:#f7f4ff
+.section-title{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:12px}
+.section-title h2{margin:0;color:#51337e;font-size:28px}
+.section-title span{font-weight:1000;color:#6e6280}
+.shelf{
+  position:relative;padding:18px 18px 32px;border-radius:20px;
+  background:linear-gradient(#5f371f,#8b5738 16%,#6f4228 17% 100%);
+  box-shadow:inset 0 0 0 4px #4f2d1b,0 12px 0 #4d2c1a,0 18px 25px rgba(59,33,19,.35)
 }
-.panel-head h2{margin:0;color:#5a399e}
-.panel-body{padding:18px}
-.library{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.shelf + .shelf{margin-top:24px}
+.shelf-label{
+  display:inline-flex;align-items:center;gap:8px;margin:-8px 0 12px;padding:8px 13px;border-radius:999px;
+  background:#fff5cf;color:#634289;font-weight:1000;box-shadow:0 4px 0 #d6b96d
+}
+.books{display:grid;grid-template-columns:repeat(6,minmax(110px,1fr));gap:14px;align-items:end}
 .book-card{
-  position:relative;border:0;border-radius:24px;padding:18px;text-align:left;color:#fff;
-  min-height:190px;box-shadow:0 8px 0 rgba(37,48,91,.24);transition:.18s ease;overflow:hidden
+  position:relative;border:0;border-radius:10px 16px 16px 10px;min-height:190px;padding:14px 9px;
+  color:#fff;text-align:center;box-shadow:inset 8px 0 rgba(0,0,0,.1),0 8px 0 rgba(0,0,0,.18);
+  transition:.18s ease;overflow:hidden
 }
-.book-card:hover{transform:translateY(-3px)}
-.book-card:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(37,48,91,.24)}
-.book-card .emoji{font-size:52px;display:block}
-.book-card strong{display:block;font-size:22px;margin-top:8px}
-.book-card small{display:block;margin-top:5px;font-weight:900;opacity:.94}
-.book-card .ribbon{
-  position:absolute;right:-34px;top:16px;transform:rotate(36deg);
-  width:130px;text-align:center;padding:5px;background:#ffd64d;color:#5b4384;font-size:11px;font-weight:1000
-}
+.book-card:hover{transform:translateY(-8px) rotate(-1deg)}
+.book-card:active{transform:translateY(1px)}
+.book-card .emoji{font-size:47px;display:block;margin-top:7px}
+.book-card strong{display:block;font-size:17px;margin-top:10px;line-height:1.08}
+.book-card small{display:block;margin-top:8px;font-weight:900;opacity:.92}
+.book-card .mark{position:absolute;top:0;right:8px;width:18px;height:44px;background:#ffd64f;border-radius:0 0 6px 6px}
 .book-card .status{
-  position:absolute;left:14px;bottom:12px;border-radius:999px;padding:6px 9px;
-  background:rgba(255,255,255,.9);color:#58418f;font-weight:1000;font-size:12px
+  position:absolute;left:7px;right:7px;bottom:8px;padding:5px;border-radius:8px;
+  background:rgba(255,255,255,.9);color:#5d4388;font-size:11px;font-weight:1000
 }
-.c1{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
-.c2{background:linear-gradient(135deg,#df668d,#ee8c6d)}
-.c3{background:linear-gradient(135deg,#2f85c7,#4db7dd)}
-.c4{background:linear-gradient(135deg,#2d9d79,#60c86a)}
-.c5{background:linear-gradient(135deg,#d38b30,#e4ba48)}
-.c6{background:linear-gradient(135deg,#8b4aba,#d35ca3)}
+.book-card.locked{filter:grayscale(.35);opacity:.72}
+.book-card.locked:after{
+  content:"🔒";position:absolute;inset:0;display:grid;place-items:center;font-size:42px;background:rgba(39,30,71,.45)
+}
+.purple{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
+.rose{background:linear-gradient(135deg,#df668d,#ee8c6d)}
+.blue{background:linear-gradient(135deg,#2f85c7,#4db7dd)}
+.green{background:linear-gradient(135deg,#279a78,#62c66b)}
+.gold{background:linear-gradient(135deg,#d48b2f,#e8ba47)}
+.violet{background:linear-gradient(135deg,#8a4abb,#d45ca4)}
 .stage{
-  position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:16px;
-  background:rgba(18,29,71,.62);backdrop-filter:blur(8px)
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(22,18,54,.72);backdrop-filter:blur(9px)
 }
 .stage.show{display:flex}
-.stage-card{
-  width:min(760px,100%);max-height:92vh;overflow:auto;border-radius:30px;padding:22px;background:#fff;
-  border:4px solid #fff;box-shadow:0 28px 80px rgba(16,25,64,.4)
+.modal{
+  width:min(800px,100%);max-height:93vh;overflow:auto;background:#fff;border-radius:32px;
+  padding:22px;border:4px solid #fff;box-shadow:0 30px 90px rgba(10,7,31,.48)
 }
-.stage-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-.stage-top h2{margin:0;color:#5a399e;font-size:31px}
-.close{border:0;border-radius:14px;padding:10px 13px;background:#ece7f5;color:#60489b;font-weight:1000}
-.book{
-  margin:17px 0;padding:24px;border-radius:24px;background:var(--paper);border:3px solid #eadcae;
-  box-shadow:inset 0 0 0 2px rgba(255,255,255,.8)
-}
-.book h3{margin-top:0;color:#7457a8;font-size:27px;text-align:center}
-.story-text{font-size:21px;line-height:1.68;font-weight:900;color:#35416b}
-.vocab{
-  display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;justify-content:center
-}
-.vocab button{
-  border:2px solid #ded7f2;border-radius:999px;padding:9px 12px;background:#f4f0ff;color:#5e4695;font-weight:1000
-}
-.read-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:15px}
+.modal-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.modal-top h2{margin:0;color:#58389b;font-size:31px}
+.close{border:0;border-radius:14px;padding:10px 13px;background:#eee8f8;color:#624994;font-weight:1000}
+.story-paper{margin-top:16px;padding:25px;border-radius:24px;background:var(--paper);border:3px solid #eadba6}
+.story-paper h3{text-align:center;margin:0 0 18px;color:#6f4fa4;font-size:28px}
+.story-text{font-size:21px;line-height:1.68;font-weight:900;color:#35416c}
+.vocab{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:16px}
+.vocab button{border:2px solid #ddd5f0;border-radius:999px;padding:9px 12px;background:#f5f1ff;color:#5f4793;font-weight:1000}
+.actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:16px}
 .action{border:0;border-radius:16px;padding:13px 17px;font-weight:1000}
 .primary{background:linear-gradient(#8bd84d,#5bad2d);color:#fff;box-shadow:0 5px 0 #438b1d}
 .secondary{background:#eee8ff;color:#5d4397}
-.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
-.answer{
-  border:3px solid #e2dcf3;border-radius:18px;padding:17px;background:#faf9ff;color:#4e3a86;
-  font-weight:1000;font-size:18px
+.favorite{background:#ffe7ef;color:#a63f69}
+.question{font-size:25px;text-align:center;font-weight:1000;color:#523d81;margin:22px 0 12px}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.answer{border:3px solid #e2dcf3;border-radius:18px;padding:17px;background:#faf9ff;color:#4e3a86;font-weight:1000;font-size:18px}
+.answer.correct{background:#ecffe5;border-color:#80cf63}.answer.wrong{background:#ffe9ea;border-color:#ef8b93}
+.reward-note{margin-top:12px;padding:12px;border-radius:16px;background:#fff7d2;color:#735698;font-weight:1000;text-align:center}
+.passport{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px
 }
-.answer.correct{background:#ecffe5;border-color:#80cf63}
-.answer.wrong{background:#ffe9ea;border-color:#ef8b93}
-.prompt{text-align:center;font-size:24px;font-weight:1000;color:#51407f;margin:18px 0 8px}
-.reward-note{
-  margin-top:12px;padding:12px;border-radius:16px;background:#fff7d2;color:#735698;font-weight:1000;text-align:center
-}
-.progress{height:18px;border-radius:999px;background:#e8e3f4;overflow:hidden}
-.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd64d,#76d653);transition:.45s}
-.progress-text{margin-top:8px;font-weight:1000;color:#68749a;text-align:center}
+.passport-card{padding:17px;border-radius:20px;background:#f6f2ff;text-align:center}
+.passport-card strong{display:block;font-size:31px;color:#6244a7}
+.passport-card span{font-weight:1000;color:#7780a1}
+.favorite-display{margin-top:15px;padding:17px;border-radius:20px;background:#fff0f5;text-align:center;font-weight:1000;color:#9e4266}
 .toast{
-  position:fixed;left:50%;bottom:24px;z-index:90;transform:translateX(-50%) translateY(140px);
-  padding:13px 19px;border-radius:999px;background:#13245c;color:#fff;font-weight:1000;
-  transition:.3s;box-shadow:0 12px 30px rgba(20,29,70,.3);white-space:nowrap
+  position:fixed;left:50%;bottom:24px;z-index:100;transform:translateX(-50%) translateY(140px);
+  padding:13px 19px;border-radius:999px;background:#14245c;color:#fff;font-weight:1000;transition:.3s;
+  box-shadow:0 12px 30px rgba(20,29,70,.3);white-space:nowrap
 }
 .toast.show{transform:translateX(-50%) translateY(0)}
-.confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.confetti{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
 .confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
 @keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
-@media(max-width:820px){
-  .hero{grid-template-columns:auto 1fr}.day-badge{grid-column:1/-1}.library{grid-template-columns:repeat(2,1fr)}
+.loading{text-align:center;padding:35px;font-weight:1000;color:#654993}
+@media(max-width:1000px){.books{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:760px){
+  .welcome{grid-template-columns:auto 1fr}.daily{grid-column:1/-1}.books{grid-template-columns:repeat(3,1fr)}
   .stats .xp{display:none}
 }
-@media(max-width:560px){
-  main{padding:8px}.teacher{font-size:64px}.topbar{padding:8px}.sound{display:none}
-  .hero{padding:15px;border-radius:23px}.stage-card{padding:16px}.story-text{font-size:18px}
-  .library,.answer-grid{grid-template-columns:1fr}
+@media(max-width:520px){
+  main{padding:8px}.owl{font-size:65px}.welcome{padding:15px}.books{grid-template-columns:repeat(2,1fr)}
+  .hall{padding:12px}.book-card{min-height:180px}.answers,.passport{grid-template-columns:1fr}
+  .sound{display:none}.story-text{font-size:18px}
 }
 </style>
 </head>
 <body>
 <div class="app">
-  <div class="cloud one">☁️</div><div class="cloud two">☁️</div>
-
+  <div class="stars"></div>
   <header class="topbar">
-    <div class="left">
+    <div class="top-left">
       <button class="back" id="backBtn">← Academy</button>
-      <div class="title">Reading Hall</div>
+      <div class="logo">Reading Hall</div>
     </div>
     <div class="stats">
+      <button class="passport-btn" id="passportBtn">📘 Passport</button>
       <div class="stat">🪙 <span id="coins">0</span></div>
       <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
       <button class="sound" id="soundBtn">🔊</button>
@@ -173,65 +173,56 @@ main{position:relative;z-index:2;width:min(1220px,100%);margin:auto;padding:16px
   </header>
 
   <main>
-    <section class="hero">
-      <div class="teacher">🦉</div>
+    <section class="welcome">
+      <div class="owl">🦉</div>
       <div>
-        <h1 id="hello">Hello, Reader!</h1>
-        <p>Choose any book. You may reread stories whenever you like.</p>
+        <h1 id="welcomeTitle">Welcome back, Reader!</h1>
+        <p id="owlMessage">Mrs. Owl is preparing your library.</p>
       </div>
-      <div class="day-badge">📚 Today's Book<br><span id="dailyTitle">Loading…</span></div>
+      <div class="daily">✨ Daily Pick<br><span id="dailyPick">Loading…</span></div>
     </section>
 
-    <section class="panel">
-      <div class="panel-head">
-        <h2>✨ Mrs. Owl's Daily Story</h2>
-        <strong>New story each day</strong>
-      </div>
-      <div class="panel-body">
-        <div class="library" id="dailyLibrary"></div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head">
-        <h2>📚 My Story Shelf</h2>
-        <strong>Read or reread anytime</strong>
-      </div>
-      <div class="panel-body">
-        <div class="library" id="storyLibrary"></div>
-      </div>
-    </section>
-
-    <section class="panel">
-      <div class="panel-head"><h2>🌟 Reading Progress</h2><strong id="progressLabel">0 stories completed</strong></div>
-      <div class="panel-body">
-        <div class="progress"><span id="bar"></span></div>
-        <div class="progress-text" id="progressText">Every finished story grows your reading passport.</div>
-      </div>
+    <section class="hall">
+      <div class="section-title"><h2>🏛️ The Grand Library</h2><span>Tap a book to begin</span></div>
+      <div id="library"><div class="loading">Loading the bookshelves…</div></div>
     </section>
   </main>
 
   <div class="stage" id="readerStage">
-    <div class="stage-card">
-      <div class="stage-top"><h2 id="stageTitle">📖 Story</h2><button class="close" id="closeStage">✕ Close</button></div>
-      <div class="book">
+    <div class="modal">
+      <div class="modal-top"><h2 id="readerHeading">📖 Story</h2><button class="close" data-close="readerStage">✕ Close</button></div>
+      <div class="story-paper">
         <h3 id="bookTitle"></h3>
         <div class="story-text" id="storyText"></div>
-        <div class="vocab" id="vocabButtons"></div>
+        <div class="vocab" id="vocab"></div>
       </div>
-      <div class="read-controls">
+      <div class="actions">
         <button class="action secondary" id="readAloud">🔊 Read Aloud</button>
-        <button class="action primary" id="storyDone">I Finished Reading</button>
+        <button class="action favorite" id="favoriteBtn">♡ Favorite</button>
+        <button class="action primary" id="finishReading">I Finished Reading</button>
       </div>
       <div class="reward-note" id="rewardNote"></div>
     </div>
   </div>
 
   <div class="stage" id="quizStage">
-    <div class="stage-card">
-      <div class="stage-top"><h2>💡 Story Question</h2><button class="close" id="closeQuiz">✕ Close</button></div>
-      <div class="prompt" id="questionText"></div>
-      <div class="answer-grid" id="answerGrid"></div>
+    <div class="modal">
+      <div class="modal-top"><h2>💡 Story Question</h2><button class="close" data-close="quizStage">✕ Close</button></div>
+      <div class="question" id="question"></div>
+      <div class="answers" id="answers"></div>
+    </div>
+  </div>
+
+  <div class="stage" id="passportStage">
+    <div class="modal">
+      <div class="modal-top"><h2>📘 Reading Passport</h2><button class="close" data-close="passportStage">✕ Close</button></div>
+      <div class="passport">
+        <div class="passport-card"><strong id="storiesRead">0</strong><span>Stories Discovered</span></div>
+        <div class="passport-card"><strong id="totalReads">0</strong><span>Total Story Reads</span></div>
+        <div class="passport-card"><strong id="wordsLearned">0</strong><span>Words Discovered</span></div>
+        <div class="passport-card"><strong id="readerLevel">1</strong><span>Reading Level</span></div>
+      </div>
+      <div class="favorite-display" id="favoriteDisplay">Favorite Book: None yet</div>
     </div>
   </div>
 
@@ -241,208 +232,193 @@ main{position:relative;z-index:2;width:min(1220px,100%);margin:auto;padding:16px
 
 <script>
 (() => {
-  const NAME_KEY='elcraft_child_name';
-  const COINS_KEY='elcraft_coins';
-  const PROFILE_KEY='elcraft_profile_v1';
-  const SCHOOL_KEY='elcraft_school_v1';
-  const READING_KEY='elcraft_reading_v2';
-
-  const childName=localStorage.getItem(NAME_KEY)||'Reader';
+  const KEYS={
+    name:'elcraft_child_name',
+    coins:'elcraft_coins',
+    profile:'elcraft_profile_v1',
+    school:'elcraft_school_v1',
+    reading:'elcraft_reading_library_v1'
+  };
   const today=new Date().toLocaleDateString('en-CA');
+  const childName=localStorage.getItem(KEYS.name)||'Reader';
+  let books=[];
+  let activeBook=null;
   let soundOn=true;
-  let activeStory=null;
 
-  const stories=[
-    {
-      id:'little-seed',emoji:'🌱',title:'The Little Seed',level:1,className:'c1',
-      text:[
-        'A little seed rested in the soft brown soil.',
-        'The warm sun shined above it. Gentle rain fell from the sky.',
-        'Soon, the seed grew tiny roots. Then a green sprout reached up toward the sun.',
-        'Day by day, the sprout grew taller. At last, it became a bright yellow flower.'
-      ],
-      vocab:{seed:'A small part of a plant that can grow into a new plant.',sprout:'A young plant just beginning to grow.',soil:'The earth where plants grow.'},
-      question:'What did the little seed become?',
-      answers:['A yellow flower','A blue boat','A little bird','A red house'],
-      correct:0
-    },
-    {
-      id:'bear-picnic',emoji:'🐻',title:"Bear's Picnic",level:1,className:'c2',
-      text:[
-        'Bear packed apples, bread, and a red blanket for a picnic.',
-        'He walked to a shady tree beside the pond.',
-        'Soon, Rabbit and Fox came to join him.',
-        'They shared their food, told funny stories, and watched the ducks swim.'
-      ],
-      vocab:{picnic:'A meal eaten outside.',shady:'Protected from bright sunlight.',shared:'Gave some to others.'},
-      question:'Where did Bear have his picnic?',
-      answers:['Beside the pond','On the moon','Inside a train','Under the ocean'],
-      correct:0
-    },
-    {
-      id:'space-trip',emoji:'🚀',title:'Trip to Space',level:1,className:'c3',
-      text:[
-        'Maya climbed into a silver rocket and fastened her seat belt.',
-        'The rocket roared and lifted high above the clouds.',
-        'Through the window, Maya saw the blue Earth and the glowing moon.',
-        'She waved to the stars before flying safely home.'
-      ],
-      vocab:{rocket:'A vehicle that travels into space.',Earth:'The planet where we live.',glowing:'Shining with light.'},
-      question:'What did Maya ride?',
-      answers:['A rocket','A bicycle','A sailboat','A school bus'],
-      correct:0
-    },
-    {
-      id:'dino-day',emoji:'🦕',title:'Dino Discovery',level:1,className:'c4',
-      text:[
-        'Leo found a large footprint beside the forest trail.',
-        'He followed the prints past tall ferns and smooth stones.',
-        'Behind a hill stood a gentle dinosaur eating green leaves.',
-        'Leo stayed quiet, drew a picture, and hurried home to tell his family.'
-      ],
-      vocab:{footprint:'A mark left by a foot.',fern:'A green plant with many small leaves.',gentle:'Calm and kind.'},
-      question:'What was the dinosaur eating?',
-      answers:['Green leaves','Ice cream','A sandwich','Purple socks'],
-      correct:0
-    },
-    {
-      id:'ocean-rescue',emoji:'🐬',title:'Ocean Rescue',level:1,className:'c5',
-      text:[
-        'Nia sailed across the bright blue water with her father.',
-        'They heard a splash and saw a young dolphin tangled in a loose rope.',
-        'Nia held the boat steady while her father carefully freed the dolphin.',
-        'The dolphin jumped high into the air as if to say thank you.'
-      ],
-      vocab:{tangled:'Twisted or caught together.',steady:'Still and balanced.',freed:'Let go or released.'},
-      question:'What animal did Nia help?',
-      answers:['A dolphin','A tiger','A chicken','A horse'],
-      correct:0
-    },
-    {
-      id:'castle-mystery',emoji:'🏰',title:'The Castle Mystery',level:1,className:'c6',
-      text:[
-        'Ella heard a tiny bell ring inside the old castle library.',
-        'She followed the sound behind a row of dusty books.',
-        'There she found a hidden door and a sleepy golden cat.',
-        'The cat wore the missing royal bell on its blue collar.'
-      ],
-      vocab:{castle:'A large strong building where royalty may live.',hidden:'Kept where it is hard to see.',royal:'Connected to a king or queen.'},
-      question:'Who had the missing bell?',
-      answers:['A golden cat','A green dragon','A noisy frog','A little mouse'],
-      correct:0
-    }
-  ];
-
-  let profile={coins:Number(localStorage.getItem(COINS_KEY)||100),xp:0,totalXp:0,level:1,achievements:[],schoolCoinsEarned:0};
+  let profile={coins:Number(localStorage.getItem(KEYS.coins)||100),xp:0,totalXp:0,level:1,achievements:[],schoolCoinsEarned:0};
   let school={completedByDate:{},dailyRewardDates:[],lessonTotals:{reading:0,writing:0,math:0,science:0,discovery:0,music:0},lastSchoolDate:'',streak:0};
-  let reading={completedStories:[],rewardedByDate:{},readCounts:{},passportStamps:0};
+  let reading={
+    completedBooks:[],
+    readCounts:{},
+    rewardedByDate:{},
+    favoriteBookId:'',
+    vocabularySeen:[],
+    unlockedLevel:1
+  };
 
-  try{const s=JSON.parse(localStorage.getItem(PROFILE_KEY));if(s)profile={...profile,...s}}catch{}
-  try{const s=JSON.parse(localStorage.getItem(SCHOOL_KEY));if(s)school={...school,...s,lessonTotals:{...school.lessonTotals,...(s.lessonTotals||{})}}}catch{}
-  try{const s=JSON.parse(localStorage.getItem(READING_KEY));if(s)reading={...reading,...s}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.profile));if(x)profile={...profile,...x}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.school));if(x)school={...school,...x,lessonTotals:{...school.lessonTotals,...(x.lessonTotals||{})}}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.reading));if(x)reading={...reading,...x}}catch{}
 
-  function dailyStory(){
-    const n=[...today].reduce((sum,ch)=>sum+ch.charCodeAt(0),0);
-    return stories[n%stories.length];
+  function migrateOldReading(){
+    const oldKeys=['elcraft_reading_v1','elcraft_reading_v2'];
+    oldKeys.forEach(key=>{
+      try{
+        const old=JSON.parse(localStorage.getItem(key));
+        if(!old)return;
+        const oldCompleted=old.completedStories||[];
+        oldCompleted.forEach(id=>{
+          if(!reading.completedBooks.includes(id))reading.completedBooks.push(id);
+        });
+        Object.entries(old.readCounts||{}).forEach(([id,count])=>{
+          reading.readCounts[id]=Math.max(reading.readCounts[id]||0,Number(count)||0);
+        });
+      }catch{}
+    });
+  }
+  migrateOldReading();
+
+  const fallbackBooks = [{"id": "little-seed", "title": "The Little Seed", "emoji": "🌱", "cover": "purple", "level": 1, "category": "Nature", "summary": "A tiny seed grows into a bright yellow flower.", "story": ["A little seed rested in the soft brown soil.", "The warm sun shined above it. Gentle rain fell from the sky.", "Soon, the seed grew tiny roots. Then a green sprout reached up toward the sun.", "Day by day, the sprout grew taller. At last, it became a bright yellow flower."], "vocabulary": [{"word": "seed", "meaning": "A small part of a plant that can grow into a new plant."}, {"word": "soil", "meaning": "The earth where plants grow."}, {"word": "sprout", "meaning": "A young plant beginning to grow."}], "question": {"prompt": "What did the little seed become?", "answers": ["A yellow flower", "A blue boat", "A little bird", "A red house"], "correctIndex": 0}}, {"id": "bear-picnic", "title": "Bear's Picnic", "emoji": "🐻", "cover": "rose", "level": 1, "category": "Friends", "summary": "Bear shares a picnic with Rabbit and Fox.", "story": ["Bear packed apples, bread, and a red blanket for a picnic.", "He walked to a shady tree beside the pond.", "Soon, Rabbit and Fox came to join him.", "They shared their food, told funny stories, and watched the ducks swim."], "vocabulary": [{"word": "picnic", "meaning": "A meal eaten outside."}, {"word": "shady", "meaning": "Protected from bright sunlight."}, {"word": "shared", "meaning": "Gave some to others."}], "question": {"prompt": "Where did Bear have his picnic?", "answers": ["Beside the pond", "On the moon", "Inside a train", "Under the ocean"], "correctIndex": 0}}, {"id": "space-trip", "title": "Trip to Space", "emoji": "🚀", "cover": "blue", "level": 1, "category": "Space", "summary": "Maya takes a rocket beyond the clouds.", "story": ["Maya climbed into a silver rocket and fastened her seat belt.", "The rocket roared and lifted high above the clouds.", "Through the window, Maya saw the blue Earth and the glowing moon.", "She waved to the stars before flying safely home."], "vocabulary": [{"word": "rocket", "meaning": "A vehicle that travels into space."}, {"word": "Earth", "meaning": "The planet where we live."}, {"word": "glowing", "meaning": "Shining with light."}], "question": {"prompt": "What did Maya ride?", "answers": ["A rocket", "A bicycle", "A sailboat", "A school bus"], "correctIndex": 0}}, {"id": "dino-discovery", "title": "Dino Discovery", "emoji": "🦕", "cover": "green", "level": 1, "category": "Dinosaurs", "summary": "Leo follows a trail of giant footprints.", "story": ["Leo found a large footprint beside the forest trail.", "He followed the prints past tall ferns and smooth stones.", "Behind a hill stood a gentle dinosaur eating green leaves.", "Leo stayed quiet, drew a picture, and hurried home to tell his family."], "vocabulary": [{"word": "footprint", "meaning": "A mark left by a foot."}, {"word": "fern", "meaning": "A green plant with many small leaves."}, {"word": "gentle", "meaning": "Calm and kind."}], "question": {"prompt": "What was the dinosaur eating?", "answers": ["Green leaves", "Ice cream", "A sandwich", "Purple socks"], "correctIndex": 0}}, {"id": "ocean-rescue", "title": "Ocean Rescue", "emoji": "🐬", "cover": "gold", "level": 1, "category": "Ocean", "summary": "Nia helps a young dolphin in trouble.", "story": ["Nia sailed across the bright blue water with her father.", "They heard a splash and saw a young dolphin tangled in a loose rope.", "Nia held the boat steady while her father carefully freed the dolphin.", "The dolphin jumped high into the air as if to say thank you."], "vocabulary": [{"word": "tangled", "meaning": "Twisted or caught together."}, {"word": "steady", "meaning": "Still and balanced."}, {"word": "freed", "meaning": "Let go or released."}], "question": {"prompt": "What animal did Nia help?", "answers": ["A dolphin", "A tiger", "A chicken", "A horse"], "correctIndex": 0}}, {"id": "castle-mystery", "title": "The Castle Mystery", "emoji": "🏰", "cover": "violet", "level": 1, "category": "Mystery", "summary": "Ella follows a bell through an old castle.", "story": ["Ella heard a tiny bell ring inside the old castle library.", "She followed the sound behind a row of dusty books.", "There she found a hidden door and a sleepy golden cat.", "The cat wore the missing royal bell on its blue collar."], "vocabulary": [{"word": "castle", "meaning": "A large strong building where royalty may live."}, {"word": "hidden", "meaning": "Kept where it is hard to see."}, {"word": "royal", "meaning": "Connected to a king or queen."}], "question": {"prompt": "Who had the missing bell?", "answers": ["A golden cat", "A green dragon", "A noisy frog", "A little mouse"], "correctIndex": 0}}, {"id": "dragon-cave", "title": "The Friendly Dragon", "emoji": "🐉", "cover": "green", "level": 2, "category": "Fantasy", "summary": "A brave child discovers that a dragon needs help.", "story": ["Kai heard a soft rumble from the cave beyond the village.", "Inside, he found a young dragon with a thorn stuck in its paw.", "Kai moved slowly, pulled out the thorn, and wrapped the paw with cloth.", "The dragon smiled, breathed a tiny puff of smoke, and carried Kai safely home."], "vocabulary": [{"word": "rumble", "meaning": "A low, deep sound."}, {"word": "thorn", "meaning": "A sharp point on a plant."}, {"word": "village", "meaning": "A small community where people live."}], "question": {"prompt": "Why was the dragon upset?", "answers": ["A thorn was in its paw", "It lost a hat", "It was hungry for cake", "It could not find a boat"], "correctIndex": 0}}, {"id": "rainbow-bridge", "title": "The Rainbow Bridge", "emoji": "🌈", "cover": "rose", "level": 2, "category": "Fantasy", "summary": "Lina crosses a magical bridge after a storm.", "story": ["After the storm, Lina saw a rainbow touching the hill.", "When she reached it, the colors formed a bright bridge in the sky.", "She walked carefully across and found a garden filled with singing birds.", "Before sunset, Lina crossed back home with one sparkling feather."], "vocabulary": [{"word": "storm", "meaning": "Weather with strong rain, wind, or thunder."}, {"word": "bridge", "meaning": "A path built over something."}, {"word": "sparkling", "meaning": "Shining with small flashes of light."}], "question": {"prompt": "What did Lina bring home?", "answers": ["A sparkling feather", "A silver spoon", "A toy train", "A green apple"], "correctIndex": 0}}];
+
+  async function loadBooks(){
+    try{
+      const response=await fetch('books.json',{cache:'no-store'});
+      if(!response.ok)throw new Error('Could not load books.json');
+      const data=await response.json();
+      books=Array.isArray(data)?data:(data.books||[]);
+      if(!books.length)throw new Error('No books found');
+    }catch(error){
+      console.warn('Using built-in story fallback:',error);
+      books=fallbackBooks;
+      toast('Books loaded from the built-in library.');
+    }
+    updateUnlocks();
+    render();
   }
 
   function save(){
-    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
-    localStorage.setItem(SCHOOL_KEY,JSON.stringify(school));
-    localStorage.setItem(READING_KEY,JSON.stringify(reading));
-    localStorage.setItem(COINS_KEY,String(profile.coins));
+    localStorage.setItem(KEYS.profile,JSON.stringify(profile));
+    localStorage.setItem(KEYS.school,JSON.stringify(school));
+    localStorage.setItem(KEYS.reading,JSON.stringify(reading));
+    localStorage.setItem(KEYS.coins,String(profile.coins));
   }
 
-  function alreadyRewarded(storyId){
-    return (reading.rewardedByDate[today]||[]).includes(storyId);
+  function updateUnlocks(){
+    const levelOneCompleted=books.filter(b=>b.level===1&&reading.completedBooks.includes(b.id)).length;
+    if(levelOneCompleted>=5)reading.unlockedLevel=Math.max(reading.unlockedLevel||1,2);
   }
 
-  function toast(msg){
+  function dailyBook(){
+    const available=books.filter(b=>b.level<=(reading.unlockedLevel||1));
+    const seed=[...today].reduce((sum,c)=>sum+c.charCodeAt(0),0);
+    return available[seed%available.length];
+  }
+
+  function toast(message){
     const el=document.querySelector('#toast');
-    el.textContent=msg;el.classList.add('show');
-    clearTimeout(window.__t);window.__t=setTimeout(()=>el.classList.remove('show'),2400);
-  }
-
-  function confetti(){
-    const c=document.querySelector('#confetti');c.innerHTML='';
-    ['⭐','✨','📚','🎉','🪙'].forEach(symbol=>{
-      for(let i=0;i<6;i++){
-        const n=document.createElement('i');n.textContent=symbol;
-        n.style.left=(Math.random()*100)+'%';n.style.fontSize=(16+Math.random()*22)+'px';
-        n.style.animationDelay=(Math.random()*.55)+'s';c.append(n);
-      }
-    });
-    setTimeout(()=>c.innerHTML='',2300);
+    el.textContent=message;el.classList.add('show');
+    clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400);
   }
 
   function beep(freq=540){
     if(!soundOn)return;
     try{
       const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(),g=ctx.createGain();
-      osc.connect(g);g.connect(ctx.destination);osc.frequency.value=freq;
-      g.gain.setValueAtTime(.04,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.15);
-      osc.start();osc.stop(ctx.currentTime+.16);
+      const oscillator=ctx.createOscillator(),gain=ctx.createGain();
+      oscillator.connect(gain);gain.connect(ctx.destination);oscillator.frequency.value=freq;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.15);
+      oscillator.start();oscillator.stop(ctx.currentTime+.16);
     }catch{}
   }
 
-  function openStory(story){
-    activeStory=story;
-    document.querySelector('#stageTitle').textContent=`${story.emoji} ${story.title}`;
-    document.querySelector('#bookTitle').textContent=story.title;
-    document.querySelector('#storyText').innerHTML=story.text.map(p=>`<p>${p}</p>`).join('');
-    const vocab=document.querySelector('#vocabButtons');vocab.innerHTML='';
-    Object.entries(story.vocab).forEach(([word,meaning])=>{
-      const b=document.createElement('button');b.textContent=word;
-      b.onclick=()=>{
-        toast(`${word}: ${meaning}`);
-        speak(`${word}. ${meaning}`);
-      };
-      vocab.append(b);
+  function confetti(){
+    const box=document.querySelector('#confetti');box.innerHTML='';
+    ['⭐','✨','📚','🎉','🪙'].forEach(symbol=>{
+      for(let i=0;i<6;i++){
+        const piece=document.createElement('i');piece.textContent=symbol;
+        piece.style.left=(Math.random()*100)+'%';
+        piece.style.fontSize=(16+Math.random()*22)+'px';
+        piece.style.animationDelay=(Math.random()*.55)+'s';
+        box.append(piece);
+      }
     });
-    document.querySelector('#rewardNote').textContent=alreadyRewarded(story.id)
-      ? 'You already earned today’s reward for this story. You may still reread it as many times as you like.'
-      : 'Finish the story question to earn +10 coins and +20 XP.';
+    setTimeout(()=>box.innerHTML='',2300);
+  }
+
+  function speak(text){
+    if(!('speechSynthesis' in window)){toast('Read aloud is not supported on this device.');return}
+    speechSynthesis.cancel();
+    const voice=new SpeechSynthesisUtterance(text);
+    voice.rate=.85;voice.pitch=1.05;speechSynthesis.speak(voice);
+  }
+
+  function rewardUsed(bookId){
+    return (reading.rewardedByDate[today]||[]).includes(bookId);
+  }
+
+  function openBook(book){
+    if(book.level>(reading.unlockedLevel||1)){
+      toast(`Finish 5 Level 1 books to unlock Level ${book.level}.`);
+      beep(220);return;
+    }
+    activeBook=book;
+    document.querySelector('#readerHeading').textContent=`${book.emoji} ${book.title}`;
+    document.querySelector('#bookTitle').textContent=book.title;
+    document.querySelector('#storyText').innerHTML=book.story.map(p=>`<p>${p}</p>`).join('');
+    const vocab=document.querySelector('#vocab');vocab.innerHTML='';
+    book.vocabulary.forEach(item=>{
+      const button=document.createElement('button');button.textContent=item.word;
+      button.onclick=()=>{
+        if(!reading.vocabularySeen.includes(item.word))reading.vocabularySeen.push(item.word);
+        save();
+        toast(`${item.word}: ${item.meaning}`);
+        speak(`${item.word}. ${item.meaning}`);
+      };
+      vocab.append(button);
+    });
+    const isFavorite=reading.favoriteBookId===book.id;
+    document.querySelector('#favoriteBtn').textContent=isFavorite?'♥ Favorite':'♡ Favorite';
+    document.querySelector('#rewardNote').textContent=rewardUsed(book.id)
+      ? `You already earned today's reward for this book. You can still reread it anytime.`
+      : `Complete the question to earn +10 coins and +20 XP.`;
     document.querySelector('#readerStage').classList.add('show');
     beep();
   }
 
   function openQuiz(){
-    if(!activeStory)return;
+    if(!activeBook)return;
     document.querySelector('#readerStage').classList.remove('show');
-    document.querySelector('#questionText').textContent=activeStory.question;
-    const grid=document.querySelector('#answerGrid');grid.innerHTML='';
-    activeStory.answers.forEach((label,index)=>{
-      const b=document.createElement('button');b.className='answer';b.textContent=label;
-      b.onclick=()=>{
-        grid.querySelectorAll('.answer').forEach(x=>x.classList.remove('correct','wrong'));
-        if(index===activeStory.correct){
-          b.classList.add('correct');beep(760);
-          setTimeout(()=>finishStory(activeStory),450);
+    document.querySelector('#question').textContent=activeBook.question.prompt;
+    const answers=document.querySelector('#answers');answers.innerHTML='';
+    activeBook.question.answers.forEach((text,index)=>{
+      const button=document.createElement('button');button.className='answer';button.textContent=text;
+      button.onclick=()=>{
+        answers.querySelectorAll('.answer').forEach(x=>x.classList.remove('correct','wrong'));
+        if(index===activeBook.question.correctIndex){
+          button.classList.add('correct');beep(760);
+          setTimeout(()=>completeBook(activeBook),450);
         }else{
-          b.classList.add('wrong');toast('Good try! Read the story again and look for a clue.');beep(220);
+          button.classList.add('wrong');toast('Good try! Read the story again and look for the clue.');beep(220);
         }
       };
-      grid.append(b);
+      answers.append(button);
     });
     document.querySelector('#quizStage').classList.add('show');
   }
 
-  function finishStory(story){
+  function completeBook(book){
     document.querySelector('#quizStage').classList.remove('show');
-    reading.readCounts[story.id]=(reading.readCounts[story.id]||0)+1;
+    reading.readCounts[book.id]=(reading.readCounts[book.id]||0)+1;
+    const firstDiscovery=!reading.completedBooks.includes(book.id);
+    if(firstDiscovery)reading.completedBooks.push(book.id);
+    book.vocabulary.forEach(item=>{
+      if(!reading.vocabularySeen.includes(item.word))reading.vocabularySeen.push(item.word);
+    });
 
-    if(!reading.completedStories.includes(story.id)){
-      reading.completedStories.push(story.id);
-      reading.passportStamps=(reading.passportStamps||0)+1;
-    }
-
-    if(!alreadyRewarded(story.id)){
+    if(!rewardUsed(book.id)){
       if(!reading.rewardedByDate[today])reading.rewardedByDate[today]=[];
-      reading.rewardedByDate[today].push(story.id);
-
-      profile.coins+=10;
-      profile.xp+=20;
+      reading.rewardedByDate[today].push(book.id);
+      profile.coins+=10;profile.xp+=20;
       profile.totalXp=(profile.totalXp||0)+20;
       profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+10;
 
@@ -451,82 +427,96 @@ main{position:relative;z-index:2;width:min(1220px,100%);margin:auto;padding:16px
         todayLessons.push('reading');
         school.completedByDate[today]=todayLessons;
         school.lessonTotals.reading=(school.lessonTotals.reading||0)+1;
-
         if(school.lastSchoolDate!==today){
-          const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-          const y=yesterday.toLocaleDateString('en-CA');
-          school.streak=school.lastSchoolDate===y?school.streak+1:1;
+          const y=new Date();y.setDate(y.getDate()-1);
+          const yesterday=y.toLocaleDateString('en-CA');
+          school.streak=school.lastSchoolDate===yesterday?(school.streak||0)+1:1;
           school.lastSchoolDate=today;
         }
       }
-
       if(!profile.achievements.includes('first-lesson'))profile.achievements.push('first-lesson');
-      if(reading.completedStories.length>=5 && !profile.achievements.includes('bookworm'))profile.achievements.push('bookworm');
-
-      confetti();
-      toast('📚 Story complete! +10 coins and +20 XP');
+      confetti();toast(firstDiscovery?'📘 New passport stamp! +10 coins and +20 XP':'📚 Reading reward earned! +10 coins and +20 XP');
     }else{
-      toast('📖 Reread complete! No extra reward today, but your read count increased.');
+      toast('📖 Reread complete! Your read count increased.');
     }
 
+    updateUnlocks();
+    if(reading.completedBooks.length>=5&&!profile.achievements.includes('bookworm'))profile.achievements.push('bookworm');
     save();render();
   }
 
-  function speak(text){
-    if(!('speechSynthesis' in window)){toast('Read aloud is not supported on this device.');return}
-    speechSynthesis.cancel();
-    const u=new SpeechSynthesisUtterance(text);u.rate=.85;u.pitch=1.05;
-    speechSynthesis.speak(u);
-  }
-
-  function createCard(story,isDaily=false){
-    const b=document.createElement('button');
-    b.className=`book-card ${story.className}`;
-    const readCount=reading.readCounts[story.id]||0;
-    const completed=reading.completedStories.includes(story.id);
-    b.innerHTML=`
-      ${isDaily?'<div class="ribbon">TODAY</div>':''}
-      <span class="emoji">${story.emoji}</span>
-      <strong>${story.title}</strong>
-      <small>Reading Level ${story.level} • Tap to begin</small>
-      <span class="status">${completed?`Read ${readCount} time${readCount===1?'':'s'}`:'New story'}</span>
+  function makeBookCard(book){
+    const locked=book.level>(reading.unlockedLevel||1);
+    const count=reading.readCounts[book.id]||0;
+    const discovered=reading.completedBooks.includes(book.id);
+    const favorite=reading.favoriteBookId===book.id;
+    const button=document.createElement('button');
+    button.className=`book-card ${book.cover||'purple'} ${locked?'locked':''}`;
+    button.innerHTML=`
+      ${favorite?'<span class="mark"></span>':''}
+      <span class="emoji">${book.emoji}</span>
+      <strong>${book.title}</strong>
+      <small>Level ${book.level}</small>
+      <span class="status">${locked?'Locked':discovered?`Read ${count} time${count===1?'':'s'}`:'NEW'}</span>
     `;
-    b.onclick=()=>openStory(story);
-    return b;
+    button.onclick=()=>openBook(book);
+    return button;
   }
 
   function render(){
-    const daily=dailyStory();
-    document.querySelector('#hello').textContent=`Hello, ${childName}!`;
+    document.querySelector('#welcomeTitle').textContent=`Welcome back, ${childName}!`;
     document.querySelector('#coins').textContent=profile.coins;
     document.querySelector('#xp').textContent=profile.xp;
-    document.querySelector('#dailyTitle').textContent=daily.title;
+    const daily=dailyBook();
+    document.querySelector('#dailyPick').textContent=daily?daily.title:'New book soon';
+    document.querySelector('#owlMessage').textContent=reading.completedBooks.length
+      ? 'Choose a favorite again or discover a brand-new adventure.'
+      : 'Pick your first book and begin your Reading Passport!';
 
-    const dailyBox=document.querySelector('#dailyLibrary');dailyBox.innerHTML='';
-    dailyBox.append(createCard(daily,true));
+    const library=document.querySelector('#library');library.innerHTML='';
+    const levels=[...new Set(books.map(b=>b.level))].sort((a,b)=>a-b);
+    levels.forEach(level=>{
+      const shelf=document.createElement('div');shelf.className='shelf';
+      const label=document.createElement('div');label.className='shelf-label';
+      label.textContent=level===1?'📚 Beginner Shelf':`🔮 Level ${level} Adventure Shelf`;
+      const row=document.createElement('div');row.className='books';
+      books.filter(b=>b.level===level).forEach(book=>row.append(makeBookCard(book)));
+      shelf.append(label,row);library.append(shelf);
+    });
 
-    const shelf=document.querySelector('#storyLibrary');shelf.innerHTML='';
-    stories.forEach(s=>shelf.append(createCard(s,false)));
-
-    const completed=reading.completedStories.length;
-    document.querySelector('#progressLabel').textContent=`${completed} of ${stories.length} stories discovered`;
-    document.querySelector('#bar').style.width=Math.min(100,(completed/stories.length)*100)+'%';
-    document.querySelector('#progressText').textContent=`Reading Passport: ${reading.passportStamps||0} stamp${reading.passportStamps===1?'':'s'} • Stories can always be reread.`;
+    const totalReads=Object.values(reading.readCounts).reduce((a,b)=>a+(Number(b)||0),0);
+    document.querySelector('#storiesRead').textContent=reading.completedBooks.length;
+    document.querySelector('#totalReads').textContent=totalReads;
+    document.querySelector('#wordsLearned').textContent=reading.vocabularySeen.length;
+    document.querySelector('#readerLevel').textContent=reading.unlockedLevel||1;
+    const favorite=books.find(b=>b.id===reading.favoriteBookId);
+    document.querySelector('#favoriteDisplay').textContent=favorite
+      ? `Favorite Book: ${favorite.emoji} ${favorite.title}`
+      : 'Favorite Book: None yet';
     save();
   }
 
-  document.querySelector('#storyDone').onclick=openQuiz;
-  document.querySelector('#readAloud').onclick=()=>activeStory&&speak(activeStory.text.join(' '));
-  document.querySelector('#closeStage').onclick=()=>document.querySelector('#readerStage').classList.remove('show');
-  document.querySelector('#closeQuiz').onclick=()=>document.querySelector('#quizStage').classList.remove('show');
-  document.querySelector('#readerStage').onclick=e=>{if(e.target.id==='readerStage')e.currentTarget.classList.remove('show')};
-  document.querySelector('#quizStage').onclick=e=>{if(e.target.id==='quizStage')e.currentTarget.classList.remove('show')};
+  document.querySelector('#finishReading').onclick=openQuiz;
+  document.querySelector('#readAloud').onclick=()=>activeBook&&speak(activeBook.story.join(' '));
+  document.querySelector('#favoriteBtn').onclick=()=>{
+    if(!activeBook)return;
+    reading.favoriteBookId=reading.favoriteBookId===activeBook.id?'':activeBook.id;
+    document.querySelector('#favoriteBtn').textContent=reading.favoriteBookId===activeBook.id?'♥ Favorite':'♡ Favorite';
+    save();render();toast(reading.favoriteBookId?'Added to favorites!':'Removed from favorites.');
+  };
+  document.querySelector('#passportBtn').onclick=()=>{render();document.querySelector('#passportStage').classList.add('show')};
+  document.querySelectorAll('[data-close]').forEach(button=>{
+    button.onclick=()=>document.querySelector('#'+button.dataset.close).classList.remove('show');
+  });
+  document.querySelectorAll('.stage').forEach(stage=>{
+    stage.onclick=e=>{if(e.target===stage)stage.classList.remove('show')};
+  });
   document.querySelector('#backBtn').onclick=()=>location.href='school.html';
   document.querySelector('#soundBtn').onclick=()=>{
     soundOn=!soundOn;document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)beep();
   };
 
-  render();
+  loadBooks();
 })();
 </script>
 </body>
