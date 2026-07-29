@@ -235,6 +235,68 @@
   @keyframes chipBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
 
   @media (max-width: 480px){ .home-grid{ grid-template-columns:repeat(2,minmax(120px,1fr)); } }
+
+
+  /* ===== Phase 1: cinematic Home World ===== */
+  body.home-mode .app{ padding:0; gap:0; background:#dff3ff; }
+  body.home-mode header{ display:none; }
+  body.home-mode .stage{ gap:0; min-height:0; }
+  body.home-mode .canvas-wrap{
+    border-radius:0;
+    box-shadow:none;
+    background-image:url('./elcraft-home-world.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+  }
+  body.home-mode #sky{ opacity:0; pointer-events:none; }
+  body.home-mode #peersGrid{ display:none !important; }
+  body.home-mode .sticker-toolbar{ display:none !important; }
+  body.home-mode .home-overlay{ display:block; }
+  body.home-mode .greeting-bubble{ display:none; }
+  body.home-mode .settings-chip{
+    top:2.2%; right:3.1%; left:auto; width:12%; height:8%;
+    min-width:92px; min-height:48px; border-radius:24px;
+    opacity:.001; box-shadow:none;
+  }
+  body.home-mode .nav-row{
+    left:9.5%; right:9.5%; bottom:5.7%; height:22%;
+    display:grid; grid-template-columns:repeat(5,1fr); gap:1.4%;
+    padding:0;
+  }
+  body.home-mode .nav-card{
+    width:100%; height:100%; min-width:0; padding:0;
+    opacity:.001; box-shadow:none; border-radius:22px;
+  }
+  body.home-mode .nav-card:focus-visible,
+  body.home-mode .settings-chip:focus-visible{
+    opacity:.22; outline:5px solid white; outline-offset:4px;
+    background:var(--sunbeam);
+  }
+  body.home-mode .nav-card *{ display:none; }
+
+  /* Keep the existing simple cards as a safe mobile fallback. */
+  @media (max-width:700px), (orientation:portrait){
+    body.home-mode .canvas-wrap{
+      background-image:linear-gradient(rgba(79,168,224,.12),rgba(255,247,236,.2)), url('./elcraft-home-world.png');
+      background-position:center top;
+    }
+    body.home-mode .nav-row{
+      left:10px; right:10px; bottom:12px; height:auto;
+      display:grid; grid-template-columns:repeat(2,1fr); gap:9px;
+    }
+    body.home-mode .nav-card{
+      opacity:1; min-height:74px; height:auto; padding:9px 8px;
+      background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+    }
+    body.home-mode .nav-card *{ display:block; }
+    body.home-mode .nav-card.together{ grid-column:1 / -1; }
+    body.home-mode .settings-chip{
+      opacity:1; top:12px; right:12px; width:48px; height:48px;
+      min-width:0; min-height:0; border-radius:50%;
+    }
+  }
+
 </style>
 </head>
 <body>
@@ -1401,6 +1463,7 @@
   function showHome(){
     if(viewMode==='interior') exitBuilding();
     atHome = true;
+    document.body.classList.add('home-mode');
     homeOverlay.classList.add('visible');
     mainNav.style.display = 'none';
     document.querySelectorAll('.panel-view').forEach(p=>p.classList.remove('active'));
@@ -1408,6 +1471,7 @@
   }
   function showApp(m){
     atHome = false;
+    document.body.classList.remove('home-mode');
     homeOverlay.classList.remove('visible');
     mainNav.style.display = 'flex';
     document.querySelector('.bottom-panel').style.display = 'flex';
