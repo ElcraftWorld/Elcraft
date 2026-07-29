@@ -37,7 +37,7 @@
   .mode-tab{ font-family:'Baloo 2', cursive; font-size:15px; border:none; border-radius:16px 16px 0 0; padding:9px 20px; background:var(--paper); color:var(--ink); cursor:pointer; box-shadow:var(--shadow); }
   .mode-tab.active{ background:var(--panel); color:var(--dusk); }
 
-  .stage{ display:flex; gap:8px; flex:1; min-height:0; }
+  .stage{ display:flex; gap:8px; flex:1; min-height:180px; }
   .stage.solo #peersGrid{ display:none; }
   .stage.solo .canvas-wrap{ flex:1; }
   .stage:not(.solo) .canvas-wrap{ flex:2; min-width:0; }
@@ -66,7 +66,7 @@
   .mini-btn.trash{ background:var(--coral); }
   .mini-btn.enter{ background:var(--meadow); }
 
-  .bottom-panel{ background:var(--panel); border-radius:0 22px 22px 22px; box-shadow:var(--shadow); padding:10px 14px 12px; display:flex; flex-direction:column; gap:8px; }
+  .bottom-panel{ background:var(--panel); border-radius:0 22px 22px 22px; box-shadow:var(--shadow); padding:10px 14px 12px; display:flex; flex-direction:column; gap:8px; max-height:38vh; overflow-y:auto; flex-shrink:0; }
   .panel-view{ display:none; flex-direction:column; gap:8px; }
   .panel-view.active{ display:flex; }
 
@@ -95,13 +95,19 @@
   .music-sub{ display:none; }
   .music-sub.active{ display:block; }
   .song-btn.active{ box-shadow:0 0 0 3px var(--ink); }
-  .piano-key{ border:none; border-radius:0 0 10px 10px; cursor:pointer; box-shadow:var(--shadow);
+  .piano-wrap{ position:relative; height:150px; margin:10px auto 0; }
+  .white-key{ position:absolute; top:0; width:42px; height:150px; background:linear-gradient(180deg,#FFFFFF,#F3F0EA);
+    border:1px solid #cfc9ba; border-top:none; border-radius:0 0 8px 8px; cursor:pointer;
     display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px;
-    font-family:'Baloo 2',cursive; font-weight:700; color:rgba(34,38,75,0.55); font-size:13px;
-    width:38px; height:120px; transition:transform .05s; }
-  .piano-key:active, .piano-key.pressed{ transform:translateY(4px); box-shadow:0 2px 0 rgba(34,38,75,0.12); }
-  .piano-key.next-note{ box-shadow:0 0 0 4px var(--ink), var(--shadow); animation: keyPulse 0.8s infinite; }
-  @keyframes keyPulse{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+    font-family:'Baloo 2',cursive; font-weight:700; color:#9a9384; font-size:12px;
+    box-shadow:inset 0 -3px 4px rgba(0,0,0,0.06); transition:transform .04s; }
+  .white-key:active, .white-key.pressed{ background:linear-gradient(180deg,#F3EFE3,#E7E1D2); transform:translateY(2px); }
+  .white-key.next-note{ background:linear-gradient(180deg,#FFF3C4,#FFE08A); animation: keyPulseWhite 0.8s infinite; }
+  @keyframes keyPulseWhite{ 0%,100%{ box-shadow:inset 0 -3px 4px rgba(0,0,0,0.06); } 50%{ box-shadow:0 0 0 3px var(--sunbeam), inset 0 -3px 4px rgba(0,0,0,0.06); } }
+  .black-key{ position:absolute; top:0; width:26px; height:92px; background:linear-gradient(180deg,#3a3a42,#111114);
+    border-radius:0 0 5px 5px; cursor:pointer; z-index:2; box-shadow:0 3px 3px rgba(0,0,0,0.35);
+    transition:transform .04s; }
+  .black-key:active, .black-key.pressed{ background:linear-gradient(180deg,#55555f,#222226); transform:translateY(2px); }
   .song-dot{ width:9px; height:9px; border-radius:50%; background:#e4e0d5; }
   .song-dot.done{ background:var(--meadow); }
   .song-dot.current{ background:var(--coral); }
@@ -344,7 +350,7 @@
         </div>
         <div id="songLyric" class="section-label" style="font-size:14px; text-align:center; min-height:20px; margin:6px 0;"></div>
         <div id="songDots" class="row" style="justify-content:center; gap:5px; min-height:14px;"></div>
-        <div id="pianoKeys" class="row" style="justify-content:center; gap:6px; margin-top:8px;"></div>
+        <div id="pianoKeys" class="piano-wrap"></div>
       </div>
     </div>
 
@@ -1476,16 +1482,24 @@
   });
 
   const PIANO_NOTES = [
-    { name:'C', freq:261.63, color:'#FF6F59' },
-    { name:'D', freq:293.66, color:'#FFA35C' },
-    { name:'E', freq:329.63, color:'#FFD166' },
-    { name:'F', freq:349.23, color:'#6FBE44' },
-    { name:'G', freq:392.00, color:'#4FA8E0' },
-    { name:'A', freq:440.00, color:'#6B5B95' },
-    { name:'B', freq:493.88, color:'#B39DDB' },
-    { name:'C2',freq:523.25, color:'#FF8FB1' },
+    { name:'C', freq:261.63 },
+    { name:'D', freq:293.66 },
+    { name:'E', freq:329.63 },
+    { name:'F', freq:349.23 },
+    { name:'G', freq:392.00 },
+    { name:'A', freq:440.00 },
+    { name:'B', freq:493.88 },
+    { name:'C2',freq:523.25 },
   ];
   const NOTE_INDEX = {}; PIANO_NOTES.forEach((n,i)=> NOTE_INDEX[n.name]=i);
+  // black keys: afterWhite = index of the white key it sits just to the right of
+  const BLACK_NOTES = [
+    { name:'C#', freq:277.18, afterWhite:0 },
+    { name:'D#', freq:311.13, afterWhite:1 },
+    { name:'F#', freq:369.99, afterWhite:3 },
+    { name:'G#', freq:415.30, afterWhite:4 },
+    { name:'A#', freq:466.16, afterWhite:5 },
+  ];
 
   const SONGS = {
     twinkle: {
@@ -1528,29 +1542,39 @@
   const pianoKeysEl = document.getElementById('pianoKeys');
   const songLyricEl = document.getElementById('songLyric');
   const songDotsEl = document.getElementById('songDots');
+  const WHITE_KEY_W = 42;
 
   function renderPianoKeys(){
     pianoKeysEl.innerHTML = '';
+    pianoKeysEl.style.width = (WHITE_KEY_W * PIANO_NOTES.length) + 'px';
     PIANO_NOTES.forEach((n,i)=>{
       const key = document.createElement('button');
-      key.className = 'piano-key';
-      key.style.background = n.color;
+      key.className = 'white-key';
+      key.style.left = (i*WHITE_KEY_W) + 'px';
       key.textContent = n.name.replace('2','');
       key.dataset.note = n.name;
-      key.addEventListener('click', ()=> pressKey(i));
+      key.addEventListener('click', ()=> pressKey(n, key));
+      pianoKeysEl.appendChild(key);
+    });
+    BLACK_NOTES.forEach(n=>{
+      const key = document.createElement('button');
+      key.className = 'black-key';
+      key.style.left = ((n.afterWhite+1)*WHITE_KEY_W - 13) + 'px';
+      key.dataset.note = n.name;
+      key.addEventListener('click', ()=> pressKey(n, key));
       pianoKeysEl.appendChild(key);
     });
     updateNextNoteHighlight();
   }
 
   function updateNextNoteHighlight(){
-    document.querySelectorAll('.piano-key').forEach(k=>k.classList.remove('next-note'));
+    document.querySelectorAll('.white-key').forEach(k=>k.classList.remove('next-note'));
     if(currentSong==='free') return;
     const song = SONGS[currentSong];
     if(songPos >= song.notes.length) return;
     const nextNote = song.notes[songPos];
     const idx = NOTE_INDEX[nextNote];
-    const keys = pianoKeysEl.children;
+    const keys = document.querySelectorAll('.white-key');
     if(keys[idx]) keys[idx].classList.add('next-note');
   }
 
@@ -1566,10 +1590,8 @@
     songLyricEl.textContent = songPos < song.lyrics.length ? song.lyrics[songPos] : '🎉 You played it! Tap 🔄 to go again.';
   }
 
-  function pressKey(idx){
-    const note = PIANO_NOTES[idx];
+  function pressKey(note, keyEl){
     playPianoTone(note.freq);
-    const keyEl = pianoKeysEl.children[idx];
     keyEl.classList.add('pressed');
     setTimeout(()=>keyEl.classList.remove('pressed'), 120);
     pianoBounce = 1;
