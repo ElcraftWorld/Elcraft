@@ -102,6 +102,10 @@
   .color-dot.active{ box-shadow:0 0 0 3px var(--ink); }
   .color-row{ display:flex; gap:8px; overflow-x:auto; padding:2px; }
   .section-label{ font-family:'Baloo 2', cursive; font-size:11px; color:#8a8fb0; margin:0 2px; }
+  .slot-btn{ flex:0 0 auto; width:56px; height:56px; border-radius:16px; border:none; cursor:pointer; background:var(--paper); box-shadow:var(--shadow); overflow:hidden; position:relative; }
+  .slot-btn.active{ box-shadow:0 0 0 3px var(--sunbeam); }
+  .slot-btn canvas{ width:100%; height:100%; display:block; }
+  .slot-star{ position:absolute; top:-2px; right:-2px; font-size:14px; }
 
   @media (max-width: 640px){ h1 span.label{ display:none; } .dock-btn{ padding:6px 9px 5px; } .dock-btn .emoji{ font-size:22px; } }
 
@@ -128,6 +132,30 @@
   .modal-btn.secondary{ background:#cfd3e8; color:var(--ink); }
   .modal-btn:disabled{ opacity:0.45; }
   .modal-note{ font-size:12px; color:#8a8fb0; margin-top:10px; line-height:1.4; }
+
+  .home-btn{ background:var(--sunbeam); color:var(--ink); }
+
+  .home-screen{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:22px; padding:20px; text-align:center; }
+  .home-screen h2{ font-family:'Baloo 2', cursive; font-size:clamp(24px,4.5vw,38px); margin:0; }
+  .home-screen .sub{ font-size:15px; color:#5a5f85; margin-top:-14px; }
+  .home-grid{ display:grid; grid-template-columns:repeat(2,minmax(150px,220px)); gap:16px; }
+  .home-card{ border:none; border-radius:22px; padding:22px 16px; cursor:pointer; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; align-items:center; gap:8px; font-family:'Baloo 2', cursive;
+    transition: transform .1s ease; position:relative; }
+  .home-card:active{ transform:translateY(4px); box-shadow:0 2px 0 rgba(34,38,75,0.12); }
+  .home-card .icon{ font-size:40px; }
+  .home-card .title{ font-size:16px; color:var(--ink); }
+  .home-card .subtitle{ font-size:11px; color:#5a5f85; font-family:'Quicksand'; font-weight:600; }
+  .home-card.sky{ background:#DDEEFB; }
+  .home-card.character{ background:#FFE9C7; }
+  .home-card.disabled{ background:#EDEDF4; opacity:0.65; cursor:default; }
+  .home-card.disabled:active{ transform:none; box-shadow:var(--shadow); }
+  .soon-badge{ position:absolute; top:-8px; right:-8px; background:var(--coral); color:white; font-size:10px;
+    padding:3px 9px; border-radius:999px; font-family:'Baloo 2', cursive; }
+  .home-card.shake{ animation: shake 0.4s; }
+  @keyframes shake{ 0%,100%{transform:translateX(0);} 25%{transform:translateX(-5px);} 75%{transform:translateX(5px);} }
+
+  @media (max-width: 480px){ .home-grid{ grid-template-columns:repeat(2,minmax(120px,1fr)); } }
 </style>
 </head>
 <body>
@@ -140,11 +168,42 @@
         <span class="peer-count" id="roomBadgePeers">just you</span>
         <button class="leave-x" id="leaveRoomBtn" title="Leave room">✕</button>
       </div>
+      <button class="pill-btn home-btn" id="homeBtn">🏠 Home</button>
       <button class="pill-btn together-btn" id="togetherBtn">🧑‍🤝‍🧑 Together</button>
       <button class="pill-btn save-btn" id="saveBtn">💾 Save</button>
     </div>
   </header>
 
+  <div class="home-screen" id="homeScreen">
+    <h2>Hey there! ✨</h2>
+    <div class="sub">What are we creating today?</div>
+    <div class="home-grid">
+      <button class="home-card sky" data-go="sky">
+        <span class="icon">🌤️</span>
+        <span class="title">Sky World</span>
+        <span class="subtitle">Paint your sky</span>
+      </button>
+      <button class="home-card character" data-go="avatar">
+        <span class="icon">🧑</span>
+        <span class="title">My Characters</span>
+        <span class="subtitle">Design up to 3</span>
+      </button>
+      <button class="home-card disabled" data-soon="true">
+        <span class="soon-badge">Soon!</span>
+        <span class="icon">🏠</span>
+        <span class="title">Houses</span>
+        <span class="subtitle">Build & explore</span>
+      </button>
+      <button class="home-card disabled" data-soon="true">
+        <span class="soon-badge">Soon!</span>
+        <span class="icon">🎵</span>
+        <span class="title">Music</span>
+        <span class="subtitle">Make a tune</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="main-view" id="mainView" style="display:none; flex-direction:column; flex:1; min-height:0; gap:8px;">
   <div class="mode-row">
     <button class="mode-tab active" data-mode="sky">🌤️ Sky World</button>
     <button class="mode-tab" data-mode="avatar">🧑 My Character</button>
@@ -200,6 +259,8 @@
         <button class="small-pill surprise-btn" id="surpriseBtn">🎲 Surprise Me</button>
         <button class="small-pill clear-btn" id="resetAvatarBtn">↩️ Reset Character</button>
       </div>
+      <div class="section-label" style="margin-top:2px;">Your Characters</div>
+      <div class="dock" id="characterSlots"></div>
       <div class="tabs" id="avatarTabs">
         <button class="tab-btn active" data-tab="skin">Skin</button>
         <button class="tab-btn" data-tab="hair">Hair</button>
@@ -210,6 +271,7 @@
       </div>
       <div id="avatarDockArea"></div>
     </div>
+  </div>
   </div>
 </div>
 
@@ -696,7 +758,14 @@
   let draggingId = null;
   let dragOffset = {x:0,y:0};
   let groundColor = '#6FBE44';
-  let avatar = defaultAvatar();
+  const avatars = [0,1,2].map(i=>{
+    const a = defaultAvatar();
+    a.hairColor = i % HAIR_COLORS.length;
+    a.outfitColor = (i*2) % OUTFIT_COLORS.length;
+    return a;
+  });
+  let activeAvatarIdx = 0;
+  function curAvatar(){ return avatars[activeAvatarIdx]; }
   let mode = 'sky';
 
   const balloonColors = ['#FF6F59','#4FA8E0','#FFD166','#6FBE44','#B39DDB'];
@@ -785,32 +854,77 @@
   });
 
   // ================= mode switcher =================
+  function setMode(m){
+    mode = m;
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===m));
+    document.getElementById('skyPanel').classList.toggle('active', mode==='sky');
+    document.getElementById('avatarPanel').classList.toggle('active', mode==='avatar');
+    if(mode!=='sky'){ selectedId=null; }
+  }
   document.querySelectorAll('.mode-tab').forEach(tab=>{
-    tab.addEventListener('click',()=>{
-      document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-      tab.classList.add('active');
-      mode = tab.dataset.mode;
-      document.getElementById('skyPanel').classList.toggle('active', mode==='sky');
-      document.getElementById('avatarPanel').classList.toggle('active', mode==='avatar');
-      if(mode!=='sky'){ selectedId=null; }
+    tab.addEventListener('click',()=> setMode(tab.dataset.mode));
+  });
+
+  // ================= home screen =================
+  const homeScreen = document.getElementById('homeScreen');
+  const mainView = document.getElementById('mainView');
+  function showHome(){
+    homeScreen.style.display = 'flex';
+    mainView.style.display = 'none';
+  }
+  function showApp(m){
+    homeScreen.style.display = 'none';
+    mainView.style.display = 'flex';
+    setMode(m);
+    mineRenderer.resize();
+  }
+  document.getElementById('homeBtn').addEventListener('click', showHome);
+  document.querySelectorAll('.home-card').forEach(card=>{
+    card.addEventListener('click', ()=>{
+      if(card.dataset.soon){
+        card.classList.remove('shake'); void card.offsetWidth; card.classList.add('shake');
+        return;
+      }
+      showApp(card.dataset.go);
     });
   });
+  showHome();
 
   // ================= avatar panel wiring =================
   const avatarDockArea = document.getElementById('avatarDockArea');
+  const characterSlotsArea = document.getElementById('characterSlots');
   let avatarTab = 'skin';
   function miniPreview(canvasEl, drawFn){
     const c = canvasEl.getContext('2d'); const dpr = window.devicePixelRatio||1;
     canvasEl.width = 48*dpr; canvasEl.height = 48*dpr; c.setTransform(dpr,0,0,dpr,0,0);
     c.clearRect(0,0,48,48); drawFn(c);
   }
+  function renderCharacterSlots(){
+    characterSlotsArea.innerHTML = '';
+    avatars.forEach((a,i)=>{
+      const btn = document.createElement('button');
+      btn.className = 'slot-btn'+(activeAvatarIdx===i?' active':'');
+      const cvs = document.createElement('canvas'); btn.appendChild(cvs);
+      const star = document.createElement('span'); star.className='slot-star'; star.textContent = activeAvatarIdx===i ? '⭐' : '';
+      btn.appendChild(star);
+      miniPreview(cvs, c=>{
+        drawHead(c,24,28,15,SKIN_TONES[a.skin]);
+        drawHair(c,24,28,15,a.hairStyle,HAIR_COLORS[a.hairColor]);
+        drawEyes(c,24,28,15,a.eyes); drawMouth(c,24,28,15,a.mouth);
+        drawAccessory(c,24,28,15,a.accessory,OUTFIT_COLORS[a.outfitColor]);
+      });
+      btn.addEventListener('click',()=>{ activeAvatarIdx=i; scheduleSync(); renderCharacterSlots(); renderAvatarDock(); });
+      characterSlotsArea.appendChild(btn);
+    });
+  }
   function renderAvatarDock(){
+    const avatar = curAvatar();
     avatarDockArea.innerHTML = '';
     if(avatarTab==='skin'){
       const row = document.createElement('div'); row.className='color-row';
       SKIN_TONES.forEach((c,i)=>{
         const d = document.createElement('div'); d.className='color-dot'+(avatar.skin===i?' active':''); d.style.background=c;
-        d.addEventListener('click',()=>{ avatar.skin=i; scheduleSync(); renderAvatarDock(); }); row.appendChild(d);
+        d.addEventListener('click',()=>{ avatar.skin=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); row.appendChild(d);
       });
       avatarDockArea.appendChild(row);
     } else if(avatarTab==='hair'){
@@ -819,14 +933,14 @@
         const btn = document.createElement('button'); btn.className='swatch-btn'+(avatar.hairStyle===i?' active':'');
         const cvs = document.createElement('canvas'); btn.appendChild(cvs);
         miniPreview(cvs, c=>{ drawHead(c,24,28,15,SKIN_TONES[avatar.skin]); drawHair(c,24,28,15,i,HAIR_COLORS[avatar.hairColor]); });
-        btn.addEventListener('click',()=>{ avatar.hairStyle=i; scheduleSync(); renderAvatarDock(); }); dock.appendChild(btn);
+        btn.addEventListener('click',()=>{ avatar.hairStyle=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); dock.appendChild(btn);
       });
       avatarDockArea.appendChild(dock);
       const label = document.createElement('div'); label.className='section-label'; label.textContent='Hair Color'; avatarDockArea.appendChild(label);
       const row = document.createElement('div'); row.className='color-row';
       HAIR_COLORS.forEach((c,i)=>{
         const d = document.createElement('div'); d.className='color-dot'+(avatar.hairColor===i?' active':''); d.style.background=c;
-        d.addEventListener('click',()=>{ avatar.hairColor=i; scheduleSync(); renderAvatarDock(); }); row.appendChild(d);
+        d.addEventListener('click',()=>{ avatar.hairColor=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); row.appendChild(d);
       });
       avatarDockArea.appendChild(row);
     } else if(avatarTab==='eyes'){
@@ -835,7 +949,7 @@
         const btn = document.createElement('button'); btn.className='swatch-btn'+(avatar.eyes===i?' active':'');
         const cvs = document.createElement('canvas'); btn.appendChild(cvs);
         miniPreview(cvs, c=>{ drawHead(c,24,28,15,SKIN_TONES[avatar.skin]); drawEyes(c,24,28,15,i); });
-        btn.addEventListener('click',()=>{ avatar.eyes=i; scheduleSync(); renderAvatarDock(); }); dock.appendChild(btn);
+        btn.addEventListener('click',()=>{ avatar.eyes=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); dock.appendChild(btn);
       });
       avatarDockArea.appendChild(dock);
     } else if(avatarTab==='mouth'){
@@ -844,7 +958,7 @@
         const btn = document.createElement('button'); btn.className='swatch-btn'+(avatar.mouth===i?' active':'');
         const cvs = document.createElement('canvas'); btn.appendChild(cvs);
         miniPreview(cvs, c=>{ drawHead(c,24,28,15,SKIN_TONES[avatar.skin]); drawMouth(c,24,28,15,i); });
-        btn.addEventListener('click',()=>{ avatar.mouth=i; scheduleSync(); renderAvatarDock(); }); dock.appendChild(btn);
+        btn.addEventListener('click',()=>{ avatar.mouth=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); dock.appendChild(btn);
       });
       avatarDockArea.appendChild(dock);
     } else if(avatarTab==='outfit'){
@@ -853,14 +967,14 @@
         const btn = document.createElement('button'); btn.className='swatch-btn'+(avatar.outfitStyle===i?' active':'');
         const cvs = document.createElement('canvas'); btn.appendChild(cvs);
         miniPreview(cvs, c=>{ drawOutfit(c,24,16,42,28,i,OUTFIT_COLORS[avatar.outfitColor],SKIN_TONES[avatar.skin]); });
-        btn.addEventListener('click',()=>{ avatar.outfitStyle=i; scheduleSync(); renderAvatarDock(); }); dock.appendChild(btn);
+        btn.addEventListener('click',()=>{ avatar.outfitStyle=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); dock.appendChild(btn);
       });
       avatarDockArea.appendChild(dock);
       const label = document.createElement('div'); label.className='section-label'; label.textContent='Outfit Color'; avatarDockArea.appendChild(label);
       const row = document.createElement('div'); row.className='color-row';
       OUTFIT_COLORS.forEach((c,i)=>{
         const d = document.createElement('div'); d.className='color-dot'+(avatar.outfitColor===i?' active':''); d.style.background=c;
-        d.addEventListener('click',()=>{ avatar.outfitColor=i; scheduleSync(); renderAvatarDock(); }); row.appendChild(d);
+        d.addEventListener('click',()=>{ avatar.outfitColor=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); row.appendChild(d);
       });
       avatarDockArea.appendChild(row);
     } else if(avatarTab==='extras'){
@@ -872,11 +986,13 @@
           drawHead(c,24,28,15,SKIN_TONES[avatar.skin]); drawHair(c,24,28,15,avatar.hairStyle,HAIR_COLORS[avatar.hairColor]);
           drawAccessory(c,24,28,15,i,OUTFIT_COLORS[avatar.outfitColor]);
         });
-        btn.addEventListener('click',()=>{ avatar.accessory=i; scheduleSync(); renderAvatarDock(); }); dock.appendChild(btn);
+        btn.addEventListener('click',()=>{ avatar.accessory=i; scheduleSync(); renderAvatarDock(); renderCharacterSlots(); }); dock.appendChild(btn);
       });
       avatarDockArea.appendChild(dock);
     }
+    document.getElementById('sillySwitch').classList.toggle('on', avatar.silly);
   }
+  renderCharacterSlots();
   renderAvatarDock();
   document.getElementById('avatarTabs').addEventListener('click',(e)=>{
     const btn = e.target.closest('.tab-btn'); if(!btn) return;
@@ -884,9 +1000,11 @@
     btn.classList.add('active'); avatarTab = btn.dataset.tab; renderAvatarDock();
   });
   document.getElementById('sillySwitch').addEventListener('click', function(){
+    const avatar = curAvatar();
     avatar.silly = !avatar.silly; this.classList.toggle('on', avatar.silly); scheduleSync();
   });
   document.getElementById('surpriseBtn').addEventListener('click',()=>{
+    const avatar = curAvatar();
     avatar.skin = Math.floor(Math.random()*SKIN_TONES.length);
     avatar.hairStyle = Math.floor(Math.random()*HAIR_STYLES.length);
     avatar.hairColor = Math.floor(Math.random()*HAIR_COLORS.length);
@@ -895,11 +1013,12 @@
     avatar.outfitStyle = Math.floor(Math.random()*OUTFIT_STYLES.length);
     avatar.outfitColor = Math.floor(Math.random()*OUTFIT_COLORS.length);
     avatar.accessory = Math.floor(Math.random()*ACCESSORIES.length);
-    scheduleSync(); renderAvatarDock();
+    scheduleSync(); renderAvatarDock(); renderCharacterSlots();
   });
   document.getElementById('resetAvatarBtn').addEventListener('click',()=>{
-    avatar = defaultAvatar(); document.getElementById('sillySwitch').classList.remove('on');
-    scheduleSync(); renderAvatarDock();
+    avatars[activeAvatarIdx] = defaultAvatar();
+    document.getElementById('sillySwitch').classList.remove('on');
+    scheduleSync(); renderAvatarDock(); renderCharacterSlots();
   });
 
   // ================= multiplayer: Supabase Realtime Presence =================
@@ -925,7 +1044,7 @@
   function scheduleSync(){ clearTimeout(syncTimer); syncTimer = setTimeout(pushMyState, 300); }
   function pushMyState(){
     if(!roomCode || !roomChannel) return;
-    roomChannel.track({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar, lastSeen: Date.now() });
+    roomChannel.track({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), lastSeen: Date.now() });
   }
   function upsertPeerPanel(id, state){
     let entry = peerPanels.get(id);
@@ -1013,7 +1132,7 @@
 
   // ================= master render loop =================
   function loop(){
-    mineRenderer.render({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar }, selectedId);
+    mineRenderer.render({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar: curAvatar() }, selectedId);
     peerPanels.forEach(entry=>{ if(entry.state) entry.renderer.render(entry.state, null); });
     positionToolbar();
     requestAnimationFrame(loop);
@@ -1022,4 +1141,4 @@
 })();
 </script>
 </body>
-</html>
+</html>S
