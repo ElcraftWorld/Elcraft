@@ -128,6 +128,10 @@
         showComingSoon('The Pet Shop');
         break;
 
+      case 'salon':
+        openPage('salon.html');
+        break;
+
       default:
         showComingSoon(label || 'This place');
         break;
