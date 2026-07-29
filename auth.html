@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  />
+
+  <title>Parent Login | ELCraft World</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        linear-gradient(
+          rgba(32, 42, 78, 0.35),
+          rgba(32, 42, 78, 0.55)
+        ),
+        linear-gradient(135deg, #88d9ff, #c99cff, #ffd97d);
+
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px;
+    }
+
+    .auth-card {
+      width: 100%;
+      max-width: 460px;
+      background: rgba(255, 255, 255, 0.96);
+      border: 4px solid white;
+      border-radius: 28px;
+      padding: 30px;
+      box-shadow: 0 18px 45px rgba(32, 42, 78, 0.28);
+    }
+
+    .logo {
+      text-align: center;
+      font-size: 52px;
+      margin-bottom: 6px;
+    }
+
+    h1 {
+      margin: 0;
+      text-align: center;
+      color: #29345f;
+      font-size: 30px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #687095;
+      margin: 8px 0 24px;
+      line-height: 1.5;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      background: #edf0ff;
+      padding: 6px;
+      border-radius: 16px;
+      margin-bottom: 22px;
+    }
+
+    .tab-button {
+      border: none;
+      border-radius: 12px;
+      padding: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      background: transparent;
+      color: #687095;
+    }
+
+    .tab-button.active {
+      background: white;
+      color: #5c48c7;
+      box-shadow: 0 4px 12px rgba(55, 45, 120, 0.12);
+    }
+
+    .form-panel {
+      display: none;
+    }
+
+    .form-panel.active {
+      display: block;
+    }
+
+    label {
+      display: block;
+      margin: 14px 0 6px;
+      color: #303858;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #d8dcf2;
+      border-radius: 14px;
+      font-size: 16px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #846cf2;
+      box-shadow: 0 0 0 4px rgba(132, 108, 242, 0.13);
+    }
+
+    .primary-button {
+      width: 100%;
+      border: none;
+      border-radius: 15px;
+      padding: 14px;
+      margin-top: 20px;
+      background: linear-gradient(135deg, #735cff, #aa70ff);
+      color: white;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(104, 79, 220, 0.28);
+    }
+
+    .primary-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .primary-button:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .message {
+      display: none;
+      margin-top: 18px;
+      padding: 13px;
+      border-radius: 12px;
+      line-height: 1.4;
+      font-weight: bold;
+    }
+
+    .message.success {
+      display: block;
+      background: #e2f8e9;
+      color: #23683b;
+      border: 1px solid #9bd9ad;
+    }
+
+    .message.error {
+      display: block;
+      background: #ffe8e8;
+      color: #9d2929;
+      border: 1px solid #f4aaaa;
+    }
+
+    .message.info {
+      display: block;
+      background: #eaf2ff;
+      color: #315a91;
+      border: 1px solid #a9c7f2;
+    }
+
+    .parent-note {
+      margin-top: 22px;
+      padding: 14px;
+      background: #fff8dc;
+      border-radius: 14px;
+      color: #6d5927;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .home-link {
+      display: block;
+      text-align: center;
+      margin-top: 18px;
+      color: #5c48c7;
+      font-weight: bold;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="auth-card">
+    <div class="logo">🏰</div>
+
+    <h1>ELCraft World</h1>
+
+    <p class="subtitle">
+      Parent account center
+    </p>
+
+    <div class="tabs">
+      <button
+        id="loginTab"
+        class="tab-button active"
+        type="button"
+      >
+        Log In
+      </button>
+
+      <button
+        id="signupTab"
+        class="tab-button"
+        type="button"
+      >
+        Create Account
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <section id="loginPanel" class="form-panel active">
+      <form id="loginForm">
+        <label for="loginEmail">Parent email</label>
+
+        <input
+          id="loginEmail"
+          type="email"
+          autocomplete="email"
+          placeholder="parent@example.com"
+          required
+        />
+
+        <label for="loginPassword">Password</label>
+
+        <input
+          id="loginPassword"
+          type="password"
+          autocomplete="current-password"
+          placeholder="Enter your password"
+          minlength="6"
+          required
+        />
+
+        <button
+          id="loginButton"
+          class="primary-button"
+          type="submit"
+        >
+          Log In
+        </button>
+      </form>
+    </section>
+
+    <!-- SIGNUP FORM -->
+    <section id="signupPanel" class="form-panel">
+      <form id="signupForm">
+        <label for="parentName">Parent name</label>
+
+        <input
+          id="parentName"
+          type="text"
+          autocomplete="name"
+          placeholder="Your name"
+          maxlength="80"
+          required
+        />
+
+        <label for="signupEmail">Parent email</label>
+
+        <input
+          id="signupEmail"
+          type="email"
+          autocomplete="email"
+          placeholder="parent@example.com"
+          required
+        />
+
+        <label for="signupPassword">Create password</label>
+
+        <input
+          id="signupPassword"
+          type="password"
+          autocomplete="new-password"
+          placeholder="At least 6 characters"
+          minlength="6"
+          required
+        />
+
+        <label for="confirmPassword">Confirm password</label>
+
+        <input
+          id="confirmPassword"
+          type="password"
+          autocomplete="new-password"
+          placeholder="Enter the password again"
+          minlength="6"
+          required
+        />
+
+        <button
+          id="signupButton"
+          class="primary-button"
+          type="submit"
+        >
+          Create Parent Account
+        </button>
+      </form>
+    </section>
+
+    <div
+      id="message"
+      class="message"
+      role="status"
+      aria-live="polite"
+    ></div>
+
+    <div class="parent-note">
+      🔒 Parent accounts control child profiles, approvals and family
+      connections. Children should not create accounts by themselves.
+    </div>
+
+    <a class="home-link" href="index.html">
+      ← Return to ELCraft
+    </a>
+  </main>
+
+  <script type="module">
+    import { supabase } from './supabase-client.js';
+
+    const loginTab = document.getElementById('loginTab');
+    const signupTab = document.getElementById('signupTab');
+
+    const loginPanel = document.getElementById('loginPanel');
+    const signupPanel = document.getElementById('signupPanel');
+
+    const loginForm = document.getElementById('loginForm');
+    const signupForm = document.getElementById('signupForm');
+
+    const loginButton = document.getElementById('loginButton');
+    const signupButton = document.getElementById('signupButton');
+
+    const messageBox = document.getElementById('message');
+
+    function showMessage(text, type = 'info') {
+      messageBox.textContent = text;
+      messageBox.className = `message ${type}`;
+    }
+
+    function clearMessage() {
+      messageBox.textContent = '';
+      messageBox.className = 'message';
+    }
+
+    function showLogin() {
+      clearMessage();
+
+      loginTab.classList.add('active');
+      signupTab.classList.remove('active');
+
+      loginPanel.classList.add('active');
+      signupPanel.classList.remove('active');
+    }
+
+    function showSignup() {
+      clearMessage();
+
+      signupTab.classList.add('active');
+      loginTab.classList.remove('active');
+
+      signupPanel.classList.add('active');
+      loginPanel.classList.remove('active');
+    }
+
+    loginTab.addEventListener('click', showLogin);
+    signupTab.addEventListener('click', showSignup);
+
+    loginForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const email =
+        document.getElementById('loginEmail').value.trim();
+
+      const password =
+        document.getElementById('loginPassword').value;
+
+      loginButton.disabled = true;
+      loginButton.textContent = 'Logging in...';
+
+      try {
+        const { data, error } =
+          await supabase.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        if (!data.user) {
+          throw new Error('Unable to log in.');
+        }
+
+        showMessage(
+          'Login successful! Opening ELCraft...',
+          'success'
+        );
+
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 900);
+
+      } catch (error) {
+        console.error('Login error:', error);
+
+        showMessage(
+          error.message || 'Unable to log in. Please try again.',
+          'error'
+        );
+
+      } finally {
+        loginButton.disabled = false;
+        loginButton.textContent = 'Log In';
+      }
+    });
+
+    signupForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      clearMessage();
+
+      const name =
+        document.getElementById('parentName').value.trim();
+
+      const email =
+        document.getElementById('signupEmail').value.trim();
+
+      const password =
+        document.getElementById('signupPassword').value;
+
+      const confirmPassword =
+        document.getElementById('confirmPassword').value;
+
+      if (password !== confirmPassword) {
+        showMessage('The passwords do not match.', 'error');
+        return;
+      }
+
+      signupButton.disabled = true;
+      signupButton.textContent = 'Creating account...';
+
+      try {
+        const { data, error } =
+          await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                name
+              }
+            }
+          });
+
+        if (error) {
+          throw error;
+        }
+
+        if (data.session) {
+          showMessage(
+            'Account created! Opening ELCraft...',
+            'success'
+          );
+
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 900);
+
+          return;
+        }
+
+        showMessage(
+          'Account created! Check your email and click the confirmation link before logging in.',
+          'success'
+        );
+
+        loginForm.reset();
+        signupForm.reset();
+
+      } catch (error) {
+        console.error('Signup error:', error);
+
+        showMessage(
+          error.message || 'Unable to create the account.',
+          'error'
+        );
+
+      } finally {
+        signupButton.disabled = false;
+        signupButton.textContent = 'Create Parent Account';
+      }
+    });
+
+    async function checkExistingSession() {
+      const { data, error } =
+        await supabase.auth.getSession();
+
+      if (error) {
+        console.error('Session check error:', error);
+        return;
+      }
+
+      if (data.session) {
+        showMessage(
+          `You are already logged in as ${data.session.user.email}.`,
+          'info'
+        );
+      }
+    }
+
+    checkExistingSession();
+  </script>
+</body>
+</html>
