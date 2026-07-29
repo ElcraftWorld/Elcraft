@@ -64,6 +64,7 @@
   .mini-btn.grow{ background:var(--sky); }
   .mini-btn.shrink{ background:var(--dusk); }
   .mini-btn.trash{ background:var(--coral); }
+  .mini-btn.enter{ background:var(--meadow); }
 
   .bottom-panel{ background:var(--panel); border-radius:0 22px 22px 22px; box-shadow:var(--shadow); padding:10px 14px 12px; display:flex; flex-direction:column; gap:8px; }
   .panel-view{ display:none; flex-direction:column; gap:8px; }
@@ -183,6 +184,7 @@
         <button class="leave-x" id="leaveRoomBtn" title="Leave room">✕</button>
       </div>
       <button class="pill-btn home-btn" id="homeBtn">🏠 Home</button>
+      <button class="pill-btn together-btn" id="backToCityBtn" style="display:none; background:var(--coral);">🚪 Back to City</button>
       <button class="pill-btn together-btn" id="togetherBtn">🧑‍🤝‍🧑 Together</button>
       <button class="pill-btn save-btn" id="saveBtn">💾 Save</button>
     </div>
@@ -216,7 +218,7 @@
   </div>
 
   <div class="main-view" id="mainView" style="display:none; flex-direction:column; flex:1; min-height:0; gap:8px;">
-  <div class="mode-row">
+  <div class="mode-row" id="mainNav">
     <button class="mode-tab active" data-mode="sky">🌤️ Sky World</button>
     <button class="mode-tab" data-mode="avatar">🧑 My Character</button>
     <button class="mode-tab" data-mode="city">🏘️ My City</button>
@@ -230,6 +232,7 @@
       <div class="sticker-toolbar hidden" id="stickerToolbar">
         <button class="mini-btn shrink" id="shrinkBtn">−</button>
         <button class="mini-btn grow" id="growBtn">+</button>
+        <button class="mini-btn enter" id="enterBtn" style="display:none;" title="Go inside">🚪</button>
         <button class="mini-btn trash" id="trashBtn">✕</button>
       </div>
     </div>
@@ -311,6 +314,42 @@
         <button class="small-pill clear-btn" id="musicClearBtn">🧹 Clear Tune</button>
       </div>
       <div id="musicGrid"></div>
+    </div>
+
+    <div class="panel-view" id="interiorPanel">
+      <div class="lower-row">
+        <div>
+          <div class="section-label">Walls</div>
+          <div class="color-row wall-swatches">
+            <div class="swatch" data-color="#F7EAD1" style="background:#F7EAD1" title="Cream"></div>
+            <div class="swatch" data-color="#DDEEFB" style="background:#DDEEFB" title="Sky"></div>
+            <div class="swatch" data-color="#F6DDEE" style="background:#F6DDEE" title="Blush"></div>
+            <div class="swatch" data-color="#E4F3DC" style="background:#E4F3DC" title="Mint"></div>
+            <div class="swatch" data-color="#EDE3F7" style="background:#EDE3F7" title="Lavender"></div>
+          </div>
+        </div>
+        <div>
+          <div class="section-label">Floor</div>
+          <div class="color-row floor-swatches">
+            <div class="swatch" data-color="#C9A876" style="background:#C9A876" title="Wood"></div>
+            <div class="swatch" data-color="#D9D2C4" style="background:#D9D2C4" title="Tile"></div>
+            <div class="swatch" data-color="#E7C7CE" style="background:#E7C7CE" title="Pink"></div>
+            <div class="swatch" data-color="#BFD9C8" style="background:#BFD9C8" title="Green"></div>
+            <div class="swatch" data-color="#B7C4D9" style="background:#B7C4D9" title="Blue"></div>
+          </div>
+        </div>
+        <div class="dock" id="interiorDock">
+          <button class="dock-btn" data-type="bed"><span class="emoji">🛏️</span>Bed</button>
+          <button class="dock-btn" data-type="rug"><span class="emoji">🟦</span>Rug</button>
+          <button class="dock-btn" data-type="table"><span class="emoji">🪑</span>Table</button>
+          <button class="dock-btn" data-type="windowdeco"><span class="emoji">🪟</span>Window</button>
+          <button class="dock-btn" data-type="plant"><span class="emoji">🪴</span>Plant</button>
+          <button class="dock-btn" data-type="toybox"><span class="emoji">🧸</span>Toy Box</button>
+          <button class="dock-btn" data-type="floorlamp"><span class="emoji">💡</span>Lamp</button>
+          <button class="dock-btn" data-type="picture"><span class="emoji">🖼️</span>Picture</button>
+        </div>
+        <button class="pill-btn clear-btn" id="clearRoomBtn" style="flex-shrink:0;">🧹 Clear Room</button>
+      </div>
     </div>
 
     <div class="panel-view" id="avatarPanel">
@@ -651,11 +690,120 @@
       case 'lamp': drawLamp(ctx,s.x,s.y,size); break;
       case 'car': drawCar(ctx,s.x,s.y,size,s.color||'#4FA8E0'); break;
       case 'fountain': drawFountain(ctx,s.x,s.y,size); break;
+      case 'bed': drawBed(ctx,s.x,s.y,size,s.color||'#FF8FB1'); break;
+      case 'rug': drawRug(ctx,s.x,s.y,size,s.color||'#8ED1FC'); break;
+      case 'table': drawTable(ctx,s.x,s.y,size,s.color||'#B5824A'); break;
+      case 'windowdeco': drawWindowDeco(ctx,s.x,s.y,size); break;
+      case 'plant': drawPlant(ctx,s.x,s.y,size); break;
+      case 'toybox': drawToyBox(ctx,s.x,s.y,size,s.color||'#FFD166'); break;
+      case 'floorlamp': drawFloorLamp(ctx,s.x,s.y,size); break;
+      case 'picture': drawPicture(ctx,s.x,s.y,size,s.color||'#B39DDB'); break;
     }
     if(s.id===selectedId){
       ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle = 'rgba(34,38,75,0.5)'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.arc(s.x,s.y,size*0.72,0,Math.PI*2); ctx.stroke(); ctx.restore();
     }
+  }
+
+  // ================= furniture primitives (for building interiors) =================
+  const BUILDING_TYPES = ['house','cottage','tower','shop'];
+  const FURNITURE_TYPES = ['bed','rug','table','windowdeco','plant','toybox','floorlamp','picture'];
+  const furnitureColors = ['#FF8FB1','#8ED1FC','#B39DDB','#FFD166','#A7D8A0','#FFB8A8'];
+  const WALL_COLORS = ['#F7EAD1','#DDEEFB','#F6DDEE','#E4F3DC','#EDE3F7'];
+  const FLOOR_COLORS = ['#C9A876','#D9D2C4','#E7C7CE','#BFD9C8','#B7C4D9'];
+  function defaultInterior(){ return { furniture: [], wallColor: WALL_COLORS[0], floorColor: FLOOR_COLORS[0] }; }
+
+  function drawBed(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.85, h = size*0.5;
+    ctx.fillStyle = '#F7EAD1'; roundRect(ctx,-w/2,-h,w,h*0.32,h*0.08); ctx.fill();
+    ctx.fillStyle = shade(color,-0.1); roundRect(ctx,-w/2,-h*0.7,w,h*0.7,h*0.12); ctx.fill();
+    const grad = ctx.createLinearGradient(0,-h*0.4,0,0);
+    grad.addColorStop(0, shade(color,0.15)); grad.addColorStop(1, shade(color,-0.05));
+    ctx.fillStyle = grad; roundRect(ctx,-w/2,-h*0.4,w,h*0.4,h*0.1); ctx.fill();
+    ctx.fillStyle = shade(color,-0.35); ctx.fillRect(-w/2-w*0.03,-h,w*0.1,h);
+    ctx.restore();
+  }
+  function drawRug(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const rw = size*0.55, rh = size*0.32;
+    ctx.fillStyle = color; ctx.beginPath(); ctx.ellipse(0,0,rw,rh,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = shade(color,-0.2); ctx.lineWidth = size*0.025;
+    ctx.beginPath(); ctx.ellipse(0,0,rw*0.72,rh*0.72,0,0,Math.PI*2); ctx.stroke();
+    ctx.restore();
+  }
+  function drawTable(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.6, h = size*0.16;
+    ctx.fillStyle = shade(color,-0.3);
+    ctx.fillRect(-w*0.38,-h*0.1,w*0.06,h*1.3); ctx.fillRect(w*0.32,-h*0.1,w*0.06,h*1.3);
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.18)); grad.addColorStop(1, shade(color,-0.05));
+    ctx.fillStyle = grad; roundRect(ctx,-w/2,-h,w,h*0.32,h*0.08); ctx.fill();
+    ctx.restore();
+  }
+  function drawWindowDeco(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.5, h = size*0.6;
+    ctx.fillStyle = '#FFFFFF'; roundRect(ctx,-w/2,-h/2,w,h,size*0.05); ctx.fill();
+    const grad = ctx.createLinearGradient(0,-h/2,0,h/2);
+    grad.addColorStop(0,'#DDEEFB'); grad.addColorStop(1,'#8ED1FC');
+    ctx.fillStyle = grad; ctx.fillRect(-w*0.4,-h*0.4,w*0.8,h*0.8);
+    ctx.strokeStyle = '#FFFFFF'; ctx.lineWidth = size*0.035;
+    ctx.beginPath(); ctx.moveTo(0,-h*0.4); ctx.lineTo(0,h*0.4); ctx.moveTo(-w*0.4,0); ctx.lineTo(w*0.4,0); ctx.stroke();
+    ctx.restore();
+  }
+  function drawPlant(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const potW = size*0.32, potH = size*0.24;
+    ctx.fillStyle = '#E0783C';
+    ctx.beginPath(); ctx.moveTo(-potW/2,0); ctx.lineTo(potW/2,0); ctx.lineTo(potW*0.38,-potH); ctx.lineTo(-potW*0.38,-potH); ctx.closePath(); ctx.fill();
+    const g = ctx.createRadialGradient(-size*0.1,-potH-size*0.2,size*0.05,0,-potH-size*0.15,size*0.35);
+    g.addColorStop(0, shade('#6FBE44',0.2)); g.addColorStop(1, shade('#6FBE44',-0.1));
+    ctx.fillStyle = g;
+    [[-size*0.14,-potH-size*0.18,size*0.16],[size*0.14,-potH-size*0.16,size*0.15],[0,-potH-size*0.32,size*0.18]].forEach(p=>{
+      ctx.beginPath(); ctx.ellipse(p[0],p[1],p[2],p[2]*1.3,0,0,Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+  }
+  function drawToyBox(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.5, h = size*0.34;
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.15)); grad.addColorStop(1, shade(color,-0.1));
+    ctx.fillStyle = grad; roundRect(ctx,-w/2,-h,w,h,size*0.06); ctx.fill();
+    ctx.fillStyle = shade(color,-0.25); ctx.fillRect(-w/2,-h,w,h*0.16);
+    ctx.fillStyle = '#FF6F59'; ctx.beginPath(); ctx.arc(-w*0.15,-h*1.05,size*0.09,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#4FA8E0'; ctx.beginPath(); ctx.arc(w*0.12,-h*1.15,size*0.07,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  function drawFloorLamp(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const poleH = size*0.6;
+    ctx.strokeStyle = '#8a5a3a'; ctx.lineWidth = size*0.04; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-poleH); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,209,102,0.3)';
+    ctx.beginPath(); ctx.arc(0,-poleH*1.05,size*0.22,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFD166';
+    ctx.beginPath();
+    ctx.moveTo(-size*0.15,-poleH*0.95); ctx.lineTo(size*0.15,-poleH*0.95); ctx.lineTo(size*0.1,-poleH*1.2); ctx.lineTo(-size*0.1,-poleH*1.2);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+  function drawPicture(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.42, h = size*0.34;
+    ctx.fillStyle = '#8a5a3a'; roundRect(ctx,-w/2,-h/2,w,h,size*0.03); ctx.fill();
+    ctx.fillStyle = color; roundRect(ctx,-w*0.4,-h*0.4,w*0.8,h*0.8,size*0.02); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,0.7)';
+    ctx.beginPath();
+    for(let i=0;i<5;i++){
+      const ang = -Math.PI/2 + (Math.PI*2/5)*i;
+      const px = Math.cos(ang)*size*0.09, py = Math.sin(ang)*size*0.09;
+      i===0? ctx.moveTo(px,py) : ctx.lineTo(px,py);
+    }
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
   }
 
   // ================= avatar primitives (illustrated, softly shaded) =================
@@ -959,7 +1107,31 @@
     }
     resize();
     new ResizeObserver(resize).observe(canvas);
-    return { resize, render };
+    return { resize, render, ctx };
+  }
+
+  let interiorFrame = 0;
+  function renderInterior(ctx, canvas, interior, avatar, selectedId){
+    const rect = canvas.getBoundingClientRect();
+    if(rect.width===0||rect.height===0) return;
+    interiorFrame++;
+    const wallH = rect.height*0.66;
+    ctx.fillStyle = interior.wallColor; ctx.fillRect(0,0,rect.width,wallH);
+    ctx.fillStyle = interior.floorColor; ctx.fillRect(0,wallH,rect.width,rect.height-wallH);
+    ctx.save(); ctx.globalAlpha=0.15; ctx.strokeStyle='#000'; ctx.lineWidth=1.5;
+    ctx.beginPath(); ctx.moveTo(0,wallH); ctx.lineTo(rect.width,wallH); ctx.stroke();
+    for(let i=1;i<7;i++){ const x=(rect.width/7)*i; ctx.beginPath(); ctx.moveTo(x,wallH); ctx.lineTo(x,rect.height); ctx.stroke(); }
+    ctx.restore();
+
+    interior.furniture.forEach(s=>{
+      if(s.deleted) return;
+      if(s.scale<1) s.scale = Math.min(1, s.scale+0.12);
+      drawSticker(ctx,s,selectedId);
+    });
+
+    const wobble = Math.sin(interiorFrame*0.045)*2.2;
+    const avScale = Math.min(rect.width, rect.height) / 380;
+    drawAvatarFull(ctx, rect.width*0.5, rect.height*0.92, avScale, avatar, wobble);
   }
 
   // ================= "my" world state =================
@@ -969,6 +1141,19 @@
   let draggingId = null;
   let dragOffset = {x:0,y:0};
   let groundColor = '#6FBE44';
+  let insideBuildingId = null;
+  function activeList(){
+    if(insideBuildingId){
+      const b = stickers.find(s=>s.id===insideBuildingId);
+      if(b){ if(!b.interior) b.interior = defaultInterior(); return b.interior.furniture; }
+    }
+    return stickers;
+  }
+  function currentInterior(){
+    const b = stickers.find(s=>s.id===insideBuildingId);
+    if(b){ if(!b.interior) b.interior = defaultInterior(); return b.interior; }
+    return null;
+  }
   let groundStyle = 'hill';
   const avatars = [0,1,2].map(i=>{
     const a = defaultAvatar();
@@ -979,6 +1164,7 @@
   let activeAvatarIdx = 0;
   function curAvatar(){ return avatars[activeAvatarIdx]; }
   let mode = 'sky';
+  let viewMode = 'world';
 
   const balloonColors = ['#FF6F59','#4FA8E0','#FFD166','#6FBE44','#B39DDB'];
   const birdColors = ['#22264B','#6B5B95','#4FA8E0'];
@@ -994,6 +1180,15 @@
 
   function addSticker(type){
     const rect = getRect();
+    const list = activeList();
+    if(insideBuildingId){
+      const size = Math.min(rect.width, rect.height) * 0.15;
+      const x = rect.width*0.5 + (Math.random()-0.5)*rect.width*0.35;
+      const y = rect.height*0.6 + (Math.random()-0.5)*rect.height*0.12;
+      const s = { id: 'f'+(nextId++), type, x, y, size, scale: 0, color: null };
+      if(FURNITURE_TYPES.includes(type)) s.color = furnitureColors[nextId % furnitureColors.length];
+      list.push(s); selectedId = s.id; scheduleSync(); return s;
+    }
     const isCity = CITY_TYPES.includes(type);
     const size = Math.min(rect.width, rect.height) * (isCity ? 0.13 : 0.16);
     const groundH = rect.height*0.16;
@@ -1004,51 +1199,67 @@
     if(type==='balloon') s.color = balloonColors[nextId % balloonColors.length];
     if(type==='bird') s.color = birdColors[nextId % birdColors.length];
     if(type==='butterfly') s.color = butterflyColors[nextId % butterflyColors.length];
-    if(['house','cottage','tower','shop','car'].includes(type)) s.color = buildingColors[nextId % buildingColors.length];
-    stickers.push(s); selectedId = s.id; scheduleSync(); return s;
+    if(['house','cottage','tower','shop','car'].includes(type)){
+      s.color = buildingColors[nextId % buildingColors.length];
+      if(BUILDING_TYPES.includes(type)) s.interior = defaultInterior();
+    }
+    list.push(s); selectedId = s.id; scheduleSync(); return s;
   }
   function hitTest(px,py){
-    for(let i=stickers.length-1;i>=0;i--){
-      const s = stickers[i]; if(s.deleted) continue;
+    const list = activeList();
+    for(let i=list.length-1;i>=0;i--){
+      const s = list[i]; if(s.deleted) continue;
       if(Math.hypot(px-s.x, py-s.y) <= s.size*0.65) return s;
     }
     return null;
   }
   function positionToolbar(){
-    const sel = stickers.find(s=>s.id===selectedId);
-    if(!sel || (mode!=='sky' && mode!=='city')){ toolbar.classList.add('hidden'); return; }
+    const sel = activeList().find(s=>s.id===selectedId);
+    if(!sel || (mode!=='sky' && mode!=='city' && viewMode!=='interior')){ toolbar.classList.add('hidden'); return; }
     toolbar.classList.remove('hidden');
     const topOffset = sel.y - (sel.size*sel.scale*0.72) - 10;
     toolbar.style.left = sel.x + 'px';
     toolbar.style.top = Math.max(30, topOffset) + 'px';
+    const canEnter = viewMode!=='interior' && mode==='city' && BUILDING_TYPES.includes(sel.type);
+    document.getElementById('enterBtn').style.display = canEnter ? 'flex' : 'none';
   }
   function pointerPos(e){ const rect = getRect(); return { x: e.clientX-rect.left, y: e.clientY-rect.top }; }
 
   skyCanvas.addEventListener('pointerdown',(e)=>{
-    if(mode!=='sky' && mode!=='city') return;
+    if(mode!=='sky' && mode!=='city' && viewMode!=='interior') return;
     const p = pointerPos(e); const hit = hitTest(p.x,p.y);
-    if(hit){ selectedId = hit.id; draggingId = hit.id; dragOffset.x = p.x-hit.x; dragOffset.y = p.y-hit.y;
-      stickers = stickers.filter(s=>s.id!==hit.id).concat(hit);
+    if(hit){
+      selectedId = hit.id; draggingId = hit.id; dragOffset.x = p.x-hit.x; dragOffset.y = p.y-hit.y;
+      const list = activeList();
+      const idx = list.findIndex(s=>s.id===hit.id);
+      if(idx>-1){ list.splice(idx,1); list.push(hit); }
     } else { selectedId = null; }
     e.preventDefault();
   });
   skyCanvas.addEventListener('pointermove',(e)=>{
-    if((mode!=='sky' && mode!=='city') || draggingId==null) return;
-    const p = pointerPos(e); const s = stickers.find(s=>s.id===draggingId);
+    if((mode!=='sky' && mode!=='city' && viewMode!=='interior') || draggingId==null) return;
+    const p = pointerPos(e); const s = activeList().find(s=>s.id===draggingId);
     if(s){ s.x = p.x-dragOffset.x; s.y = p.y-dragOffset.y; }
   });
   window.addEventListener('pointerup', ()=>{ if(draggingId!=null) scheduleSync(); draggingId=null; });
 
   document.getElementById('growBtn').addEventListener('click',()=>{
-    const s = stickers.find(s=>s.id===selectedId);
+    const s = activeList().find(s=>s.id===selectedId);
     if(s){ s.size = Math.min(s.size*1.18, getRect().width*0.55); scheduleSync(); }
   });
   document.getElementById('shrinkBtn').addEventListener('click',()=>{
-    const s = stickers.find(s=>s.id===selectedId);
+    const s = activeList().find(s=>s.id===selectedId);
     if(s){ s.size = Math.max(s.size*0.85, 20); scheduleSync(); }
   });
   document.getElementById('trashBtn').addEventListener('click',()=>{
-    stickers = stickers.filter(s=>s.id!==selectedId); selectedId = null; scheduleSync();
+    const list = activeList();
+    const idx = list.findIndex(s=>s.id===selectedId);
+    if(idx>-1) list.splice(idx,1);
+    selectedId = null; scheduleSync();
+  });
+  document.getElementById('enterBtn').addEventListener('click',()=>{
+    if(!selectedId) return;
+    enterBuilding(selectedId);
   });
   document.getElementById('dock').addEventListener('click',(e)=>{
     const btn = e.target.closest('.dock-btn'); if(btn) addSticker(btn.dataset.type);
@@ -1103,10 +1314,31 @@
     tab.addEventListener('click',()=> setMode(tab.dataset.mode));
   });
 
+  function enterBuilding(id){
+    insideBuildingId = id; viewMode = 'interior'; selectedId = null;
+    document.getElementById('mainNav').style.display = 'none';
+    document.getElementById('backToCityBtn').style.display = 'flex';
+    document.getElementById('skyPanel').classList.remove('active');
+    document.getElementById('cityPanel').classList.remove('active');
+    document.getElementById('avatarPanel').classList.remove('active');
+    document.getElementById('musicPanel').classList.remove('active');
+    document.getElementById('interiorPanel').classList.add('active');
+    renderInteriorSwatches();
+  }
+  function exitBuilding(){
+    insideBuildingId = null; viewMode = 'world'; selectedId = null;
+    document.getElementById('mainNav').style.display = 'flex';
+    document.getElementById('backToCityBtn').style.display = 'none';
+    document.getElementById('interiorPanel').classList.remove('active');
+    setMode('city');
+  }
+  document.getElementById('backToCityBtn').addEventListener('click', exitBuilding);
+
   // ================= home screen =================
   const homeScreen = document.getElementById('homeScreen');
   const mainView = document.getElementById('mainView');
   function showHome(){
+    if(viewMode==='interior') exitBuilding();
     homeScreen.style.display = 'flex';
     mainView.style.display = 'none';
   }
@@ -1490,9 +1722,43 @@
   document.getElementById('closeModalBtn').addEventListener('click',()=>{ modalOverlay.classList.remove('visible'); });
   document.getElementById('leaveRoomBtn').addEventListener('click', leaveRoom);
 
+  // ================= interior panel wiring =================
+  function renderInteriorSwatches(){
+    const interior = currentInterior();
+    if(!interior) return;
+    document.querySelectorAll('.wall-swatches .swatch').forEach(el=>{
+      el.classList.toggle('active', el.dataset.color===interior.wallColor);
+    });
+    document.querySelectorAll('.floor-swatches .swatch').forEach(el=>{
+      el.classList.toggle('active', el.dataset.color===interior.floorColor);
+    });
+  }
+  document.querySelector('.wall-swatches').addEventListener('click',(e)=>{
+    const sw = e.target.closest('.swatch'); if(!sw) return;
+    const interior = currentInterior(); if(!interior) return;
+    interior.wallColor = sw.dataset.color; renderInteriorSwatches(); scheduleSync();
+  });
+  document.querySelector('.floor-swatches').addEventListener('click',(e)=>{
+    const sw = e.target.closest('.swatch'); if(!sw) return;
+    const interior = currentInterior(); if(!interior) return;
+    interior.floorColor = sw.dataset.color; renderInteriorSwatches(); scheduleSync();
+  });
+  document.getElementById('interiorDock').addEventListener('click',(e)=>{
+    const btn = e.target.closest('.dock-btn'); if(btn) addSticker(btn.dataset.type);
+  });
+  document.getElementById('clearRoomBtn').addEventListener('click',()=>{
+    const interior = currentInterior(); if(!interior) return;
+    interior.furniture = []; selectedId = null; scheduleSync();
+  });
+
   // ================= master render loop =================
   function loop(){
-    mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), musicPlaying }, selectedId);
+    if(viewMode==='interior' && insideBuildingId){
+      const interior = currentInterior();
+      if(interior) renderInterior(mineRenderer.ctx, skyCanvas, interior, curAvatar(), selectedId);
+    } else {
+      mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), musicPlaying }, selectedId);
+    }
     peerPanels.forEach(entry=>{ if(entry.state) entry.renderer.render(entry.state, null); });
     positionToolbar();
     requestAnimationFrame(loop);
