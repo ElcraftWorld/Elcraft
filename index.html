@@ -4,11 +4,29 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>ELCraft</title>
+
 <style>
-  *{box-sizing:border-box}
-  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#1d5ca8}
-  body{font-family:Arial,Helvetica,sans-serif}
-  button,input{font:inherit}
+  *{
+    box-sizing:border-box;
+  }
+
+  html,
+  body{
+    margin:0;
+    width:100%;
+    height:100%;
+    overflow:hidden;
+    background:#1d5ca8;
+  }
+
+  body{
+    font-family:Arial,Helvetica,sans-serif;
+  }
+
+  button,
+  input{
+    font:inherit;
+  }
 
   .screen{
     position:relative;
@@ -17,7 +35,12 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    background:radial-gradient(circle at 50% 35%,#6dc8f5 0%,#318dde 45%,#184f9d 100%);
+    background:radial-gradient(
+      circle at 50% 35%,
+      #6dc8f5 0%,
+      #318dde 45%,
+      #184f9d 100%
+    );
   }
 
   .frame{
@@ -25,7 +48,8 @@
     width:min(100vw,calc(100vh * 1.5));
     height:min(100vh,calc(100vw / 1.5));
     flex:0 0 auto;
-    background:url('a_bright_colorful_cartoony_3d_game_app_home_scre.png') center/contain no-repeat;
+    background:url('a_bright_colorful_cartoony_3d_game_app_home_scre.png')
+      center/contain no-repeat;
   }
 
   .profile-text{
@@ -41,6 +65,7 @@
     z-index:3;
     pointer-events:none;
   }
+
   .profile-text strong{
     font-size:clamp(10px,1.45vw,24px);
     line-height:1;
@@ -48,6 +73,7 @@
     overflow:hidden;
     text-overflow:ellipsis;
   }
+
   .profile-text span{
     margin-top:4px;
     font-size:clamp(7px,.8vw,13px);
@@ -64,6 +90,7 @@
     pointer-events:none;
     color:#5f43a4;
   }
+
   .greeting h1{
     margin:0;
     font-size:clamp(18px,3vw,50px);
@@ -71,6 +98,7 @@
     font-weight:900;
     white-space:nowrap;
   }
+
   .greeting p{
     margin:10px 0 0;
     width:92%;
@@ -113,6 +141,7 @@
     pointer-events:none;
     filter:drop-shadow(0 12px 10px rgba(24,30,74,.2));
   }
+
   .profile-avatar{
     position:absolute;
     left:72.25%;
@@ -134,17 +163,75 @@
     border-radius:24px;
     z-index:5;
   }
-  .hotspot:focus-visible{outline:5px solid rgba(255,255,255,.95);outline-offset:2px}
 
-  .profiles{left:86.5%;top:3.2%;width:6.5%;height:7.2%}
-  .settings{left:94.1%;top:2.8%;width:4.3%;height:7.5%;border-radius:50%}
-  .gift{left:.7%;top:86.2%;width:6.5%;height:11.2%}
-  .sky{left:8.7%;top:75.1%;width:15%;height:22%}
-  .characters{left:24.9%;top:75.1%;width:15%;height:22%}
-  .city{left:41.1%;top:75.1%;width:15%;height:22%}
-  .music{left:57.2%;top:75.1%;width:15%;height:22%}
-  .together{left:73.5%;top:75.1%;width:15%;height:22%}
-  .map{left:91.6%;top:86.2%;width:6.5%;height:11.2%}
+  .hotspot:focus-visible{
+    outline:5px solid rgba(255,255,255,.95);
+    outline-offset:2px;
+  }
+
+  .profiles{
+    left:86.5%;
+    top:3.2%;
+    width:6.5%;
+    height:7.2%;
+  }
+
+  .settings{
+    left:94.1%;
+    top:2.8%;
+    width:4.3%;
+    height:7.5%;
+    border-radius:50%;
+  }
+
+  .gift{
+    left:.7%;
+    top:86.2%;
+    width:6.5%;
+    height:11.2%;
+  }
+
+  .sky{
+    left:8.7%;
+    top:75.1%;
+    width:15%;
+    height:22%;
+  }
+
+  .characters{
+    left:24.9%;
+    top:75.1%;
+    width:15%;
+    height:22%;
+  }
+
+  .city{
+    left:41.1%;
+    top:75.1%;
+    width:15%;
+    height:22%;
+  }
+
+  .music{
+    left:57.2%;
+    top:75.1%;
+    width:15%;
+    height:22%;
+  }
+
+  .together{
+    left:73.5%;
+    top:75.1%;
+    width:15%;
+    height:22%;
+  }
+
+  .map{
+    left:91.6%;
+    top:86.2%;
+    width:6.5%;
+    height:11.2%;
+  }
 
   .name-modal{
     position:fixed;
@@ -157,7 +244,11 @@
     background:rgba(27,31,78,.58);
     backdrop-filter:blur(7px);
   }
-  .name-modal.open{display:flex}
+
+  .name-modal.open{
+    display:flex;
+  }
+
   .name-card{
     width:min(520px,92vw);
     border:3px solid rgba(255,255,255,.95);
@@ -167,8 +258,19 @@
     padding:28px;
     text-align:center;
   }
-  .name-card h1{margin:0;color:#6546ad;font-size:clamp(30px,6vw,48px)}
-  .name-card p{color:#273769;font-size:18px;font-weight:700}
+
+  .name-card h1{
+    margin:0;
+    color:#6546ad;
+    font-size:clamp(30px,6vw,48px);
+  }
+
+  .name-card p{
+    color:#273769;
+    font-size:18px;
+    font-weight:700;
+  }
+
   .name-card input{
     width:100%;
     border:2px solid #d9caef;
@@ -179,6 +281,7 @@
     font-size:20px;
     text-align:center;
   }
+
   .name-card button{
     width:100%;
     margin-top:14px;
@@ -192,7 +295,13 @@
     cursor:pointer;
     box-shadow:0 6px 0 #4c8f1e;
   }
-  .error{min-height:20px;margin-top:12px;color:#b13e55;font-weight:700}
+
+  .error{
+    min-height:20px;
+    margin-top:12px;
+    color:#b13e55;
+    font-weight:700;
+  }
 
   .toast{
     position:fixed;
@@ -208,68 +317,191 @@
     transition:.25s ease;
     z-index:30;
   }
-  .toast.show{transform:translateX(-50%) translateY(0)}
+
+  .toast.show{
+    transform:translateX(-50%) translateY(0);
+  }
 </style>
 </head>
+
 <body>
+
 <main class="screen">
+
   <div class="frame" aria-label="ELCraft Home World">
+
     <div class="profile-text">
       <strong id="profileName">Player</strong>
       <span>Level 1</span>
     </div>
 
     <div class="greeting">
-      <h1>Hi <span id="greetingName">Player</span>! ✨</h1>
-      <p>Ready to create something amazing today?</p>
+      <h1>
+        Hi <span id="greetingName">Player</span>! ✨
+      </h1>
+
+      <p>
+        Ready to create something amazing today?
+      </p>
     </div>
 
-    <div class="owner">🔒 This world belongs to&nbsp;<span id="ownerName">Player</span></div>
+    <div class="owner">
+      🔒 This world belongs to&nbsp;<span id="ownerName">Player</span>
+    </div>
 
-    <img id="profileAvatar" class="profile-avatar" alt="">
-    <img id="sceneAvatar" class="scene-avatar" alt="Player avatar">
+    <img
+      id="profileAvatar"
+      class="profile-avatar"
+      alt="Player profile avatar"
+    >
 
-    <button class="hotspot profiles" data-label="Profiles" aria-label="Profiles"></button>
-    <button class="hotspot settings" data-label="Settings" aria-label="Settings"></button>
-    <button class="hotspot gift" data-label="Daily Gift" aria-label="Daily Gift"></button>
-    <button class="hotspot sky" data-label="Sky World" aria-label="Sky World"></button>
-    <button class="hotspot characters" data-label="My Characters" aria-label="My Characters"></button>
-    <button class="hotspot city" data-label="My City" aria-label="My City"></button>
-    <button class="hotspot music" data-label="Music" aria-label="Music"></button>
-    <button class="hotspot together" data-label="Together" aria-label="Together"></button>
-    <button class="hotspot map" data-label="Map" aria-label="Map"></button>
+    <img
+      id="sceneAvatar"
+      class="scene-avatar"
+      alt="Player avatar"
+    >
+
+    <button
+      class="hotspot profiles"
+      data-label="Profiles"
+      aria-label="Profiles">
+    </button>
+
+    <button
+      class="hotspot settings"
+      data-label="Settings"
+      aria-label="Settings">
+    </button>
+
+    <button
+      class="hotspot gift"
+      data-label="Daily Gift"
+      aria-label="Daily Gift">
+    </button>
+
+    <button
+      class="hotspot sky"
+      data-label="Sky World"
+      aria-label="Sky World">
+    </button>
+
+    <button
+      class="hotspot characters"
+      data-label="My Characters"
+      aria-label="My Characters">
+    </button>
+
+    <button
+      class="hotspot city"
+      data-label="My City"
+      aria-label="My City">
+    </button>
+
+    <button
+      class="hotspot music"
+      data-label="Music"
+      aria-label="Music">
+    </button>
+
+    <button
+      class="hotspot together"
+      data-label="Together"
+      aria-label="Together">
+    </button>
+
+    <button
+      class="hotspot map"
+      data-label="Map"
+      aria-label="Map">
+    </button>
+
   </div>
 
-  <div class="toast" id="toast" role="status"></div>
+  <div
+    class="toast"
+    id="toast"
+    role="status">
+  </div>
+
 </main>
 
-<div class="name-modal" id="nameModal" role="dialog" aria-modal="true" aria-labelledby="nameTitle">
+<div
+  class="name-modal"
+  id="nameModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="nameTitle">
+
   <section class="name-card">
-    <h1 id="nameTitle">Welcome to ELCraft! ✨</h1>
-    <p>What should we call you in your world?</p>
-    <input id="nameInput" maxlength="20" autocomplete="given-name" placeholder="Type your first name">
-    <button id="saveName" type="button">Enter My World</button>
-    <div class="error" id="nameError" aria-live="polite"></div>
+
+    <h1 id="nameTitle">
+      Welcome to ELCraft! ✨
+    </h1>
+
+    <p>
+      What should we call you in your world?
+    </p>
+
+    <input
+      id="nameInput"
+      maxlength="20"
+      autocomplete="given-name"
+      placeholder="Type your first name">
+
+    <button
+      id="saveName"
+      type="button">
+      Enter My World
+    </button>
+
+    <div
+      class="error"
+      id="nameError"
+      aria-live="polite">
+    </div>
+
   </section>
+
 </div>
 
 <script>
 (() => {
+
   const NAME_KEY = 'elcraft_child_name';
   const AVATAR_KEY = 'elcraft_avatar_image';
 
-  const profileName = document.getElementById('profileName');
-  const greetingName = document.getElementById('greetingName');
-  const ownerName = document.getElementById('ownerName');
-  const profileAvatar = document.getElementById('profileAvatar');
-  const sceneAvatar = document.getElementById('sceneAvatar');
-  const modal = document.getElementById('nameModal');
-  const input = document.getElementById('nameInput');
-  const error = document.getElementById('nameError');
-  const toast = document.getElementById('toast');
+  const profileName =
+    document.getElementById('profileName');
+
+  const greetingName =
+    document.getElementById('greetingName');
+
+  const ownerName =
+    document.getElementById('ownerName');
+
+  const profileAvatar =
+    document.getElementById('profileAvatar');
+
+  const sceneAvatar =
+    document.getElementById('sceneAvatar');
+
+  const modal =
+    document.getElementById('nameModal');
+
+  const input =
+    document.getElementById('nameInput');
+
+  const error =
+    document.getElementById('nameError');
+
+  const toast =
+    document.getElementById('toast');
 
   function cleanName(value) {
-    return value.trim().replace(/\s+/g,' ').slice(0,20);
+    return value
+      .trim()
+      .replace(/\s+/g,' ')
+      .slice(0,20);
   }
 
   function applyName(name) {
@@ -279,32 +511,69 @@
   }
 
   function applyAvatar() {
-    const avatar = localStorage.getItem(AVATAR_KEY);
-    if (!avatar) return;
+    const avatar =
+      localStorage.getItem(AVATAR_KEY);
+
+    if (!avatar) {
+      return;
+    }
+
     profileAvatar.src = avatar;
     sceneAvatar.src = avatar;
+
     profileAvatar.style.display = 'block';
     sceneAvatar.style.display = 'block';
   }
 
   function openNamePrompt() {
     modal.classList.add('open');
-    setTimeout(() => input.focus(),100);
+
+    setTimeout(() => {
+      input.focus();
+    },100);
   }
 
   function saveName() {
-    const name = cleanName(input.value);
+    const name =
+      cleanName(input.value);
+
     if (!name) {
-      error.textContent = 'Please enter a name.';
+      error.textContent =
+        'Please enter a name.';
+
       input.focus();
       return;
     }
+
     localStorage.setItem(NAME_KEY,name);
+
     applyName(name);
+
     modal.classList.remove('open');
   }
 
-  const savedName = cleanName(localStorage.getItem(NAME_KEY) || '');
+  function showComingSoon(label) {
+    const name =
+      localStorage.getItem(NAME_KEY) || 'Player';
+
+    toast.textContent =
+      label + ' is coming soon for ' + name + '!';
+
+    toast.classList.add('show');
+
+    clearTimeout(window.__toastTimer);
+
+    window.__toastTimer =
+      setTimeout(() => {
+        toast.classList.remove('show');
+      },1400);
+  }
+
+  const savedName =
+    cleanName(
+      localStorage.getItem(NAME_KEY) || ''
+    );
+
   if (savedName) {
     applyName(savedName);
   } else {
@@ -313,39 +582,66 @@
 
   applyAvatar();
 
-  document.getElementById('saveName').addEventListener('click',saveName);
-  input.addEventListener('keydown',e => {
-    if (e.key === 'Enter') saveName();
+  document
+    .getElementById('saveName')
+    .addEventListener('click',saveName);
+
+  input.addEventListener('keydown',event => {
+    if (event.key === 'Enter') {
+      saveName();
+    }
   });
 
-  document.querySelector('.profiles').addEventListener('click',() => {
-    input.value = localStorage.getItem(NAME_KEY) || '';
-    error.textContent = '';
-    openNamePrompt();
-  });
+  document
+    .querySelector('.profiles')
+    .addEventListener('click',() => {
 
-  // Open the working game pages.
-  document.querySelector('.sky').addEventListener('click',() => {
-    window.location.href = 'sky-world.html';
-  });
+      input.value =
+        localStorage.getItem(NAME_KEY) || '';
 
-  document.querySelector('.characters').addEventListener('click',() => {
-    window.location.href = 'my-character.html';
-  });
+      error.textContent = '';
 
-  // The remaining worlds are not built yet, so they show a friendly message.
-  document.querySelectorAll(
-    '.hotspot:not(.profiles):not(.sky):not(.characters)'
-  ).forEach(btn => {
-    btn.addEventListener('click',() => {
-      const name = localStorage.getItem(NAME_KEY) || 'Player';
-      toast.textContent = btn.dataset.label + ' is coming soon for ' + name + '!';
-      toast.classList.add('show');
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => toast.classList.remove('show'),1400);
+      openNamePrompt();
     });
-  });
+
+  document
+    .querySelector('.sky')
+    .addEventListener('click',() => {
+
+      window.location.href =
+        'sky-world.html';
+    });
+
+  document
+    .querySelector('.characters')
+    .addEventListener('click',() => {
+
+      window.location.href =
+        'my-character.html';
+    });
+
+  document
+    .querySelector('.city')
+    .addEventListener('click',() => {
+
+      window.location.href =
+        'my-city.html';
+    });
+
+  document
+    .querySelectorAll(
+      '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city)'
+    )
+    .forEach(button => {
+
+      button.addEventListener('click',() => {
+        showComingSoon(button.dataset.label);
+      });
+
+    });
+
 })();
 </script>
+
 </body>
 </html>
