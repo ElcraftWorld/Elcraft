@@ -47,7 +47,7 @@ button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
   text-shadow:-2px -2px 0 #6e3ca8,2px -2px 0 #6e3ca8,-2px 2px 0 #6e3ca8,2px 2px 0 #6e3ca8,0 5px 0 #43277a
 }
 .stat{border-radius:999px;padding:9px 12px;background:#fff5c7;font-weight:1000;color:#5d4384}
-main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px}
+main{position:relative;z-index:2;width:min(1220px,100%);margin:auto;padding:16px}
 .hero{
   display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;
   padding:20px;border-radius:30px;background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(238,232,255,.96));
@@ -58,24 +58,8 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
 .hero p{margin:7px 0 0;color:#6e7898;font-weight:900}
 .day-badge{
   padding:14px;border-radius:22px;background:linear-gradient(#7661d9,#553ba4);color:#fff;
-  font-weight:1000;text-align:center;min-width:145px
+  font-weight:1000;text-align:center;min-width:155px
 }
-.lesson-map{
-  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:15px
-}
-.card{
-  position:relative;border:0;border-radius:25px;padding:18px;text-align:left;color:#fff;
-  min-height:165px;box-shadow:0 8px 0 rgba(37,48,91,.24);transition:.18s ease
-}
-.card:hover{transform:translateY(-3px)}
-.card:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(37,48,91,.24)}
-.card.done:after{content:"✅";position:absolute;right:12px;top:10px;font-size:30px}
-.card .icon{font-size:50px;display:block}
-.card strong{display:block;font-size:22px;margin-top:8px}
-.card small{display:block;margin-top:5px;font-weight:900;opacity:.94}
-.card.story{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
-.card.words{background:linear-gradient(135deg,#de668f,#ef8b6e)}
-.card.quiz{background:linear-gradient(135deg,#2d85c6,#4eb8de)}
 .panel{
   margin-top:15px;border:3px solid #fff;border-radius:28px;background:rgba(255,255,255,.96);
   box-shadow:var(--shadow);overflow:hidden
@@ -86,16 +70,37 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
 }
 .panel-head h2{margin:0;color:#5a399e}
 .panel-body{padding:18px}
-.progress{height:18px;border-radius:999px;background:#e8e3f4;overflow:hidden}
-.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd64d,#76d653);transition:.45s}
-.progress-text{margin-top:8px;font-weight:1000;color:#68749a;text-align:center}
+.library{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.book-card{
+  position:relative;border:0;border-radius:24px;padding:18px;text-align:left;color:#fff;
+  min-height:190px;box-shadow:0 8px 0 rgba(37,48,91,.24);transition:.18s ease;overflow:hidden
+}
+.book-card:hover{transform:translateY(-3px)}
+.book-card:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(37,48,91,.24)}
+.book-card .emoji{font-size:52px;display:block}
+.book-card strong{display:block;font-size:22px;margin-top:8px}
+.book-card small{display:block;margin-top:5px;font-weight:900;opacity:.94}
+.book-card .ribbon{
+  position:absolute;right:-34px;top:16px;transform:rotate(36deg);
+  width:130px;text-align:center;padding:5px;background:#ffd64d;color:#5b4384;font-size:11px;font-weight:1000
+}
+.book-card .status{
+  position:absolute;left:14px;bottom:12px;border-radius:999px;padding:6px 9px;
+  background:rgba(255,255,255,.9);color:#58418f;font-weight:1000;font-size:12px
+}
+.c1{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
+.c2{background:linear-gradient(135deg,#df668d,#ee8c6d)}
+.c3{background:linear-gradient(135deg,#2f85c7,#4db7dd)}
+.c4{background:linear-gradient(135deg,#2d9d79,#60c86a)}
+.c5{background:linear-gradient(135deg,#d38b30,#e4ba48)}
+.c6{background:linear-gradient(135deg,#8b4aba,#d35ca3)}
 .stage{
   position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:16px;
   background:rgba(18,29,71,.62);backdrop-filter:blur(8px)
 }
 .stage.show{display:flex}
 .stage-card{
-  width:min(720px,100%);max-height:92vh;overflow:auto;border-radius:30px;padding:22px;background:#fff;
+  width:min(760px,100%);max-height:92vh;overflow:auto;border-radius:30px;padding:22px;background:#fff;
   border:4px solid #fff;box-shadow:0 28px 80px rgba(16,25,64,.4)
 }
 .stage-top{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -106,24 +111,31 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
   box-shadow:inset 0 0 0 2px rgba(255,255,255,.8)
 }
 .book h3{margin-top:0;color:#7457a8;font-size:27px;text-align:center}
-.story-text{font-size:22px;line-height:1.65;font-weight:900;color:#35416b}
-.read-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:15px}
-.action{
-  border:0;border-radius:16px;padding:13px 17px;font-weight:1000
+.story-text{font-size:21px;line-height:1.68;font-weight:900;color:#35416b}
+.vocab{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:15px;justify-content:center
 }
+.vocab button{
+  border:2px solid #ded7f2;border-radius:999px;padding:9px 12px;background:#f4f0ff;color:#5e4695;font-weight:1000
+}
+.read-controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:15px}
+.action{border:0;border-radius:16px;padding:13px 17px;font-weight:1000}
 .primary{background:linear-gradient(#8bd84d,#5bad2d);color:#fff;box-shadow:0 5px 0 #438b1d}
 .secondary{background:#eee8ff;color:#5d4397}
-.word-grid,.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
-.word,.answer{
+.answer-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:18px}
+.answer{
   border:3px solid #e2dcf3;border-radius:18px;padding:17px;background:#faf9ff;color:#4e3a86;
-  font-weight:1000;font-size:19px
+  font-weight:1000;font-size:18px
 }
-.word.selected,.answer.correct{background:#ecffe5;border-color:#80cf63}
+.answer.correct{background:#ecffe5;border-color:#80cf63}
 .answer.wrong{background:#ffe9ea;border-color:#ef8b93}
-.prompt{text-align:center;font-size:25px;font-weight:1000;color:#51407f;margin:18px 0 8px}
-.big-word{text-align:center;font-size:54px;font-weight:1000;color:#6d4bc2;letter-spacing:2px}
-.footer-actions{display:flex;gap:10px;margin-top:17px}
-.footer-actions button{flex:1}
+.prompt{text-align:center;font-size:24px;font-weight:1000;color:#51407f;margin:18px 0 8px}
+.reward-note{
+  margin-top:12px;padding:12px;border-radius:16px;background:#fff7d2;color:#735698;font-weight:1000;text-align:center
+}
+.progress{height:18px;border-radius:999px;background:#e8e3f4;overflow:hidden}
+.progress span{display:block;height:100%;width:0;background:linear-gradient(90deg,#ffd64d,#76d653);transition:.45s}
+.progress-text{margin-top:8px;font-weight:1000;color:#68749a;text-align:center}
 .toast{
   position:fixed;left:50%;bottom:24px;z-index:90;transform:translateX(-50%) translateY(140px);
   padding:13px 19px;border-radius:999px;background:#13245c;color:#fff;font-weight:1000;
@@ -133,19 +145,21 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
 .confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
 .confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
 @keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
-@media(max-width:760px){
-  .hero{grid-template-columns:auto 1fr}.day-badge{grid-column:1/-1}.lesson-map{grid-template-columns:1fr}
-  .stats .xp{display:none}.word-grid,.answer-grid{grid-template-columns:1fr}
+@media(max-width:820px){
+  .hero{grid-template-columns:auto 1fr}.day-badge{grid-column:1/-1}.library{grid-template-columns:repeat(2,1fr)}
+  .stats .xp{display:none}
 }
-@media(max-width:520px){
+@media(max-width:560px){
   main{padding:8px}.teacher{font-size:64px}.topbar{padding:8px}.sound{display:none}
-  .hero{padding:15px;border-radius:23px}.stage-card{padding:16px}.story-text{font-size:19px}
+  .hero{padding:15px;border-radius:23px}.stage-card{padding:16px}.story-text{font-size:18px}
+  .library,.answer-grid{grid-template-columns:1fr}
 }
 </style>
 </head>
 <body>
 <div class="app">
   <div class="cloud one">☁️</div><div class="cloud two">☁️</div>
+
   <header class="topbar">
     <div class="left">
       <button class="back" id="backBtn">← Academy</button>
@@ -163,64 +177,60 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
       <div class="teacher">🦉</div>
       <div>
         <h1 id="hello">Hello, Reader!</h1>
-        <p>Mrs. Owl has three reading adventures ready for you today.</p>
+        <p>Choose any book. You may reread stories whenever you like.</p>
       </div>
-      <div class="day-badge">📚 Daily Reading<br><span id="dayCount">0 / 3</span></div>
-    </section>
-
-    <section class="lesson-map">
-      <button class="card story" data-part="story">
-        <span class="icon">📖</span><strong>Read a Story</strong><small>The Little Seed</small>
-      </button>
-      <button class="card words" data-part="words">
-        <span class="icon">🔤</span><strong>Word Builder</strong><small>Find words from the story</small>
-      </button>
-      <button class="card quiz" data-part="quiz">
-        <span class="icon">💡</span><strong>Story Question</strong><small>Show what you remember</small>
-      </button>
+      <div class="day-badge">📚 Today's Book<br><span id="dailyTitle">Loading…</span></div>
     </section>
 
     <section class="panel">
-      <div class="panel-head"><h2>🌟 Today's Reading Progress</h2><strong id="rewardLabel">Complete all 3</strong></div>
+      <div class="panel-head">
+        <h2>✨ Mrs. Owl's Daily Story</h2>
+        <strong>New story each day</strong>
+      </div>
+      <div class="panel-body">
+        <div class="library" id="dailyLibrary"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head">
+        <h2>📚 My Story Shelf</h2>
+        <strong>Read or reread anytime</strong>
+      </div>
+      <div class="panel-body">
+        <div class="library" id="storyLibrary"></div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-head"><h2>🌟 Reading Progress</h2><strong id="progressLabel">0 stories completed</strong></div>
       <div class="panel-body">
         <div class="progress"><span id="bar"></span></div>
-        <div class="progress-text" id="progressText">0 of 3 reading activities complete</div>
+        <div class="progress-text" id="progressText">Every finished story grows your reading passport.</div>
       </div>
     </section>
   </main>
 
-  <div class="stage" id="storyStage">
+  <div class="stage" id="readerStage">
     <div class="stage-card">
-      <div class="stage-top"><h2>📖 The Little Seed</h2><button class="close" data-close>✕ Close</button></div>
+      <div class="stage-top"><h2 id="stageTitle">📖 Story</h2><button class="close" id="closeStage">✕ Close</button></div>
       <div class="book">
-        <h3>The Little Seed</h3>
-        <div class="story-text" id="storyText">
-          A little seed rested in the soft brown soil.<br><br>
-          The warm sun shined above it. Gentle rain fell from the sky.<br><br>
-          Soon, the seed grew tiny roots. Then a green sprout reached up toward the sun.<br><br>
-          Day by day, the sprout grew taller. At last, it became a bright yellow flower.
-        </div>
+        <h3 id="bookTitle"></h3>
+        <div class="story-text" id="storyText"></div>
+        <div class="vocab" id="vocabButtons"></div>
       </div>
       <div class="read-controls">
         <button class="action secondary" id="readAloud">🔊 Read Aloud</button>
-        <button class="action primary" id="finishStory">I Finished Reading</button>
+        <button class="action primary" id="storyDone">I Finished Reading</button>
       </div>
-    </div>
-  </div>
-
-  <div class="stage" id="wordsStage">
-    <div class="stage-card">
-      <div class="stage-top"><h2>🔤 Word Builder</h2><button class="close" data-close>✕ Close</button></div>
-      <div class="prompt">Tap the three words that were in the story.</div>
-      <div class="word-grid" id="wordGrid"></div>
-      <div class="footer-actions"><button class="action primary" id="checkWords">Check My Words</button></div>
+      <div class="reward-note" id="rewardNote"></div>
     </div>
   </div>
 
   <div class="stage" id="quizStage">
     <div class="stage-card">
-      <div class="stage-top"><h2>💡 Story Question</h2><button class="close" data-close>✕ Close</button></div>
-      <div class="prompt">What did the little seed become?</div>
+      <div class="stage-top"><h2>💡 Story Question</h2><button class="close" id="closeQuiz">✕ Close</button></div>
+      <div class="prompt" id="questionText"></div>
       <div class="answer-grid" id="answerGrid"></div>
     </div>
   </div>
@@ -235,22 +245,106 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
   const COINS_KEY='elcraft_coins';
   const PROFILE_KEY='elcraft_profile_v1';
   const SCHOOL_KEY='elcraft_school_v1';
-  const READING_KEY='elcraft_reading_v1';
+  const READING_KEY='elcraft_reading_v2';
 
   const childName=localStorage.getItem(NAME_KEY)||'Reader';
   const today=new Date().toLocaleDateString('en-CA');
   let soundOn=true;
+  let activeStory=null;
+
+  const stories=[
+    {
+      id:'little-seed',emoji:'🌱',title:'The Little Seed',level:1,className:'c1',
+      text:[
+        'A little seed rested in the soft brown soil.',
+        'The warm sun shined above it. Gentle rain fell from the sky.',
+        'Soon, the seed grew tiny roots. Then a green sprout reached up toward the sun.',
+        'Day by day, the sprout grew taller. At last, it became a bright yellow flower.'
+      ],
+      vocab:{seed:'A small part of a plant that can grow into a new plant.',sprout:'A young plant just beginning to grow.',soil:'The earth where plants grow.'},
+      question:'What did the little seed become?',
+      answers:['A yellow flower','A blue boat','A little bird','A red house'],
+      correct:0
+    },
+    {
+      id:'bear-picnic',emoji:'🐻',title:"Bear's Picnic",level:1,className:'c2',
+      text:[
+        'Bear packed apples, bread, and a red blanket for a picnic.',
+        'He walked to a shady tree beside the pond.',
+        'Soon, Rabbit and Fox came to join him.',
+        'They shared their food, told funny stories, and watched the ducks swim.'
+      ],
+      vocab:{picnic:'A meal eaten outside.',shady:'Protected from bright sunlight.',shared:'Gave some to others.'},
+      question:'Where did Bear have his picnic?',
+      answers:['Beside the pond','On the moon','Inside a train','Under the ocean'],
+      correct:0
+    },
+    {
+      id:'space-trip',emoji:'🚀',title:'Trip to Space',level:1,className:'c3',
+      text:[
+        'Maya climbed into a silver rocket and fastened her seat belt.',
+        'The rocket roared and lifted high above the clouds.',
+        'Through the window, Maya saw the blue Earth and the glowing moon.',
+        'She waved to the stars before flying safely home.'
+      ],
+      vocab:{rocket:'A vehicle that travels into space.',Earth:'The planet where we live.',glowing:'Shining with light.'},
+      question:'What did Maya ride?',
+      answers:['A rocket','A bicycle','A sailboat','A school bus'],
+      correct:0
+    },
+    {
+      id:'dino-day',emoji:'🦕',title:'Dino Discovery',level:1,className:'c4',
+      text:[
+        'Leo found a large footprint beside the forest trail.',
+        'He followed the prints past tall ferns and smooth stones.',
+        'Behind a hill stood a gentle dinosaur eating green leaves.',
+        'Leo stayed quiet, drew a picture, and hurried home to tell his family.'
+      ],
+      vocab:{footprint:'A mark left by a foot.',fern:'A green plant with many small leaves.',gentle:'Calm and kind.'},
+      question:'What was the dinosaur eating?',
+      answers:['Green leaves','Ice cream','A sandwich','Purple socks'],
+      correct:0
+    },
+    {
+      id:'ocean-rescue',emoji:'🐬',title:'Ocean Rescue',level:1,className:'c5',
+      text:[
+        'Nia sailed across the bright blue water with her father.',
+        'They heard a splash and saw a young dolphin tangled in a loose rope.',
+        'Nia held the boat steady while her father carefully freed the dolphin.',
+        'The dolphin jumped high into the air as if to say thank you.'
+      ],
+      vocab:{tangled:'Twisted or caught together.',steady:'Still and balanced.',freed:'Let go or released.'},
+      question:'What animal did Nia help?',
+      answers:['A dolphin','A tiger','A chicken','A horse'],
+      correct:0
+    },
+    {
+      id:'castle-mystery',emoji:'🏰',title:'The Castle Mystery',level:1,className:'c6',
+      text:[
+        'Ella heard a tiny bell ring inside the old castle library.',
+        'She followed the sound behind a row of dusty books.',
+        'There she found a hidden door and a sleepy golden cat.',
+        'The cat wore the missing royal bell on its blue collar.'
+      ],
+      vocab:{castle:'A large strong building where royalty may live.',hidden:'Kept where it is hard to see.',royal:'Connected to a king or queen.'},
+      question:'Who had the missing bell?',
+      answers:['A golden cat','A green dragon','A noisy frog','A little mouse'],
+      correct:0
+    }
+  ];
 
   let profile={coins:Number(localStorage.getItem(COINS_KEY)||100),xp:0,totalXp:0,level:1,achievements:[],schoolCoinsEarned:0};
   let school={completedByDate:{},dailyRewardDates:[],lessonTotals:{reading:0,writing:0,math:0,science:0,discovery:0,music:0},lastSchoolDate:'',streak:0};
-  let reading={byDate:{}};
+  let reading={completedStories:[],rewardedByDate:{},readCounts:{},passportStamps:0};
 
   try{const s=JSON.parse(localStorage.getItem(PROFILE_KEY));if(s)profile={...profile,...s}}catch{}
   try{const s=JSON.parse(localStorage.getItem(SCHOOL_KEY));if(s)school={...school,...s,lessonTotals:{...school.lessonTotals,...(s.lessonTotals||{})}}}catch{}
   try{const s=JSON.parse(localStorage.getItem(READING_KEY));if(s)reading={...reading,...s}}catch{}
 
-  if(!reading.byDate[today])reading.byDate[today]=[];
-  const done=()=>reading.byDate[today]||[];
+  function dailyStory(){
+    const n=[...today].reduce((sum,ch)=>sum+ch.charCodeAt(0),0);
+    return stories[n%stories.length];
+  }
 
   function save(){
     localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
@@ -259,10 +353,14 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
     localStorage.setItem(COINS_KEY,String(profile.coins));
   }
 
+  function alreadyRewarded(storyId){
+    return (reading.rewardedByDate[today]||[]).includes(storyId);
+  }
+
   function toast(msg){
     const el=document.querySelector('#toast');
     el.textContent=msg;el.classList.add('show');
-    clearTimeout(window.__t);window.__t=setTimeout(()=>el.classList.remove('show'),2200);
+    clearTimeout(window.__t);window.__t=setTimeout(()=>el.classList.remove('show'),2400);
   }
 
   function confetti(){
@@ -288,133 +386,141 @@ main{position:relative;z-index:2;width:min(1180px,100%);margin:auto;padding:16px
     }catch{}
   }
 
-  function completePart(part){
-    if(done().includes(part))return;
-    done().push(part);
-    reading.byDate[today]=done();
-    profile.coins+=5;
-    profile.xp+=10;
-    profile.totalXp=(profile.totalXp||0)+10;
-    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+5;
-    toast('Great reading! +5 coins and +10 XP');
-    confetti();beep(700);
+  function openStory(story){
+    activeStory=story;
+    document.querySelector('#stageTitle').textContent=`${story.emoji} ${story.title}`;
+    document.querySelector('#bookTitle').textContent=story.title;
+    document.querySelector('#storyText').innerHTML=story.text.map(p=>`<p>${p}</p>`).join('');
+    const vocab=document.querySelector('#vocabButtons');vocab.innerHTML='';
+    Object.entries(story.vocab).forEach(([word,meaning])=>{
+      const b=document.createElement('button');b.textContent=word;
+      b.onclick=()=>{
+        toast(`${word}: ${meaning}`);
+        speak(`${word}. ${meaning}`);
+      };
+      vocab.append(b);
+    });
+    document.querySelector('#rewardNote').textContent=alreadyRewarded(story.id)
+      ? 'You already earned today’s reward for this story. You may still reread it as many times as you like.'
+      : 'Finish the story question to earn +10 coins and +20 XP.';
+    document.querySelector('#readerStage').classList.add('show');
+    beep();
+  }
 
-    if(done().length===3){
-      completeReadingLesson();
+  function openQuiz(){
+    if(!activeStory)return;
+    document.querySelector('#readerStage').classList.remove('show');
+    document.querySelector('#questionText').textContent=activeStory.question;
+    const grid=document.querySelector('#answerGrid');grid.innerHTML='';
+    activeStory.answers.forEach((label,index)=>{
+      const b=document.createElement('button');b.className='answer';b.textContent=label;
+      b.onclick=()=>{
+        grid.querySelectorAll('.answer').forEach(x=>x.classList.remove('correct','wrong'));
+        if(index===activeStory.correct){
+          b.classList.add('correct');beep(760);
+          setTimeout(()=>finishStory(activeStory),450);
+        }else{
+          b.classList.add('wrong');toast('Good try! Read the story again and look for a clue.');beep(220);
+        }
+      };
+      grid.append(b);
+    });
+    document.querySelector('#quizStage').classList.add('show');
+  }
+
+  function finishStory(story){
+    document.querySelector('#quizStage').classList.remove('show');
+    reading.readCounts[story.id]=(reading.readCounts[story.id]||0)+1;
+
+    if(!reading.completedStories.includes(story.id)){
+      reading.completedStories.push(story.id);
+      reading.passportStamps=(reading.passportStamps||0)+1;
     }
+
+    if(!alreadyRewarded(story.id)){
+      if(!reading.rewardedByDate[today])reading.rewardedByDate[today]=[];
+      reading.rewardedByDate[today].push(story.id);
+
+      profile.coins+=10;
+      profile.xp+=20;
+      profile.totalXp=(profile.totalXp||0)+20;
+      profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+10;
+
+      const todayLessons=school.completedByDate[today]||[];
+      if(!todayLessons.includes('reading')){
+        todayLessons.push('reading');
+        school.completedByDate[today]=todayLessons;
+        school.lessonTotals.reading=(school.lessonTotals.reading||0)+1;
+
+        if(school.lastSchoolDate!==today){
+          const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
+          const y=yesterday.toLocaleDateString('en-CA');
+          school.streak=school.lastSchoolDate===y?school.streak+1:1;
+          school.lastSchoolDate=today;
+        }
+      }
+
+      if(!profile.achievements.includes('first-lesson'))profile.achievements.push('first-lesson');
+      if(reading.completedStories.length>=5 && !profile.achievements.includes('bookworm'))profile.achievements.push('bookworm');
+
+      confetti();
+      toast('📚 Story complete! +10 coins and +20 XP');
+    }else{
+      toast('📖 Reread complete! No extra reward today, but your read count increased.');
+    }
+
     save();render();
   }
 
-  function completeReadingLesson(){
-    const todayLessons=school.completedByDate[today]||[];
-    if(todayLessons.includes('reading'))return;
+  function speak(text){
+    if(!('speechSynthesis' in window)){toast('Read aloud is not supported on this device.');return}
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text);u.rate=.85;u.pitch=1.05;
+    speechSynthesis.speak(u);
+  }
 
-    todayLessons.push('reading');
-    school.completedByDate[today]=todayLessons;
-    school.lessonTotals.reading=(school.lessonTotals.reading||0)+1;
-
-    if(school.lastSchoolDate!==today){
-      const yesterday=new Date();yesterday.setDate(yesterday.getDate()-1);
-      const y=yesterday.toLocaleDateString('en-CA');
-      school.streak=school.lastSchoolDate===y?school.streak+1:1;
-      school.lastSchoolDate=today;
-    }
-
-    profile.coins+=10;
-    profile.xp+=20;
-    profile.totalXp=(profile.totalXp||0)+20;
-    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+10;
-
-    if(!profile.achievements.includes('first-lesson'))profile.achievements.push('first-lesson');
-    if((school.lessonTotals.reading||0)>=5 && !profile.achievements.includes('bookworm'))profile.achievements.push('bookworm');
-
-    setTimeout(()=>{
-      toast('📚 Reading complete! Bonus +10 coins and +20 XP');
-      confetti();beep(820);
-    },650);
+  function createCard(story,isDaily=false){
+    const b=document.createElement('button');
+    b.className=`book-card ${story.className}`;
+    const readCount=reading.readCounts[story.id]||0;
+    const completed=reading.completedStories.includes(story.id);
+    b.innerHTML=`
+      ${isDaily?'<div class="ribbon">TODAY</div>':''}
+      <span class="emoji">${story.emoji}</span>
+      <strong>${story.title}</strong>
+      <small>Reading Level ${story.level} • Tap to begin</small>
+      <span class="status">${completed?`Read ${readCount} time${readCount===1?'':'s'}`:'New story'}</span>
+    `;
+    b.onclick=()=>openStory(story);
+    return b;
   }
 
   function render(){
+    const daily=dailyStory();
     document.querySelector('#hello').textContent=`Hello, ${childName}!`;
     document.querySelector('#coins').textContent=profile.coins;
     document.querySelector('#xp').textContent=profile.xp;
-    document.querySelector('#dayCount').textContent=`${done().length} / 3`;
-    document.querySelector('#bar').style.width=(done().length/3*100)+'%';
-    document.querySelector('#progressText').textContent=`${done().length} of 3 reading activities complete`;
-    document.querySelector('#rewardLabel').textContent=done().length===3?'Reading complete ✅':'Complete all 3';
+    document.querySelector('#dailyTitle').textContent=daily.title;
 
-    document.querySelectorAll('.card').forEach(card=>{
-      card.classList.toggle('done',done().includes(card.dataset.part));
-    });
+    const dailyBox=document.querySelector('#dailyLibrary');dailyBox.innerHTML='';
+    dailyBox.append(createCard(daily,true));
+
+    const shelf=document.querySelector('#storyLibrary');shelf.innerHTML='';
+    stories.forEach(s=>shelf.append(createCard(s,false)));
+
+    const completed=reading.completedStories.length;
+    document.querySelector('#progressLabel').textContent=`${completed} of ${stories.length} stories discovered`;
+    document.querySelector('#bar').style.width=Math.min(100,(completed/stories.length)*100)+'%';
+    document.querySelector('#progressText').textContent=`Reading Passport: ${reading.passportStamps||0} stamp${reading.passportStamps===1?'':'s'} • Stories can always be reread.`;
     save();
   }
 
-  function openStage(id){document.querySelector('#'+id).classList.add('show');beep()}
-  function closeStages(){document.querySelectorAll('.stage').forEach(s=>s.classList.remove('show'))}
-
-  document.querySelectorAll('.card').forEach(card=>{
-    card.onclick=()=>{
-      const map={story:'storyStage',words:'wordsStage',quiz:'quizStage'};
-      openStage(map[card.dataset.part]);
-    };
-  });
-
-  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=closeStages);
-  document.querySelectorAll('.stage').forEach(s=>s.onclick=e=>{if(e.target===s)closeStages()});
-
-  document.querySelector('#finishStory').onclick=()=>{
-    completePart('story');closeStages();
-  };
-
-  document.querySelector('#readAloud').onclick=()=>{
-    if(!('speechSynthesis' in window)){toast('Read aloud is not supported on this device.');return}
-    speechSynthesis.cancel();
-    const text=document.querySelector('#storyText').innerText;
-    const u=new SpeechSynthesisUtterance(text);u.rate=.85;u.pitch=1.05;
-    speechSynthesis.speak(u);
-  };
-
-  const words=['seed','sun','flower','ocean','train','moon'];
-  const correctWords=new Set(['seed','sun','flower']);
-  const wordGrid=document.querySelector('#wordGrid');
-  words.forEach(w=>{
-    const b=document.createElement('button');b.className='word';b.textContent=w;
-    b.onclick=()=>{b.classList.toggle('selected');beep(500)};
-    wordGrid.append(b);
-  });
-
-  document.querySelector('#checkWords').onclick=()=>{
-    const selected=[...document.querySelectorAll('.word.selected')].map(b=>b.textContent);
-    const correct=selected.length===3 && selected.every(w=>correctWords.has(w));
-    if(correct){
-      completePart('words');closeStages();
-    }else{
-      toast('Almost! Look for words from the story.');
-      beep(240);
-    }
-  };
-
-  const answers=[
-    ['A yellow flower',true],
-    ['A blue boat',false],
-    ['A little bird',false],
-    ['A red house',false]
-  ];
-  const answerGrid=document.querySelector('#answerGrid');
-  answers.forEach(([label,isCorrect])=>{
-    const b=document.createElement('button');b.className='answer';b.textContent=label;
-    b.onclick=()=>{
-      document.querySelectorAll('.answer').forEach(x=>x.classList.remove('correct','wrong'));
-      if(isCorrect){
-        b.classList.add('correct');beep(760);
-        setTimeout(()=>{completePart('quiz');closeStages()},450);
-      }else{
-        b.classList.add('wrong');toast('Good try! Think about the last line.');beep(220);
-      }
-    };
-    answerGrid.append(b);
-  });
-
+  document.querySelector('#storyDone').onclick=openQuiz;
+  document.querySelector('#readAloud').onclick=()=>activeStory&&speak(activeStory.text.join(' '));
+  document.querySelector('#closeStage').onclick=()=>document.querySelector('#readerStage').classList.remove('show');
+  document.querySelector('#closeQuiz').onclick=()=>document.querySelector('#quizStage').classList.remove('show');
+  document.querySelector('#readerStage').onclick=e=>{if(e.target.id==='readerStage')e.currentTarget.classList.remove('show')};
+  document.querySelector('#quizStage').onclick=e=>{if(e.target.id==='quizStage')e.currentTarget.classList.remove('show')};
   document.querySelector('#backBtn').onclick=()=>location.href='school.html';
   document.querySelector('#soundBtn').onclick=()=>{
     soundOn=!soundOn;document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)beep();
