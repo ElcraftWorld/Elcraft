@@ -371,8 +371,9 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
     subjects.forEach(s=>{
       const b=document.createElement('button');
       const isReading=s.id==='reading';
+      const isWriting=s.id==='writing';
       b.className=`subject ${s.color} ${(!isReading&&done.includes(s.id))?'done':''}`;
-      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
+      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
       b.onclick=()=>openLesson(s);
       subjectsBox.append(b);
     });
