@@ -356,7 +356,7 @@ input {
 
 .school {
   right: 10%;
-  top: 17%;
+  top: 12%;
 }
 
 .home {
@@ -963,9 +963,12 @@ input {
 /* ------------------------------------------------ */
 
 @media (min-width: 1200px) {
-  .library,
-  .school {
+  .library {
     top: 18%;
+  }
+
+  .school {
+    top: 12%;
   }
 
   .home,
@@ -1003,7 +1006,7 @@ input {
 
   .school {
     right: 6%;
-    top: 18%;
+    top: 12%;
   }
 
   .home {
@@ -1087,9 +1090,12 @@ input {
     font-size: clamp(10px, 1.1vw, 15px);
   }
 
-  .library,
-  .school {
+  .library {
     top: 13%;
+  }
+
+  .school {
+    top: 7%;
   }
 
   .home,
@@ -1200,7 +1206,7 @@ input {
 
   .school {
     right: 4%;
-    top: 26%;
+    top: 21%;
   }
 
   .home {
