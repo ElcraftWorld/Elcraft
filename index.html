@@ -2,475 +2,109 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ELCraft Home World</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ELCraft</title>
 <style>
-  :root {
-    --ink:#253364;
-    --purple:#6b47b8;
-    --cream:#fffaf3;
-    --shadow:0 16px 40px rgba(28,33,79,.26);
-  }
-  * { box-sizing:border-box; }
-  html,body { height:100%; margin:0; }
-  body {
-    overflow:hidden;
-    font-family: "Trebuchet MS", system-ui, sans-serif;
-    background:#79c7f6;
-    color:var(--ink);
-  }
-  button,input { font:inherit; }
-  .app {
+  *{box-sizing:border-box}
+  html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#1d5ca8}
+  body{font-family:Arial,sans-serif}
+  .screen{
     position:relative;
-    width:100%;
-    height:100%;
-    min-height:640px;
-    overflow:hidden;
-    isolation:isolate;
-  }
-  .art {
-    position:absolute;
-    inset:0;
-    background-image:url('a_bright_colorful_high_quality_3d_cg_cartoon_gam.png');
-    background-size:cover;
-    background-position:center;
-    transform:scale(1.002);
-    z-index:-3;
-  }
-  .art::after {
-    content:"";
-    position:absolute;
-    inset:0;
+    width:100vw;
+    height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
     background:
-      linear-gradient(to bottom, rgba(10,29,89,.02), rgba(10,29,89,.05)),
-      radial-gradient(circle at center, transparent 52%, rgba(14,29,68,.10));
-    pointer-events:none;
+      radial-gradient(circle at 50% 35%, #6dc8f5 0%, #318dde 45%, #184f9d 100%);
+  }
+  .frame{
+    position:relative;
+    width:min(100vw, calc(100vh * 1.5));
+    height:min(100vh, calc(100vw / 1.5));
+    background:url('a_bright_colorful_high_detail_3d_illustrated_kid.png') center center / contain no-repeat;
+    flex:0 0 auto;
   }
 
-  /* Real UI layers cover the baked concept UI and remain dynamic. */
-  .topbar {
+  /* Invisible hotspots line up with the artwork without adding duplicate UI. */
+  .hotspot{
     position:absolute;
-    top:2.2%;
-    right:2.4%;
-    display:flex;
-    align-items:center;
-    gap:12px;
-    z-index:10;
-  }
-  .pill {
-    border:2px solid rgba(255,255,255,.9);
-    background:rgba(255,250,244,.96);
-    color:#5c3ca1;
-    border-radius:999px;
-    padding:11px 22px;
-    font-weight:800;
-    box-shadow:0 7px 0 rgba(73,49,131,.20), 0 12px 28px rgba(37,34,82,.22);
+    border:0;
+    background:transparent;
     cursor:pointer;
-  }
-  .round {
-    width:58px;
-    height:58px;
-    border-radius:50%;
-    padding:0;
-    display:grid;
-    place-items:center;
-    font-size:27px;
-  }
-
-  .welcome {
-    position:absolute;
-    top:22.2%;
-    right:14.3%;
-    width:min(32vw,520px);
-    min-height:190px;
-    border:3px solid rgba(255,255,255,.94);
-    border-radius:34px;
-    background:rgba(255,250,244,.985);
-    padding:28px 34px 26px;
-    box-shadow:var(--shadow), 0 8px 0 rgba(118,84,174,.14);
-    z-index:8;
-  }
-  .welcome::after {
-    content:"";
-    position:absolute;
-    left:46px;
-    bottom:-28px;
-    border-style:solid;
-    border-width:30px 30px 0 0;
-    border-color:rgba(255,250,244,.985) transparent transparent transparent;
-    filter:drop-shadow(0 5px 2px rgba(52,42,93,.10));
-  }
-  .welcome h1 {
-    margin:0;
-    font-size:clamp(34px,3.2vw,58px);
-    line-height:1;
-    letter-spacing:-.03em;
-    color:#6546ad;
-  }
-  .welcome p {
-    margin:17px 0 0;
-    font-size:clamp(17px,1.45vw,25px);
-    line-height:1.3;
-    font-weight:700;
-  }
-  .profile-note {
-    margin-top:12px;
-    display:inline-flex;
-    align-items:center;
-    gap:7px;
-    font-size:13px;
-    font-weight:800;
-    color:#7558ad;
-    background:#f1e8ff;
-    border-radius:999px;
-    padding:7px 11px;
-  }
-
-  .dock {
-    position:absolute;
-    left:10.7%;
-    right:10.6%;
-    bottom:2.1%;
-    display:grid;
-    grid-template-columns:repeat(5,1fr);
-    gap:1.5%;
-    z-index:11;
-  }
-  .world-btn {
-    min-height:190px;
-    border:3px solid rgba(255,255,255,.9);
-    border-radius:32px;
-    color:#163570;
-    box-shadow:0 9px 0 rgba(27,36,79,.18), 0 18px 32px rgba(23,31,79,.22);
-    cursor:pointer;
-    transition:transform .18s ease, filter .18s ease;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
-    padding:14px 10px;
-    overflow:hidden;
-  }
-  .world-btn:hover { transform:translateY(-9px) scale(1.025); filter:brightness(1.04) saturate(1.06); }
-  .world-btn:active { transform:translateY(2px) scale(.99); }
-  .world-btn .icon { font-size:clamp(42px,4.5vw,72px); line-height:1; }
-  .world-btn .title { margin-top:9px; font-weight:900; font-size:clamp(18px,1.6vw,28px); }
-  .world-btn .sub { margin-top:3px; font-weight:700; font-size:clamp(12px,.95vw,17px); }
-  .sky { background:linear-gradient(145deg,#63c9ff,#b7eaff); }
-  .character { background:linear-gradient(145deg,#ffc84e,#ffe3a0); }
-  .city { background:linear-gradient(145deg,#8ddd5c,#d1f2a2); }
-  .music { background:linear-gradient(145deg,#ae79e4,#e5c6ff); }
-  .together { background:linear-gradient(145deg,#ff8fa9,#ffc0cc); }
-
-  .side-btn {
-    position:absolute;
-    bottom:2.3%;
-    z-index:12;
-    width:92px;
-    min-height:88px;
-    border:2px solid rgba(255,255,255,.85);
     border-radius:24px;
-    background:rgba(103,67,43,.94);
-    color:#fff;
-    font-weight:900;
-    box-shadow:0 8px 0 rgba(49,30,23,.24), 0 15px 24px rgba(20,25,65,.25);
-    cursor:pointer;
   }
-  .gift { left:1.2%; }
-  .map { right:1.2%; }
-  .side-btn span { display:block; font-size:35px; }
+  .hotspot:focus-visible{
+    outline:5px solid rgba(255,255,255,.95);
+    outline-offset:2px;
+  }
+  .profiles{left:86.2%;top:3.3%;width:7.2%;height:7.4%}
+  .settings{left:94.1%;top:2.9%;width:4.2%;height:7.3%;border-radius:50%}
+  .gift{left:.6%;top:86%;width:6.4%;height:11.5%}
+  .sky{left:8.1%;top:75.2%;width:15%;height:22%}
+  .characters{left:24.4%;top:75.2%;width:15%;height:22%}
+  .city{left:40.9%;top:75.2%;width:15%;height:22%}
+  .music{left:57.3%;top:75.2%;width:15%;height:22%}
+  .together{left:73.8%;top:75.2%;width:15%;height:22%}
+  .map{left:91.7%;top:86%;width:6.5%;height:11.5%}
 
-  .modal {
+  .toast{
     position:fixed;
-    inset:0;
-    z-index:50;
-    display:none;
-    align-items:center;
-    justify-content:center;
-    padding:20px;
-    background:rgba(24,28,69,.55);
-    backdrop-filter:blur(8px);
-  }
-  .modal.open { display:flex; }
-  .panel {
-    width:min(680px,96vw);
-    max-height:90vh;
-    overflow:auto;
-    border:3px solid rgba(255,255,255,.9);
-    border-radius:34px;
-    background:#fffaf5;
-    box-shadow:0 24px 70px rgba(16,20,58,.38);
-    padding:26px;
-  }
-  .panel-head {
-    display:flex;
-    align-items:center;
-    justify-content:space-between;
-    gap:12px;
-  }
-  .panel h2 { margin:0; color:#6042a3; font-size:32px; }
-  .close {
-    width:44px;
-    height:44px;
-    border:0;
-    border-radius:50%;
-    background:#eee5ff;
-    color:#5c3ca1;
-    font-size:24px;
-    cursor:pointer;
-  }
-  .profiles {
-    display:grid;
-    grid-template-columns:repeat(2,minmax(0,1fr));
-    gap:14px;
-    margin:22px 0;
-  }
-  .profile {
-    border:3px solid transparent;
-    border-radius:24px;
-    background:#f4efff;
-    padding:16px;
-    text-align:left;
-    cursor:pointer;
-    color:#323969;
-  }
-  .profile.active {
-    border-color:#8b67da;
-    background:#eee5ff;
-  }
-  .profile .avatar { font-size:42px; }
-  .profile strong { display:block; font-size:21px; margin-top:4px; }
-  .profile small { color:#6d6f91; font-weight:700; }
-  .add-row {
-    display:grid;
-    grid-template-columns:1fr auto;
-    gap:10px;
-    margin-top:12px;
-  }
-  .add-row input {
-    min-width:0;
-    border:2px solid #d9ccee;
-    border-radius:16px;
-    padding:13px 15px;
-    color:#303762;
-    background:#fff;
-  }
-  .primary {
-    border:0;
-    border-radius:16px;
-    padding:12px 18px;
-    background:#744fbd;
-    color:white;
-    font-weight:900;
-    cursor:pointer;
-  }
-  .status { margin-top:14px; min-height:20px; font-weight:700; color:#64557f; }
-
-  .toast {
-    position:absolute;
     left:50%;
-    top:4%;
-    transform:translateX(-50%) translateY(-120px);
-    z-index:40;
-    background:rgba(255,250,244,.98);
-    color:#5d42a0;
-    padding:13px 20px;
+    top:20px;
+    transform:translateX(-50%) translateY(-100px);
+    background:rgba(255,255,255,.96);
+    color:#5c3ca1;
+    padding:12px 20px;
     border-radius:999px;
-    box-shadow:var(--shadow);
-    font-weight:900;
-    transition:transform .25s ease;
+    font-weight:800;
+    box-shadow:0 10px 30px rgba(0,0,0,.25);
+    transition:.25s ease;
+    z-index:5;
   }
-  .toast.show { transform:translateX(-50%) translateY(0); }
+  .toast.show{transform:translateX(-50%) translateY(0)}
 
-  @media (max-width:900px) {
-    .app { min-height:100%; overflow:auto; background:#73c8f3; }
-    body { overflow:auto; }
-    .art { position:fixed; background-position:center top; }
-    .welcome {
-      top:14%;
-      left:5%;
-      right:5%;
-      width:auto;
-      min-height:0;
-      padding:20px 22px;
+  @media (max-aspect-ratio: 3/2){
+    .frame{
+      width:100vw;
+      height:calc(100vw / 1.5);
     }
-    .welcome::after { display:none; }
-    .dock {
-      position:relative;
-      left:auto; right:auto; bottom:auto;
-      margin:430px 12px 110px;
-      grid-template-columns:repeat(2,1fr);
-      gap:12px;
+  }
+  @media (min-aspect-ratio: 3/2){
+    .frame{
+      width:calc(100vh * 1.5);
+      height:100vh;
     }
-    .world-btn { min-height:130px; border-radius:24px; }
-    .world-btn:last-child { grid-column:1/-1; }
-    .side-btn { bottom:14px; width:76px; min-height:70px; }
-    .topbar { top:10px; right:10px; }
-    .pill { padding:9px 14px; }
-    .round { width:46px; height:46px; font-size:22px; }
   }
 </style>
 </head>
 <body>
-<main class="app">
-  <div class="art" aria-hidden="true"></div>
-
-  <div class="topbar">
-    <button class="pill" id="profilesBtn">👨‍👩‍👧 Profiles</button>
-    <button class="pill round" id="settingsBtn" aria-label="Settings">⚙️</button>
+<main class="screen">
+  <div class="frame" aria-label="ELCraft Home World">
+    <button class="hotspot profiles" data-label="Profiles" aria-label="Profiles"></button>
+    <button class="hotspot settings" data-label="Settings" aria-label="Settings"></button>
+    <button class="hotspot gift" data-label="Daily Gift" aria-label="Daily Gift"></button>
+    <button class="hotspot sky" data-label="Sky World" aria-label="Sky World"></button>
+    <button class="hotspot characters" data-label="My Characters" aria-label="My Characters"></button>
+    <button class="hotspot city" data-label="My City" aria-label="My City"></button>
+    <button class="hotspot music" data-label="Music" aria-label="Music"></button>
+    <button class="hotspot together" data-label="Together" aria-label="Together"></button>
+    <button class="hotspot map" data-label="Map" aria-label="Map"></button>
   </div>
-
-  <section class="welcome" aria-live="polite">
-    <h1>Hi <span id="childName">Ella</span>! ✨</h1>
-    <p>Ready to create something amazing today?</p>
-    <div class="profile-note">🔒 This world belongs to <span id="ownerName">Ella</span></div>
-  </section>
-
-  <nav class="dock" aria-label="ELCraft worlds">
-    <button class="world-btn sky" data-world="Sky World"><span class="icon">🌤️</span><span class="title">Sky World</span><span class="sub">Paint your sky</span></button>
-    <button class="world-btn character" data-world="My Characters"><span class="icon">👧🏽</span><span class="title">My Characters</span><span class="sub">Design & customize</span></button>
-    <button class="world-btn city" data-world="My City"><span class="icon">🏡</span><span class="title">My City</span><span class="sub">Build your city</span></button>
-    <button class="world-btn music" data-world="Music"><span class="icon">🎵</span><span class="title">Music</span><span class="sub">Make a tune</span></button>
-    <button class="world-btn together" data-world="Together"><span class="icon">🧑‍🤝‍🧑</span><span class="title">Together</span><span class="sub">Play with friends</span></button>
-  </nav>
-
-  <button class="side-btn gift" data-world="Daily Gift"><span>🎁</span>Daily Gift</button>
-  <button class="side-btn map" data-world="Map"><span>🗺️</span>Map</button>
   <div class="toast" id="toast" role="status"></div>
 </main>
-
-<div class="modal" id="profilesModal" role="dialog" aria-modal="true" aria-labelledby="profilesTitle">
-  <section class="panel">
-    <div class="panel-head">
-      <div>
-        <h2 id="profilesTitle">Choose a player</h2>
-        <p>Each child has their own name, character, city, music, and creations.</p>
-      </div>
-      <button class="close" id="closeProfiles" aria-label="Close">×</button>
-    </div>
-    <div class="profiles" id="profilesList"></div>
-    <label for="newName"><strong>Add another child profile</strong></label>
-    <div class="add-row">
-      <input id="newName" maxlength="20" placeholder="Child's first name">
-      <button class="primary" id="addProfile" type="button">Add profile</button>
-    </div>
-    <div class="status" id="profileStatus" aria-live="polite"></div>
-  </section>
-</div>
-
 <script>
 (() => {
-  const KEY = "elcraft_profiles_v1";
-  const ACTIVE = "elcraft_active_profile_v1";
-  const defaultProfiles = [
-    { id:"ella", name:"Ella", avatar:"👧🏽" }
-  ];
-
-  const els = {
-    name: document.getElementById("childName"),
-    owner: document.getElementById("ownerName"),
-    modal: document.getElementById("profilesModal"),
-    list: document.getElementById("profilesList"),
-    status: document.getElementById("profileStatus"),
-    newName: document.getElementById("newName"),
-    toast: document.getElementById("toast")
-  };
-
-  let profiles = loadProfiles();
-  let activeId = localStorage.getItem(ACTIVE) || profiles[0].id;
-
-  function loadProfiles() {
-    try {
-      const saved = JSON.parse(localStorage.getItem(KEY));
-      if (Array.isArray(saved) && saved.length) return saved;
-    } catch (_) {}
-    localStorage.setItem(KEY, JSON.stringify(defaultProfiles));
-    return [...defaultProfiles];
-  }
-
-  function saveProfiles() {
-    localStorage.setItem(KEY, JSON.stringify(profiles));
-  }
-
-  function activeProfile() {
-    return profiles.find(p => p.id === activeId) || profiles[0];
-  }
-
-  function applyProfile() {
-    const p = activeProfile();
-    activeId = p.id;
-    localStorage.setItem(ACTIVE, activeId);
-    els.name.textContent = p.name;
-    els.owner.textContent = p.name;
-    renderProfiles();
-  }
-
-  function renderProfiles() {
-    els.list.innerHTML = "";
-    profiles.forEach(p => {
-      const btn = document.createElement("button");
-      btn.className = "profile" + (p.id === activeId ? " active" : "");
-      btn.type = "button";
-      btn.innerHTML = `<span class="avatar">${p.avatar}</span><strong>${escapeHtml(p.name)}</strong><small>${p.id === activeId ? "Current world" : "Open this world"}</small>`;
-      btn.addEventListener("click", () => {
-        activeId = p.id;
-        applyProfile();
-        els.status.textContent = `${p.name}'s world is ready.`;
-        setTimeout(closeModal, 350);
-      });
-      els.list.appendChild(btn);
+  const toast = document.getElementById('toast');
+  document.querySelectorAll('.hotspot').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const label = btn.dataset.label;
+      toast.textContent = label + ' is opening…';
+      toast.classList.add('show');
+      clearTimeout(window.__toastTimer);
+      window.__toastTimer = setTimeout(() => toast.classList.remove('show'), 1400);
     });
-  }
-
-  function addProfile() {
-    const name = els.newName.value.trim().replace(/\s+/g," ");
-    if (!name) {
-      els.status.textContent = "Enter a first name.";
-      els.newName.focus();
-      return;
-    }
-    const id = name.toLowerCase().replace(/[^a-z0-9]+/g,"-") + "-" + Date.now().toString(36);
-    const avatars = ["👧🏾","👦🏽","👧🏼","👦🏿","🧒🏻","🧒🏽"];
-    profiles.push({ id, name, avatar:avatars[(profiles.length-1)%avatars.length] });
-    activeId = id;
-    saveProfiles();
-    els.newName.value = "";
-    applyProfile();
-    els.status.textContent = `${name} now has a separate ELCraft world.`;
-  }
-
-  function escapeHtml(s) {
-    return s.replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[c]));
-  }
-
-  function openModal() {
-    renderProfiles();
-    els.status.textContent = "";
-    els.modal.classList.add("open");
-    document.getElementById("closeProfiles").focus();
-  }
-  function closeModal() {
-    els.modal.classList.remove("open");
-  }
-  function showToast(text) {
-    els.toast.textContent = text;
-    els.toast.classList.add("show");
-    clearTimeout(showToast.timer);
-    showToast.timer = setTimeout(() => els.toast.classList.remove("show"), 1700);
-  }
-
-  document.getElementById("profilesBtn").addEventListener("click", openModal);
-  document.getElementById("closeProfiles").addEventListener("click", closeModal);
-  document.getElementById("addProfile").addEventListener("click", addProfile);
-  els.newName.addEventListener("keydown", e => { if (e.key === "Enter") addProfile(); });
-  els.modal.addEventListener("click", e => { if (e.target === els.modal) closeModal(); });
-  document.getElementById("settingsBtn").addEventListener("click", () => showToast("Parent settings will open here."));
-  document.querySelectorAll("[data-world]").forEach(btn => {
-    btn.addEventListener("click", () => showToast(`${btn.dataset.world} is opening for ${activeProfile().name}…`));
   });
-
-  applyProfile();
 })();
 </script>
 </body>
