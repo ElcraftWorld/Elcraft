@@ -131,7 +131,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   background:rgba(247,246,255,.97);
 }
 .steps{
-  display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:12px;
+  display:grid;grid-template-columns:repeat(6,1fr);gap:7px;padding:12px;
   background:linear-gradient(#25397d,#17285f);
 }
 .step{
@@ -164,6 +164,31 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   width:100%;padding:15px 16px;border-radius:17px;border:2px solid #d8ccef;background:#fff;
   color:#34416c;font-size:20px;font-weight:900
 }
+
+.inventory-message{
+  padding:18px;border:2px dashed #cfc3ed;border-radius:18px;background:#fff;
+  color:#68769b;font-weight:900;line-height:1.45;text-align:center
+}
+.inventory-message button{
+  margin-top:12px;border:0;border-radius:999px;padding:11px 16px;
+  color:#fff;background:linear-gradient(#9562df,#6640b2);font-weight:1000;
+  box-shadow:0 5px 0 #4d2e8d
+}
+.closet-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.closet-item{
+  position:relative;min-height:118px;border:3px solid transparent;border-radius:18px;
+  padding:10px;background:#fff;color:#34436c;font-weight:1000;
+  box-shadow:0 5px 15px rgba(38,45,90,.10)
+}
+.closet-item .closet-icon{display:block;font-size:44px;line-height:1.1;margin-bottom:7px}
+.closet-item small{display:block;margin-top:4px;color:#7d86a4;font-size:10px}
+.closet-item.selected{border-color:#7645c1;background:#eee7ff;transform:translateY(-2px)}
+.closet-item.utility{opacity:.82}
+.closet-badge{
+  position:absolute;right:7px;top:7px;padding:4px 7px;border-radius:999px;
+  color:#fff;background:#6f3fc2;font-size:9px
+}
+
 .name-preview{
   margin-top:12px;padding:15px;border-radius:18px;background:linear-gradient(#252f78,#151e56);
   color:#fff;text-align:center;font-size:23px;font-weight:1000;box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)
@@ -208,7 +233,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   .hero-heading{padding:10px 10px 1px}.hero-heading h1{font-size:24px}
   .steps{gap:4px;padding:8px}.step{font-size:9px;padding:7px 2px}.step b{font-size:15px}
   .editor{padding:14px}.option-grid{grid-template-columns:repeat(3,1fr)}.swatches{grid-template-columns:repeat(6,1fr)}
-  .controls{min-height:700px}.hero-tools{padding:8px}.tool-btn{font-size:12px}
+  .controls{min-height:700px}.hero-tools{padding:8px}.tool-btn{font-size:12px}.closet-grid{grid-template-columns:repeat(2,1fr)}
 }
 </style>
 </head>
@@ -251,6 +276,14 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
               <linearGradient id="hoodieGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop id="hoodieLight" offset="0" stop-color="#f04b3f"/>
                 <stop id="hoodieDark" offset="1" stop-color="#a51f25"/>
+              </linearGradient>
+
+              <linearGradient id="rainbowHoodie" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#ff6f91"/>
+                <stop offset=".24" stop-color="#ffd35a"/>
+                <stop offset=".48" stop-color="#72d56d"/>
+                <stop offset=".72" stop-color="#58bceb"/>
+                <stop offset="1" stop-color="#a267dd"/>
               </linearGradient>
               <linearGradient id="shortsGradient" x1="0" y1="0" x2="0" y2="1">
                 <stop id="shortsLight" offset="0" stop-color="#435a77"/>
@@ -313,6 +346,9 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
               <path d="M276 318 H324 V365 Q300 385 276 365Z" fill="url(#skinGradient)"/>
             </g>
 
+            <!-- market outfit overlays -->
+            <g id="marketOutfit"></g>
+
             <!-- hair back -->
             <g id="hairBack"></g>
 
@@ -351,6 +387,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
 
             <!-- front accessories -->
             <g id="frontAccessory"></g>
+            <g id="marketAccessory"></g>
           </svg>
         </div>
       </div>
@@ -385,6 +422,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   const NAME_KEY='elcraft_child_name';
   const AVATAR_KEY='elcraft_avatar_image';
   const CONFIG_KEY='elcraft_character_v3';
+  const INVENTORY_KEY='elcraft_inventory';
   const playerName=localStorage.getItem(NAME_KEY)||'Player';
 
   const skinColors=['#f7cda1','#e6ad7b','#cf8d59','#ad6d43','#815039','#5a382d','#3e2924'];
@@ -397,7 +435,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   let state={
     skin:1, hairStyle:0, hairColor:1, eyes:0, mouth:0, freckles:1,
     hoodie:0, shorts:0, shoes:0, accessory:0, pose:0,
-    name:playerName
+    marketLook:'', name:playerName
   };
   try{
     const saved=JSON.parse(localStorage.getItem(CONFIG_KEY));
@@ -409,6 +447,31 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   const $=s=>document.querySelector(s);
 
   $('#playerLabel').textContent=playerName;
+
+
+  const marketCatalog={
+    'rainbow-shirt':{name:'Rainbow Shirt',icon:'👕',wearable:true},
+    'star-dress':{name:'Star Dress',icon:'👗',wearable:true},
+    'hero-cape':{name:'Hero Cape',icon:'🦸',wearable:true},
+    'sparkle-crown':{name:'Sparkle Crown',icon:'👑',wearable:true},
+    'heart-glasses':{name:'Heart Glasses',icon:'💖',wearable:true},
+    'magic-wand':{name:'Magic Wand',icon:'🪄',wearable:true},
+    'puppy-bed':{name:'Puppy Bed',icon:'🛏️',wearable:false},
+    'pet-bowl':{name:'Pet Bowl',icon:'🥣',wearable:false},
+    'toy-ball':{name:'Bouncy Ball',icon:'⚽',wearable:false},
+    'building-blocks':{name:'Building Blocks',icon:'🧱',wearable:false},
+    'art-kit':{name:'Art Kit',icon:'🎨',wearable:false},
+    'flower-pot':{name:'Flower Pot',icon:'🪴',wearable:false},
+    'moon-lamp':{name:'Moon Lamp',icon:'🌙',wearable:false},
+    'rainbow-rug':{name:'Rainbow Rug',icon:'🌈',wearable:false}
+  };
+
+  function getInventory(){
+    try{
+      const saved=JSON.parse(localStorage.getItem(INVENTORY_KEY)||'[]');
+      return Array.isArray(saved)?saved:[];
+    }catch{return []}
+  }
 
   const stepsData=[
     {
@@ -451,6 +514,11 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
         ]},
         {title:'Quick styles',type:'quick'}
       ]
+    },
+    {
+      icon:'🚪',label:'Closet',title:'Open your Market closet',
+      help:'Wear clothing and accessories you bought in the Market. Toys, pet supplies, and room items stay safely in your inventory.',
+      groups:[{title:'My purchased items',type:'closet'}]
     },
     {
       icon:'✏️',label:'Name',title:'Name your hero',
@@ -562,6 +630,55 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
     }
   }
 
+
+  function renderMarketLook(){
+    const outfit=$('#marketOutfit'), extra=$('#marketAccessory');
+    outfit.innerHTML='';extra.innerHTML='';
+
+    $('#hoodieBody').setAttribute('fill','url(#hoodieGradient)');
+    $('#leftArm').setAttribute('stroke','url(#hoodieGradient)');
+    $('#rightArm').setAttribute('stroke','url(#hoodieGradient)');
+
+    if(state.marketLook==='rainbow-shirt'){
+      $('#hoodieBody').setAttribute('fill','url(#rainbowHoodie)');
+      $('#leftArm').setAttribute('stroke','url(#rainbowHoodie)');
+      $('#rightArm').setAttribute('stroke','url(#rainbowHoodie)');
+    }
+
+    if(state.marketLook==='star-dress'){
+      const skirt=svg('path',{
+        d:'M202 492 Q300 460 398 492 L434 616 Q300 660 166 616Z',
+        fill:'#df73c7',stroke:'#8e3b91','stroke-width':8
+      });
+      const star=svg('text',{x:300,y:565,'text-anchor':'middle','font-size':76});
+      star.textContent='⭐';
+      outfit.append(skirt,star);
+    }
+
+    if(state.marketLook==='hero-cape'){
+      const left=svg('path',{d:'M214 350 Q124 411 151 610 Q220 581 275 414Z',fill:'#e14962',stroke:'#992640','stroke-width':9});
+      const right=svg('path',{d:'M386 350 Q476 411 449 610 Q380 581 325 414Z',fill:'#e14962',stroke:'#992640','stroke-width':9});
+      outfit.append(left,right);
+    }
+
+    if(state.marketLook==='sparkle-crown'){
+      const t=svg('text',{x:300,y:105,'text-anchor':'middle','font-size':104});
+      t.textContent='👑';extra.append(t);
+    }
+
+    if(state.marketLook==='heart-glasses'){
+      const left=svg('text',{x:245,y:258,'text-anchor':'middle','font-size':68});
+      const right=svg('text',{x:355,y:258,'text-anchor':'middle','font-size':68});
+      left.textContent='💗';right.textContent='💗';
+      extra.append(left,right);
+    }
+
+    if(state.marketLook==='magic-wand'){
+      const t=svg('text',{x:470,y:525,'text-anchor':'middle','font-size':92,transform:'rotate(-18 470 525)'});
+      t.textContent='🪄';extra.append(t);
+    }
+  }
+
   function renderPose(){
     const poses=[
       ['M210 390 Q158 435 141 524','M390 390 Q442 435 459 524',137,536,463,536],
@@ -586,7 +703,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
     $('#leftShoeAccent').setAttribute('stroke',shoeColors[state.shoes]);
     $('#rightShoeAccent').setAttribute('stroke',shoeColors[state.shoes]);
 
-    renderHair(); renderMouth(); renderFreckles(); renderAccessory(); renderPose();
+    renderHair(); renderMouth(); renderFreckles(); renderAccessory(); renderMarketLook(); renderPose();
     $('#heroTitle').textContent=(state.name||'Your Hero')+'!';
   }
 
@@ -657,6 +774,59 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
           quickStyle('Magic','✨','magic',{hoodie:3,shorts:3,shoes:3,accessory:6,hairStyle:2})
         );
         out.append(grid);
+      }
+
+
+      if(group.type==='closet'){
+        const inventory=getInventory();
+        const uniqueIds=[...new Set(inventory.map(item=>item.id).filter(Boolean))];
+
+        if(uniqueIds.length===0){
+          const empty=document.createElement('div');
+          empty.className='inventory-message';
+          empty.innerHTML='Your closet is empty right now.<br>Visit the Market and buy something to wear!';
+          const marketButton=document.createElement('button');
+          marketButton.type='button';
+          marketButton.textContent='🛍️ Go to Market';
+          marketButton.onclick=()=>location.href='market.html';
+          empty.append(marketButton);
+          out.append(empty);
+        }else{
+          const grid=document.createElement('div');
+          grid.className='closet-grid';
+
+          const none=document.createElement('button');
+          none.className='closet-item'+(!state.marketLook?' selected':'');
+          none.innerHTML='<span class="closet-icon">✨</span>Regular Look<small>Remove Market item</small>';
+          none.onclick=()=>{state.marketLook='';renderEditor();renderHero();toast('Regular look selected!');sound('tap')};
+          grid.append(none);
+
+          uniqueIds.forEach(id=>{
+            const info=marketCatalog[id]||{
+              name:(inventory.find(item=>item.id===id)||{}).name||'Market Item',
+              icon:(inventory.find(item=>item.id===id)||{}).icon||'🎁',
+              wearable:false
+            };
+            const button=document.createElement('button');
+            button.className='closet-item'+(state.marketLook===id?' selected':'')+(info.wearable?'':' utility');
+            button.innerHTML=`<span class="closet-icon">${info.icon}</span>${info.name}<small>${info.wearable?'Tap to wear':'Saved in inventory'}</small>${info.wearable?'<span class="closet-badge">Wearable</span>':''}`;
+
+            if(info.wearable){
+              button.onclick=()=>{
+                state.marketLook=id;
+                renderEditor();renderHero();bounce();
+                toast(info.name+' equipped!');
+                sound('magic');
+              };
+            }else{
+              button.onclick=()=>toast(info.name+' is saved for a future ELCraft world!');
+            }
+
+            grid.append(button);
+          });
+
+          out.append(grid);
+        }
       }
 
       if(group.type==='name'){
@@ -768,7 +938,7 @@ button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offse
   $('#randomBtn').onclick=randomize;
   $('#resetBtn').onclick=()=>{
     if(confirm('Reset this character and start again?')){
-      state={skin:1,hairStyle:0,hairColor:1,eyes:0,mouth:0,freckles:1,hoodie:0,shorts:0,shoes:0,accessory:0,pose:0,name:playerName};
+      state={skin:1,hairStyle:0,hairColor:1,eyes:0,mouth:0,freckles:1,hoodie:0,shorts:0,shoes:0,accessory:0,pose:0,marketLook:'',name:playerName};
       current=0;renderEditor();renderHero();toast('Character reset.');
     }
   };
