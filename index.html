@@ -244,48 +244,63 @@
   body.home-mode .canvas-wrap{
     border-radius:0;
     box-shadow:none;
-    background-image:url('./elcraft-home-world.png');
-    background-size:contain;
-    background-position:center;
-    background-repeat:no-repeat;
+    background:#8fd0f0;
+    isolation:isolate;
+  }
+  body.home-mode .canvas-wrap::before,
+  body.home-mode .canvas-wrap::after{
+    content:'';
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  body.home-mode .canvas-wrap::before{
+    background:url('./elcraft-home-world-clean.png') center/cover no-repeat;
+    filter:blur(20px) saturate(.9);
+    transform:scale(1.05);
+    opacity:.72;
+    z-index:-2;
+  }
+  body.home-mode .canvas-wrap::after{
+    background:url('./elcraft-home-world-clean.png') center/contain no-repeat;
+    z-index:-1;
   }
   body.home-mode #sky{ opacity:0; pointer-events:none; }
   body.home-mode #peersGrid{ display:none !important; }
   body.home-mode .sticker-toolbar{ display:none !important; }
   body.home-mode .home-overlay{ display:block; }
   body.home-mode .greeting-bubble{
-    display:block;
-    top:8.5%;
-    right:8.2%;
-    left:auto;
-    width:27.5%;
-    max-width:none;
-    min-height:21%;
-    padding:2.2% 2.5%;
-    border-radius:28px;
-    background:#fffdfb;
-    box-shadow:0 8px 0 rgba(34,38,75,.14), 0 12px 28px rgba(34,38,75,.12);
-    animation:bubbleFloat 3s ease-in-out infinite;
     display:flex;
+    top:9.5%;
+    right:7.2%;
+    left:auto;
+    width:25%;
+    max-width:430px;
+    min-height:16%;
+    padding:1.7% 2%;
+    border-radius:24px;
+    background:rgba(255,253,251,.97);
+    box-shadow:0 7px 0 rgba(34,38,75,.13), 0 14px 30px rgba(34,38,75,.14);
+    animation:bubbleFloat 3s ease-in-out infinite;
     flex-direction:column;
     justify-content:center;
     z-index:4;
   }
   body.home-mode .greeting-bubble::after{
-    left:12%;
-    bottom:-15px;
-    border-width:16px;
+    left:14%;
+    bottom:-13px;
+    border-width:14px;
     border-top-color:#fffdfb;
   }
   body.home-mode .greeting-bubble .g-title{
-    font-size:clamp(20px,2.35vw,42px);
-    line-height:1.05;
+    font-size:clamp(18px,2vw,34px);
+    line-height:1.08;
     white-space:nowrap;
   }
   body.home-mode .greeting-bubble .g-sub{
-    font-size:clamp(12px,1.35vw,24px);
-    line-height:1.35;
-    margin-top:4%;
+    font-size:clamp(11px,1.12vw,19px);
+    line-height:1.32;
+    margin-top:3%;
   }
   body.home-mode .settings-chip{
     top:2.2%; right:3.1%; left:auto; width:12%; height:8%;
@@ -310,8 +325,7 @@
 
   /* Keep the existing simple cards as a safe mobile fallback. */
   @media (max-width:700px), (orientation:portrait){
-    body.home-mode .canvas-wrap{
-      background-image:linear-gradient(rgba(79,168,224,.12),rgba(255,247,236,.2)), url('./elcraft-home-world.png');
+    body.home-mode .canvas-wrap::after{
       background-position:center top;
     }
     body.home-mode .nav-row{
