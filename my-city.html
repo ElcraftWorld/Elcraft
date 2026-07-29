@@ -505,11 +505,475 @@
 
   </main>
 
+
 <script src="city.js"></script>
 <script src="world-engine.js"></script>
 <script src="castle-link.js"></script>
 <script src="city-growth.js"></script>
-<script src="npc-friends.js"></script>
+
+<!-- NPC FRIENDS: built directly into this page so they cannot fail to load -->
+<style>
+  #npcFriendsLayer {
+    position: absolute;
+    inset: 0;
+    z-index: 999;
+    pointer-events: none;
+  }
+
+  .npc-friend {
+    position: absolute;
+    width: 78px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: pointer;
+    pointer-events: auto;
+    text-align: center;
+    filter: drop-shadow(0 8px 7px rgba(35,72,53,.28));
+  }
+
+  .npc-friend:hover {
+    transform: scale(1.08);
+  }
+
+  .npc-friend:focus-visible {
+    outline: 5px solid white;
+    outline-offset: 4px;
+    border-radius: 22px;
+  }
+
+  .npc-emoji {
+    display: block;
+    font-size: 56px;
+    line-height: 1;
+    animation: npcBounce 2.6s ease-in-out infinite;
+  }
+
+  .npc-name {
+    display: inline-block;
+    margin-top: 2px;
+    padding: 4px 9px;
+    border: 3px solid white;
+    border-radius: 999px;
+    color: #573f94;
+    background: rgba(255,255,255,.97);
+    font-size: 12px;
+    font-weight: 900;
+    white-space: nowrap;
+    box-shadow: 0 5px 10px rgba(45,65,96,.18);
+  }
+
+  .npc-finn {
+    left: 22%;
+    top: 41%;
+  }
+
+  .npc-bibi {
+    left: 39%;
+    top: 61%;
+  }
+
+  .npc-nova {
+    right: 22%;
+    top: 35%;
+  }
+
+  .npc-melo {
+    right: 34%;
+    top: 57%;
+  }
+
+  .npc-friend:nth-child(2) .npc-emoji {
+    animation-delay: .5s;
+  }
+
+  .npc-friend:nth-child(3) .npc-emoji {
+    animation-delay: 1s;
+  }
+
+  .npc-friend:nth-child(4) .npc-emoji {
+    animation-delay: 1.5s;
+  }
+
+  .npc-talk {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 7px);
+    width: max-content;
+    max-width: 165px;
+    transform: translateX(-50%);
+    padding: 7px 10px;
+    border: 3px solid white;
+    border-radius: 15px;
+    color: #5c438e;
+    background: rgba(255,255,255,.98);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.2;
+    opacity: 0;
+    animation: npcSpeech 7s ease forwards;
+    pointer-events: none;
+  }
+
+  .npc-talk::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 100%;
+    transform: translateX(-50%);
+    border: 7px solid transparent;
+    border-top-color: white;
+  }
+
+  #npcDialog {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: none;
+    place-items: center;
+    padding: 18px;
+    background: rgba(36,29,67,.65);
+    backdrop-filter: blur(5px);
+  }
+
+  #npcDialog.open {
+    display: grid;
+  }
+
+  .npc-dialog-card {
+    width: min(520px, 100%);
+    padding: 24px;
+    border: 5px solid white;
+    border-radius: 30px;
+    background: linear-gradient(145deg,#fffdf4,#f1e8ff);
+    box-shadow: 0 28px 70px rgba(28,22,62,.38);
+    text-align: center;
+  }
+
+  #npcDialogEmoji {
+    font-size: 82px;
+    line-height: 1;
+  }
+
+  #npcDialogName {
+    margin: 8px 0 2px;
+    color: #6545a8;
+    font-size: 38px;
+  }
+
+  #npcDialogRole {
+    margin: 0;
+    color: #74809a;
+    font-weight: 900;
+  }
+
+  #npcDialogMessage {
+    margin: 18px 0 10px;
+    padding: 16px;
+    border-radius: 20px;
+    color: #465777;
+    background: white;
+    box-shadow: inset 0 0 0 3px #ece7f7;
+    font-size: 20px;
+    font-weight: 900;
+    line-height: 1.4;
+  }
+
+  #npcFriendship {
+    color: #735f96;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .npc-dialog-actions {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .npc-dialog-actions button {
+    min-height: 48px;
+    padding: 11px 18px;
+    border: 0;
+    border-radius: 999px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  #npcGoButton {
+    color: white;
+    background: #7450ba;
+    box-shadow: 0 5px 0 #4e347f;
+  }
+
+  #npcCloseButton {
+    color: #56627f;
+    background: #edf0f7;
+    box-shadow: 0 5px 0 #d5d9e4;
+  }
+
+  @keyframes npcBounce {
+    0%,100% { transform: translateY(0) rotate(-2deg); }
+    50% { transform: translateY(-8px) rotate(3deg); }
+  }
+
+  @keyframes npcSpeech {
+    0% { opacity: 0; transform: translateX(-50%) translateY(8px); }
+    10%,75% { opacity: 1; transform: translateX(-50%) translateY(0); }
+    100% { opacity: 0; transform: translateX(-50%) translateY(-6px); }
+  }
+
+  @media (max-width: 760px) {
+    .npc-friend {
+      width: 60px;
+    }
+
+    .npc-emoji {
+      font-size: 43px;
+    }
+
+    .npc-name {
+      font-size: 10px;
+      padding: 3px 7px;
+    }
+
+    .npc-finn {
+      left: 25%;
+      top: 42%;
+    }
+
+    .npc-bibi {
+      left: 38%;
+      top: 66%;
+    }
+
+    .npc-nova {
+      right: 25%;
+      top: 36%;
+    }
+
+    .npc-melo {
+      right: 35%;
+      top: 61%;
+    }
+  }
+
+  @media (max-width: 650px) and (orientation: portrait) {
+    .npc-finn {
+      left: 31%;
+      top: 40%;
+    }
+
+    .npc-nova {
+      right: 31%;
+      top: 35%;
+    }
+
+    .npc-bibi {
+      left: 34%;
+      top: 65%;
+    }
+
+    .npc-melo {
+      right: 34%;
+      top: 62%;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .npc-emoji,
+    .npc-talk {
+      animation: none;
+    }
+  }
+</style>
+
+<div id="npcDialog" role="dialog" aria-modal="true" aria-labelledby="npcDialogName">
+  <div class="npc-dialog-card">
+    <div id="npcDialogEmoji" aria-hidden="true">🦊</div>
+    <h2 id="npcDialogName">Finn</h2>
+    <p id="npcDialogRole">Reading Friend</p>
+    <div id="npcDialogMessage"></div>
+    <div id="npcFriendship"></div>
+
+    <div class="npc-dialog-actions">
+      <button id="npcGoButton" type="button">Let's Go</button>
+      <button id="npcCloseButton" type="button">Stay in My City</button>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const city = document.getElementById('city');
+
+  if (!city) {
+    console.error('NPC Friends: #city was not found.');
+    return;
+  }
+
+  const friends = [
+    {
+      id: 'finn',
+      name: 'Finn',
+      emoji: '🦊',
+      role: 'Reading Friend',
+      className: 'npc-finn',
+      greeting: 'I found a new story!',
+      page: 'reading.html',
+      action: 'Read with Finn',
+      messages: [
+        'I found a new story at the library. Want to read it with me?',
+        'Books can take us anywhere. Where should we travel today?',
+        'You are becoming a stronger reader every time you practice!'
+      ]
+    },
+    {
+      id: 'bibi',
+      name: 'Bibi',
+      emoji: '🐰',
+      role: 'Math Friend',
+      className: 'npc-bibi',
+      greeting: 'Can you help me count?',
+      page: 'math.html',
+      action: 'Count with Bibi',
+      messages: [
+        'I counted the flowers, but I think I missed one. Can you help?',
+        'Numbers are hiding all around My City!',
+        'Let us solve a tiny math mystery together.'
+      ]
+    },
+    {
+      id: 'nova',
+      name: 'Nova',
+      emoji: '🦉',
+      role: 'Science Friend',
+      className: 'npc-nova',
+      greeting: 'Let us discover something!',
+      page: 'science.html',
+      action: 'Explore with Nova',
+      messages: [
+        'I noticed something curious near the school. Want to investigate?',
+        'Great scientists ask great questions.',
+        'The whole city is full of clues waiting to be discovered!'
+      ]
+    },
+    {
+      id: 'melo',
+      name: 'Melo',
+      emoji: '🐼',
+      role: 'Music Friend',
+      className: 'npc-melo',
+      greeting: 'Want to make music?',
+      page: 'music-studio.html',
+      action: 'Make Music with Melo',
+      messages: [
+        'I made a new rhythm. Can you help me finish it?',
+        'Every sound can become part of a song!',
+        'Let us make music that brings the whole city to life.'
+      ]
+    }
+  ];
+
+  const SAVE_KEY = 'elcraft_npc_friends_inline_v1';
+  let saved = { meetings: {} };
+
+  try {
+    saved = {
+      ...saved,
+      ...JSON.parse(localStorage.getItem(SAVE_KEY) || '{}')
+    };
+  } catch {}
+
+  const layer = document.createElement('div');
+  layer.id = 'npcFriendsLayer';
+  layer.setAttribute('aria-label', 'Friends in My City');
+
+  friends.forEach((friend, index) => {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.className = `npc-friend ${friend.className}`;
+    button.setAttribute('aria-label', `Talk to ${friend.name}, ${friend.role}`);
+
+    button.innerHTML = `
+      <span class="npc-emoji" aria-hidden="true">${friend.emoji}</span>
+      <span class="npc-name">${friend.name}</span>
+      ${index === 0 ? `<span class="npc-talk">${friend.greeting}</span>` : ''}
+    `;
+
+    button.addEventListener('click', () => openFriend(friend));
+    layer.appendChild(button);
+  });
+
+  city.appendChild(layer);
+
+  const dialog = document.getElementById('npcDialog');
+  const emoji = document.getElementById('npcDialogEmoji');
+  const name = document.getElementById('npcDialogName');
+  const role = document.getElementById('npcDialogRole');
+  const message = document.getElementById('npcDialogMessage');
+  const friendship = document.getElementById('npcFriendship');
+  const goButton = document.getElementById('npcGoButton');
+  const closeButton = document.getElementById('npcCloseButton');
+
+  function getPlayerName() {
+    return (
+      localStorage.getItem('elcraft_child_name') ||
+      'Player'
+    ).trim().slice(0, 20) || 'Player';
+  }
+
+  function openFriend(friend) {
+    saved.meetings[friend.id] =
+      Number(saved.meetings[friend.id] || 0) + 1;
+
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saved));
+
+    const visits = saved.meetings[friend.id];
+    const text = friend.messages[(visits - 1) % friend.messages.length];
+
+    emoji.textContent = friend.emoji;
+    name.textContent = friend.name;
+    role.textContent = friend.role;
+    message.textContent = `${getPlayerName()}, ${text}`;
+    friendship.textContent =
+      `${visits < 5 ? 'New Friend' : visits < 10 ? 'Growing Friendship' : 'Great Friends'} • ${visits} visit${visits === 1 ? '' : 's'}`;
+
+    goButton.textContent = friend.action;
+    goButton.onclick = () => {
+      window.location.href = friend.page;
+    };
+
+    dialog.classList.add('open');
+    goButton.focus();
+  }
+
+  function closeDialog() {
+    dialog.classList.remove('open');
+  }
+
+  closeButton.addEventListener('click', closeDialog);
+
+  dialog.addEventListener('click', event => {
+    if (event.target === dialog) {
+      closeDialog();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape') {
+      closeDialog();
+    }
+  });
+
+  console.log('NPC Friends loaded successfully.');
+})();
+</script>
+
 
 </body>
 </html>
