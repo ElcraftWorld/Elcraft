@@ -191,25 +191,47 @@
 
   .home-overlay{ position:absolute; inset:0; pointer-events:none; display:none; }
   .home-overlay.visible{ display:block; }
+
   .greeting-bubble{
-    position:absolute; top:14px; left:50%; transform:translateX(-50%);
-    background:white; border-radius:18px; padding:10px 18px;
-    font-family:'Baloo 2',cursive; font-size:14px; color:var(--ink);
-    box-shadow:var(--shadow); white-space:nowrap; animation: bubbleFloat 3s ease-in-out infinite;
+    position:absolute; top:16px; right:16px; max-width:260px;
+    background:white; border-radius:20px; padding:14px 18px;
+    box-shadow:var(--shadow); animation: bubbleFloat 3s ease-in-out infinite;
+    text-align:left;
   }
-  @keyframes bubbleFloat{ 0%,100%{ transform:translateX(-50%) translateY(0); } 50%{ transform:translateX(-50%) translateY(-5px); } }
-  .hotspot-chip{
-    position:absolute; pointer-events:auto; border:none; border-radius:999px;
-    padding:9px 16px 9px 12px; font-family:'Baloo 2',cursive; font-size:13px;
-    background:rgba(255,255,255,0.92); color:var(--ink); box-shadow:var(--shadow);
-    display:flex; align-items:center; gap:6px; cursor:pointer; transition:transform .1s;
+  .greeting-bubble::after{
+    content:''; position:absolute; bottom:-10px; left:28px;
+    width:0; height:0; border:12px solid transparent; border-top-color:white; border-bottom:0;
   }
-  .hotspot-chip:active{ transform:scale(0.94); }
-  .hotspot-chip .icon{ font-size:16px; }
-  .chip-sky{ top:16px; left:16px; }
-  .chip-city{ bottom:16px; left:16px; background:rgba(228,243,220,0.95); }
-  .chip-character{ bottom:16px; left:50%; transform:translateX(-50%); background:rgba(255,233,199,0.95); }
-  .chip-music{ top:16px; right:16px; background:rgba(243,224,247,0.95); animation: chipBob 2.6s ease-in-out infinite; }
+  .greeting-bubble .g-title{ font-family:'Baloo 2',cursive; font-size:17px; color:var(--dusk); font-weight:700; }
+  .greeting-bubble .g-sub{ font-family:'Quicksand',sans-serif; font-size:12.5px; color:#5a5f85; margin-top:2px; }
+  @keyframes bubbleFloat{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-5px); } }
+
+  .settings-chip{
+    position:absolute; top:16px; left:16px; pointer-events:auto;
+    width:40px; height:40px; border-radius:50%; border:none; cursor:pointer;
+    background:var(--dusk); color:white; font-size:17px; box-shadow:var(--shadow);
+  }
+
+  .nav-row{
+    position:absolute; left:0; right:0; bottom:14px;
+    display:flex; justify-content:center; gap:10px; flex-wrap:wrap;
+    padding:0 12px; pointer-events:none;
+  }
+  .nav-card{
+    pointer-events:auto; border:none; border-radius:18px; cursor:pointer;
+    padding:12px 14px 10px; min-width:92px; box-shadow:var(--shadow);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    transition:transform .1s;
+  }
+  .nav-card:active{ transform:translateY(3px); box-shadow:none; }
+  .nav-card .icon{ font-size:26px; }
+  .nav-card .title{ font-family:'Baloo 2',cursive; font-size:13px; color:var(--ink); }
+  .nav-card .subtitle{ font-family:'Quicksand',sans-serif; font-size:9.5px; color:#5a5f85; font-weight:700; }
+  .nav-card.sky{ background:#DDEEFB; }
+  .nav-card.character{ background:#FFE9C7; }
+  .nav-card.city{ background:#E4F3DC; }
+  .nav-card.music{ background:#F3E0F7; animation: chipBob 2.6s ease-in-out infinite; }
+  .nav-card.together{ background:#FFD9E0; }
   @keyframes chipBob{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
 
   @media (max-width: 480px){ .home-grid{ grid-template-columns:repeat(2,minmax(120px,1fr)); } }
@@ -252,11 +274,18 @@
         <button class="mini-btn trash" id="trashBtn">✕</button>
       </div>
       <div class="home-overlay" id="homeOverlay">
-        <div class="greeting-bubble" id="greetingBubble">👋 Hi! What should we build today?</div>
-        <button class="hotspot-chip chip-sky" data-go="sky"><span class="icon">☀️</span>Sky</button>
-        <button class="hotspot-chip chip-city" data-go="city"><span class="icon">🏘️</span>City</button>
-        <button class="hotspot-chip chip-character" data-go="avatar"><span class="icon">🧑</span>You</button>
-        <button class="hotspot-chip chip-music" data-go="music"><span class="icon">🎵</span>Music</button>
+        <button class="settings-chip" id="settingsChip" title="Parents">⚙️</button>
+        <div class="greeting-bubble" id="greetingBubble">
+          <div class="g-title">👋 Hi! <span class="spark">✨</span></div>
+          <div class="g-sub">Ready to create something amazing today?</div>
+        </div>
+        <div class="nav-row">
+          <button class="nav-card sky" data-go="sky"><span class="icon">☀️</span><span class="title">Sky World</span><span class="subtitle">Paint your sky</span></button>
+          <button class="nav-card character" data-go="avatar"><span class="icon">🧑</span><span class="title">My Characters</span><span class="subtitle">Design & customize</span></button>
+          <button class="nav-card city" data-go="city"><span class="icon">🏠</span><span class="title">My City</span><span class="subtitle">Build your city</span></button>
+          <button class="nav-card music" data-go="music"><span class="icon">🎵</span><span class="title">Music</span><span class="subtitle">Make a tune</span></button>
+          <button class="nav-card together" id="togetherNavCard"><span class="icon">🧑‍🤝‍🧑</span><span class="title">Together</span><span class="subtitle">Play with friends</span></button>
+        </div>
       </div>
     </div>
     <div id="peersGrid">
@@ -1386,8 +1415,14 @@
     mineRenderer.resize();
   }
   document.getElementById('homeBtn').addEventListener('click', showHome);
-  document.querySelectorAll('.hotspot-chip').forEach(chip=>{
-    chip.addEventListener('click', ()=> showApp(chip.dataset.go));
+  document.querySelectorAll('.nav-card[data-go]').forEach(card=>{
+    card.addEventListener('click', ()=> showApp(card.dataset.go));
+  });
+  document.getElementById('togetherNavCard').addEventListener('click', ()=>{
+    document.getElementById('togetherBtn').click();
+  });
+  document.getElementById('settingsChip').addEventListener('click', ()=>{
+    document.getElementById('parentsBtn').click();
   });
   showHome();
 
@@ -1397,7 +1432,8 @@
   const NAME_KEY = 'elcraft_child_name';
 
   function applyChildName(name){
-    greetingBubbleEl.textContent = name ? `👋 Hi ${name}! Welcome back to your world!` : '👋 Hi! What should we build today?';
+    greetingBubbleEl.querySelector('.g-title').innerHTML = name ? `👋 Hi ${name}! <span class="spark">✨</span>` : '👋 Hi! <span class="spark">✨</span>';
+    greetingBubbleEl.querySelector('.g-sub').textContent = name ? 'Ready to create something amazing today?' : 'What should we build today?';
     document.getElementById('parentsChildName').textContent = name || '—';
   }
 
