@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6f4bb3">
+<title>ELCraft — Castle</title>
+<style>
+:root{
+  --ink:#31406d;
+  --purple:#6f4bb3;
+  --deep:#433078;
+  --gold:#ffd55b;
+  --cream:#fffaf0;
+  --panel:rgba(255,255,255,.95);
+  --shadow:0 18px 44px rgba(42,29,91,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:"Trebuchet MS",Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 50% 6%,rgba(255,242,163,.65),transparent 19%),
+    linear-gradient(#7d68c6 0 20%,#bda7ed 20% 44%,#ece5ff 44% 100%);
+  overflow-x:hidden;
+}
+button{font:inherit}
+.topbar{
+  position:sticky;top:0;z-index:50;
+  min-height:78px;padding:10px 16px;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  background:rgba(255,255,255,.95);
+  border-bottom:4px solid rgba(95,70,164,.18);
+  box-shadow:0 7px 24px rgba(41,29,84,.16);
+}
+.topbar button{
+  border:0;border-radius:999px;padding:11px 16px;
+  font-weight:1000;cursor:pointer;
+}
+.back{background:#eee6ff;color:#6044a4;box-shadow:0 4px 0 #d7caef}
+.progress{background:#fff1b9;color:#7a5916;box-shadow:0 4px 0 #e5ca6d}
+.title{text-align:center}
+.title strong{display:block;color:#6949ae;font-size:clamp(25px,3vw,39px);line-height:1}
+.title small{font-weight:900;color:#7884a5}
+main{width:min(1280px,100%);margin:auto;padding:18px}
+.castle-scene{
+  position:relative;min-height:390px;border-radius:34px;overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 18%,rgba(255,250,187,.9),transparent 20%),
+    linear-gradient(#5b4496 0 55%,#d7c5ee 55% 100%);
+  border:4px solid rgba(255,255,255,.86);
+  box-shadow:var(--shadow);
+}
+.star{position:absolute;color:#fff9bd;animation:twinkle 2.3s ease-in-out infinite}
+.star:nth-child(1){left:11%;top:13%;font-size:24px}
+.star:nth-child(2){right:14%;top:19%;font-size:30px;animation-delay:.8s}
+.star:nth-child(3){left:29%;top:8%;font-size:18px;animation-delay:1.2s}
+.star:nth-child(4){right:32%;top:10%;font-size:20px;animation-delay:.4s}
+@keyframes twinkle{50%{transform:scale(1.35);opacity:.55}}
+.castle{
+  position:absolute;left:50%;bottom:34px;transform:translateX(-50%);
+  width:min(690px,88%);height:300px;
+}
+.keep{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:56%;height:235px;border-radius:26px 26px 0 0;
+  background:linear-gradient(90deg,#c8b3df,#f5eafc 46%,#c1a8d9);
+  border:6px solid #76569b;box-shadow:0 13px 0 rgba(56,38,96,.18);
+}
+.tower{
+  position:absolute;bottom:0;width:24%;height:255px;
+  background:linear-gradient(90deg,#b89ed3,#f1e5f9 50%,#aa8dc7);
+  border:6px solid #76569b;border-radius:25px 25px 0 0;
+}
+.tower.left{left:3%}.tower.right{right:3%}
+.roof{
+  position:absolute;left:50%;top:-78px;transform:translateX(-50%);
+  width:0;height:0;border-left:86px solid transparent;border-right:86px solid transparent;
+  border-bottom:94px solid #7b4bb4;filter:drop-shadow(0 6px 0 #503078);
+}
+.keep .roof{border-left-width:125px;border-right-width:125px;top:-88px}
+.flag{
+  position:absolute;left:50%;top:-118px;width:6px;height:49px;background:#5b397f
+}
+.flag::after{
+  content:"";position:absolute;left:6px;top:1px;
+  border-top:13px solid transparent;border-bottom:13px solid transparent;border-left:38px solid #ffd45a;
+}
+.window{
+  position:absolute;width:38px;height:55px;border-radius:22px 22px 8px 8px;
+  background:linear-gradient(#8be3ff,#467bc9);border:5px solid #68478d;
+  box-shadow:inset 0 0 0 4px rgba(255,255,255,.25);
+}
+.tower .window{left:50%;top:78px;transform:translateX(-50%)}
+.keep .window.one{left:17%;top:48px}.keep .window.two{right:17%;top:48px}
+.door{
+  position:absolute;left:50%;bottom:0;transform:translateX(-50%);
+  width:105px;height:130px;border-radius:58px 58px 0 0;
+  background:linear-gradient(90deg,#6e3d25,#ad6d39,#60331f);
+  border:7px solid #674289;cursor:pointer;
+}
+.door::after{content:"✨";position:absolute;right:12px;top:59px;font-size:18px}
+.banner{
+  position:absolute;left:50%;top:90px;transform:translateX(-50%);
+  padding:8px 17px;border-radius:10px;background:#fff0a8;color:#6d4a13;
+  border:4px solid #9c7524;font-weight:1000;white-space:nowrap
+}
+.cloud{position:absolute;font-size:72px;opacity:.8;animation:drift 28s linear infinite}
+.cloud.c1{top:48px;left:-120px}.cloud.c2{top:125px;left:-190px;animation-duration:38s}
+@keyframes drift{to{transform:translateX(calc(100vw + 300px))}}
+.welcome{
+  position:relative;z-index:5;width:min(600px,90%);margin:22px auto 0;text-align:center;
+  padding:15px 18px;border-radius:22px;background:rgba(255,255,255,.91);box-shadow:0 8px 28px rgba(41,29,84,.17)
+}
+.welcome h1{margin:0;color:#6546a7;font-size:clamp(29px,4vw,48px)}
+.welcome p{margin:7px 0 0;font-weight:900;color:#7480a2}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:16px
+}
+.stat{
+  padding:14px;border-radius:21px;background:var(--panel);box-shadow:var(--shadow);
+  text-align:center;border:3px solid #fff
+}
+.stat span{font-size:32px}.stat strong{display:block;font-size:24px;color:#6547a8}.stat small{font-weight:1000;color:#7b87a4}
+.rooms{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px
+}
+.room{
+  position:relative;min-height:205px;padding:19px;border:0;border-radius:28px;
+  text-align:left;background:var(--panel);box-shadow:var(--shadow);
+  border:4px solid white;cursor:pointer;overflow:hidden;
+  transition:transform .18s ease,box-shadow .18s ease;
+}
+.room:hover{transform:translateY(-5px);box-shadow:0 24px 48px rgba(42,29,91,.27)}
+.room:active{transform:translateY(2px)}
+.room .icon{font-size:52px}.room h2{margin:8px 0 5px;color:#6245a4}.room p{margin:0;font-weight:900;color:#73809d;line-height:1.35}
+.room .tag{
+  display:inline-block;margin-top:13px;padding:7px 11px;border-radius:999px;
+  background:#eee7ff;color:#6345a5;font-size:13px;font-weight:1000
+}
+.room.primary{background:linear-gradient(145deg,#fff9d2,#fff,#eee6ff)}
+.room.primary .tag{background:#ffe680;color:#745516}
+.room.locked{filter:saturate(.65)}
+.room.locked::after{
+  content:"Grow the castle";position:absolute;right:12px;top:12px;
+  padding:6px 9px;border-radius:999px;background:#ececf3;color:#78809a;font-size:12px;font-weight:1000
+}
+.section{
+  margin-top:16px;padding:18px;border-radius:28px;background:var(--panel);box-shadow:var(--shadow);border:3px solid #fff
+}
+.section h2{margin:0 0 12px;color:#6146a3}
+.upgrade-track{height:18px;border-radius:999px;background:#e5e8f3;overflow:hidden}
+.upgrade-fill{height:100%;border-radius:999px;background:linear-gradient(90deg,#7755bd,#ffd45a);transition:.4s}
+.upgrade-text{display:flex;justify-content:space-between;gap:10px;margin-top:8px;font-weight:1000;color:#75809c}
+.modal{
+  position:fixed;inset:0;z-index:100;display:none;place-items:center;padding:18px;
+  background:rgba(35,24,70,.66);backdrop-filter:blur(5px)
+}
+.modal.open{display:grid}
+.modal-card{
+  width:min(590px,100%);max-height:88vh;overflow:auto;padding:24px;border-radius:30px;
+  background:#fff;box-shadow:0 30px 80px rgba(16,10,39,.38);text-align:center
+}
+.modal-card .big{font-size:76px}.modal-card h2{margin:5px 0;color:#6245a4;font-size:32px}
+.modal-card p{font-weight:900;color:#74809d;line-height:1.45}
+.actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:17px}
+.actions button{
+  border:0;border-radius:999px;padding:12px 18px;font-weight:1000;cursor:pointer
+}
+.go{background:#7652bd;color:#fff;box-shadow:0 5px 0 #4d347e}
+.close{background:#edf0f7;color:#536080}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:150;transform:translate(-50%,160%);
+  padding:12px 19px;border-radius:999px;background:#35255e;color:#fff;font-weight:1000;
+  box-shadow:0 12px 30px rgba(23,14,48,.35);transition:.28s
+}
+.toast.show{transform:translate(-50%,0)}
+@media(max-width:900px){.rooms{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:620px){
+  main{padding:9px}.topbar{padding:9px}.title small{display:none}
+  .topbar button{padding:10px 12px}
+  .stats{grid-template-columns:1fr 1fr}.stat:last-child{grid-column:1/-1}
+  .rooms{grid-template-columns:1fr}.castle-scene{min-height:345px}.castle{height:245px}
+  .keep{height:190px}.tower{height:210px}.banner{top:70px;font-size:13px}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="topbar">
+  <button class="back" id="backBtn">← My City</button>
+  <div class="title">
+    <strong>🏰 The Castle</strong>
+    <small>Gateway to magical worlds</small>
+  </div>
+  <button class="progress" id="progressBtn">⭐ Progress</button>
+</header>
+
+<main>
+  <section class="castle-scene" aria-label="ELCraft Castle">
+    <div class="cloud c1">☁️</div><div class="cloud c2">☁️</div>
+    <div class="star">✦</div><div class="star">✦</div><div class="star">✦</div><div class="star">✦</div>
+
+    <div class="welcome">
+      <h1 id="welcomeTitle">Welcome to Your Castle!</h1>
+      <p>The castle is always open. Learning points help new rooms and decorations appear.</p>
+    </div>
+
+    <div class="castle" id="castleArt">
+      <div class="tower left"><div class="roof"></div><div class="flag"></div><div class="window"></div></div>
+      <div class="keep">
+        <div class="roof"></div><div class="flag"></div>
+        <div class="window one"></div><div class="window two"></div>
+        <div class="banner" id="castleBanner">ELCRAFT CASTLE</div>
+        <button class="door" id="castleDoor" aria-label="Enter the castle"></button>
+      </div>
+      <div class="tower right"><div class="roof"></div><div class="flag"></div><div class="window"></div></div>
+    </div>
+  </section>
+
+  <section class="stats">
+    <div class="stat"><span>⭐</span><strong id="stars">0</strong><small>Total Stars</small></div>
+    <div class="stat"><span>🏰</span><strong id="castleLevel">Level 1</strong><small>Castle Level</small></div>
+    <div class="stat"><span>🔑</span><strong id="roomsOpen">3</strong><small>Rooms Open</small></div>
+  </section>
+
+  <section class="rooms" id="rooms">
+    <button class="room primary" data-room="sky" data-open="true">
+      <div class="icon">☁️🌈</div>
+      <h2>Sky World Portal</h2>
+      <p>Travel through the glowing castle doors to Sky World anytime.</p>
+      <span class="tag">Always Open</span>
+    </button>
+
+    <button class="room" data-room="throne" data-open="true">
+      <div class="icon">👑</div>
+      <h2>Royal Hall</h2>
+      <p>See your title, castle level, banners, and royal achievements.</p>
+      <span class="tag">Always Open</span>
+    </button>
+
+    <button class="room" data-room="map" data-open="true">
+      <div class="icon">🗺️</div>
+      <h2>World Map Room</h2>
+      <p>Choose where your next ELCraft adventure will begin.</p>
+      <span class="tag">Always Open</span>
+    </button>
+
+    <button class="room" data-room="treasure" data-stars="25">
+      <div class="icon">🎁</div>
+      <h2>Treasure Room</h2>
+      <p>View collected rewards, special items, and castle treasures.</p>
+      <span class="tag">Opens at 25 stars</span>
+    </button>
+
+    <button class="room" data-room="stories" data-stars="60">
+      <div class="icon">📖✨</div>
+      <h2>Story Chamber</h2>
+      <p>Your reading and writing adventures become magical castle stories.</p>
+      <span class="tag">Opens at 60 stars</span>
+    </button>
+
+    <button class="room" data-room="magic" data-stars="120">
+      <div class="icon">🔮</div>
+      <h2>Magic Workshop</h2>
+      <p>Mix colors, sounds, patterns, and discoveries into magical creations.</p>
+      <span class="tag">Opens at 120 stars</span>
+    </button>
+  </section>
+
+  <section class="section">
+    <h2>✨ Castle Growth</h2>
+    <div class="upgrade-track"><div class="upgrade-fill" id="upgradeFill"></div></div>
+    <div class="upgrade-text">
+      <span id="growthMessage">Your castle has begun growing.</span>
+      <span id="nextCastle">Next upgrade</span>
+    </div>
+  </section>
+</main>
+
+<div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal-card">
+    <div class="big" id="modalIcon">🏰</div>
+    <h2 id="modalTitle">Castle Room</h2>
+    <p id="modalText"></p>
+    <div class="actions">
+      <button class="go" id="modalGo">Enter</button>
+      <button class="close" id="modalClose">Close</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="world-engine.js"></script>
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const name=(localStorage.getItem(NAME_KEY)||'Explorer').trim().slice(0,20)||'Explorer';
+  const modal=document.querySelector('#modal');
+  const toast=document.querySelector('#toast');
+  let world={
+    totalStars:0,castleStage:0,buildingStages:{castle:1},achievements:[],
+    skyIslands:{rainbowPlaza:true}
+  };
+
+  if(window.ELCraftWorld){
+    world=window.ELCraftWorld.recalculate();
+  }else{
+    try{
+      world={...world,...JSON.parse(localStorage.getItem('elcraft_world_v1')||'{}')};
+    }catch{}
+  }
+
+  document.querySelector('#welcomeTitle').textContent=`Welcome to ${name}'s Castle!`;
+  document.querySelector('#castleBanner').textContent=`${name.toUpperCase()}'S CASTLE`;
+  document.querySelector('#stars').textContent=world.totalStars||0;
+
+  const castleLevel=world.buildingStages?.castle || (1+(world.totalStars>=90)+(world.totalStars>=220)+(world.totalStars>=450));
+  document.querySelector('#castleLevel').textContent=`Level ${castleLevel}`;
+
+  const roomButtons=[...document.querySelectorAll('.room')];
+  let openCount=0;
+  roomButtons.forEach(btn=>{
+    const required=Number(btn.dataset.stars||0);
+    const open=btn.dataset.open==='true' || (world.totalStars||0)>=required;
+    btn.dataset.unlocked=String(open);
+    btn.classList.toggle('locked',!open);
+    if(open)openCount++;
+  });
+  document.querySelector('#roomsOpen').textContent=openCount;
+
+  const castleMilestones=[90,220,450];
+  const next=castleMilestones.find(v=>(world.totalStars||0)<v);
+  const previous=next===90?0:next===220?90:next===450?220:450;
+  const percent=next?Math.max(0,Math.min(100,((world.totalStars-previous)/(next-previous))*100)):100;
+  document.querySelector('#upgradeFill').style.width=percent+'%';
+  document.querySelector('#growthMessage').textContent=
+    castleLevel===1?'Your castle has begun growing.':
+    castleLevel===2?'Royal flags and banners decorate the castle.':
+    castleLevel===3?'The castle glows with magical lights.':
+    'Your legendary castle shines across every world.';
+  document.querySelector('#nextCastle').textContent=next?`${next-world.totalStars} stars to Level ${castleLevel+1}`:'Legendary castle reached!';
+
+  document.body.dataset.castleLevel=castleLevel;
+  if(castleLevel>=2) document.querySelector('#castleArt').style.filter='drop-shadow(0 0 18px rgba(255,225,104,.65))';
+  if(castleLevel>=3) document.querySelector('.castle-scene').style.boxShadow='0 0 34px rgba(255,233,116,.8), var(--shadow)';
+
+  const roomInfo={
+    sky:{icon:'☁️🌈',title:'Sky World Portal',text:'The portal is always open. Step through the glowing doors and travel to Sky World.',go:'sky-world.html',label:'Travel to Sky World'},
+    throne:{icon:'👑',title:'Royal Hall',text:`Welcome, ${name}! Your royal title is Castle Explorer. As your learning stars grow, this hall will gain banners, lights, trophies, and magical decorations.`,go:'progress.html',label:'See World Progress'},
+    map:{icon:'🗺️',title:'World Map Room',text:'Choose an adventure: return to My City, visit School, customize your character, or travel to Sky World.',go:'my-city.html',label:'Return to My City'},
+    treasure:{icon:'🎁',title:'Treasure Room',text:'Your treasure room is open! This will become the home for special rewards, collected objects, and rare ELCraft items.',go:'market.html',label:'Visit the Market'},
+    stories:{icon:'📖✨',title:'Story Chamber',text:'The Story Chamber turns reading and writing progress into magical tales. More story features can be added here next.',go:'reading.html',label:'Visit Reading'},
+    magic:{icon:'🔮',title:'Magic Workshop',text:'The Magic Workshop combines art, music, science, patterns, and imagination. It is ready to grow into a creative activity room.',go:'sky-world.html',label:'Enter Sky World'}
+  };
+
+  function showToast(message){
+    toast.textContent=message;toast.classList.add('show');
+    clearTimeout(window.__castleToast);
+    window.__castleToast=setTimeout(()=>toast.classList.remove('show'),2300);
+  }
+
+  function openRoom(btn){
+    const required=Number(btn.dataset.stars||0);
+    if(btn.dataset.unlocked!=='true'){
+      showToast(`${required-(world.totalStars||0)} more stars will grow this room! ⭐`);
+      return;
+    }
+    const info=roomInfo[btn.dataset.room];
+    document.querySelector('#modalIcon').textContent=info.icon;
+    document.querySelector('#modalTitle').textContent=info.title;
+    document.querySelector('#modalText').textContent=info.text;
+    const go=document.querySelector('#modalGo');
+    go.textContent=info.label;
+    go.onclick=()=>location.href=info.go;
+    modal.classList.add('open');
+  }
+
+  roomButtons.forEach(btn=>btn.addEventListener('click',()=>openRoom(btn)));
+  document.querySelector('#castleDoor').onclick=()=>openRoom(document.querySelector('[data-room="sky"]'));
+  document.querySelector('#modalClose').onclick=()=>modal.classList.remove('open');
+  modal.onclick=e=>{if(e.target===modal)modal.classList.remove('open')};
+  document.querySelector('#backBtn').onclick=()=>location.href='my-city.html';
+  document.querySelector('#progressBtn').onclick=()=>location.href='progress.html';
+})();
+</script>
+</body>
+</html>
