@@ -374,8 +374,9 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
       const isWriting=s.id==='writing';
       const isMath=s.id==='math';
       const isScience=s.id==='science';
-      b.className=`subject ${s.color} ${(!isReading&&!isWriting&&!isMath&&!isScience&&done.includes(s.id))?'done':''}`;
-      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':isMath?'Always open • Math stations and Math Passport':isScience?'Always open • Science stations and Science Passport':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
+      const isDiscovery=s.id==='discovery';
+      b.className=`subject ${s.color} ${(!isReading&&!isWriting&&!isMath&&!isScience&&!isDiscovery&&done.includes(s.id))?'done':''}`;
+      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':isMath?'Always open • Math stations and Math Passport':isScience?'Always open • Science stations and Science Passport':isDiscovery?'Always open • World adventures and Discovery Passport':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
       b.onclick=()=>openLesson(s);
       subjectsBox.append(b);
     });
@@ -430,7 +431,8 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
       reading:'reading.html',
       writing:'writing.html',
       math:'math.html',
-      science:'science.html'
+      science:'science.html',
+      discovery:'discovery.html'
     };
 
     if(classroomPages[subject.id]){
