@@ -184,6 +184,20 @@
 
     style.textContent = `
       /* -------------------------------------- */
+      /* NOTIFICATION POSITION                  */
+      /* -------------------------------------- */
+
+      #message {
+        top: 115px;
+        transform: translateX(-50%) translateY(-180px);
+        z-index: 300;
+      }
+
+      #message.show {
+        transform: translateX(-50%) translateY(0);
+      }
+
+      /* -------------------------------------- */
       /* NEW CITY LIFE FEATURES                 */
       /* -------------------------------------- */
 
@@ -721,7 +735,18 @@
         }
       }
 
+      @media (max-width: 760px) {
+        #message {
+          top: 92px;
+          max-width: 88vw;
+        }
+      }
+
       @media (max-height: 650px) and (orientation: landscape) {
+        #message {
+          top: 74px;
+        }
+
         #cityFountain {
           bottom: 14%;
           width: 82px;
@@ -744,6 +769,10 @@
       }
 
       @media (max-width: 650px) and (orientation: portrait) {
+        #message {
+          top: 90px;
+        }
+
         #cityFountain {
           bottom: 15%;
           width: 76px;
@@ -1118,6 +1147,7 @@
           document.createElement('div');
 
         sparkle.className = 'city-sparkle';
+
         sparkle.textContent =
           index % 2 === 0 ? '✨' : '✦';
 
