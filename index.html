@@ -237,119 +237,305 @@
   @media (max-width: 480px){ .home-grid{ grid-template-columns:repeat(2,minmax(120px,1fr)); } }
 
 
-  /* ===== Phase 1: cinematic Home World ===== */
-  body.home-mode .app{ padding:0; gap:0; background:#dff3ff; }
+
+  /* ===== Layered, responsive Living Home World ===== */
+  body.home-mode .app{ padding:0; gap:0; background:#91d9f6; }
   body.home-mode header{ display:none; }
   body.home-mode .stage{ gap:0; min-height:0; }
   body.home-mode .canvas-wrap{
     border-radius:0;
     box-shadow:none;
-    background:#8fd0f0;
-    isolation:isolate;
-  }
-  body.home-mode .canvas-wrap::before,
-  body.home-mode .canvas-wrap::after{
-    content:'';
-    position:absolute;
-    inset:0;
-    pointer-events:none;
-  }
-  body.home-mode .canvas-wrap::before{
-    background:url('./elcraft-home-world-clean.png') center/cover no-repeat;
-    filter:blur(20px) saturate(.9);
-    transform:scale(1.05);
-    opacity:.72;
-    z-index:-2;
-  }
-  body.home-mode .canvas-wrap::after{
-    background:url('./elcraft-home-world-clean.png') center/contain no-repeat;
-    z-index:-1;
+    overflow:hidden;
+    background:linear-gradient(#55bff4 0 48%, #b6e98e 48% 100%);
   }
   body.home-mode #sky{ opacity:0; pointer-events:none; }
   body.home-mode #peersGrid{ display:none !important; }
   body.home-mode .sticker-toolbar{ display:none !important; }
   body.home-mode .home-overlay{ display:block; }
+
+  .living-home{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 16% 13%,rgba(255,255,255,.72) 0 2%,transparent 2.3%),
+      linear-gradient(#4bb9ef 0 49%,#a8e382 49% 100%);
+    font-family:'Quicksand',sans-serif;
+    pointer-events:none;
+  }
+  .living-home *{ box-sizing:border-box; }
+  .living-home button{ pointer-events:auto; }
+
+  .scene-svg{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    display:block;
+  }
+  .cloud-a{ animation:cloudDrift 24s linear infinite; }
+  .cloud-b{ animation:cloudDrift 31s linear infinite reverse; }
+  .balloon{ transform-box:fill-box; transform-origin:center; animation:balloonFloat 5s ease-in-out infinite; }
+  .bird-one{ animation:birdFly 11s linear infinite; }
+  .bird-two{ animation:birdFly 14s linear infinite 2s; }
+  .butterfly{ transform-box:fill-box; transform-origin:center; animation:butterflyFloat 4s ease-in-out infinite; }
+  .waterfall-flow{ animation:waterFlow 1.6s linear infinite; }
+  .sparkle{ animation:sparkle 1.8s ease-in-out infinite; }
+  .tree-crown{ transform-box:fill-box; transform-origin:50% 100%; animation:treeSway 4.5s ease-in-out infinite; }
+  .tree-crown.delay{ animation-delay:-2s; }
+
+  @keyframes cloudDrift{ from{ transform:translateX(-5%); } to{ transform:translateX(8%); } }
+  @keyframes balloonFloat{ 0%,100%{ transform:translateY(0) rotate(-1deg); } 50%{ transform:translateY(-12px) rotate(1deg); } }
+  @keyframes birdFly{ 0%{ transform:translateX(-12vw) translateY(0); } 50%{ transform:translateX(48vw) translateY(-16px); } 100%{ transform:translateX(105vw) translateY(5px); } }
+  @keyframes butterflyFloat{ 0%,100%{ transform:translate(0,0) rotate(-5deg); } 50%{ transform:translate(-14px,-10px) rotate(8deg); } }
+  @keyframes waterFlow{ from{ stroke-dashoffset:0; } to{ stroke-dashoffset:-42; } }
+  @keyframes sparkle{ 0%,100%{ opacity:.25; transform:scale(.75); } 50%{ opacity:1; transform:scale(1.15); } }
+  @keyframes treeSway{ 0%,100%{ transform:rotate(-1deg); } 50%{ transform:rotate(1.5deg); } }
+
+  .home-logo{
+    position:absolute;
+    top:2.2%;
+    left:2.6%;
+    width:clamp(170px,19vw,310px);
+    aspect-ratio:1.52;
+    display:grid;
+    place-items:center;
+    z-index:5;
+    filter:drop-shadow(0 8px 8px rgba(34,38,75,.18));
+    pointer-events:none;
+  }
+  .logo-wreath{
+    position:absolute;
+    inset:4%;
+    border-radius:50%;
+    background:
+      radial-gradient(circle at 50% 50%,#2f8e3e 0 46%,transparent 47%),
+      conic-gradient(#4aa553,#87c94e,#317c3e,#9fd85b,#328745,#4aa553);
+    border:7px solid rgba(255,255,255,.35);
+    box-shadow:inset 0 0 0 8px rgba(28,101,42,.22);
+  }
+  .logo-text{
+    position:relative;
+    font-family:'Baloo 2',cursive;
+    font-weight:800;
+    font-size:clamp(28px,4vw,62px);
+    line-height:.72;
+    text-align:center;
+    letter-spacing:-.06em;
+    transform:rotate(-3deg);
+    text-shadow:0 4px 0 rgba(34,38,75,.18), 0 7px 12px rgba(34,38,75,.18);
+  }
+  .logo-text .el{ color:#c667f2; }
+  .logo-text .craft{ color:#fff; }
+  .logo-text .craft span:nth-child(1){ color:#4db3ff; }
+  .logo-text .craft span:nth-child(2){ color:#86d34f; }
+  .logo-text .craft span:nth-child(3){ color:#ffd052; }
+  .logo-text .craft span:nth-child(4){ color:#ff715f; }
+  .logo-text .craft span:nth-child(5){ color:#46b8f6; }
+
+  body.home-mode .settings-chip{
+    top:2.2%;
+    right:2.4%;
+    left:auto;
+    width:auto;
+    min-width:132px;
+    height:auto;
+    min-height:54px;
+    padding:10px 18px;
+    border-radius:22px;
+    opacity:1;
+    background:rgba(255,255,255,.94);
+    color:#5942a6;
+    font-family:'Baloo 2',cursive;
+    font-size:clamp(16px,1.3vw,23px);
+    box-shadow:0 6px 0 rgba(34,38,75,.14),0 10px 24px rgba(34,38,75,.13);
+    z-index:8;
+  }
+  body.home-mode .settings-chip::before{ content:'👪 '; }
+
   body.home-mode .greeting-bubble{
     display:flex;
-    top:9.5%;
-    right:7.2%;
+    top:10%;
+    right:5.2%;
     left:auto;
-    width:25%;
-    max-width:430px;
-    min-height:16%;
-    padding:1.7% 2%;
-    border-radius:24px;
+    width:min(31vw,470px);
+    max-width:none;
+    min-height:15%;
+    padding:clamp(15px,1.7vw,28px) clamp(18px,2vw,32px);
+    border-radius:30px;
     background:rgba(255,253,251,.97);
-    box-shadow:0 7px 0 rgba(34,38,75,.13), 0 14px 30px rgba(34,38,75,.14);
-    animation:bubbleFloat 3s ease-in-out infinite;
+    border:2px solid rgba(255,255,255,.85);
+    box-shadow:0 8px 0 rgba(34,38,75,.13),0 18px 35px rgba(34,38,75,.16);
+    animation:bubbleFloat 3.4s ease-in-out infinite;
     flex-direction:column;
     justify-content:center;
-    z-index:4;
+    z-index:7;
   }
   body.home-mode .greeting-bubble::after{
-    left:14%;
-    bottom:-13px;
-    border-width:14px;
+    left:16%;
+    bottom:-18px;
+    border-width:19px;
     border-top-color:#fffdfb;
   }
   body.home-mode .greeting-bubble .g-title{
-    font-size:clamp(18px,2vw,34px);
-    line-height:1.08;
+    font-size:clamp(22px,2.5vw,40px);
+    line-height:1.02;
     white-space:nowrap;
+    color:#6548ad;
   }
   body.home-mode .greeting-bubble .g-sub{
-    font-size:clamp(11px,1.12vw,19px);
+    font-size:clamp(12px,1.25vw,20px);
     line-height:1.32;
-    margin-top:3%;
+    margin-top:5%;
+    color:#434a78;
   }
-  body.home-mode .settings-chip{
-    top:2.2%; right:3.1%; left:auto; width:12%; height:8%;
-    min-width:92px; min-height:48px; border-radius:24px;
-    opacity:.001; box-shadow:none;
+
+  .hero-character{
+    position:absolute;
+    left:50%;
+    bottom:23%;
+    transform:translateX(-50%);
+    z-index:5;
+    width:clamp(150px,18vw,290px);
+    text-align:center;
+    filter:drop-shadow(0 10px 9px rgba(34,38,75,.18));
+    pointer-events:none;
   }
+  .hero-character .person{
+    font-size:clamp(120px,16vw,245px);
+    line-height:.84;
+    transform-origin:50% 85%;
+    animation:heroWave 3.2s ease-in-out infinite;
+  }
+  .hero-character .pet{
+    position:absolute;
+    right:-18%;
+    bottom:-7%;
+    font-size:clamp(58px,7vw,110px);
+    animation:petBounce 2.4s ease-in-out infinite;
+  }
+  @keyframes heroWave{ 0%,100%{ transform:rotate(-1deg) translateY(0); } 50%{ transform:rotate(1deg) translateY(-5px); } }
+  @keyframes petBounce{ 0%,100%{ transform:translateY(0) rotate(-2deg); } 50%{ transform:translateY(-7px) rotate(2deg); } }
+
+  .world-sign{
+    position:absolute;
+    left:4.5%;
+    bottom:30%;
+    z-index:5;
+    padding:14px 22px;
+    border:7px solid #8d4f20;
+    border-radius:12px;
+    background:linear-gradient(#b96b2d,#8d4a1e);
+    color:white;
+    font-family:'Baloo 2',cursive;
+    font-size:clamp(16px,1.45vw,25px);
+    line-height:1.15;
+    text-align:center;
+    box-shadow:0 7px 0 rgba(67,37,21,.25);
+    transform:rotate(-1.5deg);
+    pointer-events:none;
+  }
+  .world-sign::after{
+    content:'';
+    position:absolute;
+    width:12px;
+    height:86px;
+    background:#754017;
+    left:50%;
+    top:100%;
+    transform:translateX(-50%);
+    z-index:-1;
+  }
+
   body.home-mode .nav-row{
-    left:9.5%; right:9.5%; bottom:5.7%; height:22%;
-    display:grid; grid-template-columns:repeat(5,1fr); gap:1.4%;
+    left:6.5%;
+    right:6.5%;
+    bottom:3.2%;
+    height:24%;
+    display:grid;
+    grid-template-columns:repeat(5,minmax(0,1fr));
+    gap:1.45%;
     padding:0;
+    z-index:9;
   }
   body.home-mode .nav-card{
-    width:100%; height:100%; min-width:0; padding:0;
-    opacity:.001; box-shadow:none; border-radius:22px;
+    width:100%;
+    height:100%;
+    min-width:0;
+    padding:clamp(8px,1vw,16px);
+    opacity:1;
+    border:2px solid rgba(255,255,255,.68);
+    border-radius:clamp(18px,2vw,30px);
+    box-shadow:0 8px 0 rgba(34,38,75,.15),0 13px 28px rgba(34,38,75,.15);
+    display:flex;
+    justify-content:center;
+    transition:transform .16s ease,filter .16s ease;
   }
+  body.home-mode .nav-card:hover{
+    transform:translateY(-7px) scale(1.025);
+    filter:saturate(1.08) brightness(1.02);
+  }
+  body.home-mode .nav-card:active{ transform:translateY(3px); }
+  body.home-mode .nav-card *{ display:block; }
+  body.home-mode .nav-card .icon{
+    font-size:clamp(38px,5vw,78px);
+    line-height:1;
+    filter:drop-shadow(0 5px 4px rgba(34,38,75,.12));
+  }
+  body.home-mode .nav-card .title{
+    font-size:clamp(15px,1.45vw,24px);
+    line-height:1;
+    margin-top:5%;
+  }
+  body.home-mode .nav-card .subtitle{
+    font-size:clamp(9px,.9vw,15px);
+    line-height:1.15;
+    margin-top:2%;
+  }
+  body.home-mode .nav-card.sky{ background:linear-gradient(145deg,#5bc8ff,#9de0ff); }
+  body.home-mode .nav-card.character{ background:linear-gradient(145deg,#ffd35b,#ffe59c); }
+  body.home-mode .nav-card.city{ background:linear-gradient(145deg,#9ce56e,#d5f7a5); }
+  body.home-mode .nav-card.music{ background:linear-gradient(145deg,#bd8ef0,#e4c6ff); animation:none; }
+  body.home-mode .nav-card.together{ background:linear-gradient(145deg,#ff9aaf,#ffc3ce); }
+
   body.home-mode .nav-card:focus-visible,
   body.home-mode .settings-chip:focus-visible{
-    opacity:.22; outline:5px solid white; outline-offset:4px;
-    background:var(--sunbeam);
+    outline:5px solid white;
+    outline-offset:4px;
   }
-  body.home-mode .nav-card *{ display:none; }
 
-  /* Keep the existing simple cards as a safe mobile fallback. */
-  @media (max-width:700px), (orientation:portrait){
-    body.home-mode .canvas-wrap::after{
-      background-position:center top;
+  @media (max-width:850px), (orientation:portrait){
+    .home-logo{ width:155px; top:1%; left:1%; }
+    body.home-mode .settings-chip{
+      min-width:48px; width:48px; height:48px; min-height:48px;
+      padding:0; font-size:0; border-radius:50%;
     }
+    body.home-mode .settings-chip::before{ content:'⚙️'; font-size:21px; }
+    body.home-mode .greeting-bubble{
+      top:7%; left:5%; right:5%; width:auto; min-height:0;
+      padding:12px 16px; border-radius:20px;
+    }
+    body.home-mode .greeting-bubble .g-title{ font-size:20px; }
+    body.home-mode .greeting-bubble .g-sub{ font-size:11px; margin-top:2px; }
+    body.home-mode .greeting-bubble::after{ display:none; }
+    .hero-character{ bottom:35%; width:145px; }
+    .hero-character .person{ font-size:118px; }
+    .hero-character .pet{ font-size:54px; }
+    .world-sign{ display:none; }
     body.home-mode .nav-row{
-      left:10px; right:10px; bottom:12px; height:auto;
-      display:grid; grid-template-columns:repeat(2,1fr); gap:9px;
+      left:10px; right:10px; bottom:10px; height:auto;
+      grid-template-columns:repeat(2,1fr); gap:9px;
     }
     body.home-mode .nav-card{
-      opacity:1; min-height:74px; height:auto; padding:9px 8px;
-      background:rgba(255,255,255,.92); backdrop-filter:blur(8px);
+      min-height:76px; height:auto; padding:9px 8px;
+      border-radius:17px;
     }
-    body.home-mode .nav-card *{ display:block; }
-    body.home-mode .nav-card.together{ grid-column:1 / -1; }
-    body.home-mode .settings-chip{
-      opacity:1; top:12px; right:12px; width:48px; height:48px;
-      min-width:0; min-height:0; border-radius:50%;
-    }
-    body.home-mode .greeting-bubble{
-      top:12px; left:12px; right:72px; width:auto; min-height:0;
-      padding:10px 14px; border-radius:18px;
-    }
-    body.home-mode .greeting-bubble .g-title{ font-size:18px; }
-    body.home-mode .greeting-bubble .g-sub{ font-size:11px; margin-top:1px; }
-    body.home-mode .greeting-bubble::after{ display:none; }
+    body.home-mode .nav-card .icon{ font-size:28px; }
+    body.home-mode .nav-card .title{ font-size:13px; margin-top:1px; }
+    body.home-mode .nav-card .subtitle{ font-size:9px; }
+    body.home-mode .nav-card.together{ grid-column:1/-1; }
   }
+
 
 </style>
 </head>
@@ -390,17 +576,141 @@
         <button class="mini-btn trash" id="trashBtn">✕</button>
       </div>
       <div class="home-overlay" id="homeOverlay">
-        <button class="settings-chip" id="settingsChip" title="Parents">⚙️</button>
-        <div class="greeting-bubble" id="greetingBubble">
-          <div class="g-title">👋 Hi! <span class="spark">✨</span></div>
-          <div class="g-sub">Ready to create something amazing today?</div>
-        </div>
-        <div class="nav-row">
-          <button class="nav-card sky" data-go="sky"><span class="icon">☀️</span><span class="title">Sky World</span><span class="subtitle">Paint your sky</span></button>
-          <button class="nav-card character" data-go="avatar"><span class="icon">🧑</span><span class="title">My Characters</span><span class="subtitle">Design & customize</span></button>
-          <button class="nav-card city" data-go="city"><span class="icon">🏠</span><span class="title">My City</span><span class="subtitle">Build your city</span></button>
-          <button class="nav-card music" data-go="music"><span class="icon">🎵</span><span class="title">Music</span><span class="subtitle">Make a tune</span></button>
-          <button class="nav-card together" id="togetherNavCard"><span class="icon">🧑‍🤝‍🧑</span><span class="title">Together</span><span class="subtitle">Play with friends</span></button>
+        <div class="living-home" aria-label="ELCraft Home World">
+          <svg class="scene-svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+            <defs>
+              <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#3eaff0"/>
+                <stop offset=".65" stop-color="#8fd8f6"/>
+                <stop offset="1" stop-color="#c9eff9"/>
+              </linearGradient>
+              <linearGradient id="hillGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#7fce65"/>
+                <stop offset="1" stop-color="#4da34c"/>
+              </linearGradient>
+              <linearGradient id="pathGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0" stop-color="#f6d59c"/>
+                <stop offset="1" stop-color="#c99a63"/>
+              </linearGradient>
+              <linearGradient id="waterGrad" x1="0" y1="0" x2="1" y2="1">
+                <stop offset="0" stop-color="#63d4ff"/>
+                <stop offset="1" stop-color="#2da3df"/>
+              </linearGradient>
+              <filter id="softShadow"><feDropShadow dx="0" dy="8" stdDeviation="8" flood-color="#27325a" flood-opacity=".2"/></filter>
+            </defs>
+
+            <rect width="1600" height="900" fill="url(#skyGrad)"/>
+
+            <g class="cloud-a" fill="#fff" opacity=".9">
+              <ellipse cx="250" cy="120" rx="90" ry="34"/><ellipse cx="195" cy="135" rx="52" ry="31"/><ellipse cx="308" cy="137" rx="58" ry="32"/>
+              <ellipse cx="1030" cy="92" rx="96" ry="32"/><ellipse cx="970" cy="108" rx="55" ry="30"/><ellipse cx="1092" cy="108" rx="62" ry="30"/>
+            </g>
+            <g class="cloud-b" fill="#fff" opacity=".75">
+              <ellipse cx="610" cy="170" rx="70" ry="25"/><ellipse cx="565" cy="181" rx="42" ry="25"/><ellipse cx="657" cy="181" rx="45" ry="25"/>
+              <ellipse cx="1375" cy="165" rx="76" ry="27"/><ellipse cx="1324" cy="176" rx="45" ry="24"/><ellipse cx="1425" cy="176" rx="48" ry="24"/>
+            </g>
+
+            <g opacity=".98">
+              <path d="M1240 330 A250 250 0 0 1 1580 210" fill="none" stroke="#ff6a72" stroke-width="31"/>
+              <path d="M1240 330 A250 250 0 0 1 1580 210" fill="none" stroke="#ffad4e" stroke-width="24"/>
+              <path d="M1240 330 A250 250 0 0 1 1580 210" fill="none" stroke="#ffe36c" stroke-width="17"/>
+              <path d="M1240 330 A250 250 0 0 1 1580 210" fill="none" stroke="#65d983" stroke-width="10"/>
+              <path d="M1240 330 A250 250 0 0 1 1580 210" fill="none" stroke="#62a9ff" stroke-width="5"/>
+            </g>
+
+            <g class="balloon" filter="url(#softShadow)">
+              <ellipse cx="610" cy="115" rx="48" ry="66" fill="#ff79aa"/>
+              <path d="M610 49 C576 68 568 112 584 164" fill="none" stroke="#ffd66a" stroke-width="18"/>
+              <path d="M610 49 C644 68 652 112 636 164" fill="none" stroke="#9a70e8" stroke-width="18"/>
+              <path d="M582 160 L594 190 M638 160 L626 190" stroke="#76522e" stroke-width="4"/>
+              <rect x="592" y="188" width="36" height="26" rx="5" fill="#b87835"/>
+            </g>
+
+            <g class="bird-one" font-size="54"><text x="0" y="225">🐦</text></g>
+            <g class="bird-two" font-size="46"><text x="0" y="285">🐥</text></g>
+
+            <path d="M0 470 Q260 325 520 470 T1040 465 T1600 450 V900 H0Z" fill="#72c75f"/>
+            <path d="M0 530 Q250 410 470 520 T930 505 T1330 520 T1600 495 V900 H0Z" fill="url(#hillGrad)"/>
+
+            <g opacity=".95">
+              <path d="M286 365 Q340 350 378 386 L378 635 Q333 665 292 635Z" fill="#8f704f"/>
+              <path d="M298 370 Q337 360 367 389 L360 558 Q330 575 305 555Z" fill="#f6f3e8"/>
+              <path class="waterfall-flow" d="M324 378 C310 430 345 472 320 525 C310 548 322 565 323 574" fill="none" stroke="#5dd5ff" stroke-width="28" stroke-linecap="round" stroke-dasharray="14 12"/>
+              <path d="M268 579 Q330 550 390 580 Q370 610 323 618 Q285 613 268 579" fill="url(#waterGrad)"/>
+            </g>
+
+            <path d="M610 900 C590 748 695 674 780 605 C840 556 878 532 906 490 C922 560 929 633 973 900Z" fill="url(#pathGrad)" opacity=".96"/>
+            <path d="M475 900 C512 785 505 714 510 650 C542 693 567 766 575 900Z" fill="url(#waterGrad)" opacity=".9"/>
+
+            <g filter="url(#softShadow)">
+              <g transform="translate(185 430)">
+                <rect x="0" y="0" width="94" height="85" rx="9" fill="#ffd86d"/><path d="M-13 10 L47 -38 L107 10Z" fill="#f07559"/><rect x="39" y="48" width="22" height="37" rx="4" fill="#5a7d8e"/><circle cx="48" cy="24" r="8" fill="#87d8ff"/>
+              </g>
+              <g transform="translate(405 390) scale(.85)">
+                <rect x="0" y="0" width="94" height="85" rx="9" fill="#f5a264"/><path d="M-13 10 L47 -38 L107 10Z" fill="#744fb5"/><rect x="39" y="48" width="22" height="37" rx="4" fill="#5b6f76"/><circle cx="48" cy="24" r="8" fill="#87d8ff"/>
+              </g>
+              <g transform="translate(1020 410) scale(.9)">
+                <rect x="0" y="0" width="94" height="85" rx="9" fill="#ffd86d"/><path d="M-13 10 L47 -38 L107 10Z" fill="#ef6b5d"/><rect x="39" y="48" width="22" height="37" rx="4" fill="#4f7d78"/><circle cx="48" cy="24" r="8" fill="#87d8ff"/>
+              </g>
+              <g transform="translate(1280 430) scale(1.05)">
+                <rect x="0" y="0" width="94" height="85" rx="9" fill="#eea56a"/><path d="M-13 10 L47 -38 L107 10Z" fill="#477ac6"/><rect x="39" y="48" width="22" height="37" rx="4" fill="#4e6973"/><circle cx="48" cy="24" r="8" fill="#87d8ff"/>
+              </g>
+              <g transform="translate(730 382) scale(.75)">
+                <rect x="0" y="0" width="94" height="85" rx="9" fill="#f0ba6f"/><path d="M-13 10 L47 -38 L107 10Z" fill="#9a68c9"/><rect x="39" y="48" width="22" height="37" rx="4" fill="#4d6f76"/><circle cx="48" cy="24" r="8" fill="#87d8ff"/>
+              </g>
+            </g>
+
+            <g filter="url(#softShadow)">
+              <g class="tree-crown" transform="translate(55 395)">
+                <rect x="50" y="95" width="20" height="92" rx="8" fill="#8e552b"/>
+                <circle cx="60" cy="77" r="62" fill="#3f9b4c"/><circle cx="25" cy="95" r="38" fill="#62bc58"/><circle cx="98" cy="95" r="40" fill="#68c663"/>
+              </g>
+              <g class="tree-crown delay" transform="translate(1425 390)">
+                <rect x="50" y="95" width="20" height="92" rx="8" fill="#8e552b"/>
+                <circle cx="60" cy="77" r="62" fill="#3f9b4c"/><circle cx="25" cy="95" r="38" fill="#62bc58"/><circle cx="98" cy="95" r="40" fill="#68c663"/>
+              </g>
+            </g>
+
+            <g fill="#fff2a7">
+              <circle class="sparkle" cx="390" cy="210" r="5"/><circle class="sparkle" cx="880" cy="135" r="6"/><circle class="sparkle" cx="1210" cy="195" r="5"/>
+            </g>
+            <text class="butterfly" x="1340" y="360" font-size="58">🦋</text>
+
+            <g font-size="34" opacity=".95">
+              <text x="70" y="680">🌼</text><text x="125" y="700">🌸</text><text x="195" y="662">🌻</text>
+              <text x="1385" y="690">🌸</text><text x="1450" y="660">🌼</text><text x="1510" y="705">🌺</text>
+            </g>
+          </svg>
+
+          <div class="home-logo" aria-hidden="true">
+            <div class="logo-wreath"></div>
+            <div class="logo-text">
+              <div class="el">EL</div>
+              <div class="craft"><span>C</span><span>R</span><span>A</span><span>F</span><span>T</span></div>
+            </div>
+          </div>
+
+          <button class="settings-chip" id="settingsChip" title="Parents">Parents</button>
+
+          <div class="greeting-bubble" id="greetingBubble">
+            <div class="g-title">👋 Hi! <span class="spark">✨</span></div>
+            <div class="g-sub">Ready to create something amazing today?</div>
+          </div>
+
+          <div class="world-sign">Your world<br>is waiting!</div>
+
+          <div class="hero-character" aria-hidden="true">
+            <div class="person">🧒🏽</div>
+            <div class="pet">🐶</div>
+          </div>
+
+          <div class="nav-row">
+            <button class="nav-card sky" data-go="sky"><span class="icon">🌤️</span><span class="title">Sky World</span><span class="subtitle">Paint your sky</span></button>
+            <button class="nav-card character" data-go="avatar"><span class="icon">🧒</span><span class="title">My Characters</span><span class="subtitle">Design & customize</span></button>
+            <button class="nav-card city" data-go="city"><span class="icon">🏡</span><span class="title">My City</span><span class="subtitle">Build your city</span></button>
+            <button class="nav-card music" data-go="music"><span class="icon">🎵</span><span class="title">Music</span><span class="subtitle">Make a tune</span></button>
+            <button class="nav-card together" id="togetherNavCard"><span class="icon">🧑‍🤝‍🧑</span><span class="title">Together</span><span class="subtitle">Play with friends</span></button>
+          </div>
         </div>
       </div>
     </div>
