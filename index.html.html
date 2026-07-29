@@ -226,6 +226,7 @@
         <button class="leave-x" id="leaveRoomBtn" title="Leave room">✕</button>
       </div>
       <button class="pill-btn home-btn" id="homeBtn">🏠 Home</button>
+      <button class="pill-btn together-btn" id="parentsBtn" style="background:#8a8fb0;">👪 Parents</button>
       <button class="pill-btn together-btn" id="backToCityBtn" style="display:none; background:var(--coral);">🚪 Back to City</button>
       <button class="pill-btn together-btn" id="togetherBtn">🧑‍🤝‍🧑 Together</button>
       <button class="pill-btn save-btn" id="saveBtn">💾 Save</button>
@@ -408,6 +409,44 @@
       <div id="avatarDockArea"></div>
     </div>
   </div>
+  </div>
+</div>
+
+<div class="modal-overlay visible" id="onboardOverlay" style="z-index:80;">
+  <div class="modal" style="text-align:center;">
+    <div id="onboardStep1">
+      <div style="font-size:48px;">👋🎈</div>
+      <h2>Welcome to ELCraft!</h2>
+      <p>Let's start your adventure — paint a sky, build a city, make a character, and create music, all in your own world.</p>
+      <button class="modal-btn primary" style="width:100%;" id="onboardNext1">Let's Go!</button>
+    </div>
+    <div id="onboardStep2" style="display:none;">
+      <div style="font-size:48px;">🧑‍🎨</div>
+      <h2>What should we call you?</h2>
+      <p>Just a first name — this only stays on this device.</p>
+      <input id="onboardNameInput" type="text" maxlength="16" placeholder="Type your name"
+        style="width:100%; font-family:'Baloo 2',cursive; font-size:18px; text-align:center; padding:12px; border-radius:14px; border:2px solid #eadfce; margin-bottom:14px;">
+      <button class="modal-btn primary" style="width:100%;" id="onboardNext2">Next</button>
+    </div>
+    <div id="onboardStep3" style="display:none;">
+      <div style="font-size:48px;">🌍✨</div>
+      <h2 id="onboardReadyTitle">Your World is Ready!</h2>
+      <p>Let's go create something amazing.</p>
+      <button class="modal-btn primary" style="width:100%;" id="onboardStart">Start Playing</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="parentsOverlay">
+  <div class="modal">
+    <h2>👪 For Grown-Ups</h2>
+    <p>ELCraft is a private, offline-first creative space — no chat with strangers, no ads, no accounts required. Everything your child creates is saved right in this browser (or synced through Supabase only while actively using Together mode with a code you share yourself).</p>
+    <p style="font-size:13px; color:#8a8fb0;">Your child's name: <strong id="parentsChildName">—</strong></p>
+    <div class="modal-actions">
+      <button class="modal-btn secondary" id="renameBtn">✏️ Change Name</button>
+      <button class="modal-btn primary" id="closeParentsBtn">Close</button>
+    </div>
+    <p class="modal-note">Together mode uses a 4-picture code you share yourself with another parent — there's no public matchmaking or open chat anywhere in ELCraft.</p>
   </div>
 </div>
 
@@ -1351,6 +1390,68 @@
     chip.addEventListener('click', ()=> showApp(chip.dataset.go));
   });
   showHome();
+
+  // ================= onboarding (first-visit welcome + name) =================
+  const onboardOverlay = document.getElementById('onboardOverlay');
+  const greetingBubbleEl = document.getElementById('greetingBubble');
+  const NAME_KEY = 'elcraft_child_name';
+
+  function applyChildName(name){
+    greetingBubbleEl.textContent = name ? `👋 Hi ${name}! Welcome back to your world!` : '👋 Hi! What should we build today?';
+    document.getElementById('parentsChildName').textContent = name || '—';
+  }
+
+  function showOnboardStep(n){
+    document.getElementById('onboardStep1').style.display = n===1 ? 'block' : 'none';
+    document.getElementById('onboardStep2').style.display = n===2 ? 'block' : 'none';
+    document.getElementById('onboardStep3').style.display = n===3 ? 'block' : 'none';
+    if(n===2) setTimeout(()=>document.getElementById('onboardNameInput').focus(), 50);
+  }
+
+  const savedName = localStorage.getItem(NAME_KEY);
+  if(savedName){
+    onboardOverlay.classList.remove('visible');
+    applyChildName(savedName);
+  } else {
+    showOnboardStep(1);
+  }
+
+  document.getElementById('onboardNext1').addEventListener('click', ()=> showOnboardStep(2));
+  document.getElementById('onboardNext2').addEventListener('click', ()=>{
+    const input = document.getElementById('onboardNameInput');
+    const name = input.value.trim();
+    if(!name){ input.focus(); input.style.borderColor = 'var(--coral)'; return; }
+    localStorage.setItem(NAME_KEY, name);
+    applyChildName(name);
+    document.getElementById('onboardReadyTitle').textContent = `Your World is Ready, ${name}!`;
+    showOnboardStep(3);
+  });
+  document.getElementById('onboardNameInput').addEventListener('keydown', (e)=>{
+    if(e.key==='Enter') document.getElementById('onboardNext2').click();
+  });
+  document.getElementById('onboardStart').addEventListener('click', ()=>{
+    onboardOverlay.classList.remove('visible');
+  });
+
+  // rename flow (reuses the same overlay, jumping straight to the name step)
+  let renamingOnly = false;
+  document.getElementById('parentsBtn').addEventListener('click', ()=>{
+    document.getElementById('parentsChildName').textContent = localStorage.getItem(NAME_KEY) || '—';
+    document.getElementById('parentsOverlay').classList.add('visible');
+  });
+  document.getElementById('closeParentsBtn').addEventListener('click', ()=>{
+    document.getElementById('parentsOverlay').classList.remove('visible');
+  });
+  document.getElementById('renameBtn').addEventListener('click', ()=>{
+    renamingOnly = true;
+    document.getElementById('parentsOverlay').classList.remove('visible');
+    document.getElementById('onboardNameInput').value = localStorage.getItem(NAME_KEY) || '';
+    onboardOverlay.classList.add('visible');
+    showOnboardStep(2);
+  });
+  greetingBubbleEl.style.cursor = 'pointer';
+  greetingBubbleEl.title = 'Tap to change your name';
+  greetingBubbleEl.addEventListener('click', ()=> document.getElementById('renameBtn').click());
 
   // ================= music sequencer =================
   const INSTRUMENTS = [
