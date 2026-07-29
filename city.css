@@ -443,18 +443,17 @@ input {
 /* ------------------------------------------------ */
 
 .salon {
-  left: 50%;
-  top: 54%;
-  transform: translateX(-50%);
+  right: 5%;
+  top: 43%;
   z-index: 6;
 }
 
 .salon:hover {
-  transform: translateX(-50%) translateY(-8px) scale(1.04);
+  transform: translateY(-8px) scale(1.04);
 }
 
 .salon:active {
-  transform: translateX(-50%) translateY(-2px) scale(0.98);
+  transform: translateY(-2px) scale(0.98);
 }
 
 .salon-building {
@@ -980,7 +979,7 @@ input {
   }
 
   .salon {
-    top: 53%;
+    top: 44%;
   }
 }
 
@@ -1028,7 +1027,8 @@ input {
   }
 
   .salon {
-    top: 55%;
+    right: 3%;
+    top: 45%;
   }
 
   #park {
@@ -1103,7 +1103,8 @@ input {
   }
 
   .salon {
-    top: 52%;
+    right: 5%;
+    top: 39%;
   }
 
   .salon-building {
@@ -1223,7 +1224,8 @@ input {
   }
 
   .salon {
-    top: 60%;
+    right: 4%;
+    top: 48%;
   }
 
   .salon-building {
