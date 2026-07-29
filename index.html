@@ -7,7 +7,7 @@
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#1d5ca8}
-  body{font-family:Arial,sans-serif}
+  body{font-family:Arial,Helvetica,sans-serif}
   button,input{font:inherit}
 
   .screen{
@@ -19,74 +19,110 @@
     justify-content:center;
     background:radial-gradient(circle at 50% 35%,#6dc8f5 0%,#318dde 45%,#184f9d 100%);
   }
+
   .frame{
     position:relative;
     width:min(100vw,calc(100vh * 1.5));
     height:min(100vh,calc(100vw / 1.5));
     flex:0 0 auto;
-    background:url('a_bright_colorful_high_detail_3d_illustrated_kid.png') center/contain no-repeat;
+    background:url('a_bright_colorful_cartoony_3d_game_app_home_scre.png') center/contain no-repeat;
   }
 
-  /* Dynamic name covers — these only replace the fixed Ella text in the artwork. */
-  .profile-name-cover{
+  .profile-text{
     position:absolute;
-    left:76.3%;
+    left:77.15%;
     top:3.4%;
-    width:8.2%;
-    height:6.2%;
-    border-radius:18px;
-    background:#fffaf4;
+    width:8.6%;
+    height:7.2%;
     display:flex;
-    align-items:center;
-    padding-left:1.1%;
-    color:#5f43a3;
-    font-weight:800;
-    font-size:clamp(10px,1.35vw,24px);
-    line-height:1;
+    flex-direction:column;
+    justify-content:center;
+    color:#5d43a2;
     z-index:3;
     pointer-events:none;
   }
-  .profile-name-cover small{
-    display:block;
-    margin-top:3px;
-    font-size:.58em;
-    color:#705d9d;
+  .profile-text strong{
+    font-size:clamp(10px,1.45vw,24px);
+    line-height:1;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .profile-text span{
+    margin-top:4px;
+    font-size:clamp(7px,.8vw,13px);
+    font-weight:700;
   }
 
-  .greeting-name-cover{
+  .greeting{
     position:absolute;
-    left:62.8%;
-    top:29.4%;
-    width:18.8%;
-    height:8.2%;
-    border-radius:14px;
-    background:#fffaf3;
-    display:flex;
-    align-items:center;
-    padding-left:1.1%;
-    color:#6848ad;
-    font-weight:800;
-    font-size:clamp(15px,3vw,49px);
-    line-height:1;
+    left:62.9%;
+    top:29.6%;
+    width:20.4%;
+    height:17.5%;
     z-index:3;
     pointer-events:none;
+    color:#5f43a4;
+  }
+  .greeting h1{
+    margin:0;
+    font-size:clamp(18px,3vw,50px);
+    line-height:1.02;
+    font-weight:900;
+    white-space:nowrap;
+  }
+  .greeting p{
+    margin:10px 0 0;
+    width:92%;
+    color:#173b78;
+    font-size:clamp(10px,1.35vw,22px);
+    line-height:1.35;
+    font-weight:800;
   }
 
-  .owner-cover{
+  .owner{
     position:absolute;
-    left:63.6%;
-    top:45.0%;
-    width:17.2%;
-    height:5.3%;
-    border-radius:999px;
-    background:#efe3ff;
+    left:64.2%;
+    top:51.2%;
+    width:17.4%;
+    height:4.3%;
+    z-index:3;
     display:flex;
     align-items:center;
     justify-content:center;
-    color:#6546a6;
-    font-weight:700;
-    font-size:clamp(7px,1vw,17px);
+    color:#6046a3;
+    font-size:clamp(7px,.95vw,16px);
+    font-weight:800;
+    pointer-events:none;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    padding:0 10px;
+  }
+
+  .scene-avatar{
+    position:absolute;
+    left:48.5%;
+    bottom:24.2%;
+    transform:translateX(-50%);
     z-index:3;
+    display:none;
+    width:16%;
+    aspect-ratio:1/1.35;
+    object-fit:contain;
+    pointer-events:none;
+    filter:drop-shadow(0 12px 10px rgba(24,30,74,.2));
+  }
+  .profile-avatar{
+    position:absolute;
+    left:72.25%;
+    top:3.05%;
+    width:5.15%;
+    aspect-ratio:1;
+    object-fit:cover;
+    border-radius:50%;
+    z-index:4;
+    display:none;
     pointer-events:none;
   }
 
@@ -96,18 +132,19 @@
     background:transparent;
     cursor:pointer;
     border-radius:24px;
-    z-index:4;
+    z-index:5;
   }
   .hotspot:focus-visible{outline:5px solid rgba(255,255,255,.95);outline-offset:2px}
-  .profiles{left:86.2%;top:3.3%;width:7.2%;height:7.4%}
-  .settings{left:94.1%;top:2.9%;width:4.2%;height:7.3%;border-radius:50%}
-  .gift{left:.6%;top:86%;width:6.4%;height:11.5%}
-  .sky{left:8.1%;top:75.2%;width:15%;height:22%}
-  .characters{left:24.4%;top:75.2%;width:15%;height:22%}
-  .city{left:40.9%;top:75.2%;width:15%;height:22%}
-  .music{left:57.3%;top:75.2%;width:15%;height:22%}
-  .together{left:73.8%;top:75.2%;width:15%;height:22%}
-  .map{left:91.7%;top:86%;width:6.5%;height:11.5%}
+
+  .profiles{left:86.5%;top:3.2%;width:6.5%;height:7.2%}
+  .settings{left:94.1%;top:2.8%;width:4.3%;height:7.5%;border-radius:50%}
+  .gift{left:.7%;top:86.2%;width:6.5%;height:11.2%}
+  .sky{left:8.7%;top:75.1%;width:15%;height:22%}
+  .characters{left:24.9%;top:75.1%;width:15%;height:22%}
+  .city{left:41.1%;top:75.1%;width:15%;height:22%}
+  .music{left:57.2%;top:75.1%;width:15%;height:22%}
+  .together{left:73.5%;top:75.1%;width:15%;height:22%}
+  .map{left:91.6%;top:86.2%;width:6.5%;height:11.2%}
 
   .name-modal{
     position:fixed;
@@ -177,12 +214,20 @@
 <body>
 <main class="screen">
   <div class="frame" aria-label="ELCraft Home World">
-    <div class="profile-name-cover">
-      <div><span id="profileName">Player</span><small>Level 1</small></div>
+    <div class="profile-text">
+      <strong id="profileName">Player</strong>
+      <span>Level 1</span>
     </div>
 
-    <div class="greeting-name-cover">Hi&nbsp;<span id="greetingName">Player</span>! ✨</div>
-    <div class="owner-cover">🔒 This world belongs to&nbsp;<span id="ownerName">Player</span></div>
+    <div class="greeting">
+      <h1>Hi <span id="greetingName">Player</span>! ✨</h1>
+      <p>Ready to create something amazing today?</p>
+    </div>
+
+    <div class="owner">🔒 This world belongs to&nbsp;<span id="ownerName">Player</span></div>
+
+    <img id="profileAvatar" class="profile-avatar" alt="">
+    <img id="sceneAvatar" class="scene-avatar" alt="Player avatar">
 
     <button class="hotspot profiles" data-label="Profiles" aria-label="Profiles"></button>
     <button class="hotspot settings" data-label="Settings" aria-label="Settings"></button>
@@ -211,9 +256,13 @@
 <script>
 (() => {
   const NAME_KEY = 'elcraft_child_name';
+  const AVATAR_KEY = 'elcraft_avatar_image';
+
   const profileName = document.getElementById('profileName');
   const greetingName = document.getElementById('greetingName');
   const ownerName = document.getElementById('ownerName');
+  const profileAvatar = document.getElementById('profileAvatar');
+  const sceneAvatar = document.getElementById('sceneAvatar');
   const modal = document.getElementById('nameModal');
   const input = document.getElementById('nameInput');
   const error = document.getElementById('nameError');
@@ -227,6 +276,15 @@
     profileName.textContent = name;
     greetingName.textContent = name;
     ownerName.textContent = name;
+  }
+
+  function applyAvatar() {
+    const avatar = localStorage.getItem(AVATAR_KEY);
+    if (!avatar) return;
+    profileAvatar.src = avatar;
+    sceneAvatar.src = avatar;
+    profileAvatar.style.display = 'block';
+    sceneAvatar.style.display = 'block';
   }
 
   function openNamePrompt() {
@@ -252,6 +310,8 @@
   } else {
     openNamePrompt();
   }
+
+  applyAvatar();
 
   document.getElementById('saveName').addEventListener('click',saveName);
   input.addEventListener('keydown',e => {
