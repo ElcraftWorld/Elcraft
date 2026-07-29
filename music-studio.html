@@ -1,0 +1,590 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6d4fb3">
+<title>ELCraft | Music Studio</title>
+<style>
+:root{
+  --ink:#3e2f67;
+  --deep:#50398b;
+  --purple:#7657c7;
+  --pink:#dc6ba8;
+  --sky:#7dd7ef;
+  --gold:#ffd44f;
+  --green:#63c56b;
+  --panel:#fff;
+  --line:#e8def6;
+  --shadow:0 18px 45px rgba(65,45,110,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.9),transparent 18%),
+    radial-gradient(circle at 88% 12%,rgba(255,255,255,.65),transparent 16%),
+    linear-gradient(#7bd5ef 0 40%,#f1ebff 40% 61%,#8bd16f 61% 100%);
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.cloud{position:fixed;z-index:0;opacity:.72;pointer-events:none;animation:float 20s linear infinite}
+.cloud.one{top:100px;left:-140px;font-size:84px}
+.cloud.two{top:230px;left:-210px;font-size:64px;animation-delay:-8s}
+.cloud.three{top:55px;left:-250px;font-size:52px;animation-delay:-15s}
+.note{position:fixed;z-index:1;pointer-events:none;opacity:.15;font-size:70px;animation:bob 5s ease-in-out infinite}
+.note.a{left:5%;top:35%}.note.b{right:7%;top:28%;animation-delay:-2s}.note.c{right:15%;bottom:7%;animation-delay:-4s}
+@keyframes float{to{transform:translateX(calc(100vw + 360px))}}
+@keyframes bob{50%{transform:translateY(-18px) rotate(8deg)}}
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.94);border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(67,45,110,.15);backdrop-filter:blur(12px)
+}
+.leftbar,.stats{display:flex;align-items:center;gap:10px}
+.nav-btn,.sound-btn{
+  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;color:#6549a6;background:#efe7ff;
+  box-shadow:0 4px 0 #d7c6f3
+}
+.logo{
+  font-weight:1000;font-size:clamp(24px,3vw,38px);line-height:.9;color:#ffc72c;
+  text-shadow:-2px -2px 0 #7557b6,2px -2px 0 #7557b6,-2px 2px 0 #7557b6,2px 2px 0 #7557b6,0 5px 0 #4e3884
+}
+.stat{
+  min-width:92px;border-radius:999px;padding:9px 12px;background:#fff5c7;color:#5a3e75;
+  font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
+}
+.stat.xp{background:#e5f3ff}.stat.level{background:#e8ffe2}
+main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px}
+.hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
+  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(242,233,255,.95));box-shadow:var(--shadow)
+}
+.hero:after{content:"🎵";position:absolute;right:4%;bottom:-40px;font-size:185px;opacity:.1;transform:rotate(-8deg)}
+.hero h1{margin:0;color:#7657c7;font-size:clamp(32px,4vw,57px)}
+.hero p{margin:8px 0 0;font-size:17px;font-weight:900;color:#78698c}
+.teacher-card{
+  position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+  padding:15px;border-radius:24px;background:linear-gradient(#845fc8,#563b92);color:#fff;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)
+}
+.teacher-face{font-size:72px}
+.teacher-card strong{display:block;font-size:21px}
+.teacher-card small{display:block;margin-top:5px;font-weight:900;opacity:.9;line-height:1.35}
+.dashboard{display:grid;grid-template-columns:1.75fr .8fr;gap:15px;margin-top:15px}
+.panel{
+  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.96);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;
+  border-bottom:1px solid var(--line);background:#faf7ff
+}
+.panel-head h2{margin:0;color:#6d4fb3;font-size:25px}
+.panel-body{padding:16px}
+.station-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.station{
+  position:relative;min-height:145px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(62,46,105,.24);transition:.18s ease;overflow:hidden
+}
+.station:hover{transform:translateY(-3px)}
+.station:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(62,46,105,.24)}
+.station .icon{display:block;font-size:45px;margin-bottom:7px}
+.station strong{display:block;font-size:21px}
+.station small{display:block;margin-top:4px;font-weight:900;opacity:.94}
+.station .stars{position:absolute;right:12px;top:10px;font-size:17px}
+.station.locked{filter:grayscale(.75);opacity:.68}
+.station.rhythm{background:linear-gradient(135deg,#d0609d,#ec88b7)}
+.station.notes{background:linear-gradient(135deg,#6957c6,#9276df)}
+.station.instruments{background:linear-gradient(135deg,#3d8dc5,#65b9dd)}
+.station.pitch{background:linear-gradient(135deg,#3a9c88,#6bc6a9)}
+.station.tempo{background:linear-gradient(135deg,#d88a32,#efb34f)}
+.station.melody{background:linear-gradient(135deg,#9c5fbd,#ca83dc)}
+.station.composer{background:linear-gradient(135deg,#4d6eb5,#718fd4)}
+.station.listening{background:linear-gradient(135deg,#2f9b72,#65c66c)}
+.station.band{background:linear-gradient(135deg,#c65b69,#e9858d)}
+.station.challenge{background:linear-gradient(135deg,#263f7e,#4a70b0)}
+.passport{display:grid;gap:10px}
+.pass-row{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:11px;
+  border:2px solid #e8def6;border-radius:17px;background:#fff
+}
+.pass-icon{font-size:27px}.pass-name{font-weight:1000}
+.pass-sub{font-size:11px;color:#837794;font-weight:900;margin-top:2px}
+.pass-stars{font-size:14px;white-space:nowrap}
+.daily-card{
+  margin-top:12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#f5e5ff,#dfc6ff);
+  border:2px solid #c49be5
+}
+.daily-card strong{display:block;color:#604289}
+.daily-card p{margin:5px 0 10px;font-size:13px;font-weight:900;color:#76608b}
+.daily-card button{
+  width:100%;border:0;border-radius:15px;padding:11px;background:linear-gradient(#9d72da,#744cb5);
+  color:#fff;font-weight:1000;box-shadow:0 5px 0 #563687
+}
+.daily-card button:disabled{opacity:.55;cursor:not-allowed}
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(49,35,88,.58);backdrop-filter:blur(7px)
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(720px,100%);max-height:92vh;overflow:auto;border-radius:28px;padding:22px;background:#fff;
+  box-shadow:0 25px 70px rgba(55,38,93,.38);border:4px solid #fff
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-title-wrap{display:flex;align-items:center;gap:11px}
+.modal-icon{font-size:55px}
+.modal-card h2{margin:0;color:#6d4fb3;font-size:30px}
+.close-x{border:0;border-radius:14px;padding:9px 12px;background:#eee8f8;color:#60458f;font-weight:1000}
+.activity{
+  margin-top:16px;padding:18px;border-radius:22px;background:#faf7ff;border:2px solid #e8def6;text-align:center
+}
+.question{font-size:clamp(25px,4.6vw,44px);font-weight:1000;color:#5f4695;line-height:1.3}
+.visual{font-size:clamp(28px,5vw,48px);letter-spacing:4px;margin:12px 0;line-height:1.35}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.answer{
+  border:0;border-radius:17px;padding:14px;background:#fff;color:#624b92;font-weight:1000;font-size:19px;
+  box-shadow:0 5px 0 #d6c9e8;border:2px solid #e7ddf2
+}
+.answer:hover{transform:translateY(-2px)}
+.feedback{min-height:30px;margin-top:12px;font-weight:1000;font-size:18px}
+.feedback.good{color:#27813f}.feedback.bad{color:#bd4552}
+.modal-actions{display:flex;gap:10px;margin-top:15px}
+.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
+.secondary{background:#eee9f6;color:#624d84}
+.primary{background:linear-gradient(#73cf58,#4cae35);color:#fff;box-shadow:0 5px 0 #388c28}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:90;transform:translateX(-50%) translateY(150px);
+  padding:13px 19px;border-radius:999px;background:#533b8d;color:#fff;font-weight:1000;
+  transition:.3s ease;box-shadow:0 12px 30px rgba(61,42,102,.28);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:950px){.dashboard,.hero{grid-template-columns:1fr}.stats .stat.xp{display:none}}
+@media(max-width:650px){
+  main{padding:8px}.topbar{padding:8px}.logo{font-size:23px}.sound-btn{display:none}
+  .stat{min-width:auto;padding:8px 9px;font-size:12px}.hero{padding:16px;border-radius:23px}
+  .station-grid{grid-template-columns:1fr}.station{min-height:125px}
+  .panel-head{padding:13px}.panel-body{padding:12px}.answers{grid-template-columns:1fr}
+  .teacher-face{font-size:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
+  <div class="note a">♪</div><div class="note b">♫</div><div class="note c">♬</div>
+
+  <header class="topbar">
+    <div class="leftbar">
+      <button class="nav-btn" id="academyBtn">← Academy</button>
+      <div class="logo">ELCraft</div>
+    </div>
+    <div class="stats">
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <div class="stat level">🏅 L<span id="level">1</span></div>
+      <button class="sound-btn" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1 id="heroTitle">Welcome to Music Studio!</h1>
+        <p>Explore rhythm, notes, instruments, pitch, tempo, melody, listening, and musical creativity.</p>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-face">🦊</div>
+        <div>
+          <strong>Maestro Fox's Music Studio</strong>
+          <small>Choose a musical activity and fill your Music Passport with stars.</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>🎵 Choose a Music Station</h2>
+          <strong id="masteryLabel">0 stars earned</strong>
+        </div>
+        <div class="panel-body">
+          <div class="station-grid" id="stationGrid"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head"><h2>🎼 Music Passport</h2></div>
+        <div class="panel-body">
+          <div class="passport" id="passport"></div>
+          <div class="daily-card">
+            <strong>🌟 Daily Music Challenge</strong>
+            <p id="dailyText">Finish any 3 music activities today to earn a bonus.</p>
+            <button id="dailyReward" disabled>Complete 3 activities</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal" id="activityModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title-wrap">
+          <div class="modal-icon" id="modalIcon">🥁</div>
+          <div><h2 id="modalTitle">Rhythm Room</h2><div id="roundLabel">Question 1 of 5</div></div>
+        </div>
+        <button class="close-x" id="closeModal">✕</button>
+      </div>
+
+      <div class="activity">
+        <div class="question" id="question"></div>
+        <div class="visual" id="visual"></div>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" id="leaveActivity">Back to Dashboard</button>
+        <button class="primary" id="nextQuestion" disabled>Next Question</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const COINS_KEY='elcraft_coins';
+  const PROFILE_KEY='elcraft_profile_v1';
+  const MUSIC_KEY='elcraft_music_studio_v1';
+
+  const childName=localStorage.getItem(NAME_KEY)||'Student';
+  const today=new Date().toLocaleDateString('en-CA');
+  let soundOn=true;
+  let activeStation=null;
+  let currentQuestion=null;
+  let round=0;
+  let correctThisSession=0;
+  let answered=false;
+
+  let profile={
+    version:1,
+    coins:Number(localStorage.getItem(COINS_KEY)||100),
+    xp:0,
+    totalXp:0,
+    level:1,
+    achievements:[],
+    schoolCoinsEarned:0
+  };
+
+  let music={
+    version:1,
+    mastery:{rhythm:0,notes:0,instruments:0,pitch:0,tempo:0,melody:0,composer:0,listening:0,band:0,challenge:0},
+    plays:{rhythm:0,notes:0,instruments:0,pitch:0,tempo:0,melody:0,composer:0,listening:0,band:0,challenge:0},
+    completedByDate:{},
+    dailyRewardDates:[],
+    totalCorrect:0
+  };
+
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if(saved)profile={...profile,...saved};
+  }catch{}
+  try{
+    const saved=JSON.parse(localStorage.getItem(MUSIC_KEY));
+    if(saved)music={...music,...saved,mastery:{...music.mastery,...(saved.mastery||{})},plays:{...music.plays,...(saved.plays||{})}};
+  }catch{}
+
+  const stations=[
+    {id:'rhythm',icon:'🥁',name:'Rhythm Room',color:'rhythm',desc:'Count beats and recognize simple patterns.',unlock:0},
+    {id:'notes',icon:'🎼',name:'Note Reading',color:'notes',desc:'Learn note names and musical symbols.',unlock:0},
+    {id:'instruments',icon:'🎺',name:'Instrument Gallery',color:'instruments',desc:'Match instruments with their families.',unlock:0},
+    {id:'pitch',icon:'🎤',name:'Pitch Playground',color:'pitch',desc:'Tell high sounds from low sounds.',unlock:0},
+    {id:'tempo',icon:'⏱️',name:'Tempo Track',color:'tempo',desc:'Explore fast, slow, and steady music.',unlock:1},
+    {id:'melody',icon:'🎶',name:'Melody Maker',color:'melody',desc:'Recognize musical direction and patterns.',unlock:1},
+    {id:'composer',icon:'✍️',name:'Composer Corner',color:'composer',desc:'Choose musical ideas to build a tiny song.',unlock:2},
+    {id:'listening',icon:'👂',name:'Listening Lounge',color:'listening',desc:'Practice careful listening and sound clues.',unlock:3},
+    {id:'band',icon:'🎸',name:'Band Builder',color:'band',desc:'Choose instruments for different musical jobs.',unlock:4},
+    {id:'challenge',icon:'🏆',name:'Music Challenge',color:'challenge',desc:'Mixed musical review from every station.',unlock:2}
+  ];
+
+  function save(){
+    profile.coins=Math.max(0,Number(profile.coins)||0);
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+    localStorage.setItem(MUSIC_KEY,JSON.stringify(music));
+    localStorage.setItem(COINS_KEY,String(profile.coins));
+  }
+
+  function totalStars(){return Object.values(music.mastery).reduce((a,b)=>a+b,0)}
+  function starsText(n){return '⭐'.repeat(Math.max(0,Math.min(5,n)))+'☆'.repeat(Math.max(0,5-Math.min(5,n)))}
+  function activitiesToday(){return (music.completedByDate[today]||[]).length}
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+  function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+  function pick(list){return list[rand(0,list.length-1)]}
+
+  function render(){
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    document.querySelector('#heroTitle').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins||0;
+    document.querySelector('#xp').textContent=profile.xp||0;
+    document.querySelector('#level').textContent=profile.level||1;
+    document.querySelector('#masteryLabel').textContent=`${totalStars()} stars earned`;
+
+    const total=totalStars();
+    const grid=document.querySelector('#stationGrid');
+    grid.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const b=document.createElement('button');
+      b.className=`station ${s.color} ${locked?'locked':''}`;
+      b.innerHTML=`<span class="stars">${locked?'🔒':starsText(music.mastery[s.id]||0)}</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${locked?`Earn ${s.unlock} total stars to unlock`:s.desc}</small>`;
+      b.onclick=()=>locked?toast(`Earn ${s.unlock} total stars to unlock this station.`):startStation(s);
+      grid.append(b);
+    });
+
+    const passport=document.querySelector('#passport');
+    passport.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const row=document.createElement('div');
+      row.className='pass-row';
+      row.innerHTML=`<div class="pass-icon">${s.icon}</div><div><div class="pass-name">${s.name}</div><div class="pass-sub">${locked?'Locked':`${music.plays[s.id]||0} activity sessions`}</div></div><div class="pass-stars">${locked?'🔒':starsText(music.mastery[s.id]||0)}</div>`;
+      passport.append(row);
+    });
+
+    const count=activitiesToday();
+    const claimed=music.dailyRewardDates.includes(today);
+    const btn=document.querySelector('#dailyReward');
+    btn.disabled=count<3||claimed;
+    btn.textContent=claimed?'✅ Bonus collected':count>=3?'Collect +20 coins and +30 XP':`${count}/3 activities complete`;
+    document.querySelector('#dailyText').textContent=claimed?'You completed today’s Music Challenge!':'Finish any 3 music activities today to earn a bonus.';
+    save();
+  }
+
+  function startStation(station){
+    activeStation=station;
+    round=0;
+    correctThisSession=0;
+    answered=false;
+    document.querySelector('#modalIcon').textContent=station.icon;
+    document.querySelector('#modalTitle').textContent=station.name;
+    document.querySelector('#activityModal').classList.add('show');
+    nextQuestion();
+    sound('tap');
+  }
+
+  function makeQuestion(id){
+    const banks={
+      rhythm:[
+        {q:'How many beats are shown?',v:'👏  👏  👏  👏',a:'4',c:['2','3','4','5']},
+        {q:'Which pattern has three beats?',v:'Listen with your eyes!',a:'👏 👏 👏',c:['👏 👏','👏 👏 👏','👏 👏 👏 👏','👏']},
+        {q:'What helps musicians stay together?',v:'1 - 2 - 3 - 4',a:'a steady beat',c:['a steady beat','random noise','silence only','different speeds']},
+        {q:'Which word means the pattern of long and short sounds?',v:'♪ ♫ ♪',a:'rhythm',c:['rhythm','color','shape','volume']}
+      ],
+      notes:[
+        {q:'Which symbol is a musical note?',v:'♪  ★  △  ☀',a:'♪',c:['♪','★','△','☀']},
+        {q:'What do notes tell musicians?',v:'🎼',a:'which sounds to play',c:['which sounds to play','what color to wear','where to sit only','what food to eat']},
+        {q:'What is the set of five lines called?',v:'𝄞 ─────',a:'staff',c:['staff','stage','scale only','verse']},
+        {q:'Which clef is common for higher notes?',v:'𝄞',a:'treble clef',c:['treble clef','bass drum','rest chair','tempo stick']}
+      ],
+      instruments:[
+        {q:'Which instrument belongs to the string family?',v:'🎻',a:'violin',c:['violin','trumpet','drum','flute']},
+        {q:'Which instrument belongs to the brass family?',v:'🎺',a:'trumpet',c:['trumpet','piano','violin','drum']},
+        {q:'Which instrument is played by striking it?',v:'🥁',a:'drum',c:['drum','flute','clarinet','violin']},
+        {q:'Which instrument has black and white keys?',v:'🎹',a:'piano',c:['piano','tuba','cello','cymbals']}
+      ],
+      pitch:[
+        {q:'A tiny bird usually makes what kind of sound?',v:'🐦',a:'high',c:['high','low','silent','heavy']},
+        {q:'A large tuba usually makes what kind of sound?',v:'🎺',a:'low',c:['low','high','tiny','bright only']},
+        {q:'Pitch tells us whether a sound is...',v:'⬆️ ⬇️',a:'high or low',c:['high or low','fast or slow','loud or quiet only','happy or sad']},
+        {q:'Which sound would likely have the higher pitch?',v:'🐭 or 🐘',a:'mouse',c:['mouse','elephant','both always equal','neither']}
+      ],
+      tempo:[
+        {q:'Tempo tells us how...',v:'⏱️ 🎵',a:'fast or slow music goes',c:['fast or slow music goes','high or low music is','many instruments there are','bright the lights are']},
+        {q:'Which animal suggests a slow tempo?',v:'🐢',a:'turtle',c:['turtle','cheetah','rocket','race car']},
+        {q:'Which animal suggests a fast tempo?',v:'🐆',a:'cheetah',c:['cheetah','snail','turtle','sloth']},
+        {q:'A lullaby is often played at what tempo?',v:'🌙',a:'slow',c:['slow','very fast','random','changing every beat']}
+      ],
+      melody:[
+        {q:'A melody is...',v:'🎶',a:'a line of musical notes',c:['a line of musical notes','a type of drum','a stage light','a dance shoe']},
+        {q:'If notes move upward, the melody usually sounds...',v:'↗️ ♪ ♫',a:'higher',c:['higher','lower','quieter only','slower only']},
+        {q:'If notes move downward, the melody usually sounds...',v:'↘️ ♫ ♪',a:'lower',c:['lower','higher','faster only','louder only']},
+        {q:'Which looks like a repeated pattern?',v:'♪ ♫ ♪ ♫',a:'ABAB',c:['ABAB','AAAAA only','random','silent']}
+      ],
+      composer:[
+        {q:'What does a composer do?',v:'✍️ 🎼',a:'creates music',c:['creates music','builds roads','paints only walls','measures rain']},
+        {q:'Which choice would make a calm song?',v:'🌙',a:'slow tempo and soft sounds',c:['slow tempo and soft sounds','very fast drums only','random shouting','no pattern']},
+        {q:'Which choice would make an energetic song?',v:'⚡',a:'fast tempo and strong beat',c:['fast tempo and strong beat','slow tempo only','no beat','one silent note']},
+        {q:'What can a composer repeat to make a pattern?',v:'♪ ♪ ♫ ♪ ♪ ♫',a:'a group of notes',c:['a group of notes','a chair','a costume only','a map']}
+      ],
+      listening:[
+        {q:'Careful listening means paying attention to...',v:'👂',a:'details in the sound',c:['details in the sound','only the picture','only the room color','nothing around you']},
+        {q:'Which sound is usually loudest?',v:'🔔 🐭 🚀',a:'rocket',c:['rocket','mouse','whisper','leaf']},
+        {q:'Which sound is usually softest?',v:'🦁 🍃 🥁',a:'leaf',c:['leaf','lion','drum','thunder']},
+        {q:'A pause in music is called a...',v:'𝄽',a:'rest',c:['rest','race','note name','verse only']}
+      ],
+      band:[
+        {q:'Which instrument could keep the beat in a band?',v:'🥁',a:'drums',c:['drums','flute only','violin only','triangle map']},
+        {q:'Which instrument could play a melody?',v:'🎹',a:'piano',c:['piano','chair','music stand','stage light']},
+        {q:'Why do band members watch the conductor?',v:'👀 🎼',a:'to stay together',c:['to stay together','to choose costumes','to leave early','to change instruments randomly']},
+        {q:'What makes a good ensemble?',v:'🎺 🎻 🥁',a:'listening to one another',c:['listening to one another','playing as loudly as possible','ignoring the beat','starting at different times']}
+      ]
+    };
+
+    if(id==='challenge'){
+      const ids=['rhythm','notes','instruments','pitch','tempo','melody','composer','listening','band'];
+      return pick(banks[pick(ids)]);
+    }
+    return pick(banks[id]);
+  }
+
+  function nextQuestion(){
+    if(round>=5){finishSession();return}
+    answered=false;
+    round++;
+    currentQuestion=makeQuestion(activeStation.id);
+    document.querySelector('#roundLabel').textContent=`Question ${round} of 5`;
+    document.querySelector('#question').textContent=currentQuestion.q;
+    document.querySelector('#visual').textContent=currentQuestion.v||'';
+    document.querySelector('#feedback').textContent='';
+    document.querySelector('#feedback').className='feedback';
+    document.querySelector('#nextQuestion').disabled=true;
+    document.querySelector('#nextQuestion').textContent=round===5?'Finish Activity':'Next Question';
+
+    const box=document.querySelector('#answers');
+    box.innerHTML='';
+    shuffle(currentQuestion.c).forEach(choice=>{
+      const b=document.createElement('button');
+      b.className='answer';
+      b.textContent=choice;
+      b.onclick=()=>checkAnswer(choice);
+      box.append(b);
+    });
+  }
+
+  function checkAnswer(choice){
+    if(answered)return;
+    answered=true;
+    const good=String(choice)===String(currentQuestion.a);
+    const feedback=document.querySelector('#feedback');
+    if(good){
+      correctThisSession++;
+      music.totalCorrect=(music.totalCorrect||0)+1;
+      feedback.textContent='Wonderful music thinking! That is correct! 🎉';
+      feedback.className='feedback good';
+      sound('reward');
+    }else{
+      feedback.textContent=`Good try! The correct answer is ${currentQuestion.a}.`;
+      feedback.className='feedback bad';
+      sound('tap');
+    }
+    [...document.querySelectorAll('.answer')].forEach(b=>{
+      b.disabled=true;
+      if(String(b.textContent)===String(currentQuestion.a))b.style.background='#dcf7d6';
+    });
+    document.querySelector('#nextQuestion').disabled=false;
+  }
+
+  function finishSession(){
+    music.plays[activeStation.id]=(music.plays[activeStation.id]||0)+1;
+    const current=music.mastery[activeStation.id]||0;
+    if(correctThisSession>=4)music.mastery[activeStation.id]=Math.min(5,current+1);
+
+    if(!music.completedByDate[today])music.completedByDate[today]=[];
+    music.completedByDate[today].push(`${activeStation.id}-${Date.now()}`);
+
+    const coins=5+correctThisSession;
+    const xp=10+(correctThisSession*2);
+    profile.coins=(profile.coins||0)+coins;
+    profile.xp=(profile.xp||0)+xp;
+    profile.totalXp=(profile.totalXp||0)+xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+coins;
+
+    save();
+    document.querySelector('#activityModal').classList.remove('show');
+    confetti();
+    toast(`Music activity complete! +${coins} coins and +${xp} XP`);
+    render();
+  }
+
+  function collectDaily(){
+    if(activitiesToday()<3||music.dailyRewardDates.includes(today))return;
+    music.dailyRewardDates.push(today);
+    profile.coins=(profile.coins||0)+20;
+    profile.xp=(profile.xp||0)+30;
+    profile.totalXp=(profile.totalXp||0)+30;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+20;
+    save();
+    confetti();
+    toast('Daily Music Challenge complete! +20 coins and +30 XP');
+    render();
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');
+    el.textContent=message;
+    el.classList.add('show');
+    clearTimeout(window.__musicToast);
+    window.__musicToast=setTimeout(()=>el.classList.remove('show'),2300);
+  }
+
+  function confetti(){
+    const c=document.querySelector('#confetti');
+    c.innerHTML='';
+    ['⭐','✨','🎵','🎶','🎤'].forEach(symbol=>{
+      for(let i=0;i<7;i++){
+        const n=document.createElement('i');
+        n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(17+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2400);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='reward'?784:523;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.18);
+      osc.start();osc.stop(ctx.currentTime+.19);
+    }catch{}
+  }
+
+  document.querySelector('#academyBtn').onclick=()=>location.href='school.html';
+  document.querySelector('#closeModal').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#leaveActivity').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#nextQuestion').onclick=nextQuestion;
+  document.querySelector('#dailyReward').onclick=collectDaily;
+  document.querySelector('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;
+    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
+    if(soundOn)sound('tap');
+  };
+  document.querySelector('#activityModal').onclick=e=>{
+    if(e.target.id==='activityModal')document.querySelector('#activityModal').classList.remove('show');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
