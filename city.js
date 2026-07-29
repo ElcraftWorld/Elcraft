@@ -117,7 +117,7 @@
         break;
 
       case 'school':
-        showComingSoon('The School');
+        openPage('school.html');
         break;
 
       case 'market':
