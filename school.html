@@ -372,8 +372,9 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
       const b=document.createElement('button');
       const isReading=s.id==='reading';
       const isWriting=s.id==='writing';
-      b.className=`subject ${s.color} ${(!isReading&&done.includes(s.id))?'done':''}`;
-      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
+      const isMath=s.id==='math';
+      b.className=`subject ${s.color} ${(!isReading&&!isWriting&&!isMath&&done.includes(s.id))?'done':''}`;
+      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':isMath?'Always open • Math stations and Math Passport':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
       b.onclick=()=>openLesson(s);
       subjectsBox.append(b);
     });
@@ -383,11 +384,12 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
     subjects.slice(0,4).forEach(s=>{
       const isReading=s.id==='reading';
       const isWriting=s.id==='writing';
-      const isAlwaysOpen=isReading||isWriting;
+      const isMath=s.id==='math';
+      const isAlwaysOpen=isReading||isWriting||isMath;
       const isDone=!isAlwaysOpen&&done.includes(s.id);
       const row=document.createElement('div');
       row.className='task '+(isDone?'done':'');
-      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isReading?'Always open • Read or reread any book':isWriting?'Always open • Choose any writing activity':isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">${isReading?'📘':isWriting?'✏️':`+${s.reward} 🪙`}</div>`;
+      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isReading?'Always open • Read or reread any book':isWriting?'Always open • Choose any writing activity':isMath?'Always open • Choose any math station':isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">${isReading?'📘':isWriting?'✏️':isMath?'➕':`+${s.reward} 🪙`}</div>`;
       daily.append(row);
     });
 
@@ -424,7 +426,8 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
   function openLesson(subject){
     const classroomPages={
       reading:'reading.html',
-      writing:'writing.html'
+      writing:'writing.html',
+      math:'math.html'
     };
 
     if(classroomPages[subject.id]){
