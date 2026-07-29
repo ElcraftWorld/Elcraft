@@ -1,0 +1,1302 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <title>ELCraft — Market</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --purple: #6544af;
+      --purple-dark: #4f3492;
+      --blue: #55c9ef;
+      --pink: #ff8fbd;
+      --yellow: #ffd85c;
+      --green: #8bd968;
+      --cream: #fffaf2;
+      --shadow: 0 10px 0 rgba(79, 52, 146, 0.12);
+    }
+
+    html,
+    body {
+      margin: 0;
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      color: #4d3f7e;
+      background:
+        radial-gradient(circle at 20% 15%, rgba(255,255,255,.8), transparent 26%),
+        linear-gradient(to bottom, #73d5f7 0 32%, #a7e570 32% 100%);
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header */
+
+    .market-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 22px;
+      border-bottom: 4px solid rgba(78, 180, 220, 0.3);
+      background: rgba(249, 253, 255, 0.97);
+      box-shadow: 0 5px 16px rgba(45, 91, 145, 0.14);
+    }
+
+    .header-left,
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+    }
+
+    .home-button,
+    .cart-button,
+    .coin-pill {
+      min-height: 50px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-weight: 900;
+      box-shadow:
+        0 5px 0 rgba(104, 70, 170, 0.16),
+        0 8px 18px rgba(71, 61, 132, 0.1);
+    }
+
+    .home-button {
+      color: var(--purple);
+      background: #eee1ff;
+      cursor: pointer;
+    }
+
+    .home-button:hover,
+    .cart-button:hover {
+      transform: translateY(-2px);
+    }
+
+    .home-button:active,
+    .cart-button:active {
+      transform: translateY(2px);
+    }
+
+    .market-icon {
+      font-size: clamp(35px, 3.5vw, 52px);
+      filter: drop-shadow(0 5px 4px rgba(50, 69, 115, 0.16));
+    }
+
+    .title-group {
+      min-width: 0;
+    }
+
+    .title-group h1 {
+      margin: 0;
+      color: var(--purple);
+      font-size: clamp(28px, 3vw, 46px);
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .title-group p {
+      margin: 5px 0 0;
+      color: #526b9f;
+      font-size: clamp(12px, 1.1vw, 17px);
+      font-weight: 800;
+    }
+
+    .coin-pill {
+      color: #72520d;
+      background: #fff0a8;
+      white-space: nowrap;
+    }
+
+    .cart-button {
+      position: relative;
+      color: white;
+      background: linear-gradient(145deg, #7b5ac8, #5d3fab);
+      cursor: pointer;
+    }
+
+    .cart-count {
+      position: absolute;
+      right: -4px;
+      top: -7px;
+      min-width: 28px;
+      height: 28px;
+      display: grid;
+      place-items: center;
+      border: 3px solid white;
+      border-radius: 50%;
+      color: white;
+      background: #ff6f9f;
+      font-size: 13px;
+    }
+
+    /* Main world */
+
+    .market-world {
+      position: relative;
+      flex: 1;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    .cloud {
+      position: absolute;
+      width: 150px;
+      height: 46px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.8);
+      pointer-events: none;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      left: 18px;
+      width: 62px;
+      height: 62px;
+    }
+
+    .cloud::after {
+      right: 20px;
+      width: 76px;
+      height: 76px;
+    }
+
+    .cloud.one {
+      top: 18px;
+      left: 5%;
+    }
+
+    .cloud.two {
+      top: 50px;
+      right: 7%;
+      transform: scale(.8);
+      opacity: .75;
+    }
+
+    .market-shell {
+      position: relative;
+      z-index: 3;
+      width: min(1180px, 100%);
+      margin: 0 auto;
+    }
+
+    .welcome-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
+      padding: 18px 20px;
+      border: 4px solid rgba(255,255,255,.9);
+      border-radius: 28px;
+      background: rgba(255,255,255,.9);
+      box-shadow: var(--shadow), 0 18px 30px rgba(45, 91, 145, 0.15);
+    }
+
+    .player-avatar {
+      width: 78px;
+      height: 78px;
+      display: grid;
+      place-items: center;
+      overflow: hidden;
+      border: 4px solid white;
+      border-radius: 24px;
+      background: #e9dcff;
+      font-size: 48px;
+      box-shadow: 0 7px 0 rgba(101, 68, 175, 0.13);
+    }
+
+    .player-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .welcome-card h2 {
+      margin: 0;
+      color: var(--purple);
+      font-size: clamp(21px, 2.2vw, 34px);
+    }
+
+    .welcome-card p {
+      margin: 5px 0 0;
+      color: #5a6f9e;
+      font-weight: 800;
+    }
+
+    .daily-gift {
+      border: 0;
+      border-radius: 20px;
+      padding: 12px 16px;
+      color: #7b4c0c;
+      background: #ffe98d;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(165, 116, 21, 0.16);
+    }
+
+    .daily-gift:disabled {
+      opacity: .6;
+      cursor: default;
+    }
+
+    .category-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 18px;
+      overflow-x: auto;
+      padding: 3px 2px 8px;
+      scrollbar-width: thin;
+    }
+
+    .category-button {
+      flex: 0 0 auto;
+      border: 3px solid rgba(255,255,255,.95);
+      border-radius: 999px;
+      padding: 10px 16px;
+      color: var(--purple);
+      background: rgba(255,255,255,.92);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 0 rgba(79, 52, 146, 0.12);
+    }
+
+    .category-button.active {
+      color: white;
+      background: linear-gradient(145deg, #7e5bcb, #5f42b0);
+    }
+
+    .stall-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .item-card {
+      position: relative;
+      min-height: 260px;
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 14px;
+      border: 4px solid rgba(255,255,255,.92);
+      border-radius: 28px;
+      background: rgba(255,255,255,.93);
+      box-shadow:
+        0 10px 0 rgba(67, 121, 51, .18),
+        0 16px 24px rgba(43, 88, 37, .14);
+      transition: transform .18s ease;
+    }
+
+    .item-card:hover {
+      transform: translateY(-5px);
+    }
+
+    .item-art {
+      height: 132px;
+      display: grid;
+      place-items: center;
+      border-radius: 22px;
+      font-size: 76px;
+      background:
+        radial-gradient(circle at 30% 25%, rgba(255,255,255,.85), transparent 34%),
+        linear-gradient(145deg, var(--card-a), var(--card-b));
+    }
+
+    .item-name {
+      margin: 13px 0 3px;
+      color: var(--purple-dark);
+      font-size: 19px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .item-description {
+      min-height: 38px;
+      margin: 0;
+      color: #64739c;
+      font-size: 13px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .item-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 9px;
+      margin-top: auto;
+      padding-top: 12px;
+    }
+
+    .price {
+      color: #765713;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .buy-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 13px;
+      color: white;
+      background: linear-gradient(145deg, #72c94f, #4eaa37);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 4px 0 rgba(46, 120, 34, .18);
+    }
+
+    .buy-button:disabled {
+      background: #b7becb;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    .owned-badge {
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      padding: 5px 8px;
+      border: 2px solid white;
+      border-radius: 999px;
+      color: white;
+      background: #6d4dbc;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    /* Cart drawer */
+
+    .drawer-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: none;
+      background: rgba(42, 36, 76, .34);
+      backdrop-filter: blur(3px);
+    }
+
+    .drawer-backdrop.open {
+      display: block;
+    }
+
+    .cart-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      z-index: 100;
+      width: min(420px, 92vw);
+      height: 100vh;
+      padding: 20px;
+      transform: translateX(105%);
+      background: #fffaf7;
+      box-shadow: -16px 0 35px rgba(37, 42, 78, .24);
+      transition: transform .24s ease;
+      overflow-y: auto;
+    }
+
+    .cart-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .drawer-top h2 {
+      margin: 0;
+      color: var(--purple);
+    }
+
+    .close-drawer {
+      width: 42px;
+      height: 42px;
+      border: 0;
+      border-radius: 50%;
+      color: var(--purple);
+      background: #eee1ff;
+      font-size: 22px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cart-empty {
+      padding: 28px 12px;
+      color: #69789b;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .cart-item {
+      display: grid;
+      grid-template-columns: 54px 1fr auto;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      border-radius: 18px;
+      background: white;
+      box-shadow: 0 4px 12px rgba(66, 68, 100, .1);
+    }
+
+    .cart-item-icon {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border-radius: 15px;
+      background: #f0e8ff;
+      font-size: 34px;
+    }
+
+    .cart-item-name {
+      color: var(--purple-dark);
+      font-weight: 900;
+    }
+
+    .remove-item {
+      border: 0;
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: #9a315a;
+      background: #ffe1ed;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cart-summary {
+      margin-top: 18px;
+      padding: 16px;
+      border-radius: 20px;
+      background: #f2ebff;
+    }
+
+    .summary-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 8px;
+      font-weight: 900;
+    }
+
+    .checkout-button {
+      width: 100%;
+      margin-top: 10px;
+      border: 0;
+      border-radius: 999px;
+      padding: 13px 18px;
+      color: white;
+      background: linear-gradient(145deg, #7c5ac8, #5c3ca9);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 6px 0 rgba(68, 45, 125, .18);
+    }
+
+    .checkout-button:disabled {
+      background: #b8bdc8;
+      box-shadow: none;
+      cursor: default;
+    }
+
+    /* Toast */
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: 104px;
+      z-index: 120;
+      max-width: min(90vw, 520px);
+      padding: 13px 20px;
+      transform: translate(-50%, -150px);
+      border: 3px solid white;
+      border-radius: 999px;
+      color: var(--purple);
+      background: white;
+      box-shadow: 0 12px 28px rgba(24, 49, 84, .26);
+      font-weight: 900;
+      text-align: center;
+      transition: transform .22s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 980px) {
+      .stall-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 760px) {
+      .market-header {
+        padding: 10px 12px;
+      }
+
+      .market-icon,
+      .title-group p {
+        display: none;
+      }
+
+      .home-button,
+      .cart-button,
+      .coin-pill {
+        min-height: 44px;
+        padding: 9px 13px;
+      }
+
+      .market-world {
+        padding: 16px 12px 24px;
+      }
+
+      .welcome-card {
+        grid-template-columns: auto 1fr;
+      }
+
+      .daily-gift {
+        grid-column: 1 / -1;
+      }
+
+      .stall-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .item-card {
+        min-height: 242px;
+      }
+    }
+
+    @media (max-width: 470px) {
+      .title-group h1 {
+        font-size: 23px;
+      }
+
+      .coin-pill {
+        display: none;
+      }
+
+      .stall-grid {
+        gap: 12px;
+      }
+
+      .item-card {
+        padding: 10px;
+        min-height: 222px;
+      }
+
+      .item-art {
+        height: 112px;
+        font-size: 60px;
+      }
+
+      .item-name {
+        font-size: 16px;
+      }
+
+      .item-description {
+        font-size: 12px;
+      }
+
+      .item-bottom {
+        flex-direction: column;
+      }
+
+      .buy-button {
+        width: 100%;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="market-header">
+
+      <div class="header-left">
+
+        <button
+          id="homeButton"
+          class="home-button"
+          type="button">
+          ← My City
+        </button>
+
+        <div class="market-icon" aria-hidden="true">
+          🛍️
+        </div>
+
+        <div class="title-group">
+          <h1>Market</h1>
+          <p>Spend coins, collect items, and grow your ELCraft world.</p>
+        </div>
+
+      </div>
+
+      <div class="header-right">
+
+        <div
+          id="coinPill"
+          class="coin-pill"
+          aria-label="Coin balance">
+          🪙 100
+        </div>
+
+        <button
+          id="cartButton"
+          class="cart-button"
+          type="button">
+          🛒 Cart
+          <span
+            id="cartCount"
+            class="cart-count">
+            0
+          </span>
+        </button>
+
+      </div>
+
+    </header>
+
+    <main class="market-world">
+
+      <div class="cloud one" aria-hidden="true"></div>
+      <div class="cloud two" aria-hidden="true"></div>
+
+      <section class="market-shell">
+
+        <div class="welcome-card">
+
+          <div
+            id="playerAvatar"
+            class="player-avatar">
+            🧒
+          </div>
+
+          <div>
+            <h2 id="welcomeTitle">Welcome to the Market!</h2>
+            <p>Choose something fun, add it to your cart, and check out with your coins.</p>
+          </div>
+
+          <button
+            id="dailyGiftButton"
+            class="daily-gift"
+            type="button">
+            🎁 Daily Gift +20
+          </button>
+
+        </div>
+
+        <div
+          id="categoryTabs"
+          class="category-tabs"
+          aria-label="Market categories">
+        </div>
+
+        <div
+          id="stallGrid"
+          class="stall-grid">
+        </div>
+
+      </section>
+
+    </main>
+
+  </div>
+
+  <div
+    id="drawerBackdrop"
+    class="drawer-backdrop">
+  </div>
+
+  <aside
+    id="cartDrawer"
+    class="cart-drawer"
+    aria-label="Shopping cart">
+
+    <div class="drawer-top">
+      <h2>🛒 My Cart</h2>
+
+      <button
+        id="closeDrawerButton"
+        class="close-drawer"
+        type="button"
+        aria-label="Close shopping cart">
+        ×
+      </button>
+    </div>
+
+    <div id="cartItems"></div>
+
+    <div class="cart-summary">
+
+      <div class="summary-row">
+        <span>Total</span>
+        <span id="cartTotal">🪙 0</span>
+      </div>
+
+      <div class="summary-row">
+        <span>Your Coins</span>
+        <span id="drawerCoinBalance">🪙 100</span>
+      </div>
+
+      <button
+        id="checkoutButton"
+        class="checkout-button"
+        type="button">
+        Buy Items
+      </button>
+
+    </div>
+
+  </aside>
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const NAME_KEY = 'elcraft_child_name';
+      const AVATAR_KEY = 'elcraft_avatar_image';
+      const COINS_KEY = 'elcraft_coins';
+      const INVENTORY_KEY = 'elcraft_inventory';
+      const DAILY_GIFT_KEY = 'elcraft_market_daily_gift';
+
+      const DEFAULT_COINS = 100;
+
+      const items = [
+        {
+          id: 'rainbow-shirt',
+          name: 'Rainbow Shirt',
+          icon: '👕',
+          price: 20,
+          category: 'Clothes',
+          description: 'A bright shirt for colorful adventures.',
+          colors: ['#dff7ff', '#a7dff8']
+        },
+        {
+          id: 'star-dress',
+          name: 'Star Dress',
+          icon: '👗',
+          price: 28,
+          category: 'Clothes',
+          description: 'A magical dress covered in little stars.',
+          colors: ['#f8e3ff', '#d6a8ef']
+        },
+        {
+          id: 'hero-cape',
+          name: 'Hero Cape',
+          icon: '🦸',
+          price: 32,
+          category: 'Clothes',
+          description: 'Perfect for saving the city in style.',
+          colors: ['#ffe3e7', '#ff9caf']
+        },
+        {
+          id: 'sparkle-crown',
+          name: 'Sparkle Crown',
+          icon: '👑',
+          price: 24,
+          category: 'Accessories',
+          description: 'A shiny crown for very important quests.',
+          colors: ['#fff4bd', '#ffd65d']
+        },
+        {
+          id: 'heart-glasses',
+          name: 'Heart Glasses',
+          icon: '🕶️',
+          price: 16,
+          category: 'Accessories',
+          description: 'See the whole world with extra sparkle.',
+          colors: ['#ffe2ef', '#ff9fc4']
+        },
+        {
+          id: 'magic-wand',
+          name: 'Magic Wand',
+          icon: '🪄',
+          price: 26,
+          category: 'Accessories',
+          description: 'Wave it and make your own pretend magic.',
+          colors: ['#ede5ff', '#bca4f2']
+        },
+        {
+          id: 'puppy-bed',
+          name: 'Puppy Bed',
+          icon: '🛏️',
+          price: 30,
+          category: 'Pets',
+          description: 'A cozy little bed for a future pet.',
+          colors: ['#fff0dc', '#ffc88c']
+        },
+        {
+          id: 'pet-bowl',
+          name: 'Pet Bowl',
+          icon: '🥣',
+          price: 12,
+          category: 'Pets',
+          description: 'A cheerful bowl for snacks and water.',
+          colors: ['#e8ffe2', '#a9e58d']
+        },
+        {
+          id: 'toy-ball',
+          name: 'Bouncy Ball',
+          icon: '⚽',
+          price: 10,
+          category: 'Toys',
+          description: 'A classic ball for outdoor play.',
+          colors: ['#f4f4ff', '#c7cbef']
+        },
+        {
+          id: 'building-blocks',
+          name: 'Building Blocks',
+          icon: '🧱',
+          price: 18,
+          category: 'Toys',
+          description: 'Stack, build, knock down, and start again.',
+          colors: ['#fff1d5', '#ffbb75']
+        },
+        {
+          id: 'art-kit',
+          name: 'Art Kit',
+          icon: '🎨',
+          price: 22,
+          category: 'Toys',
+          description: 'Paintbrushes and colors for creative days.',
+          colors: ['#f7e1ff', '#d89fe9']
+        },
+        {
+          id: 'flower-pot',
+          name: 'Flower Pot',
+          icon: '🪴',
+          price: 14,
+          category: 'Home',
+          description: 'A happy plant to brighten your room.',
+          colors: ['#e7ffe1', '#a6de87']
+        },
+        {
+          id: 'moon-lamp',
+          name: 'Moon Lamp',
+          icon: '🌙',
+          price: 25,
+          category: 'Home',
+          description: 'A soft glowing lamp for bedtime.',
+          colors: ['#e9edff', '#aebef3']
+        },
+        {
+          id: 'rainbow-rug',
+          name: 'Rainbow Rug',
+          icon: '🌈',
+          price: 34,
+          category: 'Home',
+          description: 'A soft rug filled with cheerful colors.',
+          colors: ['#fff1f7', '#ffc3dd']
+        }
+      ];
+
+      const homeButton = document.getElementById('homeButton');
+      const cartButton = document.getElementById('cartButton');
+      const cartCount = document.getElementById('cartCount');
+      const coinPill = document.getElementById('coinPill');
+      const playerAvatar = document.getElementById('playerAvatar');
+      const welcomeTitle = document.getElementById('welcomeTitle');
+      const dailyGiftButton = document.getElementById('dailyGiftButton');
+      const categoryTabs = document.getElementById('categoryTabs');
+      const stallGrid = document.getElementById('stallGrid');
+      const drawerBackdrop = document.getElementById('drawerBackdrop');
+      const cartDrawer = document.getElementById('cartDrawer');
+      const closeDrawerButton = document.getElementById('closeDrawerButton');
+      const cartItems = document.getElementById('cartItems');
+      const cartTotal = document.getElementById('cartTotal');
+      const drawerCoinBalance = document.getElementById('drawerCoinBalance');
+      const checkoutButton = document.getElementById('checkoutButton');
+      const toast = document.getElementById('toast');
+
+      let selectedCategory = 'All';
+      let cart = [];
+      let toastTimer = null;
+
+      function getPlayerName() {
+        const savedName = localStorage.getItem(NAME_KEY);
+
+        if (!savedName) {
+          return 'Player';
+        }
+
+        return savedName.trim().replace(/\s+/g, ' ').slice(0, 20) || 'Player';
+      }
+
+      function getCoins() {
+        const savedCoins = Number(localStorage.getItem(COINS_KEY));
+
+        if (!Number.isFinite(savedCoins) || savedCoins < 0) {
+          return DEFAULT_COINS;
+        }
+
+        return Math.floor(savedCoins);
+      }
+
+      function setCoins(value) {
+        localStorage.setItem(COINS_KEY, String(Math.max(0, Math.floor(value))));
+        updateCoinDisplays();
+      }
+
+      function getInventory() {
+        try {
+          const parsed = JSON.parse(localStorage.getItem(INVENTORY_KEY) || '[]');
+
+          return Array.isArray(parsed) ? parsed : [];
+        } catch {
+          return [];
+        }
+      }
+
+      function saveInventory(inventory) {
+        localStorage.setItem(INVENTORY_KEY, JSON.stringify(inventory));
+      }
+
+      function showToast(message, duration = 2200) {
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, duration);
+      }
+
+      function updatePlayer() {
+        const name = getPlayerName();
+        const savedAvatar = localStorage.getItem(AVATAR_KEY);
+
+        welcomeTitle.textContent = `Welcome to the Market, ${name}!`;
+
+        if (savedAvatar) {
+          playerAvatar.innerHTML = '';
+
+          const img = document.createElement('img');
+          img.src = savedAvatar;
+          img.alt = `${name}'s character`;
+
+          img.addEventListener('error', () => {
+            playerAvatar.textContent = '🧒';
+          });
+
+          playerAvatar.appendChild(img);
+        } else {
+          playerAvatar.textContent = '🧒';
+        }
+      }
+
+      function updateCoinDisplays() {
+        const coins = getCoins();
+
+        coinPill.textContent = `🪙 ${coins}`;
+        drawerCoinBalance.textContent = `🪙 ${coins}`;
+      }
+
+      function renderCategories() {
+        const categories = [
+          'All',
+          ...new Set(items.map(item => item.category))
+        ];
+
+        categoryTabs.innerHTML = '';
+
+        categories.forEach(category => {
+          const button = document.createElement('button');
+
+          button.type = 'button';
+          button.className = 'category-button';
+          button.textContent = category;
+
+          if (category === selectedCategory) {
+            button.classList.add('active');
+          }
+
+          button.addEventListener('click', () => {
+            selectedCategory = category;
+            renderCategories();
+            renderItems();
+          });
+
+          categoryTabs.appendChild(button);
+        });
+      }
+
+      function renderItems() {
+        const inventory = getInventory();
+
+        const visibleItems =
+          selectedCategory === 'All'
+            ? items
+            : items.filter(item => item.category === selectedCategory);
+
+        stallGrid.innerHTML = '';
+
+        visibleItems.forEach(item => {
+          const ownedCount = inventory.filter(
+            inventoryItem => inventoryItem.id === item.id
+          ).length;
+
+          const card = document.createElement('article');
+          card.className = 'item-card';
+
+          card.innerHTML = `
+            ${
+              ownedCount > 0
+                ? `<div class="owned-badge">Owned ${ownedCount}</div>`
+                : ''
+            }
+
+            <div
+              class="item-art"
+              style="--card-a:${item.colors[0]}; --card-b:${item.colors[1]};">
+              ${item.icon}
+            </div>
+
+            <div class="item-name">${item.name}</div>
+
+            <p class="item-description">
+              ${item.description}
+            </p>
+
+            <div class="item-bottom">
+              <span class="price">🪙 ${item.price}</span>
+
+              <button
+                class="buy-button"
+                type="button">
+                Add
+              </button>
+            </div>
+          `;
+
+          card
+            .querySelector('.buy-button')
+            .addEventListener('click', () => {
+              cart.push(item);
+              updateCart();
+              showToast(`${item.name} added to your cart! 🛒`);
+            });
+
+          stallGrid.appendChild(card);
+        });
+      }
+
+      function updateCart() {
+        cartCount.textContent = String(cart.length);
+        cartItems.innerHTML = '';
+
+        if (cart.length === 0) {
+          cartItems.innerHTML = `
+            <div class="cart-empty">
+              Your cart is empty. Pick something fun from the market!
+            </div>
+          `;
+        } else {
+          cart.forEach((item, index) => {
+            const row = document.createElement('div');
+            row.className = 'cart-item';
+
+            row.innerHTML = `
+              <div class="cart-item-icon">${item.icon}</div>
+
+              <div>
+                <div class="cart-item-name">${item.name}</div>
+                <div>🪙 ${item.price}</div>
+              </div>
+
+              <button
+                class="remove-item"
+                type="button">
+                Remove
+              </button>
+            `;
+
+            row
+              .querySelector('.remove-item')
+              .addEventListener('click', () => {
+                cart.splice(index, 1);
+                updateCart();
+              });
+
+            cartItems.appendChild(row);
+          });
+        }
+
+        const total = cart.reduce(
+          (sum, item) => sum + item.price,
+          0
+        );
+
+        cartTotal.textContent = `🪙 ${total}`;
+
+        checkoutButton.disabled =
+          cart.length === 0 || total > getCoins();
+
+        checkoutButton.textContent =
+          total > getCoins()
+            ? 'Not Enough Coins'
+            : 'Buy Items';
+      }
+
+      function openCart() {
+        drawerBackdrop.classList.add('open');
+        cartDrawer.classList.add('open');
+      }
+
+      function closeCart() {
+        drawerBackdrop.classList.remove('open');
+        cartDrawer.classList.remove('open');
+      }
+
+      function checkout() {
+        const total = cart.reduce(
+          (sum, item) => sum + item.price,
+          0
+        );
+
+        const coins = getCoins();
+
+        if (cart.length === 0) {
+          return;
+        }
+
+        if (total > coins) {
+          showToast('You need more coins for this cart. 🪙');
+          return;
+        }
+
+        const inventory = getInventory();
+
+        cart.forEach(item => {
+          inventory.push({
+            id: item.id,
+            name: item.name,
+            icon: item.icon,
+            category: item.category,
+            purchasedAt: new Date().toISOString()
+          });
+        });
+
+        saveInventory(inventory);
+        setCoins(coins - total);
+
+        const itemCount = cart.length;
+
+        cart = [];
+        updateCart();
+        renderItems();
+        closeCart();
+
+        showToast(
+          `You bought ${itemCount} item${itemCount === 1 ? '' : 's'}! 🎉`,
+          2600
+        );
+      }
+
+      function setupDailyGift() {
+        const today = new Date().toISOString().slice(0, 10);
+        const lastClaimed = localStorage.getItem(DAILY_GIFT_KEY);
+
+        if (lastClaimed === today) {
+          dailyGiftButton.disabled = true;
+          dailyGiftButton.textContent = '🎁 Gift Claimed';
+          return;
+        }
+
+        dailyGiftButton.addEventListener('click', () => {
+          setCoins(getCoins() + 20);
+          localStorage.setItem(DAILY_GIFT_KEY, today);
+
+          dailyGiftButton.disabled = true;
+          dailyGiftButton.textContent = '🎁 Gift Claimed';
+
+          showToast('You received 20 market coins! 🪙✨');
+          updateCart();
+        });
+      }
+
+      homeButton.addEventListener('click', () => {
+        window.location.href = 'my-city.html';
+      });
+
+      cartButton.addEventListener('click', openCart);
+      closeDrawerButton.addEventListener('click', closeCart);
+      drawerBackdrop.addEventListener('click', closeCart);
+      checkoutButton.addEventListener('click', checkout);
+
+      window.addEventListener('keydown', event => {
+        if (event.key === 'Escape') {
+          closeCart();
+        }
+      });
+
+      updatePlayer();
+      updateCoinDisplays();
+      renderCategories();
+      renderItems();
+      updateCart();
+      setupDailyGift();
+    })();
+  </script>
+
+</body>
+</html>
