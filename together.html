@@ -1,0 +1,1722 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f6fbff">
+
+  <title>ELCraft — Together</title>
+
+  <style>
+    :root {
+      --purple: #6546ad;
+      --purple-dark: #4f368b;
+      --blue: #54bde8;
+      --blue-dark: #2484bc;
+      --pink: #ff79b5;
+      --green: #7bcf57;
+      --yellow: #ffd75d;
+      --ink: #2f426e;
+      --panel: rgba(255, 255, 255, 0.95);
+      --header-height: 88px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      background: #7bcdf2;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      touch-action: manipulation;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .game-header {
+      position: relative;
+      z-index: 100;
+      flex: 0 0 auto;
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 12px 20px;
+      border-bottom: 4px solid rgba(85, 174, 217, 0.3);
+      background: rgba(249, 253, 255, 0.97);
+      box-shadow: 0 5px 18px rgba(42, 78, 126, 0.15);
+    }
+
+    .header-left {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .home-button,
+    .header-action {
+      border: 0;
+      border-radius: 999px;
+      min-height: 48px;
+      padding: 10px 17px;
+      color: var(--purple);
+      background: #eee2ff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 0 5px 0 rgba(91, 61, 148, 0.16);
+    }
+
+    .home-button:active,
+    .header-action:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(91, 61, 148, 0.16);
+    }
+
+    .title-icon {
+      font-size: clamp(34px, 3.4vw, 50px);
+      line-height: 1;
+    }
+
+    .header-title h1 {
+      margin: 0;
+      color: var(--purple);
+      font-size: clamp(26px, 2.8vw, 43px);
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .header-title p {
+      margin: 4px 0 0;
+      color: #5870a0;
+      font-size: clamp(12px, 1.1vw, 17px);
+      font-weight: 800;
+    }
+
+    .player-badge {
+      max-width: 260px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 8px 15px;
+      border-radius: 999px;
+      color: var(--purple);
+      background: #f2e8ff;
+      font-weight: 900;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    .player-badge span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .world {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 12% 14%, rgba(255,255,255,.75) 0 2.5%, transparent 9%),
+        radial-gradient(circle at 85% 12%, rgba(255,255,255,.6) 0 2%, transparent 8%),
+        linear-gradient(to bottom, #78d2f6 0 44%, #9be66e 44% 100%);
+    }
+
+    .world::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.35) 0 3px, transparent 4px)
+        0 0 / 78px 74px;
+      opacity: .45;
+    }
+
+    .cloud {
+      position: absolute;
+      width: clamp(110px, 15vw, 210px);
+      height: clamp(36px, 4.8vw, 67px);
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      filter: drop-shadow(0 8px 9px rgba(57,103,151,.12));
+      pointer-events: none;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      left: 12%;
+      width: 44%;
+      aspect-ratio: 1;
+    }
+
+    .cloud::after {
+      right: 12%;
+      width: 56%;
+      aspect-ratio: 1;
+    }
+
+    .cloud.one {
+      top: 6%;
+      left: 5%;
+    }
+
+    .cloud.two {
+      top: 12%;
+      right: 7%;
+      transform: scale(.78);
+      opacity: .82;
+    }
+
+    .treehouse {
+      position: absolute;
+      left: 50%;
+      top: 4%;
+      width: min(78vw, 1070px);
+      height: 38%;
+      transform: translateX(-50%);
+      border: 7px solid rgba(255,255,255,.9);
+      border-radius: 36px;
+      background:
+        linear-gradient(rgba(255,255,255,.1), rgba(255,255,255,.02)),
+        #8b63d5;
+      box-shadow:
+        0 16px 0 rgba(71, 51, 127, .24),
+        0 24px 34px rgba(42, 76, 88, .25);
+      overflow: hidden;
+    }
+
+    .treehouse::before {
+      content: "";
+      position: absolute;
+      left: 5%;
+      right: 5%;
+      bottom: 0;
+      height: 28%;
+      border-radius: 25px 25px 0 0;
+      background: linear-gradient(#f0c36c, #b87934);
+      border-top: 5px solid rgba(255,255,255,.4);
+    }
+
+    .roof {
+      position: absolute;
+      left: 50%;
+      top: -1%;
+      width: 60%;
+      height: 28%;
+      transform: translateX(-50%);
+      clip-path: polygon(50% 0, 100% 100%, 0 100%);
+      background: #ff7aaa;
+      filter: drop-shadow(0 7px 0 rgba(139, 49, 92, .22));
+    }
+
+    .treehouse-title {
+      position: absolute;
+      left: 50%;
+      top: 25%;
+      transform: translateX(-50%);
+      margin: 0;
+      color: #fff;
+      font-size: clamp(24px, 3vw, 45px);
+      font-weight: 900;
+      text-shadow: 0 4px 0 rgba(74, 48, 128, .3);
+      white-space: nowrap;
+    }
+
+    .friends {
+      position: absolute;
+      left: 50%;
+      bottom: 8%;
+      transform: translateX(-50%);
+      font-size: clamp(65px, 8vw, 118px);
+      letter-spacing: 12px;
+      filter: drop-shadow(0 10px 7px rgba(52, 39, 91, .22));
+    }
+
+    .main-panel {
+      position: absolute;
+      left: 50%;
+      bottom: 2.5%;
+      width: min(96vw, 1350px);
+      height: 55%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: 1.05fr 1.4fr;
+      gap: 14px;
+      z-index: 10;
+    }
+
+    .card {
+      min-width: 0;
+      min-height: 0;
+      padding: 16px;
+      border: 4px solid rgba(255,255,255,.88);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow:
+        0 10px 0 rgba(58, 122, 64, .19),
+        0 17px 28px rgba(43, 83, 50, .2);
+      overflow: hidden;
+    }
+
+    .card h2 {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: clamp(20px, 2vw, 31px);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .lobby {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .security-note {
+      padding: 10px 12px;
+      border-radius: 18px;
+      color: #35527b;
+      background: #eaf8ff;
+      font-size: clamp(11px, 1.05vw, 15px);
+      line-height: 1.3;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .room-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .big-action {
+      min-height: 66px;
+      border: 0;
+      border-radius: 21px;
+      padding: 10px;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .create-room {
+      background: #79c74f;
+      box-shadow: 0 6px 0 #4d9430;
+    }
+
+    .join-room {
+      background: #5abbe7;
+      box-shadow: 0 6px 0 #2d83b4;
+    }
+
+    .big-action:active {
+      transform: translateY(4px);
+      box-shadow: 0 2px 0 rgba(0,0,0,.18);
+    }
+
+    .room-display {
+      display: none;
+      padding: 12px;
+      border: 3px dashed #c8b4ed;
+      border-radius: 20px;
+      background: #fbf8ff;
+      text-align: center;
+    }
+
+    .room-display.show {
+      display: block;
+    }
+
+    .room-display strong {
+      display: block;
+      color: var(--purple);
+      font-size: 14px;
+      margin-bottom: 7px;
+    }
+
+    .emoji-code {
+      display: flex;
+      justify-content: center;
+      gap: 7px;
+      font-size: clamp(28px, 3.5vw, 52px);
+      line-height: 1;
+    }
+
+    .status {
+      min-height: 22px;
+      color: #526c9a;
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .join-builder {
+      display: none;
+      padding: 10px;
+      border-radius: 19px;
+      background: #fff8d9;
+    }
+
+    .join-builder.show {
+      display: block;
+    }
+
+    .selected-code {
+      min-height: 50px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 8px;
+      border: 2px solid #eadb9e;
+      border-radius: 15px;
+      background: #fff;
+      font-size: 30px;
+    }
+
+    .emoji-picker {
+      max-height: 118px;
+      display: grid;
+      grid-template-columns: repeat(8, minmax(0, 1fr));
+      gap: 5px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .emoji-picker button {
+      min-width: 0;
+      min-height: 42px;
+      border: 0;
+      border-radius: 12px;
+      background: #fff;
+      font-size: 23px;
+      cursor: pointer;
+    }
+
+    .join-controls {
+      display: flex;
+      gap: 7px;
+      margin-top: 8px;
+    }
+
+    .join-controls button {
+      flex: 1;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .connect-button {
+      background: #73c94b;
+    }
+
+    .backspace-button {
+      background: #ff8195;
+    }
+
+    .approval-box {
+      display: none;
+      padding: 11px;
+      border: 3px solid #f2c25c;
+      border-radius: 18px;
+      background: #fff8d8;
+      text-align: center;
+    }
+
+    .approval-box.show {
+      display: block;
+    }
+
+    .approval-actions {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .approval-actions button {
+      flex: 1;
+      min-height: 42px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 900;
+    }
+
+    .approve {
+      background: #72c74b;
+    }
+
+    .deny {
+      background: #ff7e91;
+    }
+
+    .activity-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mode-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      margin-bottom: 9px;
+    }
+
+    .mode-tabs button {
+      min-height: 43px;
+      border: 0;
+      border-radius: 15px;
+      color: #5b4693;
+      background: #eee6fb;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .mode-tabs button.active {
+      color: #fff;
+      background: var(--purple);
+    }
+
+    .workspace {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      border: 4px solid #d8ccef;
+      border-radius: 22px;
+      background: #fff;
+    }
+
+    .draw-area {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .canvas-wrap {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        linear-gradient(#edf7ff 1px, transparent 1px),
+        linear-gradient(90deg, #edf7ff 1px, transparent 1px),
+        #fff;
+      background-size: 28px 28px;
+    }
+
+    canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      touch-action: none;
+    }
+
+    .draw-toolbar {
+      flex: 0 0 auto;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border-top: 3px solid #e1d8f2;
+      background: #faf8ff;
+    }
+
+    .colors {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .color-button {
+      width: 35px;
+      height: 35px;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      box-shadow: 0 0 0 2px #cfc4e6;
+      cursor: pointer;
+    }
+
+    .color-button.active {
+      box-shadow: 0 0 0 4px #6649ac;
+    }
+
+    .clear-canvas {
+      margin-left: auto;
+      min-height: 39px;
+      border: 0;
+      border-radius: 999px;
+      padding: 8px 13px;
+      color: #fff;
+      background: #ff7c90;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .coming-mode {
+      position: absolute;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 25px;
+      color: #5a4493;
+      background: linear-gradient(#f7f2ff, #eef9ff);
+      font-size: clamp(18px, 2vw, 29px);
+      line-height: 1.4;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .coming-mode.show {
+      display: flex;
+    }
+
+    .reaction-bar {
+      display: flex;
+      gap: 7px;
+      margin-top: 9px;
+      overflow-x: auto;
+      padding-bottom: 2px;
+    }
+
+    .reaction-bar button {
+      flex: 0 0 auto;
+      min-width: 55px;
+      min-height: 43px;
+      border: 0;
+      border-radius: 15px;
+      background: #f1e8ff;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .floating-reaction {
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      z-index: 1500;
+      transform: translate(-50%, -50%);
+      font-size: 92px;
+      pointer-events: none;
+      animation: reactionPop 1.3s ease forwards;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      background: rgba(28, 31, 73, .6);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(480px, 92vw);
+      max-height: 90dvh;
+      overflow-y: auto;
+      padding: 25px;
+      border: 4px solid #fff;
+      border-radius: 29px;
+      background: #fffaf3;
+      box-shadow: 0 25px 70px rgba(17,23,62,.38);
+      text-align: center;
+    }
+
+    .modal-card h2 {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: 31px;
+    }
+
+    .modal-card p {
+      color: #344b76;
+      font-weight: 800;
+      line-height: 1.4;
+    }
+
+    .pin-input {
+      width: 100%;
+      min-height: 55px;
+      border: 3px solid #ddcfef;
+      border-radius: 17px;
+      padding: 12px;
+      color: #3a4770;
+      background: #fff;
+      font-size: 25px;
+      text-align: center;
+      letter-spacing: 10px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 12px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .save-pin,
+    .unlock {
+      background: #73c84c;
+    }
+
+    .cancel {
+      background: #8e7ab6;
+    }
+
+    .modal-error {
+      min-height: 22px;
+      margin-top: 9px;
+      color: #b13e55;
+      font-weight: 900;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: calc(var(--header-height) + 15px + env(safe-area-inset-top));
+      z-index: 2500;
+      max-width: min(90vw, 560px);
+      padding: 12px 20px;
+      transform: translateX(-50%) translateY(-150px);
+      border: 3px solid rgba(255,255,255,.95);
+      border-radius: 999px;
+      color: #5a3e9d;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 12px 27px rgba(24,47,80,.24);
+      font-weight: 900;
+      text-align: center;
+      transition: transform .25s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .demo-banner {
+      position: absolute;
+      left: 50%;
+      top: 1.5%;
+      z-index: 30;
+      transform: translateX(-50%);
+      padding: 7px 13px;
+      border: 2px solid rgba(255,255,255,.9);
+      border-radius: 999px;
+      color: #5c438f;
+      background: rgba(255,255,255,.9);
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    @keyframes reactionPop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(.3); }
+      30% { opacity: 1; transform: translate(-50%, -60%) scale(1.15); }
+      100% { opacity: 0; transform: translate(-50%, -115%) scale(.85); }
+    }
+
+    @media (max-width: 1000px) {
+      :root {
+        --header-height: 78px;
+      }
+
+      .game-header {
+        min-height: 78px;
+        padding: 9px 12px;
+      }
+
+      .title-icon,
+      .header-title p {
+        display: none;
+      }
+
+      .player-badge {
+        max-width: 170px;
+      }
+
+      .treehouse {
+        width: 88vw;
+      }
+
+      .main-panel {
+        gap: 9px;
+      }
+
+      .card {
+        padding: 11px;
+        border-radius: 23px;
+      }
+
+      .emoji-picker {
+        grid-template-columns: repeat(6, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 780px) and (orientation: portrait) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      body {
+        min-height: 100dvh;
+      }
+
+      .game-header {
+        position: sticky;
+        top: 0;
+      }
+
+      .player-badge {
+        display: none;
+      }
+
+      .world {
+        flex: 0 0 auto;
+        min-height: 1250px;
+      }
+
+      .treehouse {
+        top: 2.5%;
+        width: 92vw;
+        height: 25%;
+      }
+
+      .demo-banner {
+        top: 29%;
+      }
+
+      .main-panel {
+        top: 33%;
+        bottom: auto;
+        height: 64%;
+        grid-template-columns: 1fr;
+        grid-template-rows: 1fr 1.18fr;
+      }
+
+      .emoji-picker {
+        grid-template-columns: repeat(8, minmax(0, 1fr));
+      }
+
+      .workspace {
+        min-height: 300px;
+      }
+    }
+
+    @media (max-height: 680px) and (orientation: landscape) {
+      :root {
+        --header-height: 62px;
+      }
+
+      .game-header {
+        min-height: 62px;
+        padding: 6px 11px;
+      }
+
+      .home-button,
+      .header-action {
+        min-height: 41px;
+        padding: 7px 13px;
+      }
+
+      .header-title h1 {
+        font-size: 27px;
+      }
+
+      .header-title p {
+        display: none;
+      }
+
+      .treehouse {
+        top: 2%;
+        height: 34%;
+      }
+
+      .treehouse-title {
+        font-size: 26px;
+      }
+
+      .friends {
+        font-size: 65px;
+      }
+
+      .main-panel {
+        bottom: 1.5%;
+        height: 60%;
+      }
+
+      .card {
+        padding: 9px;
+      }
+
+      .card h2 {
+        margin-bottom: 6px;
+        font-size: 18px;
+      }
+
+      .security-note {
+        padding: 6px 9px;
+      }
+
+      .big-action {
+        min-height: 48px;
+      }
+
+      .emoji-picker {
+        max-height: 78px;
+      }
+
+      .reaction-bar {
+        margin-top: 6px;
+      }
+
+      .reaction-bar button {
+        min-height: 37px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      button {
+        min-height: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .floating-reaction {
+        animation: none;
+      }
+
+      .toast {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="game-header">
+    <div class="header-left">
+      <button id="homeButton" class="home-button" type="button">← Home</button>
+      <div class="title-icon" aria-hidden="true">🌈</div>
+      <div class="header-title">
+        <h1>Together Treehouse</h1>
+        <p>Play, draw, and build safely with a friend.</p>
+      </div>
+    </div>
+
+    <div class="player-badge">
+      <span id="playerName">✨ Player</span>
+    </div>
+  </header>
+
+  <main class="world">
+    <div class="cloud one" aria-hidden="true"></div>
+    <div class="cloud two" aria-hidden="true"></div>
+
+    <section class="treehouse" aria-label="Together Treehouse">
+      <div class="roof" aria-hidden="true"></div>
+      <h2 class="treehouse-title">Welcome, Friends!</h2>
+      <div class="friends" aria-hidden="true">🧒🏽 👧🏻</div>
+    </section>
+
+    <div class="demo-banner">🔒 Safe local prototype — no open chat</div>
+
+    <section class="main-panel">
+      <section class="card lobby">
+        <h2>Friend Room</h2>
+
+        <div class="security-note">
+          A parent PIN is required before creating or joining. Rooms use a five-emoji code and host approval.
+        </div>
+
+        <div class="room-actions">
+          <button id="createRoom" class="big-action create-room" type="button">
+            🏡 Create Room
+          </button>
+
+          <button id="joinRoom" class="big-action join-room" type="button">
+            🔑 Join Room
+          </button>
+        </div>
+
+        <div id="roomDisplay" class="room-display">
+          <strong>Tell your friend this emoji code:</strong>
+          <div id="roomCode" class="emoji-code"></div>
+        </div>
+
+        <div id="joinBuilder" class="join-builder">
+          <div id="selectedCode" class="selected-code" aria-label="Selected emoji code"></div>
+          <div id="emojiPicker" class="emoji-picker"></div>
+
+          <div class="join-controls">
+            <button id="backspaceCode" class="backspace-button" type="button">⌫ Back</button>
+            <button id="connectRoom" class="connect-button" type="button">Connect</button>
+          </div>
+        </div>
+
+        <div id="approvalBox" class="approval-box">
+          <strong>👋 A friend wants to join!</strong>
+          <div class="approval-actions">
+            <button id="approveJoin" class="approve" type="button">Approve</button>
+            <button id="denyJoin" class="deny" type="button">No Thanks</button>
+          </div>
+        </div>
+
+        <div id="status" class="status">Parent approval keeps Together locked safely.</div>
+      </section>
+
+      <section class="card activity-card">
+        <h2>Play Together</h2>
+
+        <div class="mode-tabs">
+          <button class="mode-button active" data-mode="draw" type="button">🎨 Draw</button>
+          <button class="mode-button" data-mode="build" type="button">🧱 Build</button>
+          <button class="mode-button" data-mode="side" type="button">👯 Side by Side</button>
+        </div>
+
+        <div class="workspace">
+          <div id="drawArea" class="draw-area">
+            <div class="canvas-wrap">
+              <canvas id="drawingCanvas" aria-label="Shared drawing canvas"></canvas>
+            </div>
+
+            <div class="draw-toolbar">
+              <div id="colors" class="colors"></div>
+              <button id="clearCanvas" class="clear-canvas" type="button">Clear</button>
+            </div>
+          </div>
+
+          <div id="comingMode" class="coming-mode">
+            🛠️ This play mode is ready for the next multiplayer update.
+          </div>
+        </div>
+
+        <div class="reaction-bar" aria-label="Safe reactions">
+          <button type="button" data-reaction="👋" aria-label="Hi">👋</button>
+          <button type="button" data-reaction="😀" aria-label="Great job">😀</button>
+          <button type="button" data-reaction="🎉" aria-label="Yay">🎉</button>
+          <button type="button" data-reaction="❤️" aria-label="I like that">❤️</button>
+          <button type="button" data-reaction="👍" aria-label="Yes">👍</button>
+          <button type="button" data-reaction="🎨" aria-label="Let's draw">🎨</button>
+          <button type="button" data-reaction="🧱" aria-label="Let's build">🧱</button>
+        </div>
+      </section>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <div id="pinModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="pinTitle">
+    <section class="modal-card">
+      <h2 id="pinTitle">Parent Gate 🔒</h2>
+      <p id="pinMessage">
+        Create a four-digit parent PIN. Children should not know this PIN.
+      </p>
+
+      <input
+        id="pinInput"
+        class="pin-input"
+        type="password"
+        inputmode="numeric"
+        maxlength="4"
+        autocomplete="off"
+        aria-label="Four digit parent PIN">
+
+      <div id="pinError" class="modal-error" aria-live="polite"></div>
+
+      <div class="modal-actions">
+        <button id="cancelPin" class="cancel" type="button">Cancel</button>
+        <button id="confirmPin" class="save-pin" type="button">Continue</button>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const NAME_KEY = 'elcraft_child_name';
+      const PARENT_PIN_KEY = 'elcraft_parent_pin_hash';
+      const ROOM_KEY = 'elcraft_together_room';
+
+      const EMOJIS = [
+        '🦁', '🌈', '🚀', '🍎', '🦄', '🐶', '⭐', '🚂',
+        '🍉', '🎈', '🐼', '🌻', '🏰', '🐸', '🍓', '🛸',
+        '🐙', '🍪', '🦋', '🎨', '🐳', '🌙', '🥁', '🐢'
+      ];
+
+      const COLORS = [
+        '#ff6f91',
+        '#ffb347',
+        '#ffe05d',
+        '#73cf5a',
+        '#55bfea',
+        '#7458d6',
+        '#3f4b6f',
+        '#ffffff'
+      ];
+
+      const homeButton = document.getElementById('homeButton');
+      const playerName = document.getElementById('playerName');
+      const createRoomButton = document.getElementById('createRoom');
+      const joinRoomButton = document.getElementById('joinRoom');
+      const roomDisplay = document.getElementById('roomDisplay');
+      const roomCode = document.getElementById('roomCode');
+      const joinBuilder = document.getElementById('joinBuilder');
+      const selectedCode = document.getElementById('selectedCode');
+      const emojiPicker = document.getElementById('emojiPicker');
+      const backspaceCode = document.getElementById('backspaceCode');
+      const connectRoom = document.getElementById('connectRoom');
+      const approvalBox = document.getElementById('approvalBox');
+      const approveJoin = document.getElementById('approveJoin');
+      const denyJoin = document.getElementById('denyJoin');
+      const status = document.getElementById('status');
+      const pinModal = document.getElementById('pinModal');
+      const pinInput = document.getElementById('pinInput');
+      const pinMessage = document.getElementById('pinMessage');
+      const pinError = document.getElementById('pinError');
+      const confirmPin = document.getElementById('confirmPin');
+      const cancelPin = document.getElementById('cancelPin');
+      const toast = document.getElementById('toast');
+      const canvas = document.getElementById('drawingCanvas');
+      const context = canvas.getContext('2d');
+      const colors = document.getElementById('colors');
+      const clearCanvasButton = document.getElementById('clearCanvas');
+      const drawArea = document.getElementById('drawArea');
+      const comingMode = document.getElementById('comingMode');
+
+      let selectedEmojis = [];
+      let activeColor = COLORS[0];
+      let drawing = false;
+      let previousPoint = null;
+      let currentRoom = null;
+      let pendingAction = null;
+      let toastTimer = null;
+      let channel = null;
+      let resizeTimer = null;
+
+      function cleanName(value) {
+        return String(value || '').trim().replace(/\s+/g, ' ').slice(0, 20);
+      }
+
+      function setPlayerName() {
+        const name = cleanName(localStorage.getItem(NAME_KEY)) || 'Player';
+        playerName.textContent = `✨ ${name}`;
+      }
+
+      async function hashPin(pin) {
+        if (window.crypto && window.crypto.subtle) {
+          const bytes = new TextEncoder().encode(pin);
+          const digest = await crypto.subtle.digest('SHA-256', bytes);
+
+          return [...new Uint8Array(digest)]
+            .map(value => value.toString(16).padStart(2, '0'))
+            .join('');
+        }
+
+        return btoa(`elcraft:${pin}`);
+      }
+
+      function openParentGate(action) {
+        pendingAction = action;
+        pinInput.value = '';
+        pinError.textContent = '';
+
+        const hasPin = Boolean(localStorage.getItem(PARENT_PIN_KEY));
+
+        pinMessage.textContent = hasPin
+          ? 'Enter the four-digit parent PIN to continue.'
+          : 'Create a four-digit parent PIN. Children should not know this PIN.';
+
+        confirmPin.textContent = hasPin ? 'Unlock' : 'Save PIN';
+        confirmPin.className = hasPin ? 'unlock' : 'save-pin';
+
+        pinModal.classList.add('open');
+
+        setTimeout(() => {
+          pinInput.focus({ preventScroll: true });
+        }, 120);
+      }
+
+      function closeParentGate() {
+        pinModal.classList.remove('open');
+        pinInput.blur();
+        pendingAction = null;
+      }
+
+      async function confirmParentGate() {
+        const pin = pinInput.value.replace(/\D/g, '');
+
+        if (pin.length !== 4) {
+          pinError.textContent = 'Please enter exactly four numbers.';
+          return;
+        }
+
+        const hash = await hashPin(pin);
+        const savedHash = localStorage.getItem(PARENT_PIN_KEY);
+
+        if (!savedHash) {
+          localStorage.setItem(PARENT_PIN_KEY, hash);
+        } else if (savedHash !== hash) {
+          pinError.textContent = 'That PIN is not correct.';
+          pinInput.select();
+          return;
+        }
+
+        const action = pendingAction;
+        closeParentGate();
+
+        if (action === 'create') {
+          createRoom();
+        } else if (action === 'join') {
+          openJoinBuilder();
+        }
+      }
+
+      function randomEmojiCode() {
+        const available = [...EMOJIS];
+        const code = [];
+
+        while (code.length < 5) {
+          const index = Math.floor(Math.random() * available.length);
+          code.push(available.splice(index, 1)[0]);
+        }
+
+        return code;
+      }
+
+      function roomIdFromCode(code) {
+        return code.join('-');
+      }
+
+      function createRoom() {
+        const code = randomEmojiCode();
+
+        currentRoom = {
+          id: roomIdFromCode(code),
+          code,
+          host: true,
+          approved: true,
+          createdAt: Date.now(),
+          expiresAt: Date.now() + 30 * 60 * 1000
+        };
+
+        localStorage.setItem(ROOM_KEY, JSON.stringify(currentRoom));
+        renderRoomCode(code);
+        roomDisplay.classList.add('show');
+        joinBuilder.classList.remove('show');
+        status.textContent = 'Room created. Waiting for a friend to request access.';
+        connectChannel(currentRoom.id);
+
+        showToast('Your safe friend room is ready! 🌈');
+      }
+
+      function renderRoomCode(code) {
+        roomCode.replaceChildren();
+
+        code.forEach(emoji => {
+          const span = document.createElement('span');
+          span.textContent = emoji;
+          roomCode.appendChild(span);
+        });
+      }
+
+      function buildEmojiPicker() {
+        emojiPicker.replaceChildren();
+
+        EMOJIS.forEach(emoji => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.textContent = emoji;
+          button.setAttribute('aria-label', `Choose ${emoji}`);
+
+          button.addEventListener('click', () => {
+            if (selectedEmojis.length >= 5) {
+              return;
+            }
+
+            selectedEmojis.push(emoji);
+            renderSelectedCode();
+          });
+
+          emojiPicker.appendChild(button);
+        });
+      }
+
+      function openJoinBuilder() {
+        selectedEmojis = [];
+        renderSelectedCode();
+        roomDisplay.classList.remove('show');
+        joinBuilder.classList.add('show');
+        status.textContent = 'Tap the five emojis in your friend’s code.';
+      }
+
+      function renderSelectedCode() {
+        selectedCode.textContent = selectedEmojis.length
+          ? selectedEmojis.join(' ')
+          : 'Tap 5 emojis';
+      }
+
+      function requestJoin() {
+        if (selectedEmojis.length !== 5) {
+          showToast('Choose all five emojis first.');
+          return;
+        }
+
+        const id = roomIdFromCode(selectedEmojis);
+
+        currentRoom = {
+          id,
+          code: [...selectedEmojis],
+          host: false,
+          approved: false,
+          createdAt: Date.now(),
+          expiresAt: Date.now() + 30 * 60 * 1000
+        };
+
+        localStorage.setItem(ROOM_KEY, JSON.stringify(currentRoom));
+        connectChannel(id);
+
+        status.textContent = 'Join request sent. Waiting for the host to approve.';
+        joinBuilder.classList.remove('show');
+
+        broadcast({
+          type: 'join-request',
+          name: cleanName(localStorage.getItem(NAME_KEY)) || 'A friend'
+        });
+
+        showToast('Waiting for host approval…');
+      }
+
+      function connectChannel(roomId) {
+        if (channel) {
+          channel.close();
+        }
+
+        if (!('BroadcastChannel' in window)) {
+          status.textContent = 'This browser cannot run the local room demo.';
+          return;
+        }
+
+        channel = new BroadcastChannel(`elcraft-together-${roomId}`);
+
+        channel.onmessage = event => {
+          const message = event.data || {};
+
+          if (message.type === 'join-request' && currentRoom?.host) {
+            approvalBox.classList.add('show');
+            status.textContent = `${message.name} wants to join this room.`;
+          }
+
+          if (message.type === 'approved' && !currentRoom?.host) {
+            currentRoom.approved = true;
+            localStorage.setItem(ROOM_KEY, JSON.stringify(currentRoom));
+            status.textContent = 'Connected! You can draw and send safe reactions.';
+            showToast('Your friend approved you! 🎉');
+          }
+
+          if (message.type === 'denied' && !currentRoom?.host) {
+            status.textContent = 'The host did not approve this request.';
+            showToast('This room is not available.');
+          }
+
+          if (message.type === 'stroke' && currentRoom?.approved) {
+            drawRemoteStroke(message);
+          }
+
+          if (message.type === 'clear' && currentRoom?.approved) {
+            clearCanvas(false);
+          }
+
+          if (message.type === 'reaction' && currentRoom?.approved) {
+            showReaction(message.emoji);
+          }
+        };
+      }
+
+      function broadcast(message) {
+        if (channel) {
+          channel.postMessage(message);
+        }
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 1800);
+      }
+
+      function showReaction(emoji) {
+        const reaction = document.createElement('div');
+        reaction.className = 'floating-reaction';
+        reaction.textContent = emoji;
+        document.body.appendChild(reaction);
+
+        setTimeout(() => {
+          reaction.remove();
+        }, 1350);
+      }
+
+      function resizeCanvas() {
+        clearTimeout(resizeTimer);
+
+        resizeTimer = setTimeout(() => {
+          const rect = canvas.getBoundingClientRect();
+          const ratio = Math.max(1, window.devicePixelRatio || 1);
+          const saved = document.createElement('canvas');
+
+          saved.width = canvas.width;
+          saved.height = canvas.height;
+
+          if (canvas.width && canvas.height) {
+            saved.getContext('2d').drawImage(canvas, 0, 0);
+          }
+
+          canvas.width = Math.max(1, Math.floor(rect.width * ratio));
+          canvas.height = Math.max(1, Math.floor(rect.height * ratio));
+          context.setTransform(ratio, 0, 0, ratio, 0, 0);
+          context.lineCap = 'round';
+          context.lineJoin = 'round';
+
+          if (saved.width && saved.height) {
+            context.drawImage(
+              saved,
+              0,
+              0,
+              saved.width,
+              saved.height,
+              0,
+              0,
+              rect.width,
+              rect.height
+            );
+          }
+        }, 70);
+      }
+
+      function canvasPoint(event) {
+        const rect = canvas.getBoundingClientRect();
+        const source = event.touches ? event.touches[0] : event;
+
+        return {
+          x: source.clientX - rect.left,
+          y: source.clientY - rect.top,
+          nx: (source.clientX - rect.left) / rect.width,
+          ny: (source.clientY - rect.top) / rect.height
+        };
+      }
+
+      function drawLine(from, to, color, width = 5) {
+        context.strokeStyle = color;
+        context.lineWidth = width;
+        context.beginPath();
+        context.moveTo(from.x, from.y);
+        context.lineTo(to.x, to.y);
+        context.stroke();
+      }
+
+      function startDrawing(event) {
+        event.preventDefault();
+        drawing = true;
+        previousPoint = canvasPoint(event);
+      }
+
+      function continueDrawing(event) {
+        if (!drawing || !previousPoint) {
+          return;
+        }
+
+        event.preventDefault();
+
+        const point = canvasPoint(event);
+
+        drawLine(previousPoint, point, activeColor);
+
+        if (currentRoom?.approved) {
+          broadcast({
+            type: 'stroke',
+            from: {
+              x: previousPoint.nx,
+              y: previousPoint.ny
+            },
+            to: {
+              x: point.nx,
+              y: point.ny
+            },
+            color: activeColor,
+            width: 5
+          });
+        }
+
+        previousPoint = point;
+      }
+
+      function stopDrawing() {
+        drawing = false;
+        previousPoint = null;
+      }
+
+      function drawRemoteStroke(message) {
+        const rect = canvas.getBoundingClientRect();
+
+        drawLine(
+          {
+            x: message.from.x * rect.width,
+            y: message.from.y * rect.height
+          },
+          {
+            x: message.to.x * rect.width,
+            y: message.to.y * rect.height
+          },
+          message.color || '#6546ad',
+          message.width || 5
+        );
+      }
+
+      function clearCanvas(share = true) {
+        const rect = canvas.getBoundingClientRect();
+        context.clearRect(0, 0, rect.width, rect.height);
+
+        if (share && currentRoom?.approved) {
+          broadcast({ type: 'clear' });
+        }
+      }
+
+      function buildColorButtons() {
+        colors.replaceChildren();
+
+        COLORS.forEach((color, index) => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `color-button${index === 0 ? ' active' : ''}`;
+          button.style.background = color;
+          button.setAttribute('aria-label', `Choose drawing color ${index + 1}`);
+
+          button.addEventListener('click', () => {
+            activeColor = color;
+
+            document.querySelectorAll('.color-button').forEach(item => {
+              item.classList.remove('active');
+            });
+
+            button.classList.add('active');
+          });
+
+          colors.appendChild(button);
+        });
+      }
+
+      function restoreRoom() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(ROOM_KEY) || 'null');
+
+          if (!saved || saved.expiresAt < Date.now()) {
+            localStorage.removeItem(ROOM_KEY);
+            return;
+          }
+
+          currentRoom = saved;
+          connectChannel(saved.id);
+
+          if (saved.host) {
+            renderRoomCode(saved.code);
+            roomDisplay.classList.add('show');
+            status.textContent = 'Room restored. Waiting for a friend.';
+          } else if (saved.approved) {
+            status.textContent = 'Connected room restored.';
+          }
+        } catch {
+          localStorage.removeItem(ROOM_KEY);
+        }
+      }
+
+      homeButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+
+      createRoomButton.addEventListener('click', () => {
+        openParentGate('create');
+      });
+
+      joinRoomButton.addEventListener('click', () => {
+        openParentGate('join');
+      });
+
+      confirmPin.addEventListener('click', confirmParentGate);
+      cancelPin.addEventListener('click', closeParentGate);
+
+      pinInput.addEventListener('input', () => {
+        pinInput.value = pinInput.value.replace(/\D/g, '').slice(0, 4);
+        pinError.textContent = '';
+      });
+
+      pinInput.addEventListener('keydown', event => {
+        if (event.key === 'Enter') {
+          confirmParentGate();
+        }
+      });
+
+      backspaceCode.addEventListener('click', () => {
+        selectedEmojis.pop();
+        renderSelectedCode();
+      });
+
+      connectRoom.addEventListener('click', requestJoin);
+
+      approveJoin.addEventListener('click', () => {
+        approvalBox.classList.remove('show');
+        status.textContent = 'Friend approved. You can draw together now.';
+        broadcast({ type: 'approved' });
+        showToast('Friend approved! 🎉');
+      });
+
+      denyJoin.addEventListener('click', () => {
+        approvalBox.classList.remove('show');
+        status.textContent = 'Join request declined.';
+        broadcast({ type: 'denied' });
+      });
+
+      document.querySelectorAll('.mode-button').forEach(button => {
+        button.addEventListener('click', () => {
+          document.querySelectorAll('.mode-button').forEach(item => {
+            item.classList.remove('active');
+          });
+
+          button.classList.add('active');
+
+          const mode = button.dataset.mode;
+          const drawingMode = mode === 'draw';
+
+          drawArea.style.display = drawingMode ? 'flex' : 'none';
+          comingMode.classList.toggle('show', !drawingMode);
+
+          if (!drawingMode) {
+            comingMode.textContent = mode === 'build'
+              ? '🧱 Build Together is the next multiplayer activity.'
+              : '👯 Side-by-Side play is coming in the next update.';
+          }
+
+          if (drawingMode) {
+            resizeCanvas();
+          }
+        });
+      });
+
+      document.querySelectorAll('[data-reaction]').forEach(button => {
+        button.addEventListener('click', () => {
+          const emoji = button.dataset.reaction;
+          showReaction(emoji);
+
+          if (currentRoom?.approved) {
+            broadcast({
+              type: 'reaction',
+              emoji
+            });
+          }
+        });
+      });
+
+      canvas.addEventListener('pointerdown', startDrawing);
+      canvas.addEventListener('pointermove', continueDrawing);
+      canvas.addEventListener('pointerup', stopDrawing);
+      canvas.addEventListener('pointercancel', stopDrawing);
+      canvas.addEventListener('pointerleave', stopDrawing);
+
+      clearCanvasButton.addEventListener('click', () => {
+        clearCanvas(true);
+      });
+
+      window.addEventListener('resize', resizeCanvas);
+      window.addEventListener('orientationchange', resizeCanvas);
+      window.addEventListener('pageshow', () => {
+        setPlayerName();
+        resizeCanvas();
+      });
+
+      window.addEventListener('storage', event => {
+        if (event.key === NAME_KEY) {
+          setPlayerName();
+        }
+      });
+
+      buildEmojiPicker();
+      buildColorButtons();
+      setPlayerName();
+      restoreRoom();
+      resizeCanvas();
+    })();
+  </script>
+</body>
+</html>
