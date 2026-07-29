@@ -245,7 +245,7 @@
     border-radius:0;
     box-shadow:none;
     background-image:url('./elcraft-home-world.png');
-    background-size:cover;
+    background-size:contain;
     background-position:center;
     background-repeat:no-repeat;
   }
@@ -253,7 +253,40 @@
   body.home-mode #peersGrid{ display:none !important; }
   body.home-mode .sticker-toolbar{ display:none !important; }
   body.home-mode .home-overlay{ display:block; }
-  body.home-mode .greeting-bubble{ display:none; }
+  body.home-mode .greeting-bubble{
+    display:block;
+    top:8.5%;
+    right:8.2%;
+    left:auto;
+    width:27.5%;
+    max-width:none;
+    min-height:21%;
+    padding:2.2% 2.5%;
+    border-radius:28px;
+    background:#fffdfb;
+    box-shadow:0 8px 0 rgba(34,38,75,.14), 0 12px 28px rgba(34,38,75,.12);
+    animation:bubbleFloat 3s ease-in-out infinite;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    z-index:4;
+  }
+  body.home-mode .greeting-bubble::after{
+    left:12%;
+    bottom:-15px;
+    border-width:16px;
+    border-top-color:#fffdfb;
+  }
+  body.home-mode .greeting-bubble .g-title{
+    font-size:clamp(20px,2.35vw,42px);
+    line-height:1.05;
+    white-space:nowrap;
+  }
+  body.home-mode .greeting-bubble .g-sub{
+    font-size:clamp(12px,1.35vw,24px);
+    line-height:1.35;
+    margin-top:4%;
+  }
   body.home-mode .settings-chip{
     top:2.2%; right:3.1%; left:auto; width:12%; height:8%;
     min-width:92px; min-height:48px; border-radius:24px;
@@ -295,6 +328,13 @@
       opacity:1; top:12px; right:12px; width:48px; height:48px;
       min-width:0; min-height:0; border-radius:50%;
     }
+    body.home-mode .greeting-bubble{
+      top:12px; left:12px; right:72px; width:auto; min-height:0;
+      padding:10px 14px; border-radius:18px;
+    }
+    body.home-mode .greeting-bubble .g-title{ font-size:18px; }
+    body.home-mode .greeting-bubble .g-sub{ font-size:11px; margin-top:1px; }
+    body.home-mode .greeting-bubble::after{ display:none; }
   }
 
 </style>
