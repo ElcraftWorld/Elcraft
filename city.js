@@ -323,8 +323,8 @@
 
       #cityMailbox {
         position: absolute;
-        left: 5.5%;
-        bottom: 18%;
+        left: 1.8%;
+        bottom: 15.5%;
         z-index: 7;
         width: clamp(58px, 5vw, 82px);
         cursor: pointer;
@@ -758,7 +758,8 @@
         }
 
         #cityMailbox {
-          bottom: 16%;
+          left: 1.5%;
+          bottom: 13.5%;
           width: 54px;
         }
 
@@ -784,8 +785,8 @@
         }
 
         #cityMailbox {
-          left: 3%;
-          bottom: 14%;
+          left: 1.5%;
+          bottom: 11.5%;
           width: 54px;
         }
 
