@@ -1,0 +1,609 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#224b8f">
+<title>ELCraft | Math Lab</title>
+<style>
+:root{
+  --ink:#1b2b55;
+  --deep:#17336d;
+  --blue:#2d7ed6;
+  --sky:#65c8f2;
+  --gold:#ffd44f;
+  --green:#68c95a;
+  --purple:#7957c8;
+  --pink:#eb7297;
+  --panel:#fff;
+  --line:#dde6f6;
+  --shadow:0 18px 45px rgba(22,43,94,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 10%,rgba(255,255,255,.9),transparent 18%),
+    radial-gradient(circle at 90% 12%,rgba(255,255,255,.65),transparent 16%),
+    linear-gradient(#79d5ff 0 42%,#dff6ff 42% 62%,#88d56e 62% 100%);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.cloud{position:fixed;z-index:0;opacity:.75;pointer-events:none;animation:float 20s linear infinite}
+.cloud.one{top:100px;left:-140px;font-size:85px}
+.cloud.two{top:230px;left:-210px;font-size:64px;animation-delay:-9s}
+.cloud.three{top:50px;left:-250px;font-size:52px;animation-delay:-15s}
+@keyframes float{to{transform:translateX(calc(100vw + 360px))}}
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.94);border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(29,39,89,.15);backdrop-filter:blur(12px)
+}
+.leftbar,.stats{display:flex;align-items:center;gap:10px}
+.nav-btn,.sound-btn{
+  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;color:#315da0;background:#e7f2ff;
+  box-shadow:0 4px 0 #c7d9ef
+}
+.logo{
+  font-weight:1000;font-size:clamp(24px,3vw,38px);line-height:.9;color:#ffc72c;
+  text-shadow:-2px -2px 0 #2a5d9e,2px -2px 0 #2a5d9e,-2px 2px 0 #2a5d9e,2px 2px 0 #2a5d9e,0 5px 0 #173f78
+}
+.stat{
+  min-width:92px;border-radius:999px;padding:9px 12px;background:#fff5c7;color:#5a3e75;
+  font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
+}
+.stat.xp{background:#e5f3ff}.stat.level{background:#e8ffe2}
+main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px}
+.hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
+  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(228,242,255,.95));box-shadow:var(--shadow)
+}
+.hero:after{content:"➕";position:absolute;right:4%;bottom:-45px;font-size:190px;opacity:.1;transform:rotate(-8deg)}
+.hero h1{margin:0;color:#255a9e;font-size:clamp(32px,4vw,57px)}
+.hero p{margin:8px 0 0;font-size:17px;font-weight:900;color:#65769e}
+.teacher-card{
+  position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+  padding:15px;border-radius:24px;background:linear-gradient(#28579c,#17366f);color:#fff;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)
+}
+.teacher-face{font-size:72px}
+.teacher-card strong{display:block;font-size:21px}
+.teacher-card small{display:block;margin-top:5px;font-weight:900;opacity:.9;line-height:1.35}
+.dashboard{display:grid;grid-template-columns:1.75fr .8fr;gap:15px;margin-top:15px}
+.panel{
+  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.96);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;
+  border-bottom:1px solid var(--line);background:#f4f8ff
+}
+.panel-head h2{margin:0;color:#285a9d;font-size:25px}
+.panel-body{padding:16px}
+.station-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.station{
+  position:relative;min-height:145px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(30,45,91,.24);transition:.18s ease;overflow:hidden
+}
+.station:hover{transform:translateY(-3px)}
+.station:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(30,45,91,.24)}
+.station .icon{display:block;font-size:45px;margin-bottom:7px}
+.station strong{display:block;font-size:21px}
+.station small{display:block;margin-top:4px;font-weight:900;opacity:.94}
+.station .stars{position:absolute;right:12px;top:10px;font-size:17px}
+.station.locked{filter:grayscale(.75);opacity:.68}
+.station.counting{background:linear-gradient(135deg,#5477d7,#6ca8ea)}
+.station.addition{background:linear-gradient(135deg,#2d92c8,#4bc5d7)}
+.station.subtraction{background:linear-gradient(135deg,#6958c9,#956fe0)}
+.station.money{background:linear-gradient(135deg,#2b9b6b,#65c96a)}
+.station.time{background:linear-gradient(135deg,#d37934,#edaa4e)}
+.station.shapes{background:linear-gradient(135deg,#d95b84,#ef8b9d)}
+.station.measure{background:linear-gradient(135deg,#4e9f8f,#75cbb5)}
+.station.fractions{background:linear-gradient(135deg,#d96555,#ef9a65)}
+.station.multiply{background:linear-gradient(135deg,#7143ac,#aa63cf)}
+.station.arcade{background:linear-gradient(135deg,#253f83,#4571b9)}
+.passport{display:grid;gap:10px}
+.pass-row{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:11px;
+  border:2px solid #e1e9f8;border-radius:17px;background:#fff
+}
+.pass-icon{font-size:27px}
+.pass-name{font-weight:1000}
+.pass-sub{font-size:11px;color:#7885a6;font-weight:900;margin-top:2px}
+.pass-stars{font-size:14px;white-space:nowrap}
+.daily-card{
+  margin-top:12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#fff5c5,#ffe79b);
+  border:2px solid #f2cf55
+}
+.daily-card strong{display:block;color:#76561a}
+.daily-card p{margin:5px 0 10px;font-size:13px;font-weight:900;color:#806d42}
+.daily-card button{
+  width:100%;border:0;border-radius:15px;padding:11px;background:linear-gradient(#ffc84a,#e99628);
+  color:#fff;font-weight:1000;box-shadow:0 5px 0 #bd6d19
+}
+.daily-card button:disabled{opacity:.55;cursor:not-allowed}
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(14,28,68,.58);backdrop-filter:blur(7px)
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(720px,100%);max-height:92vh;overflow:auto;border-radius:28px;padding:22px;background:#fff;
+  box-shadow:0 25px 70px rgba(16,25,64,.38);border:4px solid #fff
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-title-wrap{display:flex;align-items:center;gap:11px}
+.modal-icon{font-size:55px}
+.modal-card h2{margin:0;color:#285a9d;font-size:30px}
+.close-x{border:0;border-radius:14px;padding:9px 12px;background:#e8eef8;color:#315182;font-weight:1000}
+.activity{
+  margin-top:16px;padding:18px;border-radius:22px;background:#f3f7ff;border:2px solid #dce8fa;text-align:center
+}
+.question{font-size:clamp(27px,5vw,48px);font-weight:1000;color:#234f91;line-height:1.3}
+.visual{font-size:clamp(28px,5vw,48px);letter-spacing:5px;margin:12px 0;line-height:1.3}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.answer{
+  border:0;border-radius:17px;padding:14px;background:#fff;color:#274d87;font-weight:1000;font-size:20px;
+  box-shadow:0 5px 0 #cbd9ee;border:2px solid #dbe5f4
+}
+.answer:hover{transform:translateY(-2px)}
+.feedback{min-height:30px;margin-top:12px;font-weight:1000;font-size:18px}
+.feedback.good{color:#27813f}.feedback.bad{color:#bd4552}
+.modal-actions{display:flex;gap:10px;margin-top:15px}
+.modal-actions button{
+  flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000
+}
+.secondary{background:#e8edf7;color:#3c5685}
+.primary{background:linear-gradient(#73cf58,#4cae35);color:#fff;box-shadow:0 5px 0 #388c28}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:90;transform:translateX(-50%) translateY(150px);
+  padding:13px 19px;border-radius:999px;background:#142e68;color:#fff;font-weight:1000;
+  transition:.3s ease;box-shadow:0 12px 30px rgba(20,29,70,.28);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:950px){.dashboard,.hero{grid-template-columns:1fr}.stats .stat.xp{display:none}}
+@media(max-width:650px){
+  main{padding:8px}.topbar{padding:8px}.logo{font-size:23px}.sound-btn{display:none}
+  .stat{min-width:auto;padding:8px 9px;font-size:12px}.hero{padding:16px;border-radius:23px}
+  .station-grid{grid-template-columns:1fr}.station{min-height:125px}
+  .panel-head{padding:13px}.panel-body{padding:12px}.answers{grid-template-columns:1fr}
+  .teacher-face{font-size:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
+
+  <header class="topbar">
+    <div class="leftbar">
+      <button class="nav-btn" id="academyBtn">← Academy</button>
+      <div class="logo">ELCraft</div>
+    </div>
+    <div class="stats">
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <div class="stat level">🏅 L<span id="level">1</span></div>
+      <button class="sound-btn" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1 id="heroTitle">Welcome to Math Lab!</h1>
+        <p>Choose a math adventure, practice at your own pace, and fill your Math Passport with stars.</p>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-face">🐻</div>
+        <div>
+          <strong>Mr. Bear's Math Lab</strong>
+          <small id="teacherMessage">What math adventure would you like today?</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>➕ Choose a Math Station</h2>
+          <strong id="masteryLabel">0 stars earned</strong>
+        </div>
+        <div class="panel-body">
+          <div class="station-grid" id="stationGrid"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head"><h2>🏅 Math Passport</h2></div>
+        <div class="panel-body">
+          <div class="passport" id="passport"></div>
+          <div class="daily-card">
+            <strong>🌟 Daily Math Challenge</strong>
+            <p id="dailyText">Finish any 3 activities today to earn a bonus.</p>
+            <button id="dailyReward" disabled>Complete 3 activities</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal" id="activityModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title-wrap">
+          <div class="modal-icon" id="modalIcon">🔢</div>
+          <div><h2 id="modalTitle">Counting Corner</h2><div id="roundLabel">Question 1 of 5</div></div>
+        </div>
+        <button class="close-x" id="closeModal">✕</button>
+      </div>
+
+      <div class="activity">
+        <div class="question" id="question"></div>
+        <div class="visual" id="visual"></div>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" id="leaveActivity">Back to Dashboard</button>
+        <button class="primary" id="nextQuestion" disabled>Next Question</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const COINS_KEY='elcraft_coins';
+  const PROFILE_KEY='elcraft_profile_v1';
+  const MATH_KEY='elcraft_math_v1';
+
+  const childName=localStorage.getItem(NAME_KEY)||'Student';
+  const today=new Date().toLocaleDateString('en-CA');
+  let soundOn=true;
+  let activeStation=null;
+  let currentQuestion=null;
+  let round=0;
+  let correctThisSession=0;
+  let answered=false;
+
+  let profile={
+    version:1,
+    coins:Number(localStorage.getItem(COINS_KEY)||100),
+    xp:0,
+    totalXp:0,
+    level:1,
+    achievements:[],
+    schoolCoinsEarned:0
+  };
+
+  let math={
+    version:1,
+    mastery:{counting:0,addition:0,subtraction:0,money:0,time:0,shapes:0,measurement:0,fractions:0,multiplication:0,arcade:0},
+    plays:{counting:0,addition:0,subtraction:0,money:0,time:0,shapes:0,measurement:0,fractions:0,multiplication:0,arcade:0},
+    completedByDate:{},
+    dailyRewardDates:[],
+    totalCorrect:0
+  };
+
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if(saved)profile={...profile,...saved};
+  }catch{}
+  try{
+    const saved=JSON.parse(localStorage.getItem(MATH_KEY));
+    if(saved)math={...math,...saved,mastery:{...math.mastery,...(saved.mastery||{})},plays:{...math.plays,...(saved.plays||{})}};
+  }catch{}
+
+  const stations=[
+    {id:'counting',icon:'🔢',name:'Counting Corner',color:'counting',desc:'Count objects and choose the right number.',unlock:0},
+    {id:'addition',icon:'➕',name:'Addition Station',color:'addition',desc:'Put groups together and find the total.',unlock:0},
+    {id:'subtraction',icon:'➖',name:'Subtraction Cave',color:'subtraction',desc:'Take some away and see what remains.',unlock:0},
+    {id:'money',icon:'💵',name:'Money Market',color:'money',desc:'Practice dollars, prices, and change.',unlock:0},
+    {id:'time',icon:'🕒',name:'Time Tower',color:'time',desc:'Match digital times to everyday moments.',unlock:1},
+    {id:'shapes',icon:'🔷',name:'Shape Factory',color:'shapes',desc:'Recognize shapes and their features.',unlock:1},
+    {id:'measurement',icon:'📏',name:'Measurement Lab',color:'measure',desc:'Compare length, height, and weight.',unlock:2},
+    {id:'fractions',icon:'🍕',name:'Fraction Kitchen',color:'fractions',desc:'Explore halves, thirds, and fourths.',unlock:3},
+    {id:'multiplication',icon:'✖️',name:'Multiplication Mountain',color:'multiply',desc:'Practice equal groups and repeated addition.',unlock:6},
+    {id:'arcade',icon:'🎮',name:'Math Arcade',color:'arcade',desc:'Play patterns, number races, and mixed review.',unlock:2}
+  ];
+
+  function save(){
+    profile.coins=Math.max(0,Number(profile.coins)||0);
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+    localStorage.setItem(MATH_KEY,JSON.stringify(math));
+    localStorage.setItem(COINS_KEY,String(profile.coins));
+  }
+
+  function totalStars(){
+    return Object.values(math.mastery).reduce((a,b)=>a+b,0);
+  }
+
+  function starsText(n){
+    return '⭐'.repeat(Math.max(0,Math.min(5,n)))+'☆'.repeat(Math.max(0,5-Math.min(5,n)));
+  }
+
+  function activitiesToday(){
+    return (math.completedByDate[today]||[]).length;
+  }
+
+  function render(){
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    document.querySelector('#heroTitle').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins||0;
+    document.querySelector('#xp').textContent=profile.xp||0;
+    document.querySelector('#level').textContent=profile.level||1;
+    document.querySelector('#masteryLabel').textContent=`${totalStars()} stars earned`;
+
+    const grid=document.querySelector('#stationGrid');
+    grid.innerHTML='';
+    const stars=totalStars();
+    stations.forEach(s=>{
+      const locked=stars<s.unlock;
+      const b=document.createElement('button');
+      b.className=`station ${s.color} ${locked?'locked':''}`;
+      b.innerHTML=`<span class="stars">${locked?'🔒':starsText(math.mastery[s.id]||0)}</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${locked?`Earn ${s.unlock} total stars to unlock`:s.desc}</small>`;
+      b.onclick=()=>locked?toast(`Earn ${s.unlock} total stars to unlock this station.`):startStation(s);
+      grid.append(b);
+    });
+
+    const passport=document.querySelector('#passport');
+    passport.innerHTML='';
+    stations.forEach(s=>{
+      const row=document.createElement('div');
+      row.className='pass-row';
+      const locked=stars<s.unlock;
+      row.innerHTML=`<div class="pass-icon">${s.icon}</div><div><div class="pass-name">${s.name}</div><div class="pass-sub">${locked?'Locked':`${math.plays[s.id]||0} activity sessions`}</div></div><div class="pass-stars">${locked?'🔒':starsText(math.mastery[s.id]||0)}</div>`;
+      passport.append(row);
+    });
+
+    const count=activitiesToday();
+    const claimed=math.dailyRewardDates.includes(today);
+    const btn=document.querySelector('#dailyReward');
+    btn.disabled=count<3||claimed;
+    btn.textContent=claimed?'✅ Bonus collected':count>=3?'Collect +20 coins and +30 XP':`${count}/3 activities complete`;
+    document.querySelector('#dailyText').textContent=claimed?'You completed today’s Math Challenge!':'Finish any 3 activities today to earn a bonus.';
+
+    save();
+  }
+
+  function startStation(station){
+    activeStation=station;
+    round=0;
+    correctThisSession=0;
+    answered=false;
+    document.querySelector('#modalIcon').textContent=station.icon;
+    document.querySelector('#modalTitle').textContent=station.name;
+    document.querySelector('#activityModal').classList.add('show');
+    nextQuestion();
+    sound('tap');
+  }
+
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+  function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+  function numericAnswers(correct,spread=3){
+    const set=new Set([correct]);
+    while(set.size<4){
+      const v=Math.max(0,correct+rand(-spread,spread));
+      set.add(v);
+    }
+    return shuffle([...set]);
+  }
+
+  function makeQuestion(id){
+    if(id==='counting'){
+      const n=rand(1,10), icons=['🍎','⭐','🐶','🚀','🦋'];
+      const icon=icons[rand(0,icons.length-1)];
+      return {question:'How many do you see?',visual:icon.repeat(n),answer:n,choices:numericAnswers(n,3)};
+    }
+    if(id==='addition'){
+      const a=rand(1,9),b=rand(1,9),icon=['🍎','🐟','⭐'][rand(0,2)];
+      return {question:`${a} + ${b} = ?`,visual:`${icon.repeat(a)}  +  ${icon.repeat(b)}`,answer:a+b,choices:numericAnswers(a+b,4)};
+    }
+    if(id==='subtraction'){
+      const a=rand(4,12),b=rand(1,a-1);
+      return {question:`${a} − ${b} = ?`,visual:`${a} items, ${b} go away`,answer:a-b,choices:numericAnswers(a-b,4)};
+    }
+    if(id==='money'){
+      const prices=[1,2,3,4,5,6,7,8,9];
+      const p=prices[rand(0,prices.length-1)], paid=Math.min(10,p+rand(1,4));
+      return {question:`An item costs $${p}. You pay $${paid}. How much change?`,visual:'🛒 💵',answer:`$${paid-p}`,choices:shuffle([`$${paid-p}`,`$${Math.max(0,paid-p+1)}`,`$${Math.max(0,paid-p-1)}`,`$${p}`])};
+    }
+    if(id==='time'){
+      const hours=[1,2,3,4,5,6,7,8,9,10,11,12],h=hours[rand(0,11)];
+      return {question:'Which digital time matches?',visual:`🕒 The hour hand points to ${h} and the minute hand points to 12.`,answer:`${h}:00`,choices:shuffle([`${h}:00`,`${h}:30`,`${(h%12)+1}:00`,`12:${String(h).padStart(2,'0')}`])};
+    }
+    if(id==='shapes'){
+      const data=[
+        ['triangle',3,'🔺'],['square',4,'🟦'],['rectangle',4,'▭'],['pentagon',5,'⬟'],['hexagon',6,'⬢'],['circle',0,'⚪']
+      ];
+      const pick=data[rand(0,data.length-1)];
+      return {question:`Which shape has ${pick[1]===0?'no straight sides':pick[1]+' sides'}?`,visual:pick[2],answer:pick[0],choices:shuffle(data.map(x=>x[0]).slice(0,4).includes(pick[0])?data.map(x=>x[0]).slice(0,4):[pick[0],'triangle','square','circle'])};
+    }
+    if(id==='measurement'){
+      const qs=[
+        {q:'Which is usually longer?',v:'✏️   🚌',a:'bus',c:['bus','pencil','same length','cannot tell']},
+        {q:'Which is usually heavier?',v:'🐘   🐭',a:'elephant',c:['elephant','mouse','same weight','cannot tell']},
+        {q:'Which unit is best for a pencil?',v:'📏',a:'inches',c:['inches','miles','gallons','pounds']},
+        {q:'Which unit is best for a road trip?',v:'🚗',a:'miles',c:['miles','inches','cups','ounces']}
+      ];
+      const x=qs[rand(0,qs.length-1)];
+      return {question:x.q,visual:x.v,answer:x.a,choices:shuffle(x.c)};
+    }
+    if(id==='fractions'){
+      const data=[
+        {q:'One of two equal parts is called?',v:'🍕 divided into 2 equal slices',a:'1/2',c:['1/2','1/3','1/4','2/1']},
+        {q:'One of four equal parts is called?',v:'🍰 divided into 4 equal pieces',a:'1/4',c:['1/4','1/2','1/3','4/1']},
+        {q:'Two of four equal parts is the same as?',v:'🍪🍪 out of 🍪🍪🍪🍪',a:'1/2',c:['1/2','1/4','3/4','1/3']}
+      ];
+      const x=data[rand(0,data.length-1)];
+      return {question:x.q,visual:x.v,answer:x.a,choices:shuffle(x.c)};
+    }
+    if(id==='multiplication'){
+      const a=rand(2,5),b=rand(2,5);
+      return {question:`${a} groups of ${b} equals?`,visual:Array(a).fill(`(${ '●'.repeat(b) })`).join(' '),answer:a*b,choices:numericAnswers(a*b,5)};
+    }
+    const patterns=[
+      {q:'What comes next?',v:'2, 4, 6, 8, ?',a:10,c:[9,10,11,12]},
+      {q:'What comes next?',v:'5, 10, 15, ?',a:20,c:[18,19,20,25]},
+      {q:'Which number is greatest?',v:'7   3   9   5',a:9,c:[7,3,9,5]},
+      {q:'Which number is even?',v:'3   5   8   9',a:8,c:[3,5,8,9]}
+    ];
+    const x=patterns[rand(0,patterns.length-1)];
+    return {question:x.q,visual:x.v,answer:x.a,choices:shuffle(x.c)};
+  }
+
+  function nextQuestion(){
+    if(round>=5){
+      finishSession();
+      return;
+    }
+    answered=false;
+    round++;
+    currentQuestion=makeQuestion(activeStation.id);
+    document.querySelector('#roundLabel').textContent=`Question ${round} of 5`;
+    document.querySelector('#question').textContent=currentQuestion.question;
+    document.querySelector('#visual').textContent=currentQuestion.visual||'';
+    document.querySelector('#feedback').textContent='';
+    document.querySelector('#feedback').className='feedback';
+    document.querySelector('#nextQuestion').disabled=true;
+    document.querySelector('#nextQuestion').textContent=round===5?'Finish Activity':'Next Question';
+
+    const box=document.querySelector('#answers');
+    box.innerHTML='';
+    currentQuestion.choices.forEach(choice=>{
+      const b=document.createElement('button');
+      b.className='answer';
+      b.textContent=choice;
+      b.onclick=()=>checkAnswer(choice,b);
+      box.append(b);
+    });
+  }
+
+  function checkAnswer(choice,button){
+    if(answered)return;
+    answered=true;
+    const good=String(choice)===String(currentQuestion.answer);
+    const feedback=document.querySelector('#feedback');
+    if(good){
+      correctThisSession++;
+      math.totalCorrect=(math.totalCorrect||0)+1;
+      feedback.textContent='Great job! That is correct! 🎉';
+      feedback.className='feedback good';
+      sound('reward');
+    }else{
+      feedback.textContent=`Nice try! The correct answer is ${currentQuestion.answer}.`;
+      feedback.className='feedback bad';
+      sound('tap');
+    }
+    [...document.querySelectorAll('.answer')].forEach(b=>{
+      b.disabled=true;
+      if(String(b.textContent)===String(currentQuestion.answer))b.style.background='#dcf7d6';
+    });
+    document.querySelector('#nextQuestion').disabled=false;
+  }
+
+  function finishSession(){
+    math.plays[activeStation.id]=(math.plays[activeStation.id]||0)+1;
+    const current=math.mastery[activeStation.id]||0;
+    if(correctThisSession>=4)math.mastery[activeStation.id]=Math.min(5,current+1);
+
+    if(!math.completedByDate[today])math.completedByDate[today]=[];
+    math.completedByDate[today].push(`${activeStation.id}-${Date.now()}`);
+
+    const coins=5+correctThisSession;
+    const xp=10+(correctThisSession*2);
+    profile.coins=(profile.coins||0)+coins;
+    profile.xp=(profile.xp||0)+xp;
+    profile.totalXp=(profile.totalXp||0)+xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+coins;
+
+    save();
+    document.querySelector('#activityModal').classList.remove('show');
+    confetti();
+    toast(`Math adventure complete! +${coins} coins and +${xp} XP`);
+    render();
+  }
+
+  function collectDaily(){
+    if(activitiesToday()<3||math.dailyRewardDates.includes(today))return;
+    math.dailyRewardDates.push(today);
+    profile.coins=(profile.coins||0)+20;
+    profile.xp=(profile.xp||0)+30;
+    profile.totalXp=(profile.totalXp||0)+30;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+20;
+    save();
+    confetti();
+    toast('Daily Math Challenge complete! +20 coins and +30 XP');
+    render();
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');
+    el.textContent=message;
+    el.classList.add('show');
+    clearTimeout(window.__mathToast);
+    window.__mathToast=setTimeout(()=>el.classList.remove('show'),2300);
+  }
+
+  function confetti(){
+    const c=document.querySelector('#confetti');
+    c.innerHTML='';
+    ['⭐','✨','➕','🎉','🪙'].forEach(symbol=>{
+      for(let i=0;i<7;i++){
+        const n=document.createElement('i');
+        n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(17+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2400);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='reward'?700:470;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.14);
+      osc.start();osc.stop(ctx.currentTime+.15);
+    }catch{}
+  }
+
+  document.querySelector('#academyBtn').onclick=()=>location.href='school.html';
+  document.querySelector('#closeModal').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#leaveActivity').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#nextQuestion').onclick=nextQuestion;
+  document.querySelector('#dailyReward').onclick=collectDaily;
+  document.querySelector('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;
+    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
+    if(soundOn)sound('tap');
+  };
+  document.querySelector('#activityModal').onclick=e=>{
+    if(e.target.id==='activityModal')document.querySelector('#activityModal').classList.remove('show');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
