@@ -715,35 +715,110 @@
     ctx.restore();
   }
 
-  function drawSticker(ctx,s,selectedId){
-    const size = s.size * s.scale;
+  function drawSticker(ctx,s,selectedId,t,timeOfDay){
+    t = t||0;
+    const seed = (hashStr(s.id||'x') % 1000) / 1000;
+    const phase = seed * Math.PI*2;
+    let ax = s.x, ay = s.y, rot = 0, scaleMul = 1;
+
     switch(s.type){
-      case 'sun': drawSun(ctx,s.x,s.y,size); break;
-      case 'moon': drawMoon(ctx,s.x,s.y,size); break;
-      case 'cloud': cloudPuff(ctx,s.x,s.y,size,'#FFFFFF'); break;
-      case 'star': drawStar(ctx,s.x,s.y,size,'#FFD166'); break;
-      case 'rainbow': drawRainbow(ctx,s.x,s.y,size); break;
-      case 'bird': drawBird(ctx,s.x,s.y,size,s.color); break;
-      case 'balloon': drawBalloon(ctx,s.x,s.y,size,s.color); break;
-      case 'kite': drawKite(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
-      case 'butterfly': drawButterfly(ctx,s.x,s.y,size,s.color); break;
-      case 'house': drawHouse(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
-      case 'cottage': drawCottage(ctx,s.x,s.y,size,s.color||'#FFD166'); break;
-      case 'tower': drawTower(ctx,s.x,s.y,size,s.color||'#4FA8E0'); break;
-      case 'shop': drawShop(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
-      case 'tree': drawTree(ctx,s.x,s.y,size); break;
-      case 'lamp': drawLamp(ctx,s.x,s.y,size); break;
-      case 'car': drawCar(ctx,s.x,s.y,size,s.color||'#4FA8E0'); break;
-      case 'fountain': drawFountain(ctx,s.x,s.y,size); break;
-      case 'bed': drawBed(ctx,s.x,s.y,size,s.color||'#FF8FB1'); break;
-      case 'rug': drawRug(ctx,s.x,s.y,size,s.color||'#8ED1FC'); break;
-      case 'table': drawTable(ctx,s.x,s.y,size,s.color||'#B5824A'); break;
-      case 'windowdeco': drawWindowDeco(ctx,s.x,s.y,size); break;
-      case 'plant': drawPlant(ctx,s.x,s.y,size); break;
-      case 'toybox': drawToyBox(ctx,s.x,s.y,size,s.color||'#FFD166'); break;
-      case 'floorlamp': drawFloorLamp(ctx,s.x,s.y,size); break;
-      case 'picture': drawPicture(ctx,s.x,s.y,size,s.color||'#B39DDB'); break;
+      case 'cloud':
+        ax += Math.sin(t*0.012 + phase) * 14;
+        break;
+      case 'bird':
+        ax += Math.sin(t*0.045 + phase) * 22;
+        ay += Math.sin(t*0.09 + phase) * 6;
+        break;
+      case 'balloon':
+        ay += Math.sin(t*0.05 + phase) * 9;
+        rot = Math.sin(t*0.035 + phase) * 0.05;
+        break;
+      case 'butterfly':
+        ax += Math.sin(t*0.09 + phase) * 13;
+        ay += Math.sin(t*0.14 + phase*1.7) * 10;
+        break;
+      case 'kite':
+        ax += Math.sin(t*0.03 + phase) * 10;
+        ay += Math.sin(t*0.05 + phase) * 7;
+        break;
+      case 'star':
+        scaleMul = 1 + Math.sin(t*0.08 + phase) * 0.12;
+        break;
+      case 'rainbow':
+        scaleMul = 1 + Math.sin(t*0.025 + phase) * 0.03;
+        break;
+      case 'sun':
+        scaleMul = 1 + Math.sin(t*0.03) * 0.02;
+        break;
+      case 'tree':
+        rot = Math.sin(t*0.02 + phase) * 0.035;
+        break;
+      case 'car':
+        ax += Math.sin(t*0.018 + phase) * 55;
+        break;
     }
+
+    const size = s.size * s.scale * scaleMul;
+    ctx.save();
+    if(rot !== 0){ ctx.translate(ax,ay); ctx.rotate(rot); ctx.translate(-ax,-ay); }
+
+    switch(s.type){
+      case 'sun': drawSun(ctx,ax,ay,size); break;
+      case 'moon': drawMoon(ctx,ax,ay,size); break;
+      case 'cloud': cloudPuff(ctx,ax,ay,size,'#FFFFFF'); break;
+      case 'star': drawStar(ctx,ax,ay,size,'#FFD166'); break;
+      case 'rainbow': drawRainbow(ctx,ax,ay,size); break;
+      case 'bird': drawBird(ctx,ax,ay,size,s.color); break;
+      case 'balloon': drawBalloon(ctx,ax,ay,size,s.color); break;
+      case 'kite': drawKite(ctx,ax,ay,size,s.color||'#FF6F59'); break;
+      case 'butterfly': drawButterfly(ctx,ax,ay,size,s.color); break;
+      case 'house': drawHouse(ctx,ax,ay,size,s.color||'#FF6F59'); break;
+      case 'cottage': drawCottage(ctx,ax,ay,size,s.color||'#FFD166'); break;
+      case 'tower': drawTower(ctx,ax,ay,size,s.color||'#4FA8E0'); break;
+      case 'shop': drawShop(ctx,ax,ay,size,s.color||'#FF6F59'); break;
+      case 'tree': drawTree(ctx,ax,ay,size); break;
+      case 'lamp': drawLamp(ctx,ax,ay,size); break;
+      case 'car': drawCar(ctx,ax,ay,size,s.color||'#4FA8E0'); break;
+      case 'fountain': drawFountain(ctx,ax,ay,size); break;
+      case 'bed': drawBed(ctx,ax,ay,size,s.color||'#FF8FB1'); break;
+      case 'rug': drawRug(ctx,ax,ay,size,s.color||'#8ED1FC'); break;
+      case 'table': drawTable(ctx,ax,ay,size,s.color||'#B5824A'); break;
+      case 'windowdeco': drawWindowDeco(ctx,ax,ay,size); break;
+      case 'plant': drawPlant(ctx,ax,ay,size); break;
+      case 'toybox': drawToyBox(ctx,ax,ay,size,s.color||'#FFD166'); break;
+      case 'floorlamp': drawFloorLamp(ctx,ax,ay,size); break;
+      case 'picture': drawPicture(ctx,ax,ay,size,s.color||'#B39DDB'); break;
+    }
+
+    // night touches: glowing windows on buildings, brighter lamp glow
+    if(timeOfDay!==undefined && timeOfDay>58){
+      const nightAmt = Math.min(1, (timeOfDay-58)/20);
+      const flicker = 0.85 + Math.sin(t*0.06+phase)*0.15;
+      if(['house','cottage','tower','shop'].includes(s.type)){
+        ctx.save();
+        ctx.globalAlpha = nightAmt*flicker*0.9;
+        ctx.fillStyle = '#FFE29A';
+        ctx.shadowColor = '#FFD166'; ctx.shadowBlur = size*0.12;
+        ctx.beginPath(); ctx.arc(ax - size*0.14, ay - size*0.62, size*0.05, 0, Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(ax + size*0.12, ay - size*0.62, size*0.05, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+      }
+      if(s.type==='lamp'){
+        ctx.save();
+        ctx.globalAlpha = nightAmt*flicker*0.5;
+        ctx.fillStyle = 'rgba(255,209,102,0.5)';
+        ctx.beginPath(); ctx.arc(ax, ay-size*0.85, size*0.32, 0, Math.PI*2); ctx.fill();
+        ctx.restore();
+      }
+    }
+    if(s.type==='fountain'){
+      const sparkle = 0.5 + Math.sin(t*0.12+phase)*0.5;
+      ctx.save(); ctx.globalAlpha = sparkle*0.7; ctx.fillStyle='#FFFFFF';
+      ctx.beginPath(); ctx.arc(ax + size*0.05, ay - size*0.55, size*0.03, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+
+    ctx.restore();
     if(s.id===selectedId){
       ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle = 'rgba(34,38,75,0.5)'; ctx.lineWidth=2;
       ctx.beginPath(); ctx.arc(s.x,s.y,size*0.72,0,Math.PI*2); ctx.stroke(); ctx.restore();
@@ -980,7 +1055,7 @@
       state.stickers.forEach(s=>{
         if(s.deleted) return;
         if(s.scale<1) s.scale = Math.min(1, s.scale+0.12);
-        drawSticker(ctx,s,selectedId);
+        drawSticker(ctx,s,selectedId,frame,state.timeOfDay);
       });
       drawGround(ctx,rect,state.groundColor,state.groundStyle);
 
