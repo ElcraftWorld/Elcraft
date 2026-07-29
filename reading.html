@@ -144,6 +144,25 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
 .confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
 @keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
 .loading{text-align:center;padding:35px;font-weight:1000;color:#654993}
+
+.dev-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:11px;margin-top:17px}
+.dev-action{
+  border:3px solid #e1daf2;border-radius:17px;padding:14px;background:#f8f6ff;
+  color:#554080;font-weight:1000;text-align:left
+}
+.dev-action:hover{background:#f0ebff}
+.dev-action.danger{background:#fff0f1;border-color:#f1b8bd;color:#9a3440}
+.dev-note{
+  margin-top:14px;padding:12px;border-radius:16px;background:#fff8d9;color:#725c3b;
+  font-size:14px;font-weight:900;line-height:1.45
+}
+.dev-status{
+  margin-top:14px;padding:12px;border-radius:16px;background:#eef8ff;color:#435b88;
+  font-weight:1000;text-align:center
+}
+.dev-secret{user-select:none}
+@media(max-width:520px){.dev-grid{grid-template-columns:1fr}}
+
 @media(max-width:1000px){.books{grid-template-columns:repeat(4,1fr)}}
 @media(max-width:760px){
   .welcome{grid-template-columns:auto 1fr}.daily{grid-column:1/-1}.books{grid-template-columns:repeat(3,1fr)}
@@ -174,7 +193,7 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
 
   <main>
     <section class="welcome">
-      <div class="owl">🦉</div>
+      <div class="owl dev-secret" id="devTrigger" title="Mrs. Owl">🦉</div>
       <div>
         <h1 id="welcomeTitle">Welcome back, Reader!</h1>
         <p id="owlMessage">Mrs. Owl is preparing your library.</p>
@@ -226,6 +245,30 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
     </div>
   </div>
 
+
+  <div class="stage" id="developerStage">
+    <div class="modal">
+      <div class="modal-top">
+        <h2>🛠️ Developer Mode</h2>
+        <button class="close" data-close="developerStage">✕ Close</button>
+      </div>
+      <div class="dev-status" id="devStatus">Testing tools only — these buttons change local browser save data.</div>
+      <div class="dev-grid">
+        <button class="dev-action" id="devUncompleteReading">↩️ Uncomplete Reading Today</button>
+        <button class="dev-action" id="devClearToday">🧹 Clear All of Today’s Lessons</button>
+        <button class="dev-action" id="devUnlockBooks">🔓 Unlock Every Reading Level</button>
+        <button class="dev-action" id="devLockBooks">🔒 Restore Normal Book Locks</button>
+        <button class="dev-action" id="devResetPassport">📘 Reset Reading Passport</button>
+        <button class="dev-action" id="devResetRewards">🎁 Reset Today’s Reading Rewards</button>
+        <button class="dev-action" id="devResetCoinsXp">⭐ Reset Coins and XP</button>
+        <button class="dev-action danger" id="devClearAll">⚠️ Clear All ELCraft School Saves</button>
+      </div>
+      <div class="dev-note">
+        Open Developer Mode by tapping Mrs. Owl five times. Reading Hall will remain available even after a story is completed.
+      </div>
+    </div>
+  </div>
+
   <div class="toast" id="toast"></div>
   <div class="confetti" id="confetti"></div>
 </div>
@@ -257,7 +300,14 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
   };
 
   try{const x=JSON.parse(localStorage.getItem(KEYS.profile));if(x)profile={...profile,...x}}catch{}
-  try{const x=JSON.parse(localStorage.getItem(KEYS.school));if(x)school={...school,...x,lessonTotals:{...school.lessonTotals,...(x.lessonTotals||{})}}}catch{}
+  try{
+    const x=JSON.parse(localStorage.getItem(KEYS.school));
+    if(x)school={...school,...x,lessonTotals:{...school.lessonTotals,...(x.lessonTotals||{})}};
+  }catch{}
+  // Reading Hall is always open. Remove the old permanent/today completion flag.
+  Object.keys(school.completedByDate||{}).forEach(date=>{
+    school.completedByDate[date]=(school.completedByDate[date]||[]).filter(id=>id!=='reading');
+  });
   try{const x=JSON.parse(localStorage.getItem(KEYS.reading));if(x)reading={...reading,...x}}catch{}
 
   function migrateOldReading(){
@@ -422,17 +472,14 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
       profile.totalXp=(profile.totalXp||0)+20;
       profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+10;
 
-      const todayLessons=school.completedByDate[today]||[];
-      if(!todayLessons.includes('reading')){
-        todayLessons.push('reading');
-        school.completedByDate[today]=todayLessons;
-        school.lessonTotals.reading=(school.lessonTotals.reading||0)+1;
-        if(school.lastSchoolDate!==today){
-          const y=new Date();y.setDate(y.getDate()-1);
-          const yesterday=y.toLocaleDateString('en-CA');
-          school.streak=school.lastSchoolDate===yesterday?(school.streak||0)+1:1;
-          school.lastSchoolDate=today;
-        }
+      // Reading progress is recorded in the passport, not as a closed Academy lesson.
+      school.completedByDate[today]=(school.completedByDate[today]||[]).filter(id=>id!=='reading');
+      school.lessonTotals.reading=(school.lessonTotals.reading||0)+1;
+      if(school.lastSchoolDate!==today){
+        const y=new Date();y.setDate(y.getDate()-1);
+        const yesterday=y.toLocaleDateString('en-CA');
+        school.streak=school.lastSchoolDate===yesterday?(school.streak||0)+1:1;
+        school.lastSchoolDate=today;
       }
       if(!profile.achievements.includes('first-lesson'))profile.achievements.push('first-lesson');
       confetti();toast(firstDiscovery?'📘 New passport stamp! +10 coins and +20 XP':'📚 Reading reward earned! +10 coins and +20 XP');
@@ -496,6 +543,101 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
     save();
   }
 
+
+  function removeReadingCompletion(){
+    Object.keys(school.completedByDate||{}).forEach(date=>{
+      school.completedByDate[date]=(school.completedByDate[date]||[]).filter(id=>id!=='reading');
+    });
+    save();
+  }
+
+  function openDeveloperMode(){
+    removeReadingCompletion();
+    document.querySelector('#developerStage').classList.add('show');
+    document.querySelector('#devStatus').textContent='Developer Mode is open. Reading is currently marked as always available.';
+    beep(680);
+  }
+
+  let owlTapCount=0;
+  let owlTapTimer=null;
+  document.querySelector('#devTrigger').onclick=()=>{
+    owlTapCount++;
+    clearTimeout(owlTapTimer);
+    owlTapTimer=setTimeout(()=>owlTapCount=0,1800);
+    if(owlTapCount>=5){
+      owlTapCount=0;
+      openDeveloperMode();
+    }
+  };
+
+  document.querySelector('#devUncompleteReading').onclick=()=>{
+    removeReadingCompletion();
+    document.querySelector('#devStatus').textContent='Reading was removed from every Academy completion list.';
+    toast('↩️ Reading is open again.');
+  };
+
+  document.querySelector('#devClearToday').onclick=()=>{
+    school.completedByDate[today]=[];
+    school.dailyRewardDates=(school.dailyRewardDates||[]).filter(date=>date!==today);
+    save();
+    document.querySelector('#devStatus').textContent='All of today’s Academy lesson checks were cleared.';
+    toast('🧹 Today’s school progress cleared.');
+  };
+
+  document.querySelector('#devUnlockBooks').onclick=()=>{
+    reading.unlockedLevel=Math.max(...books.map(book=>Number(book.level)||1),1);
+    save();render();
+    document.querySelector('#devStatus').textContent='Every reading level is unlocked for testing.';
+    toast('🔓 All books unlocked.');
+  };
+
+  document.querySelector('#devLockBooks').onclick=()=>{
+    reading.unlockedLevel=1;
+    updateUnlocks();
+    save();render();
+    document.querySelector('#devStatus').textContent='Normal book unlock rules were restored.';
+    toast('🔒 Normal book locks restored.');
+  };
+
+  document.querySelector('#devResetPassport').onclick=()=>{
+    reading.completedBooks=[];
+    reading.readCounts={};
+    reading.favoriteBookId='';
+    reading.vocabularySeen=[];
+    reading.unlockedLevel=1;
+    save();render();
+    document.querySelector('#devStatus').textContent='The Reading Passport was reset. Coins and XP were not changed.';
+    toast('📘 Reading Passport reset.');
+  };
+
+  document.querySelector('#devResetRewards').onclick=()=>{
+    delete reading.rewardedByDate[today];
+    save();render();
+    document.querySelector('#devStatus').textContent='Today’s per-book reading rewards can be earned again.';
+    toast('🎁 Today’s reading rewards reset.');
+  };
+
+  document.querySelector('#devResetCoinsXp').onclick=()=>{
+    profile.coins=100;
+    profile.xp=0;
+    profile.totalXp=0;
+    profile.level=1;
+    profile.schoolCoinsEarned=0;
+    save();render();
+    document.querySelector('#devStatus').textContent='Coins were reset to 100 and XP was reset to 0.';
+    toast('⭐ Coins and XP reset.');
+  };
+
+  document.querySelector('#devClearAll').onclick=()=>{
+    const confirmed=confirm('Clear all ELCraft school, profile, and reading save data in this browser?');
+    if(!confirmed)return;
+    [
+      KEYS.profile,KEYS.school,KEYS.reading,KEYS.coins,
+      'elcraft_reading_v1','elcraft_reading_v2'
+    ].forEach(key=>localStorage.removeItem(key));
+    location.reload();
+  };
+
   document.querySelector('#finishReading').onclick=openQuiz;
   document.querySelector('#readAloud').onclick=()=>activeBook&&speak(activeBook.story.join(' '));
   document.querySelector('#favoriteBtn').onclick=()=>{
@@ -516,6 +658,7 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
     soundOn=!soundOn;document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)beep();
   };
 
+  removeReadingCompletion();
   loadBooks();
 })();
 </script>
