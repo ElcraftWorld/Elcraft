@@ -324,7 +324,11 @@
     openNamePrompt();
   });
 
-  document.querySelectorAll('.hotspot:not(.profiles)').forEach(btn => {
+  document.querySelector('.sky').addEventListener('click',() => {
+    window.location.href = 'sky-world.html';
+  });
+
+  document.querySelectorAll('.hotspot:not(.profiles):not(.sky)').forEach(btn => {
     btn.addEventListener('click',() => {
       const name = localStorage.getItem(NAME_KEY) || 'Player';
       toast.textContent = btn.dataset.label + ' is opening for ' + name + '…';
