@@ -82,6 +82,15 @@
   .ground-style-toggle{ display:flex; gap:4px; flex-shrink:0; padding-right:10px; border-right: 2px dashed #eadfce; }
   .style-btn{ border:none; border-radius:10px; width:34px; height:34px; font-size:16px; background:var(--paper); cursor:pointer; box-shadow:var(--shadow); }
   .style-btn.active{ box-shadow:0 0 0 3px var(--dusk); }
+
+  .tempo-row{ display:flex; gap:4px; }
+  .music-row{ display:flex; align-items:center; gap:8px; margin-top:6px; }
+  .music-row-label{ flex:0 0 auto; width:64px; font-family:'Baloo 2', cursive; font-size:12px; display:flex; align-items:center; gap:4px; }
+  .music-steps{ display:flex; gap:6px; flex:1; }
+  .step-cell{ flex:1; aspect-ratio:1; max-width:40px; border-radius:10px; border:none; background:var(--paper);
+    box-shadow:inset 0 0 0 2px #eadfce; cursor:pointer; }
+  .step-cell.on{ box-shadow:none; }
+  .step-cell.playhead{ outline:3px solid var(--ink); outline-offset:1px; }
   .dock{ display:flex; gap:10px; overflow-x:auto; padding:2px 2px 4px; flex:1; }
   .dock-btn{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; background:var(--paper); border:none; border-radius:16px; padding:8px 12px 6px; cursor:pointer; box-shadow:var(--shadow); font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px; color:var(--ink); }
   .dock-btn:active{ transform:translateY(4px); box-shadow:none; }
@@ -152,6 +161,7 @@
   .home-card.sky{ background:#DDEEFB; }
   .home-card.character{ background:#FFE9C7; }
   .home-card.city{ background:#E4F3DC; }
+  .home-card.music{ background:#F3E0F7; }
   .home-card.disabled{ background:#EDEDF4; opacity:0.65; cursor:default; }
   .home-card.disabled:active{ transform:none; box-shadow:var(--shadow); }
   .soon-badge{ position:absolute; top:-8px; right:-8px; background:var(--coral); color:white; font-size:10px;
@@ -197,8 +207,7 @@
         <span class="title">My City</span>
         <span class="subtitle">Build a city!</span>
       </button>
-      <button class="home-card disabled" data-soon="true">
-        <span class="soon-badge">Soon!</span>
+      <button class="home-card music" data-go="music">
         <span class="icon">🎵</span>
         <span class="title">Music</span>
         <span class="subtitle">Make a tune</span>
@@ -211,6 +220,7 @@
     <button class="mode-tab active" data-mode="sky">🌤️ Sky World</button>
     <button class="mode-tab" data-mode="avatar">🧑 My Character</button>
     <button class="mode-tab" data-mode="city">🏘️ My City</button>
+    <button class="mode-tab" data-mode="music">🎵 Music</button>
   </div>
 
   <div class="stage solo" id="stage">
@@ -287,6 +297,20 @@
         </div>
         <button class="pill-btn clear-btn" id="clearCityBtn" style="flex-shrink:0;">🧹 Clear City</button>
       </div>
+    </div>
+
+    <div class="panel-view" id="musicPanel">
+      <div class="avatar-actions">
+        <button class="small-pill save-btn" id="playBtn">▶️ Play</button>
+        <div class="tempo-row" id="tempoRow">
+          <button class="style-btn active" data-tempo="slow">🐢</button>
+          <button class="style-btn" data-tempo="medium">🚶</button>
+          <button class="style-btn" data-tempo="fast">🐇</button>
+        </div>
+        <button class="small-pill surprise-btn" id="musicSurpriseBtn">🎲 Surprise Me</button>
+        <button class="small-pill clear-btn" id="musicClearBtn">🧹 Clear Tune</button>
+      </div>
+      <div id="musicGrid"></div>
     </div>
 
     <div class="panel-view" id="avatarPanel">
@@ -925,8 +949,9 @@
       });
       drawGround(ctx,rect,state.groundColor,state.groundStyle);
 
-      const wobbleAmp = state.avatar.silly ? 6 : 2.5;
-      const wobble = Math.sin(frame*0.045)*wobbleAmp;
+      const dancing = !!state.musicPlaying;
+      const wobbleAmp = state.avatar.silly ? 6 : (dancing ? 5.5 : 2.5);
+      const wobble = Math.sin(frame*(dancing?0.14:0.045))*wobbleAmp;
       const avScale = Math.min(rect.width, rect.height) / 340;
       const groundH = rect.height*0.16;
       const groundYAtCenter = state.groundStyle==='flat' ? rect.height - groundH*0.55 : rect.height - groundH*1.3 + groundH*0.4;
@@ -1071,6 +1096,7 @@
     document.getElementById('skyPanel').classList.toggle('active', mode==='sky');
     document.getElementById('cityPanel').classList.toggle('active', mode==='city');
     document.getElementById('avatarPanel').classList.toggle('active', mode==='avatar');
+    document.getElementById('musicPanel').classList.toggle('active', mode==='music');
     if(mode==='avatar'){ selectedId=null; }
   }
   document.querySelectorAll('.mode-tab').forEach(tab=>{
@@ -1101,6 +1127,128 @@
     });
   });
   showHome();
+
+  // ================= music sequencer =================
+  const INSTRUMENTS = [
+    { name:'Xylophone', emoji:'🎵', varColor:'--sunbeam' },
+    { name:'Bell',      emoji:'🔔', varColor:'--sky' },
+    { name:'Drum',      emoji:'🥁', varColor:'--coral' },
+    { name:'Bass',      emoji:'🎸', varColor:'--dusk' },
+  ];
+  const STEP_COUNT = 8;
+  const musicGrid = INSTRUMENTS.map(()=> new Array(STEP_COUNT).fill(false));
+  let musicPlaying = false;
+  let musicStep = 0;
+  let musicTimer = null;
+  let musicTempo = 'medium';
+  const TEMPO_MS = { slow:420, medium:270, fast:170 };
+  let audioCtx = null;
+  function ensureAudio(){
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended') audioCtx.resume();
+  }
+  function playTone(freq, type, dur, peak){
+    ensureAudio();
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = type; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(peak, t+0.012);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t); osc.stop(t+dur+0.03);
+  }
+  function playDrum(){
+    ensureAudio();
+    const t = audioCtx.currentTime;
+    const size = Math.floor(audioCtx.sampleRate*0.15);
+    const buffer = audioCtx.createBuffer(1, size, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for(let i=0;i<size;i++){ data[i] = (Math.random()*2-1) * Math.pow(1-i/size, 2); }
+    const src = audioCtx.createBufferSource(); src.buffer = buffer;
+    const filter = audioCtx.createBiquadFilter(); filter.type='lowpass'; filter.frequency.value=1400;
+    const gain = audioCtx.createGain(); gain.gain.setValueAtTime(0.5, t); gain.gain.exponentialRampToValueAtTime(0.001, t+0.15);
+    src.connect(filter); filter.connect(gain); gain.connect(audioCtx.destination);
+    src.start(t);
+  }
+  function playInstrument(idx){
+    if(idx===0) playTone(523.25,'sine',0.32,0.32);      // xylophone C5
+    else if(idx===1) playTone(659.25,'triangle',0.55,0.22); // bell E5
+    else if(idx===2) playDrum();
+    else if(idx===3) playTone(130.81,'sawtooth',0.4,0.28);  // bass C3
+  }
+
+  const musicGridEl = document.getElementById('musicGrid');
+  function renderMusicGrid(){
+    musicGridEl.innerHTML = '';
+    INSTRUMENTS.forEach((inst,row)=>{
+      const rowEl = document.createElement('div'); rowEl.className='music-row';
+      const label = document.createElement('div'); label.className='music-row-label';
+      label.innerHTML = `<span>${inst.emoji}</span><span>${inst.name}</span>`;
+      rowEl.appendChild(label);
+      const stepsEl = document.createElement('div'); stepsEl.className='music-steps';
+      for(let col=0; col<STEP_COUNT; col++){
+        const cell = document.createElement('button');
+        cell.className = 'step-cell'+(musicGrid[row][col]?' on':'');
+        cell.style.background = musicGrid[row][col] ? `var(${inst.varColor})` : '';
+        cell.addEventListener('click', ()=>{
+          musicGrid[row][col] = !musicGrid[row][col];
+          if(musicGrid[row][col]) playInstrument(row);
+          renderMusicGrid();
+        });
+        stepsEl.appendChild(cell);
+      }
+      rowEl.appendChild(stepsEl);
+      musicGridEl.appendChild(rowEl);
+    });
+    markPlayhead();
+  }
+  function markPlayhead(){
+    if(!musicPlaying) return;
+    document.querySelectorAll('.music-row').forEach(rowEl=>{
+      const cells = rowEl.querySelectorAll('.step-cell');
+      cells.forEach((c,i)=> c.classList.toggle('playhead', i===musicStep));
+    });
+  }
+  function stepMusic(){
+    INSTRUMENTS.forEach((inst,row)=>{ if(musicGrid[row][musicStep]) playInstrument(row); });
+    markPlayhead();
+    musicStep = (musicStep+1) % STEP_COUNT;
+  }
+  function startMusic(){
+    ensureAudio();
+    musicPlaying = true; musicStep = 0;
+    document.getElementById('playBtn').textContent = '⏹️ Stop';
+    clearInterval(musicTimer);
+    musicTimer = setInterval(stepMusic, TEMPO_MS[musicTempo]);
+    stepMusic();
+  }
+  function stopMusic(){
+    musicPlaying = false;
+    clearInterval(musicTimer);
+    document.getElementById('playBtn').textContent = '▶️ Play';
+    document.querySelectorAll('.step-cell').forEach(c=>c.classList.remove('playhead'));
+  }
+  document.getElementById('playBtn').addEventListener('click',()=>{
+    musicPlaying ? stopMusic() : startMusic();
+  });
+  document.getElementById('tempoRow').addEventListener('click',(e)=>{
+    const btn = e.target.closest('.style-btn'); if(!btn) return;
+    musicTempo = btn.dataset.tempo;
+    document.querySelectorAll('#tempoRow .style-btn').forEach(b=>b.classList.toggle('active', b===btn));
+    if(musicPlaying){ clearInterval(musicTimer); musicTimer = setInterval(stepMusic, TEMPO_MS[musicTempo]); }
+  });
+  document.getElementById('musicSurpriseBtn').addEventListener('click',()=>{
+    INSTRUMENTS.forEach((_,row)=>{
+      for(let col=0; col<STEP_COUNT; col++) musicGrid[row][col] = Math.random() < 0.3;
+    });
+    renderMusicGrid();
+  });
+  document.getElementById('musicClearBtn').addEventListener('click',()=>{
+    INSTRUMENTS.forEach((_,row)=>{ for(let col=0; col<STEP_COUNT; col++) musicGrid[row][col] = false; });
+    stopMusic(); renderMusicGrid();
+  });
+  renderMusicGrid();
 
   // ================= avatar panel wiring =================
   const avatarDockArea = document.getElementById('avatarDockArea');
@@ -1344,7 +1492,7 @@
 
   // ================= master render loop =================
   function loop(){
-    mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar() }, selectedId);
+    mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), musicPlaying }, selectedId);
     peerPanels.forEach(entry=>{ if(entry.state) entry.renderer.render(entry.state, null); });
     positionToolbar();
     requestAnimationFrame(loop);
