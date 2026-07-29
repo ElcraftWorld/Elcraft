@@ -121,7 +121,7 @@
         break;
 
       case 'market':
-        showComingSoon('The Market');
+        openPage('market.html');
         break;
 
       case 'pets':
