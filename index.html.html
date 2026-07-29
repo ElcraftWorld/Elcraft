@@ -92,6 +92,19 @@
     box-shadow:inset 0 0 0 2px #eadfce; cursor:pointer; }
   .step-cell.on{ box-shadow:none; }
   .step-cell.playhead{ outline:3px solid var(--ink); outline-offset:1px; }
+  .music-sub{ display:none; }
+  .music-sub.active{ display:block; }
+  .song-btn.active{ box-shadow:0 0 0 3px var(--ink); }
+  .piano-key{ border:none; border-radius:0 0 10px 10px; cursor:pointer; box-shadow:var(--shadow);
+    display:flex; align-items:flex-end; justify-content:center; padding-bottom:8px;
+    font-family:'Baloo 2',cursive; font-weight:700; color:rgba(34,38,75,0.55); font-size:13px;
+    width:38px; height:120px; transition:transform .05s; }
+  .piano-key:active, .piano-key.pressed{ transform:translateY(4px); box-shadow:0 2px 0 rgba(34,38,75,0.12); }
+  .piano-key.next-note{ box-shadow:0 0 0 4px var(--ink), var(--shadow); animation: keyPulse 0.8s infinite; }
+  @keyframes keyPulse{ 0%,100%{ transform:translateY(0); } 50%{ transform:translateY(-6px); } }
+  .song-dot{ width:9px; height:9px; border-radius:50%; background:#e4e0d5; }
+  .song-dot.done{ background:var(--meadow); }
+  .song-dot.current{ background:var(--coral); }
   .dock{ display:flex; gap:10px; overflow-x:auto; padding:2px 2px 4px; flex:1; }
   .dock-btn{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; background:var(--paper); border:none; border-radius:16px; padding:8px 12px 6px; cursor:pointer; box-shadow:var(--shadow); font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px; color:var(--ink); }
   .dock-btn:active{ transform:translateY(4px); box-shadow:none; }
@@ -303,17 +316,36 @@
     </div>
 
     <div class="panel-view" id="musicPanel">
-      <div class="avatar-actions">
-        <button class="small-pill save-btn" id="playBtn">▶️ Play</button>
-        <div class="tempo-row" id="tempoRow">
-          <button class="style-btn active" data-tempo="slow">🐢</button>
-          <button class="style-btn" data-tempo="medium">🚶</button>
-          <button class="style-btn" data-tempo="fast">🐇</button>
-        </div>
-        <button class="small-pill surprise-btn" id="musicSurpriseBtn">🎲 Surprise Me</button>
-        <button class="small-pill clear-btn" id="musicClearBtn">🧹 Clear Tune</button>
+      <div class="tabs" id="musicModeTabs">
+        <button class="tab-btn active" data-musicmode="beats">🥁 Beat Maker</button>
+        <button class="tab-btn" data-musicmode="piano">🎹 Piano</button>
       </div>
-      <div id="musicGrid"></div>
+
+      <div class="music-sub active" id="beatMakerView">
+        <div class="avatar-actions">
+          <button class="small-pill save-btn" id="playBtn">▶️ Play</button>
+          <div class="tempo-row" id="tempoRow">
+            <button class="style-btn active" data-tempo="slow">🐢</button>
+            <button class="style-btn" data-tempo="medium">🚶</button>
+            <button class="style-btn" data-tempo="fast">🐇</button>
+          </div>
+          <button class="small-pill surprise-btn" id="musicSurpriseBtn">🎲 Surprise Me</button>
+          <button class="small-pill clear-btn" id="musicClearBtn">🧹 Clear Tune</button>
+        </div>
+        <div id="musicGrid"></div>
+      </div>
+
+      <div class="music-sub" id="pianoView">
+        <div class="row" id="songPicker" style="flex-wrap:wrap; gap:8px;">
+          <button class="small-pill surprise-btn song-btn active" data-song="free">🎈 Free Play</button>
+          <button class="small-pill surprise-btn song-btn" data-song="twinkle">⭐ Twinkle Twinkle</button>
+          <button class="small-pill surprise-btn song-btn" data-song="hotcross">🥯 Hot Cross Buns</button>
+          <button class="small-pill surprise-btn song-btn" data-song="mary">🐑 Mary's Lamb</button>
+        </div>
+        <div id="songLyric" class="section-label" style="font-size:14px; text-align:center; min-height:20px; margin:6px 0;"></div>
+        <div id="songDots" class="row" style="justify-content:center; gap:5px; min-height:14px;"></div>
+        <div id="pianoKeys" class="row" style="justify-content:center; gap:6px; margin-top:8px;"></div>
+      </div>
     </div>
 
     <div class="panel-view" id="interiorPanel">
@@ -1245,6 +1277,7 @@
   const STEP_COUNT = 8;
   const musicGrid = INSTRUMENTS.map(()=> new Array(STEP_COUNT).fill(false));
   let musicPlaying = false;
+  let pianoBounce = 0;
   let musicStep = 0;
   let musicTimer = null;
   let musicTempo = 'medium';
@@ -1356,6 +1389,141 @@
     stopMusic(); renderMusicGrid();
   });
   renderMusicGrid();
+
+  // ================= piano learning mode =================
+  document.getElementById('musicModeTabs').addEventListener('click',(e)=>{
+    const btn = e.target.closest('.tab-btn'); if(!btn) return;
+    document.querySelectorAll('#musicModeTabs .tab-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    const m = btn.dataset.musicmode;
+    document.getElementById('beatMakerView').classList.toggle('active', m==='beats');
+    document.getElementById('pianoView').classList.toggle('active', m==='piano');
+  });
+
+  const PIANO_NOTES = [
+    { name:'C', freq:261.63, color:'#FF6F59' },
+    { name:'D', freq:293.66, color:'#FFA35C' },
+    { name:'E', freq:329.63, color:'#FFD166' },
+    { name:'F', freq:349.23, color:'#6FBE44' },
+    { name:'G', freq:392.00, color:'#4FA8E0' },
+    { name:'A', freq:440.00, color:'#6B5B95' },
+    { name:'B', freq:493.88, color:'#B39DDB' },
+    { name:'C2',freq:523.25, color:'#FF8FB1' },
+  ];
+  const NOTE_INDEX = {}; PIANO_NOTES.forEach((n,i)=> NOTE_INDEX[n.name]=i);
+
+  const SONGS = {
+    twinkle: {
+      title:'Twinkle Twinkle Little Star',
+      notes: ['C','C','G','G','A','A','G', 'F','F','E','E','D','D','C',
+              'G','G','F','F','E','E','D', 'G','G','F','F','E','E','D',
+              'C','C','G','G','A','A','G', 'F','F','E','E','D','D','C'],
+      lyrics: ['Twin','kle','twin','kle','lit','tle','star,','how','I','won','der','what','you','are,',
+                'Up','a','bove','the','world','so','high,','Like','a','dia','mond','in','the','sky,',
+                'Twin','kle','twin','kle','lit','tle','star,','how','I','won','der','what','you','are!']
+    },
+    hotcross: {
+      title:'Hot Cross Buns',
+      notes: ['E','D','C', 'E','D','C', 'C','C','C','C','D','D','D','D', 'E','D','C'],
+      lyrics: ['Hot','cross','buns,', 'Hot','cross','buns,', 'One','a','pen','ny,','two','a','pen','ny,', 'Hot','cross','buns!']
+    },
+    mary: {
+      title:"Mary Had a Little Lamb",
+      notes: ['E','D','C','D','E','E','E', 'D','D','D', 'E','G','G', 'E','D','C','D','E','E','E','E','D','D','E','D','C'],
+      lyrics: ['Ma','ry','had','a','lit','tle','lamb,', 'lit','tle','lamb,', 'lit','tle','lamb,',
+                'Ma','ry','had','a','lit','tle','lamb,','its','fleece','was','white','as','snow']
+    }
+  };
+
+  let currentSong = 'free';
+  let songPos = 0;
+
+  function playPianoTone(freq){
+    ensureAudio();
+    const t = audioCtx.currentTime;
+    const osc = audioCtx.createOscillator(); const gain = audioCtx.createGain();
+    osc.type = 'triangle'; osc.frequency.value = freq;
+    gain.gain.setValueAtTime(0.0001, t);
+    gain.gain.exponentialRampToValueAtTime(0.28, t+0.008);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t+0.5);
+    osc.connect(gain); gain.connect(audioCtx.destination);
+    osc.start(t); osc.stop(t+0.55);
+  }
+
+  const pianoKeysEl = document.getElementById('pianoKeys');
+  const songLyricEl = document.getElementById('songLyric');
+  const songDotsEl = document.getElementById('songDots');
+
+  function renderPianoKeys(){
+    pianoKeysEl.innerHTML = '';
+    PIANO_NOTES.forEach((n,i)=>{
+      const key = document.createElement('button');
+      key.className = 'piano-key';
+      key.style.background = n.color;
+      key.textContent = n.name.replace('2','');
+      key.dataset.note = n.name;
+      key.addEventListener('click', ()=> pressKey(i));
+      pianoKeysEl.appendChild(key);
+    });
+    updateNextNoteHighlight();
+  }
+
+  function updateNextNoteHighlight(){
+    document.querySelectorAll('.piano-key').forEach(k=>k.classList.remove('next-note'));
+    if(currentSong==='free') return;
+    const song = SONGS[currentSong];
+    if(songPos >= song.notes.length) return;
+    const nextNote = song.notes[songPos];
+    const idx = NOTE_INDEX[nextNote];
+    const keys = pianoKeysEl.children;
+    if(keys[idx]) keys[idx].classList.add('next-note');
+  }
+
+  function renderSongDots(){
+    songDotsEl.innerHTML = '';
+    if(currentSong==='free'){ songLyricEl.textContent = 'Tap any key and play!'; return; }
+    const song = SONGS[currentSong];
+    song.notes.forEach((_,i)=>{
+      const dot = document.createElement('div');
+      dot.className = 'song-dot' + (i<songPos?' done':'') + (i===songPos?' current':'');
+      songDotsEl.appendChild(dot);
+    });
+    songLyricEl.textContent = songPos < song.lyrics.length ? song.lyrics[songPos] : '🎉 You played it! Tap 🔄 to go again.';
+  }
+
+  function pressKey(idx){
+    const note = PIANO_NOTES[idx];
+    playPianoTone(note.freq);
+    const keyEl = pianoKeysEl.children[idx];
+    keyEl.classList.add('pressed');
+    setTimeout(()=>keyEl.classList.remove('pressed'), 120);
+    pianoBounce = 1;
+
+    if(currentSong!=='free'){
+      const song = SONGS[currentSong];
+      if(songPos < song.notes.length && song.notes[songPos]===note.name){
+        songPos++;
+        renderSongDots();
+        updateNextNoteHighlight();
+        if(songPos >= song.notes.length){
+          setTimeout(()=>{ songPos=0; renderSongDots(); updateNextNoteHighlight(); }, 2200);
+        }
+      }
+    }
+  }
+
+  document.getElementById('songPicker').addEventListener('click',(e)=>{
+    const btn = e.target.closest('.song-btn'); if(!btn) return;
+    document.querySelectorAll('.song-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    currentSong = btn.dataset.song;
+    songPos = 0;
+    renderSongDots();
+    updateNextNoteHighlight();
+  });
+
+  renderPianoKeys();
+  renderSongDots();
 
   // ================= avatar panel wiring (Head + Outfit pickers) =================
   const avatarDockArea = document.getElementById('avatarDockArea');
@@ -1581,7 +1749,8 @@
       const interior = currentInterior();
       if(interior) renderInterior(mineRenderer.ctx, skyCanvas, interior, curAvatar(), selectedId);
     } else {
-      mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), musicPlaying, avatarOffset }, selectedId);
+      pianoBounce = Math.max(0, pianoBounce - 0.04);
+      mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), musicPlaying: musicPlaying || pianoBounce>0, avatarOffset }, selectedId);
     }
     peerPanels.forEach(entry=>{ if(entry.state) entry.renderer.render(entry.state, null); });
     positionToolbar();
