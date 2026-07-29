@@ -1,0 +1,933 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  background: #69c9f3;
+}
+
+button,
+input {
+  font: inherit;
+}
+
+/* ------------------------------------------------ */
+/* MAIN CITY WORLD                                  */
+/* ------------------------------------------------ */
+
+#city {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  min-height: 560px;
+  overflow: hidden;
+  background:
+    radial-gradient(
+      circle at 50% 25%,
+      rgba(255, 255, 255, 0.5) 0,
+      rgba(255, 255, 255, 0) 30%
+    ),
+    linear-gradient(
+      to bottom,
+      #63c7f4 0%,
+      #82d8f5 43%,
+      #8fd45c 43%,
+      #67b94a 100%
+    );
+}
+
+/* ------------------------------------------------ */
+/* SKY                                               */
+/* ------------------------------------------------ */
+
+#sky {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 43%;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+#sun {
+  position: absolute;
+  top: 5%;
+  right: 8%;
+  width: clamp(70px, 8vw, 130px);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: #ffd95a;
+  box-shadow:
+    0 0 0 14px rgba(255, 229, 108, 0.25),
+    0 0 45px rgba(255, 219, 70, 0.75);
+  animation: sunFloat 5s ease-in-out infinite;
+}
+
+#sun::after {
+  content: "";
+  position: absolute;
+  inset: 17%;
+  border-radius: 50%;
+  background: rgba(255, 245, 166, 0.45);
+}
+
+/* ------------------------------------------------ */
+/* CLOUDS                                            */
+/* ------------------------------------------------ */
+
+.cloud {
+  position: absolute;
+  width: clamp(100px, 14vw, 210px);
+  height: clamp(34px, 4.5vw, 68px);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.94);
+  filter: drop-shadow(0 8px 8px rgba(42, 107, 159, 0.14));
+}
+
+.cloud::before,
+.cloud::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  border-radius: 50%;
+  background: inherit;
+}
+
+.cloud::before {
+  left: 13%;
+  width: 42%;
+  aspect-ratio: 1;
+}
+
+.cloud::after {
+  right: 14%;
+  width: 54%;
+  aspect-ratio: 1;
+}
+
+.cloud1 {
+  top: 12%;
+  left: -20%;
+  animation: cloudTravel 24s linear infinite;
+}
+
+.cloud2 {
+  top: 25%;
+  left: -30%;
+  transform: scale(0.75);
+  opacity: 0.85;
+  animation: cloudTravel 31s linear infinite 4s;
+}
+
+.cloud3 {
+  top: 7%;
+  left: -25%;
+  transform: scale(0.55);
+  opacity: 0.7;
+  animation: cloudTravel 38s linear infinite 10s;
+}
+
+/* ------------------------------------------------ */
+/* GROUND DETAILS                                    */
+/* ------------------------------------------------ */
+
+#city::before {
+  content: "";
+  position: absolute;
+  left: -5%;
+  right: -5%;
+  bottom: 15%;
+  height: 43%;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(255, 255, 255, 0.15) 0 3px,
+      transparent 4px
+    )
+    0 0 / 70px 60px;
+  pointer-events: none;
+  opacity: 0.55;
+}
+
+#city::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 14%;
+  height: 5%;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(70, 145, 57, 0.24) 0 18px,
+      rgba(109, 187, 73, 0.18) 18px 36px
+    );
+  pointer-events: none;
+}
+
+/* ------------------------------------------------ */
+/* ROAD                                              */
+/* ------------------------------------------------ */
+
+#road {
+  position: absolute;
+  left: -5%;
+  bottom: 0;
+  width: 110%;
+  height: 16%;
+  background:
+    linear-gradient(
+      to bottom,
+      #d8d0bd 0%,
+      #c5baa3 8%,
+      #99928b 9%,
+      #85817e 100%
+    );
+  border-top: 6px solid #eee0bc;
+  box-shadow:
+    inset 0 9px 0 rgba(255, 255, 255, 0.18),
+    0 -8px 25px rgba(51, 103, 45, 0.25);
+  z-index: 1;
+}
+
+#road::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 47%;
+  height: 8px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      #fff4b8 0 60px,
+      transparent 60px 110px
+    );
+  opacity: 0.95;
+}
+
+#road::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 10%;
+  height: 5px;
+  background:
+    repeating-linear-gradient(
+      90deg,
+      rgba(255, 255, 255, 0.18) 0 25px,
+      transparent 25px 50px
+    );
+}
+
+/* ------------------------------------------------ */
+/* BUILDINGS                                         */
+/* ------------------------------------------------ */
+
+.building,
+#castle {
+  position: absolute;
+  z-index: 5;
+  cursor: pointer;
+  user-select: none;
+  text-align: center;
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease;
+}
+
+.building:hover,
+#castle:hover {
+  transform: translateY(-8px) scale(1.04);
+  filter: brightness(1.06);
+}
+
+.building:active,
+#castle:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.building .emoji {
+  position: relative;
+  width: clamp(100px, 12vw, 180px);
+  aspect-ratio: 1.15 / 1;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: clamp(64px, 8vw, 120px);
+  line-height: 1;
+  border: 4px solid rgba(255, 255, 255, 0.82);
+  border-radius: 30px 30px 22px 22px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.92),
+      rgba(255, 255, 255, 0.58)
+    );
+  box-shadow:
+    0 15px 0 rgba(73, 112, 56, 0.28),
+    0 20px 25px rgba(34, 91, 38, 0.24);
+}
+
+.building .emoji::before {
+  content: "";
+  position: absolute;
+  left: 10%;
+  right: 10%;
+  bottom: -11%;
+  height: 18%;
+  border-radius: 50%;
+  background: rgba(44, 105, 37, 0.24);
+  filter: blur(5px);
+  z-index: -1;
+}
+
+.building .label,
+.buildingLabel {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 7px 15px;
+  border: 3px solid rgba(255, 255, 255, 0.9);
+  border-radius: 999px;
+  color: #4e3c8d;
+  background: rgba(255, 255, 255, 0.94);
+  font-size: clamp(12px, 1.25vw, 20px);
+  font-weight: 900;
+  white-space: nowrap;
+  box-shadow:
+    0 5px 0 rgba(89, 69, 143, 0.23),
+    0 8px 18px rgba(27, 73, 43, 0.16);
+}
+
+/* ------------------------------------------------ */
+/* BUILDING POSITIONS                                */
+/* ------------------------------------------------ */
+
+#castle {
+  left: 50%;
+  top: 7%;
+  transform: translateX(-50%);
+}
+
+#castle:hover {
+  transform: translateX(-50%) translateY(-8px) scale(1.04);
+}
+
+#castle:active {
+  transform: translateX(-50%) translateY(-2px) scale(0.98);
+}
+
+#castle::before {
+  content: "🏰";
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(125px, 15vw, 220px);
+  aspect-ratio: 1.25 / 1;
+  margin: 0 auto;
+  border: 4px solid rgba(255, 255, 255, 0.84);
+  border-radius: 32px;
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.96),
+      rgba(238, 222, 255, 0.74)
+    );
+  font-size: clamp(78px, 10vw, 145px);
+  box-shadow:
+    0 16px 0 rgba(73, 112, 56, 0.28),
+    0 22px 30px rgba(34, 91, 38, 0.25);
+}
+
+.library {
+  left: 10%;
+  top: 17%;
+}
+
+.school {
+  right: 10%;
+  top: 17%;
+}
+
+.home {
+  left: 5%;
+  top: 43%;
+}
+
+.art {
+  right: 5%;
+  top: 43%;
+}
+
+.market {
+  left: 20%;
+  top: 66%;
+}
+
+.pets {
+  right: 20%;
+  top: 66%;
+}
+
+/* ------------------------------------------------ */
+/* INDIVIDUAL BUILDING COLORS                        */
+/* ------------------------------------------------ */
+
+.library .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #fff8cf,
+      #ffd978
+    );
+}
+
+.school .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #dff2ff,
+      #93d1f3
+    );
+}
+
+.home .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #ffe6dc,
+      #ffa991
+    );
+}
+
+.art .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #fce1ff,
+      #d7a1ee
+    );
+}
+
+.market .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #e4ffe0,
+      #9de37f
+    );
+}
+
+.pets .emoji {
+  background:
+    linear-gradient(
+      145deg,
+      #fff1db,
+      #ffbc79
+    );
+}
+
+/* ------------------------------------------------ */
+/* PARK                                              */
+/* ------------------------------------------------ */
+
+#park {
+  position: absolute;
+  left: 50%;
+  bottom: 15%;
+  transform: translateX(-50%);
+  width: min(42vw, 560px);
+  height: min(34vh, 330px);
+  z-index: 4;
+  pointer-events: none;
+}
+
+#park::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 80%;
+  height: 70%;
+  transform: translateX(-50%);
+  border-radius: 50% 50% 42% 42%;
+  background:
+    radial-gradient(
+      ellipse at center,
+      rgba(166, 221, 97, 0.9),
+      rgba(74, 164, 57, 0.95)
+    );
+  border: 5px solid rgba(225, 248, 177, 0.8);
+  box-shadow:
+    inset 0 -12px 0 rgba(47, 133, 48, 0.18),
+    0 14px 28px rgba(35, 95, 37, 0.25);
+}
+
+.tree {
+  position: absolute;
+  bottom: 16%;
+  z-index: 2;
+  font-size: clamp(72px, 8vw, 125px);
+  line-height: 1;
+  transform-origin: bottom center;
+  filter: drop-shadow(0 12px 8px rgba(38, 96, 34, 0.22));
+  animation: treeSway 3.8s ease-in-out infinite;
+}
+
+.tree1 {
+  left: 0;
+}
+
+.tree2 {
+  right: 0;
+  animation-delay: 1.1s;
+}
+
+/* ------------------------------------------------ */
+/* HERO                                              */
+/* ------------------------------------------------ */
+
+#hero {
+  position: absolute;
+  left: 50%;
+  bottom: 10%;
+  width: clamp(110px, 13vw, 190px);
+  transform: translateX(-50%);
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: auto;
+}
+
+#heroAvatar {
+  display: block;
+  width: 100%;
+  height: clamp(145px, 20vh, 235px);
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 14px 8px rgba(34, 84, 38, 0.25));
+  animation: heroBounce 2.8s ease-in-out infinite;
+}
+
+#heroAvatar[src=""],
+#heroAvatar:not([src]) {
+  visibility: hidden;
+}
+
+#hero::before {
+  content: "🧒";
+  position: absolute;
+  left: 50%;
+  bottom: 47px;
+  transform: translateX(-50%);
+  font-size: clamp(88px, 10vw, 145px);
+  line-height: 1;
+  z-index: -1;
+  filter: drop-shadow(0 14px 8px rgba(34, 84, 38, 0.25));
+  animation: heroBounce 2.8s ease-in-out infinite;
+}
+
+#hero:has(#heroAvatar[src]:not([src=""]))::before {
+  display: none;
+}
+
+#heroName {
+  position: relative;
+  z-index: 4;
+  max-width: 200px;
+  margin-top: 3px;
+  padding: 7px 15px;
+  overflow: hidden;
+  border: 3px solid rgba(255, 255, 255, 0.92);
+  border-radius: 999px;
+  color: #553e99;
+  background: rgba(255, 255, 255, 0.96);
+  font-size: clamp(13px, 1.35vw, 20px);
+  font-weight: 900;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  box-shadow:
+    0 5px 0 rgba(89, 69, 143, 0.23),
+    0 8px 18px rgba(27, 73, 43, 0.16);
+}
+
+/* ------------------------------------------------ */
+/* MESSAGE TOAST                                     */
+/* ------------------------------------------------ */
+
+#message {
+  position: fixed;
+  left: 50%;
+  top: 22px;
+  z-index: 100;
+  max-width: min(90vw, 540px);
+  padding: 13px 22px;
+  transform: translateX(-50%) translateY(-110px);
+  border: 3px solid rgba(255, 255, 255, 0.95);
+  border-radius: 999px;
+  color: #593d9e;
+  background: rgba(255, 255, 255, 0.97);
+  box-shadow: 0 12px 28px rgba(24, 49, 84, 0.28);
+  font-size: clamp(14px, 1.35vw, 19px);
+  font-weight: 900;
+  text-align: center;
+  transition: transform 0.25s ease;
+  pointer-events: none;
+}
+
+#message.show {
+  transform: translateX(-50%) translateY(0);
+}
+
+/* ------------------------------------------------ */
+/* ANIMATIONS                                        */
+/* ------------------------------------------------ */
+
+@keyframes cloudTravel {
+  from {
+    left: -30%;
+  }
+
+  to {
+    left: 110%;
+  }
+}
+
+@keyframes sunFloat {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(9px);
+  }
+}
+
+@keyframes treeSway {
+  0%,
+  100% {
+    transform: rotate(-2deg);
+  }
+
+  50% {
+    transform: rotate(3deg);
+  }
+}
+
+@keyframes heroBounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-7px);
+  }
+}
+
+/* ------------------------------------------------ */
+/* LARGE SCREEN ADJUSTMENTS                          */
+/* ------------------------------------------------ */
+
+@media (min-width: 1200px) {
+  .library,
+  .school {
+    top: 18%;
+  }
+
+  .home,
+  .art {
+    top: 44%;
+  }
+
+  .market,
+  .pets {
+    top: 67%;
+  }
+}
+
+/* ------------------------------------------------ */
+/* TABLET                                            */
+/* ------------------------------------------------ */
+
+@media (max-width: 900px) {
+  #city {
+    min-height: 500px;
+  }
+
+  #castle {
+    top: 6%;
+  }
+
+  .library {
+    left: 6%;
+    top: 18%;
+  }
+
+  .school {
+    right: 6%;
+    top: 18%;
+  }
+
+  .home {
+    left: 3%;
+    top: 45%;
+  }
+
+  .art {
+    right: 3%;
+    top: 45%;
+  }
+
+  .market {
+    left: 14%;
+    top: 68%;
+  }
+
+  .pets {
+    right: 14%;
+    top: 68%;
+  }
+
+  #park {
+    width: 44vw;
+  }
+}
+
+/* ------------------------------------------------ */
+/* PHONE LANDSCAPE                                   */
+/* ------------------------------------------------ */
+
+@media (max-height: 650px) and (orientation: landscape) {
+  #city {
+    min-height: 100vh;
+  }
+
+  #sky {
+    height: 39%;
+  }
+
+  #city {
+    background:
+      radial-gradient(
+        circle at 50% 25%,
+        rgba(255, 255, 255, 0.5) 0,
+        rgba(255, 255, 255, 0) 30%
+      ),
+      linear-gradient(
+        to bottom,
+        #63c7f4 0%,
+        #82d8f5 39%,
+        #8fd45c 39%,
+        #67b94a 100%
+      );
+  }
+
+  #castle {
+    top: 2%;
+  }
+
+  #castle::before {
+    width: clamp(90px, 12vw, 150px);
+    font-size: clamp(58px, 8vw, 100px);
+  }
+
+  .building .emoji {
+    width: clamp(78px, 9vw, 120px);
+    font-size: clamp(48px, 6vw, 80px);
+    border-radius: 22px;
+  }
+
+  .building .label,
+  .buildingLabel {
+    margin-top: 5px;
+    padding: 4px 11px;
+    font-size: clamp(10px, 1.1vw, 15px);
+  }
+
+  .library,
+  .school {
+    top: 13%;
+  }
+
+  .home,
+  .art {
+    top: 39%;
+  }
+
+  .market,
+  .pets {
+    top: 64%;
+  }
+
+  #park {
+    bottom: 10%;
+    height: 42%;
+  }
+
+  .tree {
+    font-size: clamp(58px, 7vw, 90px);
+  }
+
+  #hero {
+    width: clamp(85px, 9vw, 130px);
+  }
+
+  #heroAvatar {
+    height: clamp(105px, 23vh, 155px);
+  }
+
+  #hero::before {
+    bottom: 39px;
+    font-size: clamp(70px, 8vw, 110px);
+  }
+
+  #road {
+    height: 15%;
+  }
+}
+
+/* ------------------------------------------------ */
+/* SMALL PHONE                                      */
+/* ------------------------------------------------ */
+
+@media (max-width: 650px) and (orientation: portrait) {
+  html,
+  body {
+    overflow: auto;
+  }
+
+  #city {
+    min-height: 900px;
+    height: 100vh;
+  }
+
+  #sky {
+    height: 30%;
+  }
+
+  #city {
+    background:
+      linear-gradient(
+        to bottom,
+        #63c7f4 0%,
+        #82d8f5 30%,
+        #8fd45c 30%,
+        #67b94a 100%
+      );
+  }
+
+  #sun {
+    right: 5%;
+    width: 76px;
+  }
+
+  #castle {
+    top: 5%;
+  }
+
+  #castle::before {
+    width: 115px;
+    font-size: 76px;
+  }
+
+  .building .emoji {
+    width: 105px;
+    font-size: 65px;
+  }
+
+  .building .label,
+  .buildingLabel {
+    padding: 6px 11px;
+    font-size: 13px;
+  }
+
+  .library {
+    left: 4%;
+    top: 26%;
+  }
+
+  .school {
+    right: 4%;
+    top: 26%;
+  }
+
+  .home {
+    left: 4%;
+    top: 48%;
+  }
+
+  .art {
+    right: 4%;
+    top: 48%;
+  }
+
+  .market {
+    left: 7%;
+    top: 71%;
+  }
+
+  .pets {
+    right: 7%;
+    top: 71%;
+  }
+
+  #park {
+    bottom: 13%;
+    width: 72vw;
+    height: 270px;
+  }
+
+  .tree {
+    font-size: 80px;
+  }
+
+  #hero {
+    width: 120px;
+  }
+
+  #heroAvatar {
+    height: 170px;
+  }
+
+  #hero::before {
+    bottom: 43px;
+    font-size: 95px;
+  }
+
+  #road {
+    height: 12%;
+  }
+}
+
+/* ------------------------------------------------ */
+/* ACCESSIBILITY                                     */
+/* ------------------------------------------------ */
+
+@media (prefers-reduced-motion: reduce) {
+  .cloud,
+  #sun,
+  .tree,
+  #heroAvatar,
+  #hero::before {
+    animation: none;
+  }
+
+  .building,
+  #castle,
+  #message {
+    transition: none;
+  }
+}
