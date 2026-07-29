@@ -1,0 +1,586 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#9a641f">
+<title>ELCraft | Discovery Room</title>
+<style>
+:root{
+  --ink:#4c351d;
+  --deep:#6e4518;
+  --orange:#d38a2d;
+  --gold:#ffd44f;
+  --sky:#7dd7ef;
+  --green:#6ac765;
+  --purple:#7657c7;
+  --panel:#fff;
+  --line:#f0e3ce;
+  --shadow:0 18px 45px rgba(83,54,20,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.9),transparent 18%),
+    radial-gradient(circle at 88% 12%,rgba(255,255,255,.65),transparent 16%),
+    linear-gradient(#78d4f0 0 40%,#eef8ec 40% 61%,#8bd16f 61% 100%);
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.cloud{position:fixed;z-index:0;opacity:.72;pointer-events:none;animation:float 20s linear infinite}
+.cloud.one{top:100px;left:-140px;font-size:84px}
+.cloud.two{top:230px;left:-210px;font-size:64px;animation-delay:-8s}
+.cloud.three{top:55px;left:-250px;font-size:52px;animation-delay:-15s}
+@keyframes float{to{transform:translateX(calc(100vw + 360px))}}
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.94);border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(83,54,20,.15);backdrop-filter:blur(12px)
+}
+.leftbar,.stats{display:flex;align-items:center;gap:10px}
+.nav-btn,.sound-btn{
+  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;color:#8b5d21;background:#fff1d9;
+  box-shadow:0 4px 0 #e8c997
+}
+.logo{
+  font-weight:1000;font-size:clamp(24px,3vw,38px);line-height:.9;color:#ffc72c;
+  text-shadow:-2px -2px 0 #9a641f,2px -2px 0 #9a641f,-2px 2px 0 #9a641f,2px 2px 0 #9a641f,0 5px 0 #6e4518
+}
+.stat{
+  min-width:92px;border-radius:999px;padding:9px 12px;background:#fff5c7;color:#5a3e75;
+  font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
+}
+.stat.xp{background:#e5f3ff}.stat.level{background:#e8ffe2}
+main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px}
+.hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
+  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(255,245,224,.95));box-shadow:var(--shadow)
+}
+.hero:after{content:"🌎";position:absolute;right:4%;bottom:-40px;font-size:185px;opacity:.1;transform:rotate(-8deg)}
+.hero h1{margin:0;color:#a16a24;font-size:clamp(32px,4vw,57px)}
+.hero p{margin:8px 0 0;font-size:17px;font-weight:900;color:#806f58}
+.teacher-card{
+  position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+  padding:15px;border-radius:24px;background:linear-gradient(#c9842d,#8b551d);color:#fff;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)
+}
+.teacher-face{font-size:72px}
+.teacher-card strong{display:block;font-size:21px}
+.teacher-card small{display:block;margin-top:5px;font-weight:900;opacity:.9;line-height:1.35}
+.dashboard{display:grid;grid-template-columns:1.75fr .8fr;gap:15px;margin-top:15px}
+.panel{
+  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.96);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;
+  border-bottom:1px solid var(--line);background:#fff9f0
+}
+.panel-head h2{margin:0;color:#9a641f;font-size:25px}
+.panel-body{padding:16px}
+.station-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.station{
+  position:relative;min-height:145px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(88,56,20,.24);transition:.18s ease;overflow:hidden
+}
+.station:hover{transform:translateY(-3px)}
+.station:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(88,56,20,.24)}
+.station .icon{display:block;font-size:45px;margin-bottom:7px}
+.station strong{display:block;font-size:21px}
+.station small{display:block;margin-top:4px;font-weight:900;opacity:.94}
+.station .stars{position:absolute;right:12px;top:10px;font-size:17px}
+.station.locked{filter:grayscale(.75);opacity:.68}
+.station.maps{background:linear-gradient(135deg,#3976b7,#5aa9d6)}
+.station.continents{background:linear-gradient(135deg,#2c9b73,#67c86c)}
+.station.cultures{background:linear-gradient(135deg,#c95d84,#eb8c9e)}
+.station.landmarks{background:linear-gradient(135deg,#a06ac8,#ca87df)}
+.station.oceans{background:linear-gradient(135deg,#2f8fc7,#55c1dc)}
+.station.flags{background:linear-gradient(135deg,#d78a2f,#efbb4d)}
+.station.languages{background:linear-gradient(135deg,#7a58bf,#a87be0)}
+.station.travel{background:linear-gradient(135deg,#4a9e8f,#72c9b4)}
+.station.history{background:linear-gradient(135deg,#9b6a3c,#c9975b)}
+.station.challenge{background:linear-gradient(135deg,#29487f,#4d78b8)}
+.passport{display:grid;gap:10px}
+.pass-row{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:11px;
+  border:2px solid #efe2cd;border-radius:17px;background:#fff
+}
+.pass-icon{font-size:27px}.pass-name{font-weight:1000}
+.pass-sub{font-size:11px;color:#8a7862;font-weight:900;margin-top:2px}
+.pass-stars{font-size:14px;white-space:nowrap}
+.daily-card{
+  margin-top:12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#fff3c9,#ffe29a);
+  border:2px solid #e4bd55
+}
+.daily-card strong{display:block;color:#7b5819}
+.daily-card p{margin:5px 0 10px;font-size:13px;font-weight:900;color:#876f3b}
+.daily-card button{
+  width:100%;border:0;border-radius:15px;padding:11px;background:linear-gradient(#ffc84a,#e99628);
+  color:#fff;font-weight:1000;box-shadow:0 5px 0 #bd6d19
+}
+.daily-card button:disabled{opacity:.55;cursor:not-allowed}
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(74,47,18,.58);backdrop-filter:blur(7px)
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(720px,100%);max-height:92vh;overflow:auto;border-radius:28px;padding:22px;background:#fff;
+  box-shadow:0 25px 70px rgba(83,54,20,.38);border:4px solid #fff
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-title-wrap{display:flex;align-items:center;gap:11px}
+.modal-icon{font-size:55px}
+.modal-card h2{margin:0;color:#9a641f;font-size:30px}
+.close-x{border:0;border-radius:14px;padding:9px 12px;background:#f6ecdd;color:#805921;font-weight:1000}
+.activity{
+  margin-top:16px;padding:18px;border-radius:22px;background:#fff9f0;border:2px solid #f1e2cc;text-align:center
+}
+.question{font-size:clamp(25px,4.6vw,44px);font-weight:1000;color:#80551e;line-height:1.3}
+.visual{font-size:clamp(28px,5vw,48px);letter-spacing:4px;margin:12px 0;line-height:1.35}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.answer{
+  border:0;border-radius:17px;padding:14px;background:#fff;color:#80591f;font-weight:1000;font-size:19px;
+  box-shadow:0 5px 0 #e3d0b2;border:2px solid #eee0ca
+}
+.answer:hover{transform:translateY(-2px)}
+.feedback{min-height:30px;margin-top:12px;font-weight:1000;font-size:18px}
+.feedback.good{color:#27813f}.feedback.bad{color:#bd4552}
+.modal-actions{display:flex;gap:10px;margin-top:15px}
+.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
+.secondary{background:#f2eadf;color:#705528}
+.primary{background:linear-gradient(#73cf58,#4cae35);color:#fff;box-shadow:0 5px 0 #388c28}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:90;transform:translateX(-50%) translateY(150px);
+  padding:13px 19px;border-radius:999px;background:#70491c;color:#fff;font-weight:1000;
+  transition:.3s ease;box-shadow:0 12px 30px rgba(83,54,20,.28);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:950px){.dashboard,.hero{grid-template-columns:1fr}.stats .stat.xp{display:none}}
+@media(max-width:650px){
+  main{padding:8px}.topbar{padding:8px}.logo{font-size:23px}.sound-btn{display:none}
+  .stat{min-width:auto;padding:8px 9px;font-size:12px}.hero{padding:16px;border-radius:23px}
+  .station-grid{grid-template-columns:1fr}.station{min-height:125px}
+  .panel-head{padding:13px}.panel-body{padding:12px}.answers{grid-template-columns:1fr}
+  .teacher-face{font-size:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
+
+  <header class="topbar">
+    <div class="leftbar">
+      <button class="nav-btn" id="academyBtn">← Academy</button>
+      <div class="logo">ELCraft</div>
+    </div>
+    <div class="stats">
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <div class="stat level">🏅 L<span id="level">1</span></div>
+      <button class="sound-btn" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1 id="heroTitle">Welcome to Discovery Room!</h1>
+        <p>Explore maps, continents, cultures, languages, landmarks, oceans, flags, and amazing places.</p>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-face">🦁</div>
+        <div>
+          <strong>Professor Lion's Discovery Room</strong>
+          <small>Choose an adventure and fill your Discovery Passport with stars.</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>🌎 Choose a Discovery Station</h2>
+          <strong id="masteryLabel">0 stars earned</strong>
+        </div>
+        <div class="panel-body">
+          <div class="station-grid" id="stationGrid"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head"><h2>🛂 Discovery Passport</h2></div>
+        <div class="panel-body">
+          <div class="passport" id="passport"></div>
+          <div class="daily-card">
+            <strong>🌟 Daily Explorer Challenge</strong>
+            <p id="dailyText">Finish any 3 adventures today to earn a bonus.</p>
+            <button id="dailyReward" disabled>Complete 3 adventures</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal" id="activityModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title-wrap">
+          <div class="modal-icon" id="modalIcon">🗺️</div>
+          <div><h2 id="modalTitle">Map Skills</h2><div id="roundLabel">Question 1 of 5</div></div>
+        </div>
+        <button class="close-x" id="closeModal">✕</button>
+      </div>
+
+      <div class="activity">
+        <div class="question" id="question"></div>
+        <div class="visual" id="visual"></div>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" id="leaveActivity">Back to Dashboard</button>
+        <button class="primary" id="nextQuestion" disabled>Next Question</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const COINS_KEY='elcraft_coins';
+  const PROFILE_KEY='elcraft_profile_v1';
+  const DISCOVERY_KEY='elcraft_discovery_v1';
+
+  const childName=localStorage.getItem(NAME_KEY)||'Student';
+  const today=new Date().toLocaleDateString('en-CA');
+  let soundOn=true;
+  let activeStation=null;
+  let currentQuestion=null;
+  let round=0;
+  let correctThisSession=0;
+  let answered=false;
+
+  let profile={
+    version:1,
+    coins:Number(localStorage.getItem(COINS_KEY)||100),
+    xp:0,
+    totalXp:0,
+    level:1,
+    achievements:[],
+    schoolCoinsEarned:0
+  };
+
+  let discovery={
+    version:1,
+    mastery:{maps:0,continents:0,cultures:0,landmarks:0,oceans:0,flags:0,languages:0,travel:0,history:0,challenge:0},
+    plays:{maps:0,continents:0,cultures:0,landmarks:0,oceans:0,flags:0,languages:0,travel:0,history:0,challenge:0},
+    completedByDate:{},
+    dailyRewardDates:[],
+    totalCorrect:0
+  };
+
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if(saved)profile={...profile,...saved};
+  }catch{}
+  try{
+    const saved=JSON.parse(localStorage.getItem(DISCOVERY_KEY));
+    if(saved)discovery={...discovery,...saved,mastery:{...discovery.mastery,...(saved.mastery||{})},plays:{...discovery.plays,...(saved.plays||{})}};
+  }catch{}
+
+  const stations=[
+    {id:'maps',icon:'🗺️',name:'Map Skills',color:'maps',desc:'Use directions, symbols, and map clues.',unlock:0},
+    {id:'continents',icon:'🌍',name:'Continents & Countries',color:'continents',desc:'Learn the continents and where places are.',unlock:0},
+    {id:'cultures',icon:'🎎',name:'Culture Corner',color:'cultures',desc:'Explore food, clothing, holidays, and traditions.',unlock:0},
+    {id:'landmarks',icon:'🗿',name:'Famous Landmarks',color:'landmarks',desc:'Visit remarkable places around the world.',unlock:0},
+    {id:'oceans',icon:'🌊',name:'Oceans & Islands',color:'oceans',desc:'Explore oceans, islands, and coastlines.',unlock:1},
+    {id:'flags',icon:'🚩',name:'Flag Gallery',color:'flags',desc:'Match flags with countries and colors.',unlock:1},
+    {id:'languages',icon:'💬',name:'Language Lounge',color:'languages',desc:'Learn greetings and words from many languages.',unlock:2},
+    {id:'travel',icon:'✈️',name:'Travel Planner',color:'travel',desc:'Choose routes, weather gear, and travel clues.',unlock:3},
+    {id:'history',icon:'🏺',name:'Past & Present',color:'history',desc:'Compare daily life from long ago and today.',unlock:4},
+    {id:'challenge',icon:'🎯',name:'World Explorer Challenge',color:'challenge',desc:'Mixed discovery review from every station.',unlock:2}
+  ];
+
+  function save(){
+    profile.coins=Math.max(0,Number(profile.coins)||0);
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+    localStorage.setItem(DISCOVERY_KEY,JSON.stringify(discovery));
+    localStorage.setItem(COINS_KEY,String(profile.coins));
+  }
+
+  function totalStars(){return Object.values(discovery.mastery).reduce((a,b)=>a+b,0)}
+  function starsText(n){return '⭐'.repeat(Math.max(0,Math.min(5,n)))+'☆'.repeat(Math.max(0,5-Math.min(5,n)))}
+  function activitiesToday(){return (discovery.completedByDate[today]||[]).length}
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+  function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+  function pick(list){return list[rand(0,list.length-1)]}
+
+  function render(){
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    document.querySelector('#heroTitle').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins||0;
+    document.querySelector('#xp').textContent=profile.xp||0;
+    document.querySelector('#level').textContent=profile.level||1;
+    document.querySelector('#masteryLabel').textContent=`${totalStars()} stars earned`;
+
+    const total=totalStars();
+    const grid=document.querySelector('#stationGrid');
+    grid.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const b=document.createElement('button');
+      b.className=`station ${s.color} ${locked?'locked':''}`;
+      b.innerHTML=`<span class="stars">${locked?'🔒':starsText(discovery.mastery[s.id]||0)}</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${locked?`Earn ${s.unlock} total stars to unlock`:s.desc}</small>`;
+      b.onclick=()=>locked?toast(`Earn ${s.unlock} total stars to unlock this station.`):startStation(s);
+      grid.append(b);
+    });
+
+    const passport=document.querySelector('#passport');
+    passport.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const row=document.createElement('div');
+      row.className='pass-row';
+      row.innerHTML=`<div class="pass-icon">${s.icon}</div><div><div class="pass-name">${s.name}</div><div class="pass-sub">${locked?'Locked':`${discovery.plays[s.id]||0} adventure sessions`}</div></div><div class="pass-stars">${locked?'🔒':starsText(discovery.mastery[s.id]||0)}</div>`;
+      passport.append(row);
+    });
+
+    const count=activitiesToday();
+    const claimed=discovery.dailyRewardDates.includes(today);
+    const btn=document.querySelector('#dailyReward');
+    btn.disabled=count<3||claimed;
+    btn.textContent=claimed?'✅ Bonus collected':count>=3?'Collect +20 coins and +30 XP':`${count}/3 adventures complete`;
+    document.querySelector('#dailyText').textContent=claimed?'You completed today’s Explorer Challenge!':'Finish any 3 adventures today to earn a bonus.';
+    save();
+  }
+
+  function startStation(station){
+    activeStation=station;
+    round=0;
+    correctThisSession=0;
+    answered=false;
+    document.querySelector('#modalIcon').textContent=station.icon;
+    document.querySelector('#modalTitle').textContent=station.name;
+    document.querySelector('#activityModal').classList.add('show');
+    nextQuestion();
+    sound('tap');
+  }
+
+  function makeQuestion(id){
+    const banks={
+      maps:[
+        {q:'Which direction is opposite north?',v:'⬆️ North',a:'south',c:['south','east','west','up']},
+        {q:'What does a map key explain?',v:'🗺️ 🔑',a:'map symbols',c:['map symbols','weather only','time zones only','street names only']},
+        {q:'Which direction is to the right on most maps?',v:'🧭',a:'east',c:['east','west','north','south']},
+        {q:'What shows distance on a map?',v:'📏 🗺️',a:'scale',c:['scale','title','border','color']}
+      ],
+      continents:[
+        {q:'Which continent is the United States in?',v:'🇺🇸',a:'North America',c:['North America','Europe','Asia','Africa']},
+        {q:'Which is the largest continent?',v:'🌏',a:'Asia',c:['Asia','Europe','Australia','Antarctica']},
+        {q:'Which continent is also a country?',v:'🇦🇺',a:'Australia',c:['Australia','Africa','Europe','Asia']},
+        {q:'Which continent is covered mostly by ice?',v:'🧊',a:'Antarctica',c:['Antarctica','Africa','South America','Europe']}
+      ],
+      cultures:[
+        {q:'What is a tradition?',v:'🎉 👨‍👩‍👧',a:'a custom passed through a group or family',c:['a custom passed through a group or family','a type of map','a weather tool','a landform']},
+        {q:'Which is part of culture?',v:'🍲 🎶 👗',a:'food, music, and clothing',c:['food, music, and clothing','only roads','only mountains','only numbers']},
+        {q:'Why do people celebrate holidays?',v:'🎊',a:'to remember or honor something important',c:['to remember or honor something important','to change continents','to stop seasons','to make maps']},
+        {q:'What can help us respect another culture?',v:'🤝',a:'learning and listening',c:['learning and listening','making fun of differences','ignoring people','assuming everyone is the same']}
+      ],
+      landmarks:[
+        {q:'In which country is the Eiffel Tower?',v:'🗼',a:'France',c:['France','Italy','Japan','Brazil']},
+        {q:'Where are the Great Pyramids of Giza?',v:'🔺🔺🔺',a:'Egypt',c:['Egypt','Mexico','India','Canada']},
+        {q:'The Statue of Liberty is in which country?',v:'🗽',a:'United States',c:['United States','Spain','China','Kenya']},
+        {q:'Machu Picchu is in which country?',v:'⛰️',a:'Peru',c:['Peru','Greece','Japan','Norway']}
+      ],
+      oceans:[
+        {q:'Which is the largest ocean?',v:'🌊',a:'Pacific Ocean',c:['Pacific Ocean','Atlantic Ocean','Indian Ocean','Arctic Ocean']},
+        {q:'What is an island?',v:'🏝️',a:'land surrounded by water',c:['land surrounded by water','water surrounded by land','a tall mountain','a desert road']},
+        {q:'Which ocean is east of the United States?',v:'🇺🇸 ➡️ 🌊',a:'Atlantic Ocean',c:['Atlantic Ocean','Pacific Ocean','Indian Ocean','Southern Ocean']},
+        {q:'What is a coastline?',v:'🏖️',a:'where land meets the ocean',c:['where land meets the ocean','the middle of a desert','the top of a mountain','the center of a city']}
+      ],
+      flags:[
+        {q:'Which colors are on the United States flag?',v:'🇺🇸',a:'red, white, and blue',c:['red, white, and blue','green and gold','black and orange','purple and pink']},
+        {q:'Which country has a maple leaf on its flag?',v:'🍁',a:'Canada',c:['Canada','Brazil','Japan','Italy']},
+        {q:'Which country has a red circle on a white flag?',v:'🔴',a:'Japan',c:['Japan','France','India','Mexico']},
+        {q:'What does a national flag represent?',v:'🚩',a:'a country',c:['a country','a planet','a season','a type of food']}
+      ],
+      languages:[
+        {q:'“Hola” is a greeting in which language?',v:'👋 Hola',a:'Spanish',c:['Spanish','French','Japanese','German']},
+        {q:'“Bonjour” means hello in which language?',v:'👋 Bonjour',a:'French',c:['French','Italian','Arabic','Korean']},
+        {q:'“Shalom” can mean hello or peace in which language?',v:'👋 שלום',a:'Hebrew',c:['Hebrew','Portuguese','Chinese','Swedish']},
+        {q:'Why do people learn other languages?',v:'💬 🌍',a:'to communicate with more people',c:['to communicate with more people','to change weather','to move oceans','to create mountains']}
+      ],
+      travel:[
+        {q:'What should you bring for a snowy trip?',v:'❄️',a:'a warm coat',c:['a warm coat','swimsuit only','sandals only','a beach towel only']},
+        {q:'Which transportation is best for crossing an ocean quickly?',v:'🌊',a:'airplane',c:['airplane','bicycle','subway','skateboard']},
+        {q:'Why do travelers use passports?',v:'🛂',a:'to identify themselves when entering countries',c:['to identify themselves when entering countries','to measure weather','to count money','to build roads']},
+        {q:'What helps you plan the route for a trip?',v:'🗺️',a:'a map',c:['a map','a spoon','a blanket','a drum']}
+      ],
+      history:[
+        {q:'What is history?',v:'📜',a:'the study of the past',c:['the study of the past','the study of weather only','the study of numbers only','the study of colors']},
+        {q:'Which item helps us learn about long ago?',v:'🏺',a:'an artifact',c:['an artifact','a forecast','a calculator','a compass only']},
+        {q:'How did people send messages before phones?',v:'✉️',a:'letters',c:['letters','video calls','text messages','apps']},
+        {q:'Why do museums protect old objects?',v:'🏛️',a:'so people can learn from the past',c:['so people can learn from the past','to change the weather','to hide maps','to stop travel']}
+      ]
+    };
+
+    if(id==='challenge'){
+      const ids=['maps','continents','cultures','landmarks','oceans','flags','languages','travel','history'];
+      return pick(banks[pick(ids)]);
+    }
+    return pick(banks[id]);
+  }
+
+  function nextQuestion(){
+    if(round>=5){finishSession();return}
+    answered=false;
+    round++;
+    currentQuestion=makeQuestion(activeStation.id);
+    document.querySelector('#roundLabel').textContent=`Question ${round} of 5`;
+    document.querySelector('#question').textContent=currentQuestion.q;
+    document.querySelector('#visual').textContent=currentQuestion.v||'';
+    document.querySelector('#feedback').textContent='';
+    document.querySelector('#feedback').className='feedback';
+    document.querySelector('#nextQuestion').disabled=true;
+    document.querySelector('#nextQuestion').textContent=round===5?'Finish Adventure':'Next Question';
+
+    const box=document.querySelector('#answers');
+    box.innerHTML='';
+    shuffle(currentQuestion.c).forEach(choice=>{
+      const b=document.createElement('button');
+      b.className='answer';
+      b.textContent=choice;
+      b.onclick=()=>checkAnswer(choice);
+      box.append(b);
+    });
+  }
+
+  function checkAnswer(choice){
+    if(answered)return;
+    answered=true;
+    const good=String(choice)===String(currentQuestion.a);
+    const feedback=document.querySelector('#feedback');
+    if(good){
+      correctThisSession++;
+      discovery.totalCorrect=(discovery.totalCorrect||0)+1;
+      feedback.textContent='Great exploring! That is correct! 🎉';
+      feedback.className='feedback good';
+      sound('reward');
+    }else{
+      feedback.textContent=`Good try! The correct answer is ${currentQuestion.a}.`;
+      feedback.className='feedback bad';
+      sound('tap');
+    }
+    [...document.querySelectorAll('.answer')].forEach(b=>{
+      b.disabled=true;
+      if(String(b.textContent)===String(currentQuestion.a))b.style.background='#dcf7d6';
+    });
+    document.querySelector('#nextQuestion').disabled=false;
+  }
+
+  function finishSession(){
+    discovery.plays[activeStation.id]=(discovery.plays[activeStation.id]||0)+1;
+    const current=discovery.mastery[activeStation.id]||0;
+    if(correctThisSession>=4)discovery.mastery[activeStation.id]=Math.min(5,current+1);
+
+    if(!discovery.completedByDate[today])discovery.completedByDate[today]=[];
+    discovery.completedByDate[today].push(`${activeStation.id}-${Date.now()}`);
+
+    const coins=5+correctThisSession;
+    const xp=10+(correctThisSession*2);
+    profile.coins=(profile.coins||0)+coins;
+    profile.xp=(profile.xp||0)+xp;
+    profile.totalXp=(profile.totalXp||0)+xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+coins;
+
+    save();
+    document.querySelector('#activityModal').classList.remove('show');
+    confetti();
+    toast(`Discovery adventure complete! +${coins} coins and +${xp} XP`);
+    render();
+  }
+
+  function collectDaily(){
+    if(activitiesToday()<3||discovery.dailyRewardDates.includes(today))return;
+    discovery.dailyRewardDates.push(today);
+    profile.coins=(profile.coins||0)+20;
+    profile.xp=(profile.xp||0)+30;
+    profile.totalXp=(profile.totalXp||0)+30;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+20;
+    save();
+    confetti();
+    toast('Daily Explorer Challenge complete! +20 coins and +30 XP');
+    render();
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');
+    el.textContent=message;
+    el.classList.add('show');
+    clearTimeout(window.__discoveryToast);
+    window.__discoveryToast=setTimeout(()=>el.classList.remove('show'),2300);
+  }
+
+  function confetti(){
+    const c=document.querySelector('#confetti');
+    c.innerHTML='';
+    ['⭐','✨','🌎','🗺️','✈️'].forEach(symbol=>{
+      for(let i=0;i<7;i++){
+        const n=document.createElement('i');
+        n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(17+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2400);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='reward'?710:470;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.14);
+      osc.start();osc.stop(ctx.currentTime+.15);
+    }catch{}
+  }
+
+  document.querySelector('#academyBtn').onclick=()=>location.href='school.html';
+  document.querySelector('#closeModal').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#leaveActivity').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#nextQuestion').onclick=nextQuestion;
+  document.querySelector('#dailyReward').onclick=collectDaily;
+  document.querySelector('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;
+    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
+    if(soundOn)sound('tap');
+  };
+  document.querySelector('#activityModal').onclick=e=>{
+    if(e.target.id==='activityModal')document.querySelector('#activityModal').classList.remove('show');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
