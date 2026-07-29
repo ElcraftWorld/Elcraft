@@ -79,6 +79,9 @@
   .ground-swatches{ display:flex; gap:8px; align-items:center; flex-shrink:0; padding-right:12px; border-right: 2px dashed #eadfce; }
   .swatch{ width:30px; height:30px; border-radius:50%; border:3px solid white; box-shadow:0 0 0 2px #e2e2e2, var(--shadow); cursor:pointer; }
   .swatch.active{ box-shadow:0 0 0 3px var(--ink); }
+  .ground-style-toggle{ display:flex; gap:4px; flex-shrink:0; padding-right:10px; border-right: 2px dashed #eadfce; }
+  .style-btn{ border:none; border-radius:10px; width:34px; height:34px; font-size:16px; background:var(--paper); cursor:pointer; box-shadow:var(--shadow); }
+  .style-btn.active{ box-shadow:0 0 0 3px var(--dusk); }
   .dock{ display:flex; gap:10px; overflow-x:auto; padding:2px 2px 4px; flex:1; }
   .dock-btn{ flex:0 0 auto; display:flex; flex-direction:column; align-items:center; gap:2px; background:var(--paper); border:none; border-radius:16px; padding:8px 12px 6px; cursor:pointer; box-shadow:var(--shadow); font-family:'Quicksand', sans-serif; font-weight:700; font-size:11px; color:var(--ink); }
   .dock-btn:active{ transform:translateY(4px); box-shadow:none; }
@@ -148,6 +151,7 @@
   .home-card .subtitle{ font-size:11px; color:#5a5f85; font-family:'Quicksand'; font-weight:600; }
   .home-card.sky{ background:#DDEEFB; }
   .home-card.character{ background:#FFE9C7; }
+  .home-card.city{ background:#E4F3DC; }
   .home-card.disabled{ background:#EDEDF4; opacity:0.65; cursor:default; }
   .home-card.disabled:active{ transform:none; box-shadow:var(--shadow); }
   .soon-badge{ position:absolute; top:-8px; right:-8px; background:var(--coral); color:white; font-size:10px;
@@ -188,11 +192,10 @@
         <span class="title">My Characters</span>
         <span class="subtitle">Design up to 3</span>
       </button>
-      <button class="home-card disabled" data-soon="true">
-        <span class="soon-badge">Soon!</span>
-        <span class="icon">🏠</span>
-        <span class="title">Houses</span>
-        <span class="subtitle">Build & explore</span>
+      <button class="home-card city" data-go="city">
+        <span class="icon">🏘️</span>
+        <span class="title">My City</span>
+        <span class="subtitle">Build a city!</span>
       </button>
       <button class="home-card disabled" data-soon="true">
         <span class="soon-badge">Soon!</span>
@@ -207,6 +210,7 @@
   <div class="mode-row">
     <button class="mode-tab active" data-mode="sky">🌤️ Sky World</button>
     <button class="mode-tab" data-mode="avatar">🧑 My Character</button>
+    <button class="mode-tab" data-mode="city">🏘️ My City</button>
   </div>
 
   <div class="stage solo" id="stage">
@@ -232,11 +236,16 @@
         <span class="dial-icon">🌙</span>
       </div>
       <div class="lower-row">
-        <div class="ground-swatches" id="groundSwatches">
+        <div class="ground-swatches">
           <div class="swatch active" data-color="#6FBE44" style="background:#6FBE44" title="Grass"></div>
           <div class="swatch" data-color="#E8C77E" style="background:#E8C77E" title="Sand"></div>
           <div class="swatch" data-color="#FFFFFF" style="background:#FFFFFF" title="Snow"></div>
           <div class="swatch" data-color="#E0783C" style="background:#E0783C" title="Autumn"></div>
+          <div class="swatch" data-color="#9AA0B5" style="background:#9AA0B5" title="Road"></div>
+        </div>
+        <div class="ground-style-toggle">
+          <button class="style-btn active" data-style="hill">🏞️</button>
+          <button class="style-btn" data-style="flat">🛣️</button>
         </div>
         <div class="dock" id="dock">
           <button class="dock-btn" data-type="sun"><span class="emoji">☀️</span>Sun</button>
@@ -250,6 +259,33 @@
           <button class="dock-btn" data-type="butterfly"><span class="emoji">🦋</span>Butterfly</button>
         </div>
         <button class="pill-btn clear-btn" id="clearSkyBtn" style="flex-shrink:0;">🧹 Clear Sky</button>
+      </div>
+    </div>
+
+    <div class="panel-view" id="cityPanel">
+      <div class="lower-row">
+        <div class="ground-swatches">
+          <div class="swatch active" data-color="#6FBE44" style="background:#6FBE44" title="Grass"></div>
+          <div class="swatch" data-color="#E8C77E" style="background:#E8C77E" title="Sand"></div>
+          <div class="swatch" data-color="#FFFFFF" style="background:#FFFFFF" title="Snow"></div>
+          <div class="swatch" data-color="#E0783C" style="background:#E0783C" title="Autumn"></div>
+          <div class="swatch" data-color="#9AA0B5" style="background:#9AA0B5" title="Road"></div>
+        </div>
+        <div class="ground-style-toggle">
+          <button class="style-btn active" data-style="hill">🏞️</button>
+          <button class="style-btn" data-style="flat">🛣️</button>
+        </div>
+        <div class="dock" id="cityDock">
+          <button class="dock-btn" data-type="house"><span class="emoji">🏠</span>House</button>
+          <button class="dock-btn" data-type="cottage"><span class="emoji">🏡</span>Cottage</button>
+          <button class="dock-btn" data-type="tower"><span class="emoji">🏢</span>Tower</button>
+          <button class="dock-btn" data-type="shop"><span class="emoji">🏪</span>Shop</button>
+          <button class="dock-btn" data-type="tree"><span class="emoji">🌳</span>Tree</button>
+          <button class="dock-btn" data-type="lamp"><span class="emoji">💡</span>Lamp</button>
+          <button class="dock-btn" data-type="car"><span class="emoji">🚗</span>Car</button>
+          <button class="dock-btn" data-type="fountain"><span class="emoji">⛲</span>Fountain</button>
+        </div>
+        <button class="pill-btn clear-btn" id="clearCityBtn" style="flex-shrink:0;">🧹 Clear City</button>
       </div>
     </div>
 
@@ -423,12 +459,154 @@
     ctx.strokeStyle='rgba(34,38,75,0.6)'; ctx.lineWidth=size*0.03; ctx.lineCap='round';
     ctx.beginPath(); ctx.moveTo(0,-r*0.7); ctx.lineTo(0,r*0.7); ctx.stroke(); ctx.restore();
   }
-  function drawGround(ctx,rect,color){
+  function drawGround(ctx,rect,color,style){
     const h = rect.height*0.16; ctx.save(); ctx.fillStyle = color;
+    if(style==='flat'){
+      ctx.fillRect(0, rect.height-h, rect.width, h);
+      ctx.globalAlpha = 0.12; ctx.strokeStyle = '#000'; ctx.lineWidth = 2;
+      const seams = 6;
+      for(let i=1;i<seams;i++){
+        const x = (rect.width/seams)*i;
+        ctx.beginPath(); ctx.moveTo(x, rect.height-h); ctx.lineTo(x, rect.height); ctx.stroke();
+      }
+      ctx.restore(); return;
+    }
     ctx.beginPath(); ctx.moveTo(0, rect.height); ctx.lineTo(0, rect.height-h*0.5);
     ctx.quadraticCurveTo(rect.width*0.5, rect.height-h*1.3, rect.width, rect.height-h*0.5);
     ctx.lineTo(rect.width, rect.height); ctx.closePath(); ctx.fill(); ctx.restore();
   }
+
+  // ================= city building primitives =================
+  const SKY_TYPES = ['sun','moon','cloud','star','rainbow','bird','balloon','kite','butterfly'];
+  const CITY_TYPES = ['house','cottage','tower','shop','tree','lamp','car','fountain'];
+  const buildingColors = ['#FF6F59','#4FA8E0','#FFD166','#6FBE44','#FFB8A8','#F7EAD1'];
+
+  function windowGrid(ctx,x,y,w,h,cols,rows,color){
+    ctx.save(); ctx.fillStyle = color;
+    const gw = w/cols, gh = h/rows;
+    for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+      ctx.fillRect(x+c*gw+gw*0.18, y+r*gh+gh*0.18, gw*0.64, gh*0.64);
+    }
+    ctx.restore();
+  }
+  function drawHouse(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.78, h = size*0.56;
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.14)); grad.addColorStop(1, shade(color,-0.08));
+    ctx.fillStyle = grad; ctx.fillRect(-w/2,-h,w,h);
+    ctx.fillStyle = shade(color,-0.28);
+    ctx.beginPath(); ctx.moveTo(-w*0.6,-h); ctx.lineTo(0,-h-size*0.36); ctx.lineTo(w*0.6,-h); ctx.closePath(); ctx.fill();
+    windowGrid(ctx,-w*0.38,-h*0.72,w*0.3,h*0.3,1,1,'#FFF3D6');
+    windowGrid(ctx,w*0.08,-h*0.72,w*0.3,h*0.3,1,1,'#FFF3D6');
+    ctx.fillStyle = shade(color,-0.35);
+    ctx.fillRect(-w*0.1,-h*0.42,w*0.2,h*0.42);
+    ctx.restore();
+  }
+  function drawCottage(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.7, h = size*0.44;
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.14)); grad.addColorStop(1, shade(color,-0.08));
+    ctx.fillStyle = grad;
+    ctx.beginPath(); ctx.moveTo(-w/2,0); ctx.lineTo(-w/2,-h*0.6); ctx.quadraticCurveTo(-w/2,-h,-w*0.2,-h); ctx.lineTo(w*0.2,-h);
+    ctx.quadraticCurveTo(w/2,-h,w/2,-h*0.6); ctx.lineTo(w/2,0); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = shade('#B5482A',0.05);
+    ctx.beginPath(); ctx.moveTo(-w*0.62,-h*0.55); ctx.lineTo(0,-h-size*0.3); ctx.lineTo(w*0.62,-h*0.55); ctx.lineTo(w*0.5,-h*0.5); ctx.lineTo(0,-h-size*0.18); ctx.lineTo(-w*0.5,-h*0.5); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = '#FFF3D6';
+    ctx.beginPath(); ctx.arc(0,-h*0.4,w*0.13,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = shade(color,-0.3); ctx.lineWidth = size*0.02;
+    ctx.beginPath(); ctx.arc(0,-h*0.4,w*0.13,0,Math.PI*2); ctx.stroke();
+    ctx.fillStyle = '#6FBE44';
+    ctx.fillRect(-w*0.32,-h*0.02,w*0.64,h*0.06);
+    ctx.restore();
+  }
+  function drawTower(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.56, h = size*1.05;
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.16)); grad.addColorStop(1, shade(color,-0.1));
+    ctx.fillStyle = grad; ctx.fillRect(-w/2,-h,w,h);
+    ctx.fillStyle = shade(color,-0.3); ctx.fillRect(-w*0.55,-h-size*0.05,w*1.1,size*0.06);
+    windowGrid(ctx,-w*0.4,-h*0.9,w*0.8,h*0.78,2,5,'#DDEEFB');
+    ctx.restore();
+  }
+  function drawShop(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.8, h = size*0.5;
+    const grad = ctx.createLinearGradient(0,-h,0,0);
+    grad.addColorStop(0, shade(color,0.12)); grad.addColorStop(1, shade(color,-0.08));
+    ctx.fillStyle = grad; ctx.fillRect(-w/2,-h,w,h);
+    ctx.fillStyle = '#DDEEFB'; ctx.fillRect(-w*0.4,-h*0.55,w*0.8,h*0.42);
+    ctx.strokeStyle = shade(color,-0.3); ctx.lineWidth = size*0.02; ctx.strokeRect(-w*0.4,-h*0.55,w*0.8,h*0.42);
+    const stripes = ['#FF6F59','#FFF3D6'];
+    const awnW = w*0.9, segs=6;
+    for(let i=0;i<segs;i++){
+      ctx.fillStyle = stripes[i%2];
+      ctx.beginPath();
+      ctx.moveTo(-awnW/2+i*(awnW/segs), -h*0.58);
+      ctx.lineTo(-awnW/2+(i+1)*(awnW/segs), -h*0.58);
+      ctx.lineTo(-awnW/2+(i+1)*(awnW/segs)-w*0.03, -h*0.44);
+      ctx.lineTo(-awnW/2+i*(awnW/segs)-w*0.03, -h*0.44);
+      ctx.closePath(); ctx.fill();
+    }
+    ctx.restore();
+  }
+  function drawTree(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const trunkW = size*0.12, trunkH = size*0.32;
+    ctx.fillStyle = '#8a5a3a'; ctx.fillRect(-trunkW/2,-trunkH,trunkW,trunkH);
+    const r = size*0.34;
+    const g = ctx.createRadialGradient(-r*0.3,-trunkH-r*0.5,r*0.2,0,-trunkH-r*0.3,r*1.2);
+    g.addColorStop(0, shade('#6FBE44',0.2)); g.addColorStop(1, shade('#6FBE44',-0.15));
+    ctx.fillStyle = g;
+    [[-r*0.5,-trunkH-r*0.3,r*0.62],[r*0.5,-trunkH-r*0.3,r*0.62],[0,-trunkH-r*0.9,r*0.72]].forEach(p=>{
+      ctx.beginPath(); ctx.arc(p[0],p[1],p[2],0,Math.PI*2); ctx.fill();
+    });
+    ctx.restore();
+  }
+  function drawLamp(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const poleH = size*0.85;
+    ctx.strokeStyle = '#4a4f66'; ctx.lineWidth = size*0.045; ctx.lineCap='round';
+    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(0,-poleH); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,209,102,0.35)';
+    ctx.beginPath(); ctx.arc(0,-poleH,size*0.22,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#FFD166';
+    ctx.beginPath(); ctx.arc(0,-poleH,size*0.1,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  function drawCar(ctx,x,y,size,color){
+    ctx.save(); ctx.translate(x,y);
+    const w = size*0.62, h = size*0.22;
+    const grad = ctx.createLinearGradient(0,-h*1.6,0,0);
+    grad.addColorStop(0, shade(color,0.15)); grad.addColorStop(1, shade(color,-0.1));
+    ctx.fillStyle = grad;
+    roundRect(ctx,-w/2,-h,w,h,h*0.35); ctx.fill();
+    roundRect(ctx,-w*0.32,-h*1.7,w*0.6,h*0.9,h*0.25); ctx.fill();
+    ctx.fillStyle = '#DDEEFB'; roundRect(ctx,-w*0.26,-h*1.6,w*0.48,h*0.65,h*0.15); ctx.fill();
+    ctx.fillStyle = '#2b2b3a';
+    ctx.beginPath(); ctx.arc(-w*0.28,0,h*0.32,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(w*0.28,0,h*0.32,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+  function drawFountain(ctx,x,y,size){
+    ctx.save(); ctx.translate(x,y);
+    const r = size*0.36;
+    ctx.fillStyle = '#B7C4D9';
+    ctx.beginPath(); ctx.ellipse(0,-r*0.06,r,r*0.32,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#8ED1FC';
+    ctx.beginPath(); ctx.ellipse(0,-r*0.1,r*0.82,r*0.24,0,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#B7C4D9'; ctx.fillRect(-r*0.08,-r*0.9,r*0.16,r*0.82);
+    ctx.fillStyle = '#DDEEFB';
+    ctx.beginPath(); ctx.ellipse(0,-r*0.92,r*0.16,r*0.08,0,0,Math.PI*2); ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.8)'; ctx.lineWidth = size*0.02;
+    [-0.3,0,0.3].forEach(off=>{
+      ctx.beginPath(); ctx.moveTo(off*r,-r*0.88); ctx.quadraticCurveTo(off*r*1.6,-r*0.5,off*r*0.5,-r*0.15); ctx.stroke();
+    });
+    ctx.restore();
+  }
+
   function drawSticker(ctx,s,selectedId){
     const size = s.size * s.scale;
     switch(s.type){
@@ -441,6 +619,14 @@
       case 'balloon': drawBalloon(ctx,s.x,s.y,size,s.color); break;
       case 'kite': drawKite(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
       case 'butterfly': drawButterfly(ctx,s.x,s.y,size,s.color); break;
+      case 'house': drawHouse(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
+      case 'cottage': drawCottage(ctx,s.x,s.y,size,s.color||'#FFD166'); break;
+      case 'tower': drawTower(ctx,s.x,s.y,size,s.color||'#4FA8E0'); break;
+      case 'shop': drawShop(ctx,s.x,s.y,size,s.color||'#FF6F59'); break;
+      case 'tree': drawTree(ctx,s.x,s.y,size); break;
+      case 'lamp': drawLamp(ctx,s.x,s.y,size); break;
+      case 'car': drawCar(ctx,s.x,s.y,size,s.color||'#4FA8E0'); break;
+      case 'fountain': drawFountain(ctx,s.x,s.y,size); break;
     }
     if(s.id===selectedId){
       ctx.save(); ctx.setLineDash([6,6]); ctx.strokeStyle = 'rgba(34,38,75,0.5)'; ctx.lineWidth=2;
@@ -737,14 +923,14 @@
         if(s.scale<1) s.scale = Math.min(1, s.scale+0.12);
         drawSticker(ctx,s,selectedId);
       });
-      drawGround(ctx,rect,state.groundColor);
+      drawGround(ctx,rect,state.groundColor,state.groundStyle);
 
       const wobbleAmp = state.avatar.silly ? 6 : 2.5;
       const wobble = Math.sin(frame*0.045)*wobbleAmp;
       const avScale = Math.min(rect.width, rect.height) / 340;
       const groundH = rect.height*0.16;
-      const groundYAtCenter = rect.height - groundH*1.3;
-      drawAvatarFull(ctx, rect.width*0.5, groundYAtCenter+groundH*0.4, avScale, state.avatar, wobble);
+      const groundYAtCenter = state.groundStyle==='flat' ? rect.height - groundH*0.55 : rect.height - groundH*1.3 + groundH*0.4;
+      drawAvatarFull(ctx, rect.width*0.5, groundYAtCenter, avScale, state.avatar, wobble);
     }
     resize();
     new ResizeObserver(resize).observe(canvas);
@@ -758,6 +944,7 @@
   let draggingId = null;
   let dragOffset = {x:0,y:0};
   let groundColor = '#6FBE44';
+  let groundStyle = 'hill';
   const avatars = [0,1,2].map(i=>{
     const a = defaultAvatar();
     a.hairColor = i % HAIR_COLORS.length;
@@ -782,11 +969,17 @@
 
   function addSticker(type){
     const rect = getRect();
-    const s = { id: 'p'+(nextId++), type, x: rect.width/2, y: rect.height*0.32,
-      size: Math.min(rect.width, rect.height) * 0.16, scale: 0, color: null };
+    const isCity = CITY_TYPES.includes(type);
+    const size = Math.min(rect.width, rect.height) * (isCity ? 0.13 : 0.16);
+    const groundH = rect.height*0.16;
+    const groundY = groundStyle==='flat' ? rect.height - groundH*0.55 : rect.height - groundH*1.3 + groundH*0.4;
+    const x = isCity ? rect.width*0.5 + (Math.random()-0.5)*rect.width*0.4 : rect.width/2;
+    const y = isCity ? groundY - size*0.15 : rect.height*0.32;
+    const s = { id: 'p'+(nextId++), type, x, y, size, scale: 0, color: null };
     if(type==='balloon') s.color = balloonColors[nextId % balloonColors.length];
     if(type==='bird') s.color = birdColors[nextId % birdColors.length];
     if(type==='butterfly') s.color = butterflyColors[nextId % butterflyColors.length];
+    if(['house','cottage','tower','shop','car'].includes(type)) s.color = buildingColors[nextId % buildingColors.length];
     stickers.push(s); selectedId = s.id; scheduleSync(); return s;
   }
   function hitTest(px,py){
@@ -798,7 +991,7 @@
   }
   function positionToolbar(){
     const sel = stickers.find(s=>s.id===selectedId);
-    if(!sel || mode!=='sky'){ toolbar.classList.add('hidden'); return; }
+    if(!sel || (mode!=='sky' && mode!=='city')){ toolbar.classList.add('hidden'); return; }
     toolbar.classList.remove('hidden');
     const topOffset = sel.y - (sel.size*sel.scale*0.72) - 10;
     toolbar.style.left = sel.x + 'px';
@@ -807,7 +1000,7 @@
   function pointerPos(e){ const rect = getRect(); return { x: e.clientX-rect.left, y: e.clientY-rect.top }; }
 
   skyCanvas.addEventListener('pointerdown',(e)=>{
-    if(mode!=='sky') return;
+    if(mode!=='sky' && mode!=='city') return;
     const p = pointerPos(e); const hit = hitTest(p.x,p.y);
     if(hit){ selectedId = hit.id; draggingId = hit.id; dragOffset.x = p.x-hit.x; dragOffset.y = p.y-hit.y;
       stickers = stickers.filter(s=>s.id!==hit.id).concat(hit);
@@ -815,7 +1008,7 @@
     e.preventDefault();
   });
   skyCanvas.addEventListener('pointermove',(e)=>{
-    if(mode!=='sky' || draggingId==null) return;
+    if((mode!=='sky' && mode!=='city') || draggingId==null) return;
     const p = pointerPos(e); const s = stickers.find(s=>s.id===draggingId);
     if(s){ s.x = p.x-dragOffset.x; s.y = p.y-dragOffset.y; }
   });
@@ -835,15 +1028,33 @@
   document.getElementById('dock').addEventListener('click',(e)=>{
     const btn = e.target.closest('.dock-btn'); if(btn) addSticker(btn.dataset.type);
   });
-  document.getElementById('groundSwatches').addEventListener('click',(e)=>{
-    const sw = e.target.closest('.swatch'); if(!sw) return;
-    groundColor = sw.dataset.color;
-    document.querySelectorAll('#groundSwatches .swatch').forEach(el=>el.classList.remove('active'));
-    sw.classList.add('active'); scheduleSync();
+  document.getElementById('cityDock').addEventListener('click',(e)=>{
+    const btn = e.target.closest('.dock-btn'); if(btn) addSticker(btn.dataset.type);
+  });
+  document.querySelectorAll('.ground-swatches').forEach(row=>{
+    row.addEventListener('click',(e)=>{
+      const sw = e.target.closest('.swatch'); if(!sw) return;
+      groundColor = sw.dataset.color;
+      document.querySelectorAll('.ground-swatches .swatch').forEach(el=>{
+        el.classList.toggle('active', el.dataset.color===groundColor);
+      });
+      scheduleSync();
+    });
+  });
+  document.querySelectorAll('.ground-style-toggle').forEach(row=>{
+    row.addEventListener('click',(e)=>{
+      const btn = e.target.closest('.style-btn'); if(!btn) return;
+      groundStyle = btn.dataset.style;
+      document.querySelectorAll('.style-btn').forEach(b=>b.classList.toggle('active', b.dataset.style===groundStyle));
+      scheduleSync();
+    });
   });
   timeSlider.addEventListener('input', scheduleSync);
   document.getElementById('clearSkyBtn').addEventListener('click',()=>{
-    stickers = []; selectedId = null; timeSlider.value = 28; scheduleSync();
+    stickers = stickers.filter(s=>!SKY_TYPES.includes(s.type)); selectedId = null; timeSlider.value = 28; scheduleSync();
+  });
+  document.getElementById('clearCityBtn').addEventListener('click',()=>{
+    stickers = stickers.filter(s=>!CITY_TYPES.includes(s.type)); selectedId = null; scheduleSync();
   });
   document.getElementById('saveBtn').addEventListener('click',()=>{
     selectedId = null;
@@ -858,8 +1069,9 @@
     mode = m;
     document.querySelectorAll('.mode-tab').forEach(t=>t.classList.toggle('active', t.dataset.mode===m));
     document.getElementById('skyPanel').classList.toggle('active', mode==='sky');
+    document.getElementById('cityPanel').classList.toggle('active', mode==='city');
     document.getElementById('avatarPanel').classList.toggle('active', mode==='avatar');
-    if(mode!=='sky'){ selectedId=null; }
+    if(mode==='avatar'){ selectedId=null; }
   }
   document.querySelectorAll('.mode-tab').forEach(tab=>{
     tab.addEventListener('click',()=> setMode(tab.dataset.mode));
@@ -1044,7 +1256,7 @@
   function scheduleSync(){ clearTimeout(syncTimer); syncTimer = setTimeout(pushMyState, 300); }
   function pushMyState(){
     if(!roomCode || !roomChannel) return;
-    roomChannel.track({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), lastSeen: Date.now() });
+    roomChannel.track({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar(), lastSeen: Date.now() });
   }
   function upsertPeerPanel(id, state){
     let entry = peerPanels.get(id);
@@ -1132,7 +1344,7 @@
 
   // ================= master render loop =================
   function loop(){
-    mineRenderer.render({ stickers, groundColor, timeOfDay: Number(timeSlider.value), avatar: curAvatar() }, selectedId);
+    mineRenderer.render({ stickers, groundColor, groundStyle, timeOfDay: Number(timeSlider.value), avatar: curAvatar() }, selectedId);
     peerPanels.forEach(entry=>{ if(entry.state) entry.renderer.render(entry.state, null); });
     positionToolbar();
     requestAnimationFrame(loop);
@@ -1141,4 +1353,4 @@
 })();
 </script>
 </body>
-</html>S
+</html>
