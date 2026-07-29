@@ -1124,9 +1124,16 @@
         }
       );
 
+      addTapAction(
+        '.together',
+        () => {
+          navigateTo('together.html');
+        }
+      );
+
       document
         .querySelectorAll(
-          '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city):not(.music)'
+          '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city):not(.music):not(.together)'
         )
         .forEach(button => {
           button.addEventListener(
