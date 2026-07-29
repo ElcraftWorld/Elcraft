@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#db6ca8">
+<title>ELCraft | Writing Studio</title>
+<style>
+:root{
+  --ink:#2d315a;--pink:#db6ca8;--pink2:#f39bc7;--purple:#7152c8;--gold:#ffd65a;
+  --paper:#fffdf6;--line:#e6dff2;--green:#65bd4c;--shadow:0 20px 55px rgba(41,34,87,.23)
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  background:
+    radial-gradient(circle at 15% 8%,rgba(255,255,255,.85),transparent 18%),
+    radial-gradient(circle at 87% 12%,rgba(255,255,255,.75),transparent 20%),
+    linear-gradient(#9ce1ff 0 31%,#e9f8ff 31% 48%,#f8d9e9 48% 100%);
+}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow-x:hidden}
+.cloud{position:fixed;z-index:0;opacity:.75;animation:drift 22s linear infinite;pointer-events:none}
+.cloud.a{top:75px;left:-160px;font-size:82px}.cloud.b{top:170px;left:-220px;font-size:62px;animation-delay:-10s}
+@keyframes drift{to{transform:translateX(calc(100vw + 380px))}}
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:10px 14px;background:rgba(255,255,255,.95);box-shadow:0 8px 24px rgba(41,34,87,.17);
+  backdrop-filter:blur(10px)
+}
+.left,.stats{display:flex;align-items:center;gap:10px}
+.back,.sound,.portfolio-btn{
+  border:0;border-radius:15px;padding:10px 13px;background:#f2e9ff;color:#6544a5;font-weight:1000;
+  box-shadow:0 4px 0 #d8c8ec
+}
+.logo{
+  font-size:clamp(22px,3vw,39px);font-weight:1000;color:#ffda4d;
+  text-shadow:-2px -2px 0 #7f3e91,2px -2px 0 #7f3e91,-2px 2px 0 #7f3e91,2px 2px 0 #7f3e91,0 5px 0 #562d72
+}
+.stat{padding:9px 12px;border-radius:999px;background:#fff4c7;color:#604882;font-weight:1000}
+main{position:relative;z-index:2;width:min(1240px,100%);margin:auto;padding:16px}
+.hero{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:18px;padding:20px;
+  border:4px solid #fff;border-radius:32px;background:linear-gradient(135deg,rgba(255,255,255,.98),rgba(255,236,247,.97));
+  box-shadow:var(--shadow)
+}
+.teacher{font-size:90px;animation:bob 2.2s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(-7px) rotate(-2deg)}}
+.hero h1{margin:0;color:#a4427c;font-size:clamp(31px,4vw,51px)}
+.hero p{margin:7px 0 0;color:#757e9c;font-weight:900}
+.today{
+  min-width:180px;padding:14px;border-radius:22px;text-align:center;color:#fff;font-weight:1000;
+  background:linear-gradient(#db6ca8,#a94d86)
+}
+.studio{
+  margin-top:16px;padding:18px;border-radius:30px;background:rgba(255,255,255,.95);
+  border:4px solid #fff;box-shadow:var(--shadow)
+}
+.heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:13px}
+.heading h2{margin:0;color:#6d459e;font-size:29px}.heading span{font-weight:1000;color:#747b98}
+.stations{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.station{
+  position:relative;min-height:190px;border:0;border-radius:25px;padding:18px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(42,38,83,.23);transition:.18s;overflow:hidden
+}
+.station:hover{transform:translateY(-4px)}.station:active{transform:translateY(4px);box-shadow:0 3px 0 rgba(42,38,83,.23)}
+.station .icon{font-size:51px;display:block}.station strong{display:block;font-size:23px;margin-top:8px}
+.station small{display:block;margin-top:6px;font-weight:900;line-height:1.35;opacity:.96}
+.station .count{
+  position:absolute;right:12px;bottom:11px;padding:6px 9px;border-radius:999px;
+  background:rgba(255,255,255,.9);color:#5c438b;font-size:12px;font-weight:1000
+}
+.s1{background:linear-gradient(135deg,#7658d2,#a06de5)}.s2{background:linear-gradient(135deg,#2e89c7,#55b8d8)}
+.s3{background:linear-gradient(135deg,#dc688d,#ef906e)}.s4{background:linear-gradient(135deg,#2b9c79,#63c96b)}
+.s5{background:linear-gradient(135deg,#d99130,#eabb48)}.s6{background:linear-gradient(135deg,#8c4bb9,#d55da3)}
+.s7{background:linear-gradient(135deg,#4666c8,#7699ea)}.s8{background:linear-gradient(135deg,#c25576,#ec7997)}
+.s9{background:linear-gradient(135deg,#577d43,#81b74f)}
+.stage{
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(25,23,62,.72);backdrop-filter:blur(9px)
+}
+.stage.show{display:flex}
+.modal{
+  width:min(850px,100%);max-height:93vh;overflow:auto;padding:22px;border-radius:31px;
+  background:#fff;border:4px solid #fff;box-shadow:0 30px 90px rgba(15,12,45,.47)
+}
+.modal-top{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.modal-top h2{margin:0;color:#70459f;font-size:31px}
+.close{border:0;border-radius:14px;padding:10px 13px;background:#eee8f8;color:#624994;font-weight:1000}
+.activity{margin-top:16px;padding:20px;border:3px solid #eadff1;border-radius:24px;background:#fffdf8}
+.prompt{text-align:center;font-size:25px;font-weight:1000;color:#594082;margin:8px 0 16px}
+.big-letter{text-align:center;font-size:110px;line-height:1;font-weight:1000;color:#db6ca8;text-shadow:3px 3px 0 #ffd9ea}
+.trace-canvas{display:block;width:min(560px,100%);height:250px;margin:auto;border:4px dashed #d7c5e8;border-radius:22px;background:#fff}
+.controls{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:15px}
+.action{border:0;border-radius:16px;padding:13px 17px;font-weight:1000}
+.primary{background:linear-gradient(#8bd84d,#5bad2d);color:#fff;box-shadow:0 5px 0 #438b1d}
+.secondary{background:#eee8ff;color:#5d4397}.pink{background:#ffe4f1;color:#a64077}.gold{background:#fff1bc;color:#835b16}
+.choice-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.choice{
+  border:3px solid #e4ddf1;border-radius:18px;padding:18px;background:#faf9ff;color:#523e84;
+  font-size:22px;font-weight:1000
+}
+.choice.correct{background:#eaffdf;border-color:#7dca61}.choice.wrong{background:#ffe8ea;border-color:#ed8c95}
+.letter-bank,.word-bank{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin:16px 0}
+.tile{
+  min-width:58px;border:3px solid #ddd4ef;border-radius:16px;padding:13px;background:#f7f3ff;color:#614791;
+  font-size:24px;font-weight:1000;box-shadow:0 4px 0 #d1c4e8
+}
+.answer-line{
+  min-height:70px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;
+  border:4px dashed #d9c8e8;border-radius:20px;padding:12px;background:#fff
+}
+.text-input,textarea,select{
+  width:100%;border:3px solid #ddd6eb;border-radius:17px;padding:13px;background:#fff;color:#35406b;font-weight:900
+}
+textarea{min-height:170px;resize:vertical;line-height:1.5}
+.book-builder{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.book-cover{
+  min-height:235px;border-radius:24px;display:grid;place-items:center;text-align:center;padding:20px;color:#fff;
+  background:linear-gradient(135deg,#7152c8,#dc6ca8);box-shadow:0 10px 0 rgba(47,35,82,.2)
+}
+.book-cover .cover-emoji{font-size:66px}.book-cover strong{display:block;font-size:27px}.book-cover span{font-weight:900}
+.saved-list{display:grid;gap:11px;margin-top:15px}
+.saved-item{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px;padding:13px;border-radius:18px;
+  background:#f7f3ff;border:2px solid #e4dcf1
+}
+.saved-item .emoji{font-size:38px}.saved-item strong{display:block;color:#5d438f}.saved-item small{font-weight:900;color:#7d84a0}
+.mini{border:0;border-radius:12px;padding:8px 10px;background:#eee7ff;color:#5f4691;font-weight:1000}
+.reward-note{margin-top:12px;padding:12px;border-radius:16px;background:#fff7d2;color:#735698;font-weight:1000;text-align:center}
+.portfolio-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}
+.port-card{padding:17px;border-radius:20px;background:#f6f2ff;text-align:center}
+.port-card strong{display:block;font-size:31px;color:#6244a7}.port-card span{font-weight:1000;color:#7780a1}
+.toast{
+  position:fixed;left:50%;bottom:24px;z-index:100;transform:translateX(-50%) translateY(140px);
+  padding:13px 19px;border-radius:999px;background:#14245c;color:#fff;font-weight:1000;transition:.3s;
+  box-shadow:0 12px 30px rgba(20,29,70,.3);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:90;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:850px){.stations{grid-template-columns:repeat(2,1fr)}.book-builder{grid-template-columns:1fr}}
+@media(max-width:600px){
+  main{padding:8px}.hero{grid-template-columns:auto 1fr}.today{grid-column:1/-1}.teacher{font-size:66px}
+  .stations,.choice-grid,.portfolio-grid{grid-template-columns:1fr}.stats .xp,.sound{display:none}
+  .modal{padding:16px}.station{min-height:175px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud a">☁️</div><div class="cloud b">☁️</div>
+  <header class="topbar">
+    <div class="left">
+      <button class="back" id="backBtn">← Academy</button>
+      <div class="logo">Writing Studio</div>
+    </div>
+    <div class="stats">
+      <button class="portfolio-btn" id="portfolioBtn">🗂️ Portfolio</button>
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <button class="sound" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="teacher">🪶</div>
+      <div>
+        <h1 id="hello">Welcome, Writer!</h1>
+        <p>Mrs. Quill says: choose anything you would like to practice or create.</p>
+      </div>
+      <div class="today">✏️ Today's Challenge<br><span id="dailyChallenge">Loading…</span></div>
+    </section>
+
+    <section class="studio">
+      <div class="heading"><h2>🎨 Choose a Writing Station</h2><span>Every station stays open</span></div>
+      <div class="stations" id="stations"></div>
+    </section>
+  </main>
+
+  <div class="stage" id="abcStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🔤 ABC Corner</h2><button class="close" data-close="abcStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt">Trace the letter with your mouse or finger.</div>
+        <div class="big-letter" id="traceLetter">A</div>
+        <canvas class="trace-canvas" id="traceCanvas" width="700" height="300"></canvas>
+        <div class="controls">
+          <button class="action secondary" id="clearTrace">Clear</button>
+          <button class="action gold" id="newLetter">New Letter</button>
+          <button class="action primary" id="finishTrace">I Traced It!</button>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="prompt" id="letterPrompt">Tap every letter A.</div>
+        <div class="choice-grid" id="letterChoices"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="wordStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🧩 Word Workshop</h2><button class="close" data-close="wordStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt" id="wordPrompt">Build the word.</div>
+        <div class="answer-line" id="wordAnswer"></div>
+        <div class="letter-bank" id="letterBank"></div>
+        <div class="controls">
+          <button class="action secondary" id="clearWord">Clear</button>
+          <button class="action primary" id="checkWord">Check Word</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="sentenceStage">
+    <div class="modal">
+      <div class="modal-top"><h2>📝 Sentence Station</h2><button class="close" data-close="sentenceStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt">Put the words in the correct order.</div>
+        <div class="answer-line" id="sentenceAnswer"></div>
+        <div class="word-bank" id="sentenceBank"></div>
+        <div class="controls">
+          <button class="action secondary" id="clearSentence">Clear</button>
+          <button class="action primary" id="checkSentence">Check Sentence</button>
+        </div>
+      </div>
+      <div class="activity">
+        <div class="prompt" id="punctuationPrompt">Choose the correct punctuation.</div>
+        <div class="choice-grid" id="punctuationChoices"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="storyStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🦄 Story Corner</h2><button class="close" data-close="storyStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt" id="storyPrompt"></div>
+        <input class="text-input" id="storyTitle" placeholder="Story title">
+        <textarea id="storyText" placeholder="Once upon a time..."></textarea>
+        <div class="controls">
+          <button class="action gold" id="newStoryPrompt">New Prompt</button>
+          <button class="action primary" id="saveStory">Save Story</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="journalStage">
+    <div class="modal">
+      <div class="modal-top"><h2>📔 Journal Desk</h2><button class="close" data-close="journalStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt" id="journalPrompt">Today I...</div>
+        <textarea id="journalText" placeholder="Write what happened today, how you feel, or something you learned."></textarea>
+        <div class="controls"><button class="action primary" id="saveJournal">Save Journal Entry</button></div>
+        <div class="reward-note">Journal entries stay in this browser and appear in the Writing Portfolio.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="poetryStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🌷 Poetry Garden</h2><button class="close" data-close="poetryStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt">Complete your poem.</div>
+        <textarea id="poemText">I see a __________ sky,
+A __________ bird flies by.
+The flowers __________ in the sun,
+Today will be full of __________.</textarea>
+        <div class="controls"><button class="action primary" id="savePoem">Save Poem</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="bookStage">
+    <div class="modal">
+      <div class="modal-top"><h2>📚 Create a Book</h2><button class="close" data-close="bookStage">✕ Close</button></div>
+      <div class="activity book-builder">
+        <div>
+          <input class="text-input" id="bookTitleInput" placeholder="Book title">
+          <select id="bookEmoji">
+            <option>🐉</option><option>🐶</option><option>🦄</option><option>🚀</option>
+            <option>🏰</option><option>🦕</option><option>🌈</option><option>🐬</option>
+          </select>
+          <textarea id="bookBody" placeholder="Write your book here. You can use several paragraphs."></textarea>
+          <div class="controls"><button class="action primary" id="publishBook">Publish to My Library</button></div>
+        </div>
+        <div class="book-cover">
+          <div>
+            <div class="cover-emoji" id="coverEmoji">🐉</div>
+            <strong id="coverTitle">My New Book</strong>
+            <span id="coverAuthor">by Writer</span>
+          </div>
+        </div>
+      </div>
+      <div class="reward-note">Published books appear on the “Written by Me” shelf in Reading Hall.</div>
+    </div>
+  </div>
+
+  <div class="stage" id="gameStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🎮 Writing Games</h2><button class="close" data-close="gameStage">✕ Close</button></div>
+      <div class="activity">
+        <div class="prompt" id="rhymePrompt">Which word rhymes with cat?</div>
+        <div class="choice-grid" id="rhymeChoices"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stage" id="portfolioStage">
+    <div class="modal">
+      <div class="modal-top"><h2>🗂️ Writing Portfolio</h2><button class="close" data-close="portfolioStage">✕ Close</button></div>
+      <div class="portfolio-grid">
+        <div class="port-card"><strong id="lettersCount">0</strong><span>Letters Practiced</span></div>
+        <div class="port-card"><strong id="wordsCount">0</strong><span>Words Built</span></div>
+        <div class="port-card"><strong id="sentencesCount">0</strong><span>Sentence Activities</span></div>
+        <div class="port-card"><strong id="piecesCount">0</strong><span>Saved Writing Pieces</span></div>
+        <div class="port-card"><strong id="booksCount">0</strong><span>Books Published</span></div>
+        <div class="port-card"><strong id="writingLevel">1</strong><span>Writing Level</span></div>
+      </div>
+      <div class="saved-list" id="savedWriting"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div><div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const KEYS={
+    name:'elcraft_child_name',coins:'elcraft_coins',profile:'elcraft_profile_v1',
+    school:'elcraft_school_v1',writing:'elcraft_writing_v1',books:'elcraft_child_books_v1'
+  };
+  const today=new Date().toLocaleDateString('en-CA');
+  const childName=localStorage.getItem(KEYS.name)||'Writer';
+  let soundOn=true;
+
+  let profile={coins:Number(localStorage.getItem(KEYS.coins)||100),xp:0,totalXp:0,level:1,achievements:[],schoolCoinsEarned:0};
+  let school={completedByDate:{},dailyRewardDates:[],lessonTotals:{reading:0,writing:0,math:0,science:0,discovery:0,music:0},lastSchoolDate:'',streak:0};
+  let writing={
+    lettersPracticed:[],wordsBuilt:0,sentenceActivities:0,rewardedByDate:{},
+    stories:[],journals:[],poems:[],gamesWon:0,writingLevel:1
+  };
+  let childBooks=[];
+
+  try{const x=JSON.parse(localStorage.getItem(KEYS.profile));if(x)profile={...profile,...x}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.school));if(x)school={...school,...x,lessonTotals:{...school.lessonTotals,...(x.lessonTotals||{})}}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.writing));if(x)writing={...writing,...x}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.books));if(Array.isArray(x))childBooks=x}catch{}
+
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const words=[
+    {word:'CAT',emoji:'🐱'},{word:'DOG',emoji:'🐶'},{word:'SUN',emoji:'☀️'},
+    {word:'MOON',emoji:'🌙'},{word:'BOOK',emoji:'📘'},{word:'FISH',emoji:'🐟'}
+  ];
+  const sentences=[
+    ['The','dog','ran','.'],['I','see','a','cat','.'],['The','sun','is','bright','.'],
+    ['We','read','a','book','.']
+  ];
+  const storyPrompts=[
+    'Write a story about a dragon who is afraid of bubbles.',
+    'Write a story about a dinosaur’s first day at school.',
+    'Write a story about a castle hidden in the clouds.',
+    'Write a story about a puppy who finds a treasure map.',
+    'Write a story about traveling to a rainbow planet.'
+  ];
+  const journals=['Today I...','Something that made me smile was...','I learned...','I felt proud when...','Tomorrow I hope...'];
+  const rhymeGames=[
+    {word:'cat',answers:['hat','sun','dog'],correct:0},
+    {word:'moon',answers:['spoon','tree','book'],correct:0},
+    {word:'cake',answers:['lake','fish','star'],correct:0},
+    {word:'bug',answers:['rug','bell','kite'],correct:0}
+  ];
+  const stations=[
+    {id:'abc',icon:'🔤',name:'ABC Corner',desc:'Trace letters, find letters, and practice the alphabet.',className:'s1'},
+    {id:'word',icon:'🧩',name:'Word Workshop',desc:'Build complete words from mixed-up letters.',className:'s2'},
+    {id:'sentence',icon:'📝',name:'Sentence Station',desc:'Arrange words and choose punctuation.',className:'s3'},
+    {id:'story',icon:'🦄',name:'Story Corner',desc:'Create stories from imaginative prompts.',className:'s4'},
+    {id:'journal',icon:'📔',name:'Journal Desk',desc:'Save thoughts, feelings, and daily memories.',className:'s5'},
+    {id:'poetry',icon:'🌷',name:'Poetry Garden',desc:'Play with descriptive words and rhythm.',className:'s6'},
+    {id:'book',icon:'📚',name:'Create a Book',desc:'Publish a child-made book into Reading Hall.',className:'s7'},
+    {id:'game',icon:'🎮',name:'Writing Games',desc:'Practice rhymes and word skills through games.',className:'s8'},
+    {id:'portfolio',icon:'🗂️',name:'Writing Portfolio',desc:'See saved work and writing progress.',className:'s9'}
+  ];
+
+  let traceLetter='A', drawing=false, currentWord=null, builtLetters=[], currentSentence=null, builtSentence=[];
+  let currentStoryPrompt='', currentRhyme=null;
+
+  function save(){
+    localStorage.setItem(KEYS.profile,JSON.stringify(profile));
+    localStorage.setItem(KEYS.school,JSON.stringify(school));
+    localStorage.setItem(KEYS.writing,JSON.stringify(writing));
+    localStorage.setItem(KEYS.books,JSON.stringify(childBooks));
+    localStorage.setItem(KEYS.coins,String(profile.coins));
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');el.textContent=message;el.classList.add('show');
+    clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),2400);
+  }
+  function beep(freq=540){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)(),o=ctx.createOscillator(),g=ctx.createGain();
+      o.connect(g);g.connect(ctx.destination);o.frequency.value=freq;
+      g.gain.setValueAtTime(.04,ctx.currentTime);g.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.15);
+      o.start();o.stop(ctx.currentTime+.16);
+    }catch{}
+  }
+  function confetti(){
+    const box=document.querySelector('#confetti');box.innerHTML='';
+    ['✏️','⭐','✨','📚','🎉'].forEach(symbol=>{for(let i=0;i<6;i++){
+      const p=document.createElement('i');p.textContent=symbol;p.style.left=(Math.random()*100)+'%';
+      p.style.fontSize=(16+Math.random()*22)+'px';p.style.animationDelay=(Math.random()*.55)+'s';box.append(p);
+    }});
+    setTimeout(()=>box.innerHTML='',2300);
+  }
+
+  function reward(taskId,coins=8,xp=15){
+    if(!writing.rewardedByDate[today])writing.rewardedByDate[today]=[];
+    if(writing.rewardedByDate[today].includes(taskId)){
+      toast('Practice saved! Today’s reward for this activity was already earned.');
+      save();render();return;
+    }
+    writing.rewardedByDate[today].push(taskId);
+    profile.coins+=coins;profile.xp+=xp;profile.totalXp=(profile.totalXp||0)+xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+coins;
+    school.lessonTotals.writing=(school.lessonTotals.writing||0)+1;
+    if(!profile.achievements.includes('young-writer'))profile.achievements.push('young-writer');
+    save();render();confetti();toast(`Wonderful writing! +${coins} coins and +${xp} XP`);
+  }
+
+  function countFor(id){
+    if(id==='abc')return writing.lettersPracticed.length;
+    if(id==='word')return writing.wordsBuilt;
+    if(id==='sentence')return writing.sentenceActivities;
+    if(id==='story')return writing.stories.length;
+    if(id==='journal')return writing.journals.length;
+    if(id==='poetry')return writing.poems.length;
+    if(id==='book')return childBooks.length;
+    if(id==='game')return writing.gamesWon;
+    return writing.stories.length+writing.journals.length+writing.poems.length+childBooks.length;
+  }
+
+  function openStation(id){
+    if(id==='portfolio'){openPortfolio();return}
+    document.querySelector('#'+id+'Stage').classList.add('show');
+    if(id==='abc'){newTraceLetter();newLetterHunt()}
+    if(id==='word')newWord();
+    if(id==='sentence'){newSentence();newPunctuation()}
+    if(id==='story')newStoryPrompt();
+    if(id==='journal')document.querySelector('#journalPrompt').textContent=journals[Math.floor(Math.random()*journals.length)];
+    if(id==='game')newRhyme();
+    beep();
+  }
+
+  function render(){
+    document.querySelector('#hello').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins;
+    document.querySelector('#xp').textContent=profile.xp;
+    document.querySelector('#dailyChallenge').textContent=storyPrompts[[...today].reduce((a,c)=>a+c.charCodeAt(0),0)%storyPrompts.length].replace('Write a story about ','');
+    const box=document.querySelector('#stations');box.innerHTML='';
+    stations.forEach(s=>{
+      const b=document.createElement('button');b.className=`station ${s.className}`;
+      b.innerHTML=`<span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${s.desc}</small><span class="count">${countFor(s.id)} completed</span>`;
+      b.onclick=()=>openStation(s.id);box.append(b);
+    });
+    updateBookPreview();
+    save();
+  }
+
+  // ABC tracing
+  const canvas=document.querySelector('#traceCanvas'),ctx=canvas.getContext('2d');
+  function canvasPoint(e){
+    const r=canvas.getBoundingClientRect(),p=e.touches?e.touches[0]:e;
+    return {x:(p.clientX-r.left)*(canvas.width/r.width),y:(p.clientY-r.top)*(canvas.height/r.height)};
+  }
+  function startDraw(e){drawing=true;const p=canvasPoint(e);ctx.beginPath();ctx.moveTo(p.x,p.y);e.preventDefault()}
+  function moveDraw(e){if(!drawing)return;const p=canvasPoint(e);ctx.lineWidth=14;ctx.lineCap='round';ctx.strokeStyle='#db6ca8';ctx.lineTo(p.x,p.y);ctx.stroke();e.preventDefault()}
+  function stopDraw(){drawing=false}
+  ['mousedown','touchstart'].forEach(ev=>canvas.addEventListener(ev,startDraw,{passive:false}));
+  ['mousemove','touchmove'].forEach(ev=>canvas.addEventListener(ev,moveDraw,{passive:false}));
+  ['mouseup','mouseleave','touchend'].forEach(ev=>canvas.addEventListener(ev,stopDraw));
+  function clearCanvas(){ctx.clearRect(0,0,canvas.width,canvas.height)}
+  function newTraceLetter(){traceLetter=letters[Math.floor(Math.random()*letters.length)];document.querySelector('#traceLetter').textContent=traceLetter;clearCanvas()}
+  function newLetterHunt(){
+    const target=letters[Math.floor(Math.random()*letters.length)];
+    document.querySelector('#letterPrompt').textContent=`Tap every letter ${target}.`;
+    const options=[target,target,letters[Math.floor(Math.random()*26)],letters[Math.floor(Math.random()*26)],target,letters[Math.floor(Math.random()*26)]].sort(()=>Math.random()-.5);
+    const grid=document.querySelector('#letterChoices');grid.innerHTML='';
+    options.forEach(letter=>{
+      const b=document.createElement('button');b.className='choice';b.textContent=letter;
+      b.onclick=()=>{
+        if(letter===target){b.classList.add('correct');if(!writing.lettersPracticed.includes(target))writing.lettersPracticed.push(target);reward('letter-hunt-'+target,4,8)}
+        else{b.classList.add('wrong');toast(`Look for ${target}.`)}
+      };grid.append(b);
+    });
+  }
+
+  // Word builder
+  function newWord(){
+    currentWord=words[Math.floor(Math.random()*words.length)];builtLetters=[];
+    document.querySelector('#wordPrompt').textContent=`${currentWord.emoji} Build the word ${currentWord.word}.`;
+    renderWordBuilder();
+  }
+  function renderWordBuilder(){
+    const answer=document.querySelector('#wordAnswer'),bank=document.querySelector('#letterBank');answer.innerHTML='';bank.innerHTML='';
+    builtLetters.forEach((letter,index)=>{
+      const b=document.createElement('button');b.className='tile';b.textContent=letter;b.onclick=()=>{builtLetters.splice(index,1);renderWordBuilder()};answer.append(b)
+    });
+    currentWord.word.split('').sort(()=>Math.random()-.5).forEach(letter=>{
+      const used=builtLetters.filter(x=>x===letter).length;
+      const total=currentWord.word.split('').filter(x=>x===letter).length;
+      const available=total-used;
+      for(let i=0;i<available;i++){
+        const b=document.createElement('button');b.className='tile';b.textContent=letter;b.onclick=()=>{builtLetters.push(letter);renderWordBuilder()};bank.append(b)
+      }
+    });
+  }
+
+  // Sentence
+  function newSentence(){currentSentence=sentences[Math.floor(Math.random()*sentences.length)];builtSentence=[];renderSentence()}
+  function renderSentence(){
+    const answer=document.querySelector('#sentenceAnswer'),bank=document.querySelector('#sentenceBank');answer.innerHTML='';bank.innerHTML='';
+    builtSentence.forEach((word,index)=>{
+      const b=document.createElement('button');b.className='tile';b.textContent=word;b.onclick=()=>{builtSentence.splice(index,1);renderSentence()};answer.append(b)
+    });
+    currentSentence.forEach((word,index)=>{
+      const used=builtSentence.filter(x=>x===word).length,total=currentSentence.filter(x=>x===word).length;
+      if(used<total){const b=document.createElement('button');b.className='tile';b.textContent=word;b.onclick=()=>{builtSentence.push(word);renderSentence()};bank.append(b)}
+    });
+  }
+  function newPunctuation(){
+    const items=[
+      {text:'I like pizza',answer:'.'},{text:'Where is my book',answer:'?'},{text:'That is amazing',answer:'!'}
+    ],item=items[Math.floor(Math.random()*items.length)];
+    document.querySelector('#punctuationPrompt').textContent=`${item.text} Choose the ending.`;
+    const grid=document.querySelector('#punctuationChoices');grid.innerHTML='';
+    ['.','?','!'].forEach(mark=>{
+      const b=document.createElement('button');b.className='choice';b.textContent=mark;
+      b.onclick=()=>{if(mark===item.answer){b.classList.add('correct');writing.sentenceActivities++;reward('punctuation-'+item.text,5,10)}
+        else{b.classList.add('wrong');toast('Try another punctuation mark.')}};grid.append(b)
+    });
+  }
+
+  function newStoryPrompt(){currentStoryPrompt=storyPrompts[Math.floor(Math.random()*storyPrompts.length)];document.querySelector('#storyPrompt').textContent=currentStoryPrompt}
+
+  function newRhyme(){
+    currentRhyme=rhymeGames[Math.floor(Math.random()*rhymeGames.length)];
+    document.querySelector('#rhymePrompt').textContent=`Which word rhymes with ${currentRhyme.word}?`;
+    const grid=document.querySelector('#rhymeChoices');grid.innerHTML='';
+    currentRhyme.answers.forEach((answer,index)=>{
+      const b=document.createElement('button');b.className='choice';b.textContent=answer;
+      b.onclick=()=>{if(index===currentRhyme.correct){b.classList.add('correct');writing.gamesWon++;reward('rhyme-'+currentRhyme.word,5,10)}
+        else{b.classList.add('wrong');toast('Listen to the ending sounds and try again.')}};grid.append(b)
+    });
+  }
+
+  function openPortfolio(){
+    const pieces=[
+      ...writing.stories.map(x=>({...x,type:'Story',emoji:'🦄'})),
+      ...writing.journals.map(x=>({...x,title:x.title||'Journal Entry',type:'Journal',emoji:'📔'})),
+      ...writing.poems.map(x=>({...x,title:x.title||'My Poem',type:'Poem',emoji:'🌷'})),
+      ...childBooks.map(x=>({...x,text:x.body,title:x.title,type:'Published Book',emoji:x.emoji||'📘'}))
+    ].sort((a,b)=>(b.createdAt||'').localeCompare(a.createdAt||''));
+    document.querySelector('#lettersCount').textContent=writing.lettersPracticed.length;
+    document.querySelector('#wordsCount').textContent=writing.wordsBuilt;
+    document.querySelector('#sentencesCount').textContent=writing.sentenceActivities;
+    document.querySelector('#piecesCount').textContent=writing.stories.length+writing.journals.length+writing.poems.length;
+    document.querySelector('#booksCount').textContent=childBooks.length;
+    writing.writingLevel=Math.max(1,Math.floor((writing.wordsBuilt+writing.sentenceActivities+pieces.length)/5)+1);
+    document.querySelector('#writingLevel').textContent=writing.writingLevel;
+    const list=document.querySelector('#savedWriting');list.innerHTML='';
+    if(!pieces.length)list.innerHTML='<div class="reward-note">Saved stories, journals, poems, and books will appear here.</div>';
+    pieces.forEach(p=>{
+      const row=document.createElement('div');row.className='saved-item';
+      row.innerHTML=`<div class="emoji">${p.emoji}</div><div><strong>${p.title}</strong><small>${p.type} • ${(p.createdAt||'').slice(0,10)}</small></div><button class="mini">Read</button>`;
+      row.querySelector('button').onclick=()=>alert(`${p.title}\n\n${p.text||p.body||''}`);list.append(row)
+    });
+    save();document.querySelector('#portfolioStage').classList.add('show');
+  }
+
+  function updateBookPreview(){
+    document.querySelector('#coverEmoji').textContent=document.querySelector('#bookEmoji').value;
+    document.querySelector('#coverTitle').textContent=document.querySelector('#bookTitleInput').value.trim()||'My New Book';
+    document.querySelector('#coverAuthor').textContent=`by ${childName}`;
+  }
+
+  document.querySelector('#clearTrace').onclick=clearCanvas;
+  document.querySelector('#newLetter').onclick=newTraceLetter;
+  document.querySelector('#finishTrace').onclick=()=>{
+    if(!writing.lettersPracticed.includes(traceLetter))writing.lettersPracticed.push(traceLetter);
+    reward('trace-'+traceLetter,5,10);newTraceLetter()
+  };
+  document.querySelector('#clearWord').onclick=()=>{builtLetters=[];renderWordBuilder()};
+  document.querySelector('#checkWord').onclick=()=>{
+    if(builtLetters.join('')===currentWord.word){writing.wordsBuilt++;reward('word-'+currentWord.word,6,12);newWord()}
+    else{toast('The letters are not in the right order yet.');beep(220)}
+  };
+  document.querySelector('#clearSentence').onclick=()=>{builtSentence=[];renderSentence()};
+  document.querySelector('#checkSentence').onclick=()=>{
+    if(builtSentence.join(' ')===currentSentence.join(' ')){writing.sentenceActivities++;reward('sentence-'+currentSentence.join('-'),7,14);newSentence()}
+    else{toast('Try moving the words into a complete sentence.');beep(220)}
+  };
+  document.querySelector('#newStoryPrompt').onclick=newStoryPrompt;
+  document.querySelector('#saveStory').onclick=()=>{
+    const title=document.querySelector('#storyTitle').value.trim(),text=document.querySelector('#storyText').value.trim();
+    if(!title||text.length<10){toast('Add a title and a little more to the story.');return}
+    writing.stories.push({id:'story-'+Date.now(),title,text,prompt:currentStoryPrompt,createdAt:new Date().toISOString()});
+    document.querySelector('#storyTitle').value='';document.querySelector('#storyText').value='';reward('story-'+today,10,20)
+  };
+  document.querySelector('#saveJournal').onclick=()=>{
+    const text=document.querySelector('#journalText').value.trim();if(text.length<5){toast('Write a little more before saving.');return}
+    writing.journals.push({id:'journal-'+Date.now(),title:document.querySelector('#journalPrompt').textContent,text,createdAt:new Date().toISOString()});
+    document.querySelector('#journalText').value='';reward('journal-'+today,7,14)
+  };
+  document.querySelector('#savePoem').onclick=()=>{
+    const text=document.querySelector('#poemText').value.trim();if(text.length<10){toast('Add a few words to your poem.');return}
+    writing.poems.push({id:'poem-'+Date.now(),title:'My Poem',text,createdAt:new Date().toISOString()});reward('poem-'+today,8,16)
+  };
+  document.querySelector('#bookTitleInput').oninput=updateBookPreview;
+  document.querySelector('#bookEmoji').onchange=updateBookPreview;
+  document.querySelector('#publishBook').onclick=()=>{
+    const title=document.querySelector('#bookTitleInput').value.trim(),body=document.querySelector('#bookBody').value.trim();
+    if(!title||body.length<20){toast('Add a title and at least a few sentences to publish.');return}
+    childBooks.push({
+      id:'child-book-'+Date.now(),title,emoji:document.querySelector('#bookEmoji').value,
+      author:childName,body,createdAt:new Date().toISOString(),readCount:0
+    });
+    document.querySelector('#bookTitleInput').value='';document.querySelector('#bookBody').value='';updateBookPreview();
+    reward('publish-book-'+today,15,30);toast('📚 Your book was published to Reading Hall!')
+  };
+
+  document.querySelector('#portfolioBtn').onclick=openPortfolio;
+  document.querySelectorAll('[data-close]').forEach(b=>b.onclick=()=>document.querySelector('#'+b.dataset.close).classList.remove('show'));
+  document.querySelectorAll('.stage').forEach(stage=>stage.onclick=e=>{if(e.target===stage)stage.classList.remove('show')});
+  document.querySelector('#backBtn').onclick=()=>location.href='school.html';
+  document.querySelector('#soundBtn').onclick=()=>{soundOn=!soundOn;document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)beep()};
+
+  render();
+})();
+</script>
+</body>
+</html>
