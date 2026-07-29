@@ -1,0 +1,1407 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#f8fdff">
+
+  <title>ELCraft — Music Studio</title>
+
+  <style>
+    :root {
+      --purple: #6745b4;
+      --purple-dark: #513492;
+      --blue: #58bce9;
+      --pink: #ff78b8;
+      --yellow: #ffd65c;
+      --green: #7bcf55;
+      --ink: #30466f;
+      --panel: rgba(255, 255, 255, 0.95);
+      --header-height: 92px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      background: #6bcaf3;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      touch-action: manipulation;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .game-header {
+      position: relative;
+      z-index: 100;
+      flex: 0 0 auto;
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 13px 24px;
+      border-bottom: 4px solid rgba(78, 180, 220, 0.35);
+      background: rgba(248, 253, 255, 0.97);
+      box-shadow: 0 5px 16px rgba(45, 91, 145, 0.14);
+    }
+
+    .header-left {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .home-button {
+      flex: 0 0 auto;
+      min-width: 126px;
+      min-height: 52px;
+      border: 0;
+      border-radius: 999px;
+      padding: 11px 20px;
+      color: #6343ac;
+      background: #eee1ff;
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow:
+        0 5px 0 rgba(104, 70, 170, 0.18),
+        0 8px 18px rgba(71, 61, 132, 0.12);
+    }
+
+    .home-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(104, 70, 170, 0.18);
+    }
+
+    .title-icon {
+      flex: 0 0 auto;
+      font-size: clamp(35px, 3.5vw, 53px);
+      line-height: 1;
+      filter: drop-shadow(0 5px 4px rgba(50, 69, 115, 0.16));
+    }
+
+    .header-title-group {
+      min-width: 0;
+    }
+
+    .header-title-group h1 {
+      margin: 0;
+      color: #6544af;
+      font-size: clamp(27px, 3vw, 46px);
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .header-title-group p {
+      margin: 5px 0 0;
+      color: #526b9f;
+      font-size: clamp(12px, 1.15vw, 18px);
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .player-badge {
+      flex: 0 0 auto;
+      max-width: 280px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 16px 8px 9px;
+      overflow: hidden;
+      border-radius: 999px;
+      color: #6544af;
+      background: #f3e5ff;
+      font-size: clamp(14px, 1.25vw, 19px);
+      font-weight: 900;
+      white-space: nowrap;
+      box-shadow: 0 5px 14px rgba(99, 67, 172, 0.1);
+    }
+
+    .player-badge img {
+      display: none;
+      width: 44px;
+      height: 44px;
+      flex: 0 0 auto;
+      border: 3px solid #fff;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #fff;
+    }
+
+    .player-badge span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .studio {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 12%, rgba(255,255,255,.72) 0 3%, transparent 10%),
+        radial-gradient(circle at 84% 18%, rgba(255,255,255,.5) 0 2%, transparent 8%),
+        linear-gradient(to bottom, #72d2f6 0 42%, #9ce76e 42% 100%);
+    }
+
+    .studio::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.55) 0 3px, transparent 4px)
+        0 0 / 80px 72px;
+      opacity: .35;
+    }
+
+    .sun {
+      position: absolute;
+      top: 4%;
+      right: 6%;
+      width: clamp(62px, 7vw, 105px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #ffd85b;
+      box-shadow:
+        0 0 0 13px rgba(255, 224, 103, .28),
+        0 0 38px rgba(255, 216, 74, .7);
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .cloud {
+      position: absolute;
+      width: clamp(100px, 13vw, 190px);
+      height: clamp(34px, 4.3vw, 64px);
+      border-radius: 999px;
+      background: rgba(255,255,255,.92);
+      filter: drop-shadow(0 8px 8px rgba(42,107,159,.12));
+      pointer-events: none;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      left: 13%;
+      width: 42%;
+      aspect-ratio: 1;
+    }
+
+    .cloud::after {
+      right: 14%;
+      width: 54%;
+      aspect-ratio: 1;
+    }
+
+    .cloud.one {
+      top: 8%;
+      left: 7%;
+    }
+
+    .cloud.two {
+      top: 23%;
+      right: 14%;
+      transform: scale(.72);
+      opacity: .82;
+    }
+
+    .stage {
+      position: absolute;
+      left: 50%;
+      top: 5%;
+      width: min(74vw, 1040px);
+      height: 41%;
+      transform: translateX(-50%);
+      border: 7px solid rgba(255,255,255,.88);
+      border-radius: 40px 40px 28px 28px;
+      background:
+        linear-gradient(90deg, rgba(255,255,255,.13) 0 2px, transparent 2px 42px),
+        linear-gradient(#8d66d7, #6845b7);
+      box-shadow:
+        0 17px 0 rgba(71,47,133,.28),
+        0 24px 35px rgba(34,74,99,.28);
+      overflow: hidden;
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      height: 26%;
+      background: linear-gradient(#e6b95b, #ba7f37);
+      border-top: 5px solid rgba(255,255,255,.38);
+    }
+
+    .curtain {
+      position: absolute;
+      top: 0;
+      bottom: 22%;
+      width: 18%;
+      background:
+        repeating-linear-gradient(
+          90deg,
+          #ff6a99 0 18px,
+          #d94278 18px 34px
+        );
+      box-shadow: inset 0 0 20px rgba(104,17,66,.22);
+    }
+
+    .curtain.left {
+      left: 0;
+      border-radius: 0 0 85% 0;
+    }
+
+    .curtain.right {
+      right: 0;
+      border-radius: 0 0 0 85%;
+    }
+
+    .stage-title {
+      position: absolute;
+      left: 50%;
+      top: 7%;
+      transform: translateX(-50%);
+      margin: 0;
+      color: #fff;
+      font-size: clamp(23px, 3vw, 45px);
+      font-weight: 900;
+      text-shadow: 0 4px 0 rgba(70,43,125,.32);
+      white-space: nowrap;
+    }
+
+    .music-notes {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .note {
+      position: absolute;
+      color: rgba(255,255,255,.83);
+      font-size: clamp(25px, 3vw, 46px);
+      animation: noteFloat 4s ease-in-out infinite;
+    }
+
+    .note:nth-child(1) { left: 25%; top: 30%; }
+    .note:nth-child(2) { right: 26%; top: 23%; animation-delay: .8s; }
+    .note:nth-child(3) { left: 34%; top: 55%; animation-delay: 1.6s; }
+
+    .avatar-stage {
+      position: absolute;
+      left: 50%;
+      bottom: 9%;
+      width: clamp(88px, 11vw, 155px);
+      transform: translateX(-50%);
+      z-index: 3;
+      pointer-events: none;
+    }
+
+    .avatar-stage img {
+      display: none;
+      width: 100%;
+      height: clamp(110px, 19vh, 210px);
+      object-fit: contain;
+      object-position: center bottom;
+      filter: drop-shadow(0 12px 8px rgba(46,42,88,.28));
+      animation: bounce 2.6s ease-in-out infinite;
+    }
+
+    .avatar-stage::before {
+      content: "🧒";
+      display: block;
+      text-align: center;
+      font-size: clamp(78px, 9vw, 132px);
+      filter: drop-shadow(0 12px 8px rgba(46,42,88,.28));
+      animation: bounce 2.6s ease-in-out infinite;
+    }
+
+    .avatar-stage.has-avatar::before {
+      display: none;
+    }
+
+    .microphone {
+      position: absolute;
+      left: calc(50% + clamp(55px, 8vw, 110px));
+      bottom: 14%;
+      z-index: 4;
+      font-size: clamp(45px, 5vw, 76px);
+      transform: rotate(-8deg);
+      filter: drop-shadow(0 9px 5px rgba(54,38,91,.25));
+    }
+
+    .control-panel {
+      position: absolute;
+      left: 50%;
+      bottom: 2.5%;
+      width: min(96vw, 1320px);
+      height: 50%;
+      transform: translateX(-50%);
+      display: grid;
+      grid-template-columns: 1.15fr 1fr 1.15fr;
+      gap: 14px;
+      z-index: 10;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      padding: 14px;
+      border: 4px solid rgba(255,255,255,.86);
+      border-radius: 27px;
+      background: rgba(255,255,255,.93);
+      box-shadow:
+        0 10px 0 rgba(53,123,72,.2),
+        0 16px 28px rgba(42,91,52,.2);
+      overflow: hidden;
+    }
+
+    .panel h2 {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: clamp(17px, 1.7vw, 27px);
+      line-height: 1;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .instrument-grid {
+      height: calc(100% - 36px);
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 9px;
+    }
+
+    .instrument {
+      min-width: 0;
+      min-height: 0;
+      border: 0;
+      border-radius: 20px;
+      padding: 6px;
+      color: #4d3786;
+      background: #f3e8ff;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: inset 0 -6px 0 rgba(84,59,145,.12);
+    }
+
+    .instrument:nth-child(2) {
+      background: #fff0ba;
+      color: #805d15;
+    }
+
+    .instrument:nth-child(3) {
+      background: #d9f6ff;
+      color: #216b8a;
+    }
+
+    .instrument:nth-child(4) {
+      background: #e3f8d8;
+      color: #3e7a2f;
+    }
+
+    .instrument:active,
+    .instrument.playing {
+      transform: translateY(4px) scale(.98);
+      box-shadow: inset 0 -2px 0 rgba(84,59,145,.12);
+      filter: brightness(1.05);
+    }
+
+    .instrument .emoji {
+      display: block;
+      font-size: clamp(31px, 4.5vw, 70px);
+      line-height: 1;
+      margin-bottom: 4px;
+    }
+
+    .instrument .name {
+      display: block;
+      font-size: clamp(11px, 1.15vw, 17px);
+      line-height: 1;
+    }
+
+    .piano {
+      position: relative;
+      height: calc(100% - 36px);
+      display: flex;
+      align-items: stretch;
+      overflow: hidden;
+      border: 4px solid #58429b;
+      border-radius: 18px;
+      background: #58429b;
+    }
+
+    .key {
+      position: relative;
+      flex: 1 1 0;
+      min-width: 0;
+      border: 0;
+      border-right: 2px solid #cfcbe1;
+      border-radius: 0 0 9px 9px;
+      background: #fff;
+      cursor: pointer;
+      box-shadow: inset 0 -10px 0 #e7e5f0;
+    }
+
+    .key:last-child {
+      border-right: 0;
+    }
+
+    .key:active,
+    .key.playing {
+      transform: translateY(5px);
+      background: #fff5b6;
+      box-shadow: inset 0 -4px 0 #e4cc63;
+    }
+
+    .key span {
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+      transform: translateX(-50%);
+      color: #6650a7;
+      font-size: clamp(10px, 1vw, 15px);
+      font-weight: 900;
+    }
+
+    .beat-grid {
+      height: calc(100% - 74px);
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .beat {
+      min-width: 0;
+      min-height: 0;
+      border: 0;
+      border-radius: 16px;
+      color: #66488f;
+      background: #efe5ff;
+      font-size: clamp(19px, 2.5vw, 38px);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: inset 0 -5px 0 rgba(86,56,143,.13);
+    }
+
+    .beat:nth-child(2n) {
+      background: #ffe9a8;
+    }
+
+    .beat.active {
+      color: #fff;
+      background: #ff6da8;
+      box-shadow:
+        inset 0 -4px 0 rgba(143,33,87,.24),
+        0 0 0 4px rgba(255,255,255,.82);
+    }
+
+    .beat.playhead {
+      outline: 5px solid #60c6f0;
+      outline-offset: -5px;
+    }
+
+    .transport {
+      height: 38px;
+      margin-top: 8px;
+      display: flex;
+      gap: 8px;
+    }
+
+    .transport button {
+      flex: 1 1 0;
+      border: 0;
+      border-radius: 999px;
+      color: #fff;
+      font-size: clamp(11px, 1.05vw, 16px);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .play-beat {
+      background: #78c84d;
+      box-shadow: 0 4px 0 #4f9630;
+    }
+
+    .clear-beat {
+      background: #ff7d91;
+      box-shadow: 0 4px 0 #c84f65;
+    }
+
+    .transport button:active {
+      transform: translateY(3px);
+      box-shadow: 0 1px 0 rgba(0,0,0,.18);
+    }
+
+    .toolbar {
+      position: absolute;
+      right: 2%;
+      top: 2%;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 3px solid rgba(255,255,255,.85);
+      border-radius: 999px;
+      background: rgba(255,255,255,.9);
+      box-shadow: 0 8px 18px rgba(45,82,120,.16);
+    }
+
+    .toolbar button {
+      min-width: 44px;
+      min-height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: #eee1ff;
+      color: #6042a7;
+      font-size: 22px;
+      cursor: pointer;
+    }
+
+    .toolbar button:active {
+      transform: scale(.94);
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: calc(var(--header-height) + 18px + env(safe-area-inset-top));
+      z-index: 500;
+      max-width: min(88vw, 540px);
+      padding: 12px 20px;
+      transform: translateX(-50%) translateY(-150px);
+      border: 3px solid rgba(255,255,255,.95);
+      border-radius: 999px;
+      color: #5b3d9f;
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 12px 28px rgba(24,49,84,.25);
+      font-size: clamp(14px, 1.35vw, 19px);
+      font-weight: 900;
+      text-align: center;
+      transition: transform .25s ease;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-7px); }
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(8px); }
+    }
+
+    @keyframes noteFloat {
+      0%, 100% { transform: translateY(0) rotate(-4deg); }
+      50% { transform: translateY(-11px) rotate(5deg); }
+    }
+
+    @media (max-width: 980px) {
+      :root {
+        --header-height: 82px;
+      }
+
+      .game-header {
+        min-height: 82px;
+        gap: 10px;
+        padding: 10px 14px;
+      }
+
+      .header-left {
+        gap: 10px;
+      }
+
+      .home-button {
+        min-width: auto;
+        min-height: 46px;
+        padding: 9px 15px;
+      }
+
+      .title-icon {
+        display: none;
+      }
+
+      .header-title-group p {
+        display: none;
+      }
+
+      .player-badge {
+        max-width: 180px;
+      }
+
+      .stage {
+        width: 86vw;
+      }
+
+      .control-panel {
+        width: 96vw;
+        grid-template-columns: 1fr 1.05fr 1fr;
+        gap: 10px;
+      }
+
+      .panel {
+        padding: 10px;
+        border-radius: 22px;
+      }
+
+      .instrument-grid {
+        gap: 7px;
+      }
+    }
+
+    @media (max-width: 760px) and (orientation: portrait) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      body {
+        min-height: 100dvh;
+      }
+
+      .game-header {
+        position: sticky;
+        top: 0;
+      }
+
+      .player-badge {
+        display: none;
+      }
+
+      .studio {
+        flex: 0 0 auto;
+        min-height: 1080px;
+        overflow: hidden;
+      }
+
+      .stage {
+        top: 3%;
+        width: 92vw;
+        height: 30%;
+      }
+
+      .toolbar {
+        top: 34%;
+        right: 3%;
+      }
+
+      .control-panel {
+        top: 40%;
+        bottom: auto;
+        height: 57%;
+        grid-template-columns: 1fr;
+        grid-template-rows: repeat(3, minmax(0, 1fr));
+      }
+
+      .panel {
+        min-height: 0;
+      }
+
+      .instrument .emoji {
+        font-size: 46px;
+      }
+
+      .piano {
+        min-height: 125px;
+      }
+
+      .beat-grid {
+        min-height: 125px;
+      }
+
+      .toast {
+        top: calc(92px + env(safe-area-inset-top));
+      }
+    }
+
+    @media (max-height: 650px) and (orientation: landscape) {
+      :root {
+        --header-height: 64px;
+      }
+
+      .game-header {
+        min-height: 64px;
+        padding: 7px 14px;
+      }
+
+      .home-button {
+        min-height: 42px;
+        padding: 7px 14px;
+      }
+
+      .header-title-group h1 {
+        font-size: 28px;
+      }
+
+      .header-title-group p {
+        display: none;
+      }
+
+      .player-badge {
+        padding: 6px 12px 6px 7px;
+      }
+
+      .player-badge img {
+        width: 38px;
+        height: 38px;
+      }
+
+      .stage {
+        top: 3%;
+        height: 38%;
+      }
+
+      .stage-title {
+        font-size: 25px;
+      }
+
+      .control-panel {
+        bottom: 1.5%;
+        height: 54%;
+      }
+
+      .panel {
+        padding: 9px;
+      }
+
+      .panel h2 {
+        margin-bottom: 7px;
+        font-size: 17px;
+      }
+
+      .instrument-grid,
+      .piano {
+        height: calc(100% - 27px);
+      }
+
+      .beat-grid {
+        height: calc(100% - 62px);
+      }
+
+      .transport {
+        height: 32px;
+        margin-top: 6px;
+      }
+
+      .avatar-stage img {
+        height: 105px;
+      }
+
+      .microphone {
+        font-size: 43px;
+      }
+
+      .toolbar {
+        top: 1%;
+        right: 1%;
+        transform: scale(.86);
+        transform-origin: top right;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      .instrument,
+      .key,
+      .beat,
+      .transport button,
+      .toolbar button,
+      .home-button {
+        min-height: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .sun,
+      .note,
+      .avatar-stage img,
+      .avatar-stage::before {
+        animation: none;
+      }
+
+      .toast {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="game-header">
+    <div class="header-left">
+      <button
+        id="homeButton"
+        class="home-button"
+        type="button"
+        aria-label="Return to ELCraft Home World">
+        ← Home
+      </button>
+
+      <div class="title-icon" aria-hidden="true">🎵</div>
+
+      <div class="header-title-group">
+        <h1>Music Studio</h1>
+        <p>Tap instruments, play piano, and make your own beat.</p>
+      </div>
+    </div>
+
+    <div class="player-badge">
+      <img id="profileAvatar" alt="Player avatar">
+      <span id="playerName">✨ Player's Studio</span>
+    </div>
+  </header>
+
+  <main class="studio" aria-label="ELCraft Music Studio">
+    <div class="sun" aria-hidden="true"></div>
+    <div class="cloud one" aria-hidden="true"></div>
+    <div class="cloud two" aria-hidden="true"></div>
+
+    <section class="stage" aria-label="Music stage">
+      <div class="curtain left" aria-hidden="true"></div>
+      <div class="curtain right" aria-hidden="true"></div>
+
+      <h2 class="stage-title">
+        <span id="stageName">Player</span>'s Big Show
+      </h2>
+
+      <div class="music-notes" aria-hidden="true">
+        <span class="note">♪</span>
+        <span class="note">♫</span>
+        <span class="note">♬</span>
+      </div>
+
+      <div id="avatarStage" class="avatar-stage">
+        <img id="stageAvatar" alt="Player's saved character">
+      </div>
+
+      <div class="microphone" aria-hidden="true">🎤</div>
+    </section>
+
+    <div class="toolbar" aria-label="Music controls">
+      <button id="demoButton" type="button" aria-label="Play a demo song">▶️</button>
+      <button id="stopButton" type="button" aria-label="Stop all music">⏹️</button>
+    </div>
+
+    <section class="control-panel">
+      <section class="panel" aria-labelledby="instrumentTitle">
+        <h2 id="instrumentTitle">Tap an Instrument</h2>
+
+        <div class="instrument-grid">
+          <button class="instrument" type="button" data-sound="drum">
+            <span class="emoji" aria-hidden="true">🥁</span>
+            <span class="name">Drum</span>
+          </button>
+
+          <button class="instrument" type="button" data-sound="bell">
+            <span class="emoji" aria-hidden="true">🔔</span>
+            <span class="name">Bell</span>
+          </button>
+
+          <button class="instrument" type="button" data-sound="guitar">
+            <span class="emoji" aria-hidden="true">🎸</span>
+            <span class="name">Guitar</span>
+          </button>
+
+          <button class="instrument" type="button" data-sound="xylophone">
+            <span class="emoji" aria-hidden="true">🎶</span>
+            <span class="name">Xylophone</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="pianoTitle">
+        <h2 id="pianoTitle">Rainbow Piano</h2>
+
+        <div class="piano" aria-label="Rainbow piano">
+          <button class="key" type="button" data-note="261.63" aria-label="C">
+            <span>C</span>
+          </button>
+          <button class="key" type="button" data-note="293.66" aria-label="D">
+            <span>D</span>
+          </button>
+          <button class="key" type="button" data-note="329.63" aria-label="E">
+            <span>E</span>
+          </button>
+          <button class="key" type="button" data-note="349.23" aria-label="F">
+            <span>F</span>
+          </button>
+          <button class="key" type="button" data-note="392.00" aria-label="G">
+            <span>G</span>
+          </button>
+          <button class="key" type="button" data-note="440.00" aria-label="A">
+            <span>A</span>
+          </button>
+          <button class="key" type="button" data-note="493.88" aria-label="B">
+            <span>B</span>
+          </button>
+          <button class="key" type="button" data-note="523.25" aria-label="high C">
+            <span>C</span>
+          </button>
+        </div>
+      </section>
+
+      <section class="panel" aria-labelledby="beatTitle">
+        <h2 id="beatTitle">Make a Beat</h2>
+
+        <div class="beat-grid" aria-label="Eight step beat maker">
+          <button class="beat" type="button" data-step="0" aria-label="Beat step 1">1</button>
+          <button class="beat" type="button" data-step="1" aria-label="Beat step 2">2</button>
+          <button class="beat" type="button" data-step="2" aria-label="Beat step 3">3</button>
+          <button class="beat" type="button" data-step="3" aria-label="Beat step 4">4</button>
+          <button class="beat" type="button" data-step="4" aria-label="Beat step 5">5</button>
+          <button class="beat" type="button" data-step="5" aria-label="Beat step 6">6</button>
+          <button class="beat" type="button" data-step="6" aria-label="Beat step 7">7</button>
+          <button class="beat" type="button" data-step="7" aria-label="Beat step 8">8</button>
+        </div>
+
+        <div class="transport">
+          <button id="playBeat" class="play-beat" type="button">▶ Play Beat</button>
+          <button id="clearBeat" class="clear-beat" type="button">Clear</button>
+        </div>
+      </section>
+    </section>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const NAME_KEY = 'elcraft_child_name';
+      const AVATAR_KEY = 'elcraft_avatar_image';
+
+      const homeButton = document.getElementById('homeButton');
+      const playerName = document.getElementById('playerName');
+      const stageName = document.getElementById('stageName');
+      const profileAvatar = document.getElementById('profileAvatar');
+      const stageAvatar = document.getElementById('stageAvatar');
+      const avatarStage = document.getElementById('avatarStage');
+      const toast = document.getElementById('toast');
+      const demoButton = document.getElementById('demoButton');
+      const stopButton = document.getElementById('stopButton');
+      const playBeatButton = document.getElementById('playBeat');
+      const clearBeatButton = document.getElementById('clearBeat');
+
+      let audioContext = null;
+      let masterGain = null;
+      let beatTimer = null;
+      let demoTimers = [];
+      let currentBeatStep = 0;
+      let toastTimer = null;
+
+      const beatPattern = Array(8).fill(false);
+
+      function cleanName(value) {
+        return String(value || '')
+          .trim()
+          .replace(/\s+/g, ' ')
+          .slice(0, 20);
+      }
+
+      function applyPlayer() {
+        const name = cleanName(localStorage.getItem(NAME_KEY)) || 'Player';
+
+        playerName.textContent = `✨ ${name}'s Studio`;
+        stageName.textContent = name;
+
+        const avatar = localStorage.getItem(AVATAR_KEY);
+
+        if (!avatar) {
+          profileAvatar.style.display = 'none';
+          stageAvatar.style.display = 'none';
+          avatarStage.classList.remove('has-avatar');
+          return;
+        }
+
+        profileAvatar.onload = () => {
+          profileAvatar.style.display = 'block';
+        };
+
+        stageAvatar.onload = () => {
+          stageAvatar.style.display = 'block';
+          avatarStage.classList.add('has-avatar');
+        };
+
+        profileAvatar.onerror = () => {
+          profileAvatar.style.display = 'none';
+        };
+
+        stageAvatar.onerror = () => {
+          stageAvatar.style.display = 'none';
+          avatarStage.classList.remove('has-avatar');
+        };
+
+        profileAvatar.src = avatar;
+        stageAvatar.src = avatar;
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 1600);
+      }
+
+      function getAudio() {
+        if (!audioContext) {
+          const AudioContextClass =
+            window.AudioContext || window.webkitAudioContext;
+
+          if (!AudioContextClass) {
+            showToast('Sound is not supported on this device.');
+            return null;
+          }
+
+          audioContext = new AudioContextClass();
+          masterGain = audioContext.createGain();
+          masterGain.gain.value = 0.55;
+          masterGain.connect(audioContext.destination);
+        }
+
+        if (audioContext.state === 'suspended') {
+          audioContext.resume();
+        }
+
+        return audioContext;
+      }
+
+      function playTone(
+        frequency,
+        duration = 0.35,
+        type = 'sine',
+        volume = 0.35,
+        when = 0
+      ) {
+        const context = getAudio();
+
+        if (!context) {
+          return;
+        }
+
+        const startTime = context.currentTime + when;
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+
+        oscillator.type = type;
+        oscillator.frequency.setValueAtTime(frequency, startTime);
+
+        gain.gain.setValueAtTime(0.0001, startTime);
+        gain.gain.exponentialRampToValueAtTime(
+          Math.max(0.001, volume),
+          startTime + 0.015
+        );
+        gain.gain.exponentialRampToValueAtTime(
+          0.0001,
+          startTime + duration
+        );
+
+        oscillator.connect(gain);
+        gain.connect(masterGain);
+
+        oscillator.start(startTime);
+        oscillator.stop(startTime + duration + 0.05);
+      }
+
+      function playDrum() {
+        const context = getAudio();
+
+        if (!context) {
+          return;
+        }
+
+        const oscillator = context.createOscillator();
+        const gain = context.createGain();
+        const now = context.currentTime;
+
+        oscillator.type = 'sine';
+        oscillator.frequency.setValueAtTime(150, now);
+        oscillator.frequency.exponentialRampToValueAtTime(52, now + 0.18);
+
+        gain.gain.setValueAtTime(0.7, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
+
+        oscillator.connect(gain);
+        gain.connect(masterGain);
+
+        oscillator.start(now);
+        oscillator.stop(now + 0.24);
+      }
+
+      function playBell() {
+        playTone(880, 0.6, 'sine', 0.32);
+        playTone(1320, 0.48, 'sine', 0.17, 0.01);
+      }
+
+      function playGuitar() {
+        playTone(196, 0.42, 'triangle', 0.3);
+        playTone(246.94, 0.38, 'triangle', 0.2, 0.05);
+        playTone(293.66, 0.34, 'triangle', 0.16, 0.1);
+      }
+
+      function playXylophone() {
+        playTone(523.25, 0.22, 'sine', 0.28);
+        playTone(659.25, 0.22, 'sine', 0.25, 0.1);
+        playTone(783.99, 0.28, 'sine', 0.22, 0.2);
+      }
+
+      function flashButton(button) {
+        button.classList.add('playing');
+
+        setTimeout(() => {
+          button.classList.remove('playing');
+        }, 180);
+      }
+
+      function playInstrument(sound, button) {
+        if (sound === 'drum') {
+          playDrum();
+        } else if (sound === 'bell') {
+          playBell();
+        } else if (sound === 'guitar') {
+          playGuitar();
+        } else if (sound === 'xylophone') {
+          playXylophone();
+        }
+
+        flashButton(button);
+      }
+
+      function stopBeat() {
+        clearInterval(beatTimer);
+        beatTimer = null;
+        currentBeatStep = 0;
+
+        document.querySelectorAll('.beat').forEach(button => {
+          button.classList.remove('playhead');
+        });
+
+        playBeatButton.textContent = '▶ Play Beat';
+      }
+
+      function stopDemo() {
+        demoTimers.forEach(timer => clearTimeout(timer));
+        demoTimers = [];
+      }
+
+      function stopEverything() {
+        stopBeat();
+        stopDemo();
+
+        if (audioContext && audioContext.state === 'running') {
+          audioContext.suspend();
+        }
+
+        showToast('Music stopped.');
+      }
+
+      function runBeatStep() {
+        const beatButtons = [...document.querySelectorAll('.beat')];
+
+        beatButtons.forEach(button => {
+          button.classList.remove('playhead');
+        });
+
+        const currentButton = beatButtons[currentBeatStep];
+
+        if (currentButton) {
+          currentButton.classList.add('playhead');
+        }
+
+        if (beatPattern[currentBeatStep]) {
+          playDrum();
+
+          if (currentButton) {
+            flashButton(currentButton);
+          }
+        }
+
+        currentBeatStep = (currentBeatStep + 1) % beatPattern.length;
+      }
+
+      function toggleBeatPlayback() {
+        if (beatTimer) {
+          stopBeat();
+          return;
+        }
+
+        if (!beatPattern.some(Boolean)) {
+          showToast('Tap some beat numbers first! 🥁');
+          return;
+        }
+
+        getAudio();
+        currentBeatStep = 0;
+        runBeatStep();
+
+        beatTimer = setInterval(runBeatStep, 330);
+        playBeatButton.textContent = '⏸ Pause Beat';
+      }
+
+      function clearBeat() {
+        stopBeat();
+
+        beatPattern.fill(false);
+
+        document.querySelectorAll('.beat').forEach(button => {
+          button.classList.remove('active');
+          button.setAttribute('aria-pressed', 'false');
+        });
+
+        showToast('Your beat is ready for a fresh start!');
+      }
+
+      function playDemo() {
+        stopDemo();
+        stopBeat();
+        getAudio();
+
+        const melody = [
+          [261.63, 0],
+          [329.63, 300],
+          [392.00, 600],
+          [523.25, 900],
+          [392.00, 1250],
+          [329.63, 1550],
+          [293.66, 1850],
+          [261.63, 2150]
+        ];
+
+        melody.forEach(([frequency, delay], index) => {
+          const timer = setTimeout(() => {
+            playTone(frequency, 0.28, 'sine', 0.32);
+
+            const keys = document.querySelectorAll('.key');
+            const key = keys[index];
+
+            if (key) {
+              flashButton(key);
+            }
+          }, delay);
+
+          demoTimers.push(timer);
+        });
+
+        const drumTimes = [0, 600, 1250, 1850];
+
+        drumTimes.forEach(delay => {
+          const timer = setTimeout(playDrum, delay);
+          demoTimers.push(timer);
+        });
+
+        showToast('Welcome to your big show! 🎵');
+      }
+
+      homeButton.addEventListener('click', () => {
+        window.location.href = 'index.html';
+      });
+
+      document.querySelectorAll('.instrument').forEach(button => {
+        button.addEventListener('click', () => {
+          playInstrument(button.dataset.sound, button);
+        });
+      });
+
+      document.querySelectorAll('.key').forEach(button => {
+        button.addEventListener('click', () => {
+          playTone(Number(button.dataset.note), 0.4, 'sine', 0.34);
+          flashButton(button);
+        });
+      });
+
+      document.querySelectorAll('.beat').forEach(button => {
+        button.setAttribute('aria-pressed', 'false');
+
+        button.addEventListener('click', () => {
+          const step = Number(button.dataset.step);
+
+          beatPattern[step] = !beatPattern[step];
+
+          button.classList.toggle('active', beatPattern[step]);
+          button.setAttribute(
+            'aria-pressed',
+            String(beatPattern[step])
+          );
+
+          playDrum();
+        });
+      });
+
+      playBeatButton.addEventListener('click', toggleBeatPlayback);
+      clearBeatButton.addEventListener('click', clearBeat);
+      demoButton.addEventListener('click', playDemo);
+      stopButton.addEventListener('click', stopEverything);
+
+      window.addEventListener('storage', event => {
+        if (
+          event.key === NAME_KEY ||
+          event.key === AVATAR_KEY
+        ) {
+          applyPlayer();
+        }
+      });
+
+      window.addEventListener('pageshow', applyPlayer);
+      applyPlayer();
+    })();
+  </script>
+</body>
+</html>
