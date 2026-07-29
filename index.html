@@ -1117,9 +1117,16 @@
         }
       );
 
+      addTapAction(
+        '.music',
+        () => {
+          navigateTo('music.html');
+        }
+      );
+
       document
         .querySelectorAll(
-          '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city)'
+          '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city):not(.music)'
         )
         .forEach(button => {
           button.addEventListener(
