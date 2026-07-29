@@ -975,5 +975,1208 @@
 </script>
 
 
+
+<!-- ======================================================
+     ELCraft Magical Mailbox
+     Offline NPC mail now; parent-approved friend mail ready
+     for a future secure server connection.
+     ====================================================== -->
+
+<style>
+  .mail-counter {
+    flex: 0 0 auto;
+    min-width: 112px;
+    padding: 10px 15px;
+    border: 3px solid white;
+    border-radius: 999px;
+    color: #6444a9;
+    background: #fff2bd;
+    font-size: clamp(13px, 1.1vw, 17px);
+    font-weight: 900;
+    text-align: center;
+    box-shadow: 0 5px 14px rgba(99,67,172,.13);
+  }
+
+  #cityMailbox {
+    cursor: pointer !important;
+  }
+
+  #cityMailbox .mail-badge {
+    display: grid;
+    place-items: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 4px;
+    border: 3px solid white;
+    border-radius: 999px;
+    color: white;
+    background: #ff4d6d;
+    font-size: 12px;
+    font-weight: 900;
+    box-shadow: 0 4px 9px rgba(85,30,54,.25);
+  }
+
+  #magicMailModal {
+    position: fixed;
+    inset: 0;
+    z-index: 15000;
+    display: none;
+    place-items: center;
+    padding: 16px;
+    background: rgba(35,28,67,.68);
+    backdrop-filter: blur(7px);
+  }
+
+  #magicMailModal.open {
+    display: grid;
+  }
+
+  .magic-mail-window {
+    width: min(940px, 100%);
+    height: min(680px, calc(100vh - 32px));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 5px solid white;
+    border-radius: 32px;
+    background: #fbf9ff;
+    box-shadow: 0 30px 80px rgba(25,18,58,.42);
+  }
+
+  .magic-mail-header {
+    flex: 0 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    padding: 17px 20px;
+    color: white;
+    background: linear-gradient(135deg,#7753c5,#9f68d5);
+  }
+
+  .magic-mail-heading {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .magic-mail-heading-icon {
+    font-size: 42px;
+    line-height: 1;
+  }
+
+  .magic-mail-heading h2 {
+    margin: 0;
+    font-size: clamp(25px, 3vw, 38px);
+    line-height: 1;
+  }
+
+  .magic-mail-heading p {
+    margin: 4px 0 0;
+    font-size: 13px;
+    font-weight: 800;
+    opacity: .9;
+  }
+
+  #magicMailClose {
+    flex: 0 0 auto;
+    width: 45px;
+    height: 45px;
+    border: 3px solid rgba(255,255,255,.75);
+    border-radius: 50%;
+    color: #6544a8;
+    background: white;
+    font-size: 23px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .magic-mail-tabs {
+    flex: 0 0 auto;
+    display: flex;
+    gap: 8px;
+    padding: 11px 15px;
+    overflow-x: auto;
+    border-bottom: 3px solid #ece5f7;
+    background: white;
+  }
+
+  .magic-mail-tab {
+    min-height: 42px;
+    padding: 9px 16px;
+    border: 0;
+    border-radius: 999px;
+    color: #695887;
+    background: #eeeaf5;
+    font-weight: 900;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .magic-mail-tab.active {
+    color: white;
+    background: #7651ba;
+  }
+
+  .magic-mail-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: 310px minmax(0,1fr);
+  }
+
+  .magic-mail-list {
+    min-height: 0;
+    overflow-y: auto;
+    padding: 12px;
+    border-right: 3px solid #ece5f7;
+    background: #f5f1fa;
+  }
+
+  .mail-list-empty {
+    padding: 28px 15px;
+    color: #7c7190;
+    font-weight: 900;
+    text-align: center;
+  }
+
+  .mail-list-item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: 48px minmax(0,1fr) auto;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: 9px;
+    padding: 11px;
+    border: 3px solid transparent;
+    border-radius: 18px;
+    color: #4f5775;
+    background: white;
+    text-align: left;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(62,48,92,.08);
+  }
+
+  .mail-list-item:hover,
+  .mail-list-item.selected {
+    border-color: #bfa7ed;
+    transform: translateY(-1px);
+  }
+
+  .mail-list-item.unread {
+    background: #fff8d9;
+  }
+
+  .mail-list-avatar {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    border-radius: 15px;
+    background: #eee6ff;
+    font-size: 30px;
+  }
+
+  .mail-list-copy {
+    min-width: 0;
+  }
+
+  .mail-list-from,
+  .mail-list-subject {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mail-list-from {
+    color: #6546a4;
+    font-size: 14px;
+    font-weight: 900;
+  }
+
+  .mail-list-subject {
+    margin-top: 3px;
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .mail-unread-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #ff4d6d;
+  }
+
+  .magic-mail-reader {
+    min-width: 0;
+    min-height: 0;
+    overflow-y: auto;
+    padding: clamp(18px,3vw,34px);
+    background:
+      radial-gradient(circle at 15% 15%,rgba(255,223,118,.18),transparent 25%),
+      linear-gradient(#fff,#fcf9ff);
+  }
+
+  .mail-welcome {
+    min-height: 100%;
+    display: grid;
+    place-items: center;
+    color: #77698f;
+    text-align: center;
+  }
+
+  .mail-welcome-inner {
+    max-width: 440px;
+  }
+
+  .mail-welcome-icon {
+    font-size: 82px;
+  }
+
+  .mail-welcome h3 {
+    margin: 7px 0;
+    color: #6546a4;
+    font-size: 30px;
+  }
+
+  .mail-letter {
+    max-width: 610px;
+    margin: 0 auto;
+    padding: clamp(20px,3vw,35px);
+    border: 4px solid #eadff8;
+    border-radius: 28px;
+    background: #fffdf7;
+    box-shadow: 0 16px 36px rgba(78,55,112,.13);
+  }
+
+  .mail-letter-top {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .mail-letter-avatar {
+    flex: 0 0 auto;
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 22px;
+    background: #efe7ff;
+    font-size: 45px;
+  }
+
+  .mail-letter h3 {
+    margin: 0;
+    color: #6546a4;
+    font-size: clamp(24px,3vw,34px);
+  }
+
+  .mail-letter-meta {
+    margin-top: 4px;
+    color: #82758f;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .mail-letter-message {
+    margin: 22px 0;
+    color: #495875;
+    font-size: clamp(17px,2vw,21px);
+    font-weight: 800;
+    line-height: 1.55;
+    white-space: pre-line;
+  }
+
+  .mail-reward-box {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 13px;
+    padding: 14px 16px;
+    border: 3px solid #ffe28e;
+    border-radius: 20px;
+    color: #705828;
+    background: #fff6ce;
+    font-weight: 900;
+  }
+
+  .mail-letter-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 18px;
+  }
+
+  .mail-letter-actions button {
+    min-height: 47px;
+    padding: 10px 17px;
+    border: 0;
+    border-radius: 999px;
+    font-weight: 900;
+    cursor: pointer;
+  }
+
+  .mail-claim-button,
+  .mail-quest-button {
+    color: white;
+    background: #7651ba;
+    box-shadow: 0 5px 0 #4f347e;
+  }
+
+  .mail-claim-button:disabled {
+    color: #73809a;
+    background: #e2e5ec;
+    box-shadow: none;
+    cursor: default;
+  }
+
+  .mail-delete-button {
+    color: #805267;
+    background: #ffe3ed;
+    box-shadow: 0 5px 0 #e6bfcc;
+  }
+
+  .friend-mail-panel {
+    max-width: 650px;
+    margin: 0 auto;
+    padding: 24px;
+    border: 4px solid #dfd2f4;
+    border-radius: 28px;
+    background: white;
+    text-align: center;
+  }
+
+  .friend-mail-panel .big-icon {
+    font-size: 75px;
+  }
+
+  .friend-mail-panel h3 {
+    margin: 7px 0;
+    color: #6546a4;
+    font-size: 30px;
+  }
+
+  .friend-mail-panel p {
+    color: #596681;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .parent-safety-card {
+    margin-top: 16px;
+    padding: 16px;
+    border-radius: 18px;
+    color: #4f5f77;
+    background: #edf8ff;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 800;
+    line-height: 1.5;
+  }
+
+  .coming-soon-chip {
+    display: inline-block;
+    margin-top: 12px;
+    padding: 8px 13px;
+    border-radius: 999px;
+    color: #7651ba;
+    background: #eee5ff;
+    font-weight: 900;
+  }
+
+  .mail-toast {
+    position: fixed;
+    left: 50%;
+    bottom: 28px;
+    z-index: 17000;
+    max-width: min(440px,calc(100% - 28px));
+    padding: 13px 19px;
+    transform: translateX(-50%) translateY(24px);
+    border: 4px solid white;
+    border-radius: 999px;
+    color: white;
+    background: #6546a4;
+    font-weight: 900;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: .25s ease;
+    box-shadow: 0 13px 28px rgba(35,27,66,.28);
+  }
+
+  .mail-toast.show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+
+  @media (max-width: 760px) {
+    .mail-counter {
+      display: none;
+    }
+
+    .magic-mail-window {
+      height: calc(100vh - 18px);
+      border-radius: 24px;
+    }
+
+    .magic-mail-body {
+      grid-template-columns: 1fr;
+      grid-template-rows: 205px minmax(0,1fr);
+    }
+
+    .magic-mail-list {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border-right: 0;
+      border-bottom: 3px solid #ece5f7;
+    }
+
+    .mail-list-item {
+      flex: 0 0 245px;
+      margin-bottom: 0;
+    }
+
+    .magic-mail-reader {
+      padding: 15px;
+    }
+
+    .mail-letter {
+      padding: 19px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .magic-mail-heading p {
+      display: none;
+    }
+
+    .magic-mail-heading-icon {
+      font-size: 33px;
+    }
+
+    .magic-mail-header {
+      padding: 13px;
+    }
+
+    .magic-mail-tabs {
+      padding: 8px;
+    }
+
+    .magic-mail-tab {
+      padding: 8px 12px;
+    }
+
+    .magic-mail-body {
+      grid-template-rows: 177px minmax(0,1fr);
+    }
+
+    .mail-list-item {
+      flex-basis: 215px;
+      padding: 8px;
+    }
+
+    .mail-list-avatar {
+      width: 39px;
+      height: 39px;
+      font-size: 25px;
+    }
+
+    .mail-letter-avatar {
+      width: 55px;
+      height: 55px;
+      font-size: 37px;
+    }
+  }
+</style>
+
+<div
+  id="magicMailModal"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="magicMailTitle">
+
+  <section class="magic-mail-window">
+
+    <header class="magic-mail-header">
+
+      <div class="magic-mail-heading">
+        <div class="magic-mail-heading-icon" aria-hidden="true">📬</div>
+
+        <div>
+          <h2 id="magicMailTitle">Magical Mail</h2>
+          <p>Letters, quests, rewards, and friendship</p>
+        </div>
+      </div>
+
+      <button
+        id="magicMailClose"
+        type="button"
+        aria-label="Close mailbox">
+        ×
+      </button>
+
+    </header>
+
+    <nav class="magic-mail-tabs" aria-label="Mailbox sections">
+
+      <button
+        class="magic-mail-tab active"
+        type="button"
+        data-mail-tab="inbox">
+        📥 Inbox
+      </button>
+
+      <button
+        class="magic-mail-tab"
+        type="button"
+        data-mail-tab="quests">
+        🗺️ Quests
+      </button>
+
+      <button
+        class="magic-mail-tab"
+        type="button"
+        data-mail-tab="friends">
+        🧑‍🤝‍🧑 Friend Mail
+      </button>
+
+    </nav>
+
+    <div class="magic-mail-body">
+
+      <aside
+        id="magicMailList"
+        class="magic-mail-list"
+        aria-label="Letters">
+      </aside>
+
+      <main
+        id="magicMailReader"
+        class="magic-mail-reader">
+      </main>
+
+    </div>
+
+  </section>
+</div>
+
+<div
+  id="magicMailToast"
+  class="mail-toast"
+  role="status"
+  aria-live="polite">
+</div>
+
+<script>
+(() => {
+  'use strict';
+
+  const MAIL_SAVE_KEY = 'elcraft_magical_mail_v1';
+  const STAR_KEY = 'elcraft_stars';
+
+  const starterLetters = [
+    {
+      id: 'welcome-finn',
+      type: 'inbox',
+      sender: 'Finn',
+      avatar: '🦊',
+      subject: 'Welcome to Magical Mail!',
+      message:
+        'Hello, {player}!\\n\\nI am so happy your city has a mailbox now. Open your letters to find adventures, kind messages, and rewards.\\n\\nI left your first gift inside this letter!',
+      reward: 3,
+      questPage: '',
+      questLabel: '',
+      created: 'Today'
+    },
+    {
+      id: 'bibi-counting',
+      type: 'quest',
+      sender: 'Bibi',
+      avatar: '🐰',
+      subject: 'The Flower Counting Quest',
+      message:
+        'Hi, {player}!\\n\\nI was hopping through the park and tried to count all the flowers. I lost count! Visit Math World and help me practice counting.',
+      reward: 5,
+      questPage: 'math.html',
+      questLabel: 'Start Math Quest',
+      created: 'Today'
+    },
+    {
+      id: 'nova-discovery',
+      type: 'quest',
+      sender: 'Nova',
+      avatar: '🦉',
+      subject: 'A Curious Discovery',
+      message:
+        'Greetings, {player}!\\n\\nA good scientist notices tiny details. Visit Science World and discover something new. Your curiosity is your superpower!',
+      reward: 5,
+      questPage: 'science.html',
+      questLabel: 'Start Science Quest',
+      created: 'Today'
+    },
+    {
+      id: 'melo-rhythm',
+      type: 'quest',
+      sender: 'Melo',
+      avatar: '🐼',
+      subject: 'Finish My Rhythm',
+      message:
+        'Hey, {player}!\\n\\nTap, clap, tap... I need one more sound to finish my song. Come make music with me!',
+      reward: 5,
+      questPage: 'music-studio.html',
+      questLabel: 'Visit Music Studio',
+      created: 'Today'
+    },
+    {
+      id: 'castle-secret',
+      type: 'quest',
+      sender: 'The Castle',
+      avatar: '🏰',
+      subject: 'A Door Is Glowing',
+      message:
+        'Dear {player},\\n\\nOne of the castle doors began to glow this morning. It may be waiting for a brave explorer. Come investigate!',
+      reward: 8,
+      questPage: 'castle.html',
+      questLabel: 'Explore the Castle',
+      created: 'Today'
+    }
+  ];
+
+  let mailState = loadMailState();
+  let selectedTab = 'inbox';
+  let selectedLetterId = null;
+
+  const modal = document.getElementById('magicMailModal');
+  const closeButton = document.getElementById('magicMailClose');
+  const list = document.getElementById('magicMailList');
+  const reader = document.getElementById('magicMailReader');
+  const toast = document.getElementById('magicMailToast');
+
+  function playerName() {
+    return (
+      localStorage.getItem('elcraft_child_name') ||
+      localStorage.getItem('elcraft_player_name') ||
+      'Player'
+    ).trim().slice(0, 20) || 'Player';
+  }
+
+  function loadMailState() {
+    let saved = null;
+
+    try {
+      saved = JSON.parse(localStorage.getItem(MAIL_SAVE_KEY) || 'null');
+    } catch {}
+
+    if (!saved || !Array.isArray(saved.letters)) {
+      saved = {
+        letters: starterLetters.map(letter => ({
+          ...letter,
+          read: false,
+          claimed: false,
+          questStarted: false
+        }))
+      };
+    }
+
+    addDailyLetter(saved);
+    localStorage.setItem(MAIL_SAVE_KEY, JSON.stringify(saved));
+
+    return saved;
+  }
+
+  function addDailyLetter(state) {
+    const dateKey = new Date().toISOString().slice(0, 10);
+    const dailyId = `daily-${dateKey}`;
+
+    if (state.letters.some(letter => letter.id === dailyId)) {
+      return;
+    }
+
+    const dayNumber = Math.floor(Date.now() / 86400000);
+    const dailyOptions = [
+      {
+        sender: 'Finn',
+        avatar: '🦊',
+        subject: 'Today’s Reading Spark',
+        message:
+          'Good morning, {player}!\\n\\nRead one page, one sign, or one word today. Every little bit makes your reading power grow!',
+        reward: 2,
+        questPage: 'reading.html',
+        questLabel: 'Visit the Library'
+      },
+      {
+        sender: 'Bibi',
+        avatar: '🐰',
+        subject: 'A Tiny Number Challenge',
+        message:
+          'Hello, {player}!\\n\\nCan you find three things around you that have the same shape? You are a marvelous math detective!',
+        reward: 2,
+        questPage: 'math.html',
+        questLabel: 'Practice Math'
+      },
+      {
+        sender: 'Nova',
+        avatar: '🦉',
+        subject: 'Question of the Day',
+        message:
+          'Hello, {player}!\\n\\nLook outside and notice one thing that changed since yesterday. Scientists are excellent observers!',
+        reward: 2,
+        questPage: 'science.html',
+        questLabel: 'Explore Science'
+      },
+      {
+        sender: 'Melo',
+        avatar: '🐼',
+        subject: 'Sound Hunt',
+        message:
+          'Hey, {player}!\\n\\nListen quietly for ten seconds. How many different sounds can you hear? That is today’s music mission!',
+        reward: 2,
+        questPage: 'music-studio.html',
+        questLabel: 'Make Music'
+      }
+    ];
+
+    const chosen = dailyOptions[dayNumber % dailyOptions.length];
+
+    state.letters.unshift({
+      id: dailyId,
+      type: 'quest',
+      ...chosen,
+      created: 'Daily Mail',
+      read: false,
+      claimed: false,
+      questStarted: false
+    });
+  }
+
+  function save() {
+    localStorage.setItem(MAIL_SAVE_KEY, JSON.stringify(mailState));
+  }
+
+  function getStars() {
+    return Number(localStorage.getItem(STAR_KEY) || 0);
+  }
+
+  function setStars(amount) {
+    localStorage.setItem(STAR_KEY, String(Math.max(0, amount)));
+    updateHeaderCounter();
+  }
+
+  function showToast(text) {
+    toast.textContent = text;
+    toast.classList.add('show');
+
+    clearTimeout(showToast.timer);
+
+    showToast.timer = setTimeout(() => {
+      toast.classList.remove('show');
+    }, 2400);
+  }
+
+  function filteredLetters() {
+    if (selectedTab === 'quests') {
+      return mailState.letters.filter(letter => letter.type === 'quest');
+    }
+
+    if (selectedTab === 'friends') {
+      return [];
+    }
+
+    return mailState.letters;
+  }
+
+  function unreadCount() {
+    return mailState.letters.filter(letter => !letter.read).length;
+  }
+
+  function updateMailboxBadge() {
+    const mailbox = document.getElementById('cityMailbox');
+
+    if (!mailbox) {
+      return;
+    }
+
+    const box = mailbox.querySelector('.mailbox-box') || mailbox;
+    const count = unreadCount();
+    let badge = mailbox.querySelector('.mail-badge');
+
+    if (count > 0) {
+      mailbox.classList.add('has-mail');
+
+      if (!badge) {
+        badge = document.createElement('div');
+        badge.className = 'mail-badge';
+        box.appendChild(badge);
+      }
+
+      badge.textContent = count > 9 ? '9+' : String(count);
+      mailbox.setAttribute(
+        'aria-label',
+        `Open city mailbox. ${count} unread letter${count === 1 ? '' : 's'}.`
+      );
+    } else {
+      mailbox.classList.remove('has-mail');
+
+      if (badge) {
+        badge.remove();
+      }
+
+      mailbox.setAttribute('aria-label', 'Open city mailbox');
+    }
+  }
+
+  function updateHeaderCounter() {
+    let counter = document.getElementById('mailStarCounter');
+    const header = document.querySelector('.game-header');
+
+    if (!header) {
+      return;
+    }
+
+    if (!counter) {
+      counter = document.createElement('div');
+      counter.id = 'mailStarCounter';
+      counter.className = 'mail-counter';
+      header.appendChild(counter);
+    }
+
+    counter.textContent = `⭐ ${getStars()} Stars`;
+  }
+
+  function installMailboxButton() {
+    const oldMailbox = document.getElementById('cityMailbox');
+
+    if (!oldMailbox) {
+      setTimeout(installMailboxButton, 100);
+      return;
+    }
+
+    /*
+      city.js already placed a temporary click listener on the mailbox.
+      Cloning it removes that temporary listener so only Magical Mail opens.
+    */
+    const mailbox = oldMailbox.cloneNode(true);
+    oldMailbox.replaceWith(mailbox);
+
+    mailbox.addEventListener('click', openMailbox);
+
+    mailbox.addEventListener('keydown', event => {
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault();
+        openMailbox();
+      }
+    });
+
+    updateMailboxBadge();
+  }
+
+  function openMailbox() {
+    selectedTab = 'inbox';
+    selectedLetterId =
+      mailState.letters.find(letter => !letter.read)?.id ||
+      mailState.letters[0]?.id ||
+      null;
+
+    modal.classList.add('open');
+    render();
+    closeButton.focus();
+  }
+
+  function closeMailbox() {
+    modal.classList.remove('open');
+  }
+
+  function render() {
+    document.querySelectorAll('.magic-mail-tab').forEach(button => {
+      button.classList.toggle(
+        'active',
+        button.dataset.mailTab === selectedTab
+      );
+    });
+
+    if (selectedTab === 'friends') {
+      renderFriendsPanel();
+      return;
+    }
+
+    renderList();
+
+    const letters = filteredLetters();
+
+    if (
+      selectedLetterId &&
+      !letters.some(letter => letter.id === selectedLetterId)
+    ) {
+      selectedLetterId = letters[0]?.id || null;
+    }
+
+    if (!selectedLetterId && letters.length) {
+      selectedLetterId = letters[0].id;
+    }
+
+    renderSelectedLetter();
+  }
+
+  function renderList() {
+    const letters = filteredLetters();
+
+    if (!letters.length) {
+      list.innerHTML =
+        '<div class="mail-list-empty">No letters here yet. 📭</div>';
+      return;
+    }
+
+    list.innerHTML = letters.map(letter => `
+      <button
+        type="button"
+        class="mail-list-item
+          ${letter.read ? '' : 'unread'}
+          ${letter.id === selectedLetterId ? 'selected' : ''}"
+        data-letter-id="${letter.id}">
+
+        <span class="mail-list-avatar" aria-hidden="true">
+          ${letter.avatar}
+        </span>
+
+        <span class="mail-list-copy">
+          <span class="mail-list-from">${escapeHtml(letter.sender)}</span>
+          <span class="mail-list-subject">${escapeHtml(letter.subject)}</span>
+        </span>
+
+        ${letter.read ? '' : '<span class="mail-unread-dot" aria-label="Unread"></span>'}
+      </button>
+    `).join('');
+
+    list.querySelectorAll('[data-letter-id]').forEach(button => {
+      button.addEventListener('click', () => {
+        selectedLetterId = button.dataset.letterId;
+        markSelectedRead();
+        render();
+      });
+    });
+  }
+
+  function markSelectedRead() {
+    const letter = mailState.letters.find(
+      item => item.id === selectedLetterId
+    );
+
+    if (letter && !letter.read) {
+      letter.read = true;
+      save();
+      updateMailboxBadge();
+    }
+  }
+
+  function renderSelectedLetter() {
+    const letter = mailState.letters.find(
+      item => item.id === selectedLetterId
+    );
+
+    if (!letter) {
+      reader.innerHTML = `
+        <div class="mail-welcome">
+          <div class="mail-welcome-inner">
+            <div class="mail-welcome-icon">📭</div>
+            <h3>No mail here</h3>
+            <p>New magical letters will arrive soon.</p>
+          </div>
+        </div>
+      `;
+      return;
+    }
+
+    if (!letter.read) {
+      letter.read = true;
+      save();
+      updateMailboxBadge();
+      renderList();
+    }
+
+    const rewardText =
+      letter.reward > 0
+        ? `${letter.reward} stars`
+        : 'A magical smile';
+
+    reader.innerHTML = `
+      <article class="mail-letter">
+
+        <div class="mail-letter-top">
+
+          <div class="mail-letter-avatar" aria-hidden="true">
+            ${letter.avatar}
+          </div>
+
+          <div>
+            <h3>${escapeHtml(letter.subject)}</h3>
+
+            <div class="mail-letter-meta">
+              From ${escapeHtml(letter.sender)} • ${escapeHtml(letter.created)}
+            </div>
+          </div>
+
+        </div>
+
+        <div class="mail-letter-message">
+          ${escapeHtml(letter.message.replaceAll('{player}', playerName()))}
+        </div>
+
+        <div class="mail-reward-box">
+          <span>🎁 Letter reward</span>
+          <span>⭐ ${escapeHtml(rewardText)}</span>
+        </div>
+
+        <div class="mail-letter-actions">
+
+          <button
+            type="button"
+            class="mail-claim-button"
+            ${letter.claimed ? 'disabled' : ''}>
+            ${letter.claimed ? '✓ Reward Claimed' : `Claim ${letter.reward} Stars`}
+          </button>
+
+          ${
+            letter.questPage
+              ? `
+                <button
+                  type="button"
+                  class="mail-quest-button">
+                  ${escapeHtml(letter.questLabel || 'Start Quest')}
+                </button>
+              `
+              : ''
+          }
+
+          <button
+            type="button"
+            class="mail-delete-button">
+            Put Away
+          </button>
+
+        </div>
+
+      </article>
+    `;
+
+    const claimButton = reader.querySelector('.mail-claim-button');
+
+    claimButton.addEventListener('click', () => {
+      if (letter.claimed) {
+        return;
+      }
+
+      letter.claimed = true;
+      setStars(getStars() + Number(letter.reward || 0));
+      save();
+      showToast(`You earned ${letter.reward} stars! ⭐`);
+      renderSelectedLetter();
+    });
+
+    const questButton = reader.querySelector('.mail-quest-button');
+
+    if (questButton) {
+      questButton.addEventListener('click', () => {
+        letter.questStarted = true;
+        save();
+        window.location.href = letter.questPage;
+      });
+    }
+
+    reader
+      .querySelector('.mail-delete-button')
+      .addEventListener('click', () => {
+        const index = mailState.letters.findIndex(
+          item => item.id === letter.id
+        );
+
+        if (index >= 0) {
+          mailState.letters.splice(index, 1);
+          save();
+        }
+
+        selectedLetterId = filteredLetters()[0]?.id || null;
+        updateMailboxBadge();
+        render();
+        showToast('Letter placed safely in your memory book. 💌');
+      });
+  }
+
+  function renderFriendsPanel() {
+    list.innerHTML = `
+      <div class="mail-list-empty">
+        Parent-approved friends will appear here.
+      </div>
+    `;
+
+    reader.innerHTML = `
+      <section class="friend-mail-panel">
+
+        <div class="big-icon" aria-hidden="true">🧑‍🤝‍🧑</div>
+
+        <h3>Friend Mail</h3>
+
+        <p>
+          This area is prepared for children to exchange safe letters,
+          drawings, stickers, and city postcards after both parents approve
+          the friendship.
+        </p>
+
+        <div class="parent-safety-card">
+          <strong>🔒 Planned safety rules</strong><br>
+          • No public child search<br>
+          • Both parents approve a private friend code<br>
+          • No open chat in the first version<br>
+          • Children choose safe phrases, stickers, drawings, and postcards<br>
+          • Parents can review, pause, or remove every connection
+        </div>
+
+        <span class="coming-soon-chip">
+          Secure parent accounts and a server are required
+        </span>
+
+      </section>
+    `;
+  }
+
+  function escapeHtml(value) {
+    return String(value)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  document.querySelectorAll('.magic-mail-tab').forEach(button => {
+    button.addEventListener('click', () => {
+      selectedTab = button.dataset.mailTab;
+      selectedLetterId = filteredLetters()[0]?.id || null;
+      render();
+    });
+  });
+
+  closeButton.addEventListener('click', closeMailbox);
+
+  modal.addEventListener('click', event => {
+    if (event.target === modal) {
+      closeMailbox();
+    }
+  });
+
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && modal.classList.contains('open')) {
+      closeMailbox();
+    }
+  });
+
+  updateHeaderCounter();
+  installMailboxButton();
+})();
+</script>
+
 </body>
 </html>
