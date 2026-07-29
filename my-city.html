@@ -5,11 +5,7 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
-
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#f8fdff">
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <title>ELCraft — My City</title>
 
@@ -21,27 +17,13 @@
       margin: 0;
       width: 100%;
       height: 100%;
-      min-height: 100%;
       overflow: hidden;
-      overscroll-behavior: none;
-      touch-action: manipulation;
-      -webkit-text-size-adjust: 100%;
     }
 
     body {
       display: flex;
       flex-direction: column;
       background: #45b8e5;
-      padding-top: env(safe-area-inset-top);
-      padding-right: env(safe-area-inset-right);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-    }
-
-    button,
-    [role="button"] {
-      -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
     }
 
     /* ------------------------------------------- */
@@ -77,4 +59,422 @@
       border: 0;
       border-radius: 999px;
       padding: 11px 20px;
-      color: #634
+      color: #6343ac;
+      background: #eee1ff;
+      font-size: clamp(16px, 1.45vw, 22px);
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow:
+        0 5px 0 rgba(104, 70, 170, 0.18),
+        0 8px 18px rgba(71, 61, 132, 0.12);
+      transition:
+        transform 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .home-button:hover {
+      transform: translateY(-2px);
+      background: #e6d4ff;
+    }
+
+    .home-button:active {
+      transform: translateY(2px);
+    }
+
+    .home-button:focus-visible {
+      outline: 4px solid #ffcf52;
+      outline-offset: 3px;
+    }
+
+    .title-icon {
+      flex: 0 0 auto;
+      font-size: clamp(35px, 3.5vw, 53px);
+      line-height: 1;
+      filter: drop-shadow(0 5px 4px rgba(50, 69, 115, 0.16));
+    }
+
+    .header-title-group {
+      min-width: 0;
+    }
+
+    .header-title-group h1 {
+      margin: 0;
+      color: #6544af;
+      font-size: clamp(27px, 3vw, 46px);
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .header-title-group p {
+      margin: 5px 0 0;
+      color: #526b9f;
+      font-size: clamp(12px, 1.15vw, 18px);
+      line-height: 1.2;
+      font-weight: 800;
+    }
+
+    .city-owner {
+      flex: 0 0 auto;
+      max-width: 270px;
+      padding: 12px 20px;
+      overflow: hidden;
+      border-radius: 999px;
+      color: #6544af;
+      background: #f3e5ff;
+      font-size: clamp(14px, 1.25vw, 19px);
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      box-shadow: 0 5px 14px rgba(99, 67, 172, 0.1);
+    }
+
+    /* The original city.css uses 100vh.
+       This keeps the city below the new header. */
+
+    #city {
+      flex: 1 1 auto;
+      width: 100%;
+      height: auto;
+      min-height: 0;
+    }
+
+    /* Make non-button buildings keyboard accessible. */
+
+    .building:focus-visible,
+    #castle:focus-visible,
+    #hero:focus-visible {
+      outline: 5px solid white;
+      outline-offset: 6px;
+      border-radius: 28px;
+    }
+
+    @media (max-width: 760px) {
+      .game-header {
+        min-height: 78px;
+        gap: 10px;
+        padding: 10px 12px;
+      }
+
+      .header-left {
+        gap: 10px;
+      }
+
+      .home-button {
+        min-width: auto;
+        min-height: 45px;
+        padding: 9px 14px;
+      }
+
+      .title-icon {
+        display: none;
+      }
+
+      .header-title-group p {
+        display: none;
+      }
+
+      .city-owner {
+        max-width: 145px;
+        padding: 10px 13px;
+      }
+    }
+
+    @media (max-width: 500px) {
+      .game-header {
+        align-items: center;
+      }
+
+      .header-title-group h1 {
+        font-size: 23px;
+      }
+
+      .city-owner {
+        display: none;
+      }
+    }
+
+    @media (max-height: 650px) and (orientation: landscape) {
+      .game-header {
+        min-height: 64px;
+        padding: 7px 16px;
+      }
+
+      .home-button {
+        min-height: 42px;
+        padding: 7px 15px;
+      }
+
+      .title-icon {
+        font-size: 34px;
+      }
+
+      .header-title-group h1 {
+        font-size: 29px;
+      }
+
+      .header-title-group p {
+        margin-top: 2px;
+        font-size: 12px;
+      }
+
+      .city-owner {
+        padding: 8px 15px;
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ELCraft Header -->
+
+  <header class="game-header">
+
+    <div class="header-left">
+
+      <button
+        id="homeButton"
+        class="home-button"
+        type="button"
+        aria-label="Return to ELCraft Home World">
+        ← Home
+      </button>
+
+      <div
+        class="title-icon"
+        aria-hidden="true">
+        🏙️
+      </div>
+
+      <div class="header-title-group">
+
+        <h1>My City</h1>
+
+        <p>
+          Explore buildings and grow your magical city.
+        </p>
+
+      </div>
+
+    </div>
+
+    <div
+      id="cityOwner"
+      class="city-owner">
+      ✨ Player's City
+    </div>
+
+  </header>
+
+  <!-- City World -->
+
+  <main
+    id="city"
+    aria-label="ELCraft My City">
+
+    <!-- Sky -->
+
+    <div
+      id="sky"
+      aria-hidden="true">
+
+      <div class="cloud cloud1"></div>
+      <div class="cloud cloud2"></div>
+      <div class="cloud cloud3"></div>
+
+      <div id="sun"></div>
+
+    </div>
+
+    <!-- Castle -->
+
+    <div
+      id="castle"
+      data-world="castle"
+      data-label="Castle"
+      aria-label="Open Castle">
+
+      <div class="buildingLabel">
+        🏰 Castle
+      </div>
+
+    </div>
+
+    <!-- Library -->
+
+    <div
+      class="building library"
+      data-world="library"
+      data-label="Library"
+      aria-label="Open Library">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        📚
+      </div>
+
+      <div class="label">
+        Library
+      </div>
+
+    </div>
+
+    <!-- School -->
+
+    <div
+      class="building school"
+      data-world="school"
+      data-label="School"
+      aria-label="Open School">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        🏫
+      </div>
+
+      <div class="label">
+        School
+      </div>
+
+    </div>
+
+    <!-- Home -->
+
+    <div
+      class="building home"
+      data-world="home"
+      data-label="Home"
+      aria-label="Return to Home World">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        🏠
+      </div>
+
+      <div class="label">
+        Home
+      </div>
+
+    </div>
+
+    <!-- Art Studio -->
+
+    <div
+      class="building art"
+      data-world="art"
+      data-label="Art Studio"
+      aria-label="Open Art Studio">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        🎨
+      </div>
+
+      <div class="label">
+        Art Studio
+      </div>
+
+    </div>
+
+    <!-- Market -->
+
+    <div
+      class="building market"
+      data-world="market"
+      data-label="Market"
+      aria-label="Open Market">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        🛒
+      </div>
+
+      <div class="label">
+        Market
+      </div>
+
+    </div>
+
+    <!-- Pet Shop -->
+
+    <div
+      class="building pets"
+      data-world="pets"
+      data-label="Pet Shop"
+      aria-label="Open Pet Shop">
+
+      <div
+        class="emoji"
+        aria-hidden="true">
+        🐶
+      </div>
+
+      <div class="label">
+        Pet Shop
+      </div>
+
+    </div>
+
+    <!-- Center Park and Player -->
+
+    <div id="park">
+
+      <div
+        class="tree tree1"
+        aria-hidden="true">
+        🌳
+      </div>
+
+      <div
+        class="tree tree2"
+        aria-hidden="true">
+        🌳
+      </div>
+
+      <div
+        id="hero"
+        role="button"
+        tabindex="0"
+        aria-label="Open My Character">
+
+        <img
+          id="heroAvatar"
+          src=""
+          alt="Player's saved character">
+
+        <div id="heroName">
+          Player
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Road -->
+
+    <div
+      id="road"
+      aria-hidden="true">
+    </div>
+
+    <!-- Message Toast -->
+
+    <div
+      id="message"
+      role="status"
+      aria-live="polite">
+    </div>
+
+  </main>
+
+  <script src="city.js"></script>
+
+</body>
+</html>
