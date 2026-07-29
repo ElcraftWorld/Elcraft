@@ -382,10 +382,12 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
     daily.innerHTML='';
     subjects.slice(0,4).forEach(s=>{
       const isReading=s.id==='reading';
-      const isDone=!isReading&&done.includes(s.id);
+      const isWriting=s.id==='writing';
+      const isAlwaysOpen=isReading||isWriting;
+      const isDone=!isAlwaysOpen&&done.includes(s.id);
       const row=document.createElement('div');
       row.className='task '+(isDone?'done':'');
-      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isReading?'Always open • Read or reread any book':isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">${isReading?'📘':`+${s.reward} 🪙`}</div>`;
+      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isReading?'Always open • Read or reread any book':isWriting?'Always open • Choose any writing activity':isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">${isReading?'📘':isWriting?'✏️':`+${s.reward} 🪙`}</div>`;
       daily.append(row);
     });
 
@@ -420,10 +422,16 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
   }
 
   function openLesson(subject){
-    if(subject.id==='reading'){
-      location.href='reading.html';
+    const classroomPages={
+      reading:'reading.html',
+      writing:'writing.html'
+    };
+
+    if(classroomPages[subject.id]){
+      location.href=classroomPages[subject.id];
       return;
     }
+
     activeSubject=subject;
     document.querySelector('#teacherIcon').textContent=subject.teacher;
     document.querySelector('#modalTitle').textContent=subject.name;
