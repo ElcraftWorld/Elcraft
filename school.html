@@ -1,0 +1,512 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#172b68">
+<title>ELCraft | Academy</title>
+<style>
+:root{
+  --ink:#1a2852;
+  --deep:#13245c;
+  --purple:#7044c3;
+  --gold:#ffd64d;
+  --green:#66c84f;
+  --sky:#83d8ff;
+  --panel:#fff;
+  --line:#ded9f2;
+  --shadow:0 18px 45px rgba(27,39,91,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 12% 8%,rgba(255,255,255,.9),transparent 20%),
+    radial-gradient(circle at 88% 14%,rgba(255,255,255,.65),transparent 18%),
+    linear-gradient(#7bd5ff 0 39%,#dff5ff 39% 58%,#93db6c 58% 100%);
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.cloud{position:fixed;z-index:0;opacity:.78;animation:float 18s linear infinite;pointer-events:none}
+.cloud.one{top:95px;left:-120px;font-size:92px}
+.cloud.two{top:190px;left:-180px;font-size:67px;animation-delay:-7s}
+.cloud.three{top:55px;left:-230px;font-size:55px;animation-delay:-13s}
+@keyframes float{to{transform:translateX(calc(100vw + 320px))}}
+.bird{position:fixed;z-index:1;top:150px;left:-70px;font-size:35px;animation:fly 14s linear infinite;pointer-events:none}
+.bird.b2{top:235px;animation-delay:-6s;font-size:28px}
+@keyframes fly{to{transform:translateX(calc(100vw + 150px)) translateY(-45px)}}
+.topbar{
+  position:sticky;top:0;z-index:20;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 15px;background:rgba(255,255,255,.93);
+  border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(29,39,89,.15);backdrop-filter:blur(12px)
+}
+.leftbar,.stats{display:flex;align-items:center;gap:10px}
+.home-btn,.sound-btn{
+  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;
+  color:#5e3ca2;background:#eee7ff;box-shadow:0 4px 0 #d3c6ed
+}
+.logo{
+  font-weight:1000;font-size:clamp(24px,3vw,40px);line-height:.9;color:#ffc72c;
+  text-shadow:-2px -2px 0 #6e3ca8,2px -2px 0 #6e3ca8,-2px 2px 0 #6e3ca8,2px 2px 0 #6e3ca8,0 5px 0 #43277a
+}
+.stat{
+  min-width:96px;border-radius:999px;padding:9px 12px;background:#fff5c7;
+  color:#5a3e75;font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
+}
+.stat.xp{background:#e5f3ff}.stat.streak{background:#ffe1d0}
+main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px}
+.welcome{
+  position:relative;overflow:hidden;
+  display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
+  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,233,255,.94));
+  box-shadow:var(--shadow)
+}
+.welcome:after{content:"🏫";position:absolute;right:4%;bottom:-34px;font-size:180px;opacity:.14;transform:rotate(-3deg)}
+.welcome h1{margin:0;color:#56369c;font-size:clamp(30px,4vw,55px)}
+.welcome p{margin:8px 0 0;font-size:17px;font-weight:900;color:#66749a}
+.level-card{
+  position:relative;z-index:1;align-self:center;padding:15px;border-radius:23px;
+  background:linear-gradient(#273b82,#14245d);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)
+}
+.level-top{display:flex;justify-content:space-between;align-items:center;font-weight:1000}
+.progress{height:15px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.17);overflow:hidden}
+.progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#ffd64d,#91e25d);transition:.45s ease}
+.grid{display:grid;grid-template-columns:1.75fr .85fr;gap:15px;margin-top:15px}
+.panel{
+  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.95);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:16px 18px;border-bottom:1px solid var(--line);background:#f8f6ff
+}
+.panel-head h2{margin:0;color:#5a399e;font-size:25px}
+.panel-body{padding:16px}
+.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.subject{
+  position:relative;min-height:155px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(35,34,83,.23);transition:.18s ease;overflow:hidden
+}
+.subject:hover{transform:translateY(-3px)}
+.subject:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(35,34,83,.23)}
+.subject .icon{font-size:47px;display:block;margin-bottom:7px}
+.subject strong{display:block;font-size:22px}
+.subject small{display:block;margin-top:4px;font-weight:900;opacity:.93}
+.subject .done-mark{position:absolute;right:12px;top:12px;font-size:29px;display:none}
+.subject.done .done-mark{display:block}
+.subject.reading{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
+.subject.writing{background:linear-gradient(135deg,#e06a85,#f09772)}
+.subject.math{background:linear-gradient(135deg,#2878c7,#4eb8de)}
+.subject.science{background:linear-gradient(135deg,#299e79,#60c96b)}
+.subject.discovery{background:linear-gradient(135deg,#d48a2f,#e7bd49)}
+.subject.music{background:linear-gradient(135deg,#8b4aba,#d35ca3)}
+.daily-list{display:grid;gap:10px}
+.task{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;
+  padding:12px;border:2px solid #ebe6f7;border-radius:17px;background:#fff
+}
+.task.done{background:#efffe9;border-color:#a4df8d}
+.task-icon{font-size:29px}.task-title{font-weight:1000}.task-sub{font-size:11px;color:#7882a2;font-weight:900;margin-top:2px}
+.task-reward{font-weight:1000;color:#6d4a93;white-space:nowrap}
+.big-reward{
+  width:100%;margin-top:12px;border:0;border-radius:20px;padding:16px;
+  color:#fff;background:linear-gradient(#ffc84b,#e99427);font-weight:1000;
+  box-shadow:0 6px 0 #bd6d19;font-size:17px
+}
+.big-reward:disabled{opacity:.55;cursor:not-allowed}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mini{
+  padding:12px;border-radius:18px;background:#f4f1ff;border:2px solid #e2dcf5;text-align:center;font-weight:1000
+}
+.mini span{display:block;font-size:30px;margin-bottom:4px}
+.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.badge{
+  padding:12px 7px;border-radius:18px;background:#f7f5ff;border:2px solid #e4def4;text-align:center;font-weight:1000
+}
+.badge.locked{filter:grayscale(1);opacity:.48}
+.badge span{display:block;font-size:32px;margin-bottom:5px}
+.modal{
+  position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:18px;
+  background:rgba(17,27,68,.56);backdrop-filter:blur(7px)
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(560px,100%);border-radius:28px;padding:23px;background:#fff;text-align:center;
+  box-shadow:0 25px 70px rgba(16,25,64,.35);border:4px solid #fff
+}
+.teacher{font-size:82px}.modal-card h2{margin:3px 0;color:#5a399e;font-size:31px}
+.modal-card p{color:#68769b;font-weight:900;line-height:1.45}
+.lesson-preview{
+  margin:15px 0;padding:17px;border-radius:20px;background:#f3f0ff;color:#4e3a86;font-weight:1000
+}
+.modal-actions{display:flex;gap:9px}
+.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
+.close{background:#e9e4f4;color:#63499b}
+.complete{background:linear-gradient(#8bd84d,#59ad28);color:#fff;box-shadow:0 5px 0 #438b1d}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:80;transform:translateX(-50%) translateY(150px);
+  padding:13px 19px;border-radius:999px;background:#12235c;color:#fff;font-weight:1000;
+  transition:.3s ease;box-shadow:0 12px 30px rgba(20,29,70,.28);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:950px){
+  .grid,.welcome{grid-template-columns:1fr}.stats .stat.xp{display:none}
+}
+@media(max-width:620px){
+  main{padding:8px}.topbar{padding:8px}.logo{font-size:24px}.sound-btn{display:none}
+  .stat{min-width:auto;padding:8px 10px;font-size:12px}.welcome{padding:16px;border-radius:23px}
+  .subjects{grid-template-columns:1fr}.subject{min-height:132px}
+  .mini-grid,.badges{grid-template-columns:repeat(2,1fr)}
+  .panel-head{padding:13px}.panel-body{padding:12px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
+  <div class="bird">🕊️</div><div class="bird b2">🐦</div>
+
+  <header class="topbar">
+    <div class="leftbar">
+      <button class="home-btn" id="cityBtn">← My City</button>
+      <div class="logo">ELCraft</div>
+    </div>
+    <div class="stats">
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <div class="stat streak">🔥 <span id="streak">0</span></div>
+      <button class="sound-btn" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="welcome">
+      <div>
+        <h1 id="welcomeTitle">Welcome to ELCraft Academy!</h1>
+        <p>Learn, play, discover, and earn rewards for your world.</p>
+      </div>
+      <div class="level-card">
+        <div class="level-top"><span id="levelLabel">Student Level 1</span><span id="xpLabel">0 / 100 XP</span></div>
+        <div class="progress"><span id="levelBar" style="width:0%"></span></div>
+      </div>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>🏫 Choose a Classroom</h2>
+          <strong id="todayLabel"></strong>
+        </div>
+        <div class="panel-body">
+          <div class="subjects" id="subjects"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head"><h2>🌟 Today's School</h2><strong id="dailyCount">0/4</strong></div>
+        <div class="panel-body">
+          <div class="daily-list" id="dailyList"></div>
+          <button class="big-reward" id="dailyReward" disabled>🎁 Complete 4 lessons to unlock</button>
+        </div>
+      </aside>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="panel-head"><h2>📈 My Progress</h2></div>
+        <div class="panel-body">
+          <div class="mini-grid">
+            <div class="mini"><span>📚</span><b id="lessonTotal">0</b><br>Lessons</div>
+            <div class="mini"><span>⭐</span><b id="totalXp">0</b><br>Total XP</div>
+            <div class="mini"><span>🪙</span><b id="earnedCoins">0</b><br>School Coins</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>🏅 Achievement Board</h2></div>
+        <div class="panel-body"><div class="badges" id="badges"></div></div>
+      </section>
+    </div>
+  </main>
+
+  <div class="modal" id="lessonModal">
+    <div class="modal-card">
+      <div class="teacher" id="teacherIcon">🦉</div>
+      <h2 id="modalTitle">Reading Hall</h2>
+      <p id="teacherMessage"></p>
+      <div class="lesson-preview" id="lessonPreview"></div>
+      <div class="modal-actions">
+        <button class="close" id="closeModal">Maybe Later</button>
+        <button class="complete" id="completeLesson">Complete Lesson</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const COINS_KEY='elcraft_coins';
+  const PROFILE_KEY='elcraft_profile_v1';
+  const SCHOOL_KEY='elcraft_school_v1';
+
+  const childName=localStorage.getItem(NAME_KEY)||'Student';
+  const today=new Date().toLocaleDateString('en-CA');
+  let soundOn=true;
+  let activeSubject=null;
+
+  const subjects=[
+    {id:'reading',icon:'📚',name:'Reading Hall',teacher:'🦉',teacherName:'Mrs. Owl',color:'reading',reward:10,xp:20,preview:'Read a short story and answer one fun question.'},
+    {id:'writing',icon:'✏️',name:'Writing Workshop',teacher:'🦊',teacherName:'Ms. Fox',color:'writing',reward:10,xp:20,preview:'Practice letters, words, and creative sentences.'},
+    {id:'math',icon:'➕',name:'Math Lab',teacher:'🐻',teacherName:'Mr. Bear',color:'math',reward:12,xp:25,preview:'Solve a playful number puzzle and help the classroom.'},
+    {id:'science',icon:'🔬',name:'Science Center',teacher:'🐼',teacherName:'Dr. Panda',color:'science',reward:12,xp:25,preview:'Explore plants, animals, weather, space, and experiments.'},
+    {id:'discovery',icon:'🌎',name:'Discovery Room',teacher:'🦁',teacherName:'Professor Lion',color:'discovery',reward:10,xp:20,preview:'Discover countries, cultures, maps, and amazing places.'},
+    {id:'music',icon:'🎵',name:'Music Studio',teacher:'🐰',teacherName:'Ms. Bunny',color:'music',reward:10,xp:20,preview:'Explore rhythm, sounds, instruments, and musical patterns.'}
+  ];
+
+  let profile={
+    version:1,
+    coins:Number(localStorage.getItem(COINS_KEY)||100),
+    xp:0,
+    totalXp:0,
+    level:1,
+    achievements:[],
+    schoolCoinsEarned:0
+  };
+  let school={
+    completedByDate:{},
+    dailyRewardDates:[],
+    lessonTotals:{reading:0,writing:0,math:0,science:0,discovery:0,music:0},
+    lastSchoolDate:'',
+    streak:0
+  };
+
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if(saved) profile={...profile,...saved};
+  }catch{}
+  try{
+    const saved=JSON.parse(localStorage.getItem(SCHOOL_KEY));
+    if(saved) school={...school,...saved,lessonTotals:{...school.lessonTotals,...(saved.lessonTotals||{})}};
+  }catch{}
+
+  function completedToday(){
+    return school.completedByDate[today]||[];
+  }
+
+  function saveAll(){
+    profile.coins=Math.max(0,Number(profile.coins)||0);
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+    localStorage.setItem(SCHOOL_KEY,JSON.stringify(school));
+    localStorage.setItem(COINS_KEY,String(profile.coins));
+  }
+
+  function updateLevel(){
+    profile.level=Math.floor(profile.xp/100)+1;
+  }
+
+  function awardAchievement(id){
+    if(!profile.achievements.includes(id)){
+      profile.achievements.push(id);
+      setTimeout(()=>toast('🏅 New achievement unlocked!'),450);
+    }
+  }
+
+  function updateAchievements(){
+    const total=Object.values(school.lessonTotals).reduce((a,b)=>a+b,0);
+    if(total>=1) awardAchievement('first-lesson');
+    if(total>=10) awardAchievement('ten-lessons');
+    if(school.streak>=3) awardAchievement('three-day');
+    if(school.dailyRewardDates.length>=1) awardAchievement('full-day');
+    if((school.lessonTotals.reading||0)>=5) awardAchievement('bookworm');
+    if((school.lessonTotals.math||0)>=5) awardAchievement('math-star');
+  }
+
+  function updateStreak(){
+    if(school.lastSchoolDate===today)return;
+    const yesterday=new Date();
+    yesterday.setDate(yesterday.getDate()-1);
+    const y=yesterday.toLocaleDateString('en-CA');
+    school.streak=school.lastSchoolDate===y?school.streak+1:1;
+    school.lastSchoolDate=today;
+  }
+
+  function render(){
+    updateLevel();
+    const done=completedToday();
+    document.querySelector('#welcomeTitle').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins;
+    document.querySelector('#xp').textContent=profile.xp;
+    document.querySelector('#streak').textContent=school.streak;
+    document.querySelector('#levelLabel').textContent=`Student Level ${profile.level}`;
+    document.querySelector('#xpLabel').textContent=`${profile.xp%100} / 100 XP`;
+    document.querySelector('#levelBar').style.width=(profile.xp%100)+'%';
+    document.querySelector('#todayLabel').textContent=new Date().toLocaleDateString('en-US',{weekday:'long'});
+    document.querySelector('#dailyCount').textContent=Math.min(done.length,4)+'/4';
+
+    const subjectsBox=document.querySelector('#subjects');
+    subjectsBox.innerHTML='';
+    subjects.forEach(s=>{
+      const b=document.createElement('button');
+      b.className=`subject ${s.color} ${done.includes(s.id)?'done':''}`;
+      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${s.teacherName} • +${s.reward} coins • +${s.xp} XP</small>`;
+      b.onclick=()=>openLesson(s);
+      subjectsBox.append(b);
+    });
+
+    const daily=document.querySelector('#dailyList');
+    daily.innerHTML='';
+    subjects.slice(0,4).forEach(s=>{
+      const isDone=done.includes(s.id);
+      const row=document.createElement('div');
+      row.className='task '+(isDone?'done':'');
+      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">+${s.reward} 🪙</div>`;
+      daily.append(row);
+    });
+
+    const reward=document.querySelector('#dailyReward');
+    const claimed=school.dailyRewardDates.includes(today);
+    reward.disabled=done.length<4 || claimed;
+    reward.textContent=claimed?'✅ Daily reward collected':done.length>=4?'🎁 Collect +25 coins and +40 XP':'🎁 Complete 4 lessons to unlock';
+
+    const total=Object.values(school.lessonTotals).reduce((a,b)=>a+b,0);
+    document.querySelector('#lessonTotal').textContent=total;
+    document.querySelector('#totalXp').textContent=profile.totalXp||0;
+    document.querySelector('#earnedCoins').textContent=profile.schoolCoinsEarned||0;
+
+    const badgeData=[
+      ['first-lesson','🌟','First Lesson'],
+      ['full-day','🎒','Full School Day'],
+      ['three-day','🔥','3-Day Streak'],
+      ['ten-lessons','🏆','10 Lessons'],
+      ['bookworm','📚','Bookworm'],
+      ['math-star','➕','Math Star']
+    ];
+    const badgeBox=document.querySelector('#badges');
+    badgeBox.innerHTML='';
+    badgeData.forEach(([id,icon,name])=>{
+      const div=document.createElement('div');
+      div.className='badge '+(profile.achievements.includes(id)?'':'locked');
+      div.innerHTML=`<span>${icon}</span>${name}`;
+      badgeBox.append(div);
+    });
+
+    saveAll();
+  }
+
+  function openLesson(subject){
+    activeSubject=subject;
+    document.querySelector('#teacherIcon').textContent=subject.teacher;
+    document.querySelector('#modalTitle').textContent=subject.name;
+    document.querySelector('#teacherMessage').textContent=`${subject.teacherName} says: “Welcome, ${childName}! Ready for today's learning adventure?”`;
+    document.querySelector('#lessonPreview').textContent=subject.preview;
+    const already=completedToday().includes(subject.id);
+    document.querySelector('#completeLesson').textContent=already?'Completed Today ✅':'Complete Lesson';
+    document.querySelector('#completeLesson').disabled=already;
+    document.querySelector('#lessonModal').classList.add('show');
+    sound('tap');
+  }
+
+  function completeLesson(){
+    if(!activeSubject)return;
+    const done=completedToday();
+    if(done.includes(activeSubject.id))return;
+
+    updateStreak();
+    done.push(activeSubject.id);
+    school.completedByDate[today]=done;
+    school.lessonTotals[activeSubject.id]=(school.lessonTotals[activeSubject.id]||0)+1;
+
+    profile.coins+=activeSubject.reward;
+    profile.xp+=activeSubject.xp;
+    profile.totalXp=(profile.totalXp||0)+activeSubject.xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+activeSubject.reward;
+
+    updateAchievements();
+    saveAll();
+    document.querySelector('#lessonModal').classList.remove('show');
+    confetti();
+    toast(`Great job! +${activeSubject.reward} coins and +${activeSubject.xp} XP`);
+    render();
+  }
+
+  function collectDailyReward(){
+    const done=completedToday();
+    if(done.length<4 || school.dailyRewardDates.includes(today))return;
+    school.dailyRewardDates.push(today);
+    profile.coins+=25;
+    profile.xp+=40;
+    profile.totalXp=(profile.totalXp||0)+40;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+25;
+    updateAchievements();
+    saveAll();
+    confetti();
+    toast('🎁 Daily School complete! +25 coins and +40 XP');
+    render();
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');
+    el.textContent=message;el.classList.add('show');
+    clearTimeout(window.__schoolToast);
+    window.__schoolToast=setTimeout(()=>el.classList.remove('show'),2200);
+  }
+
+  function confetti(){
+    const c=document.querySelector('#confetti');c.innerHTML='';
+    ['⭐','✨','📚','🎉','🪙'].forEach(symbol=>{
+      for(let i=0;i<7;i++){
+        const n=document.createElement('i');
+        n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(17+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2400);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='reward'?690:460;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.13);
+      osc.start();osc.stop(ctx.currentTime+.14);
+    }catch{}
+  }
+
+  document.querySelector('#cityBtn').onclick=()=>location.href='my-city.html';
+  document.querySelector('#closeModal').onclick=()=>document.querySelector('#lessonModal').classList.remove('show');
+  document.querySelector('#completeLesson').onclick=completeLesson;
+  document.querySelector('#dailyReward').onclick=collectDailyReward;
+  document.querySelector('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;
+    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
+    if(soundOn)sound('tap');
+  };
+  document.querySelector('#lessonModal').onclick=e=>{
+    if(e.target.id==='lessonModal')document.querySelector('#lessonModal').classList.remove('show');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
