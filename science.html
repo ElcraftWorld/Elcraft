@@ -1,0 +1,588 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#24785f">
+<title>ELCraft | Science Center</title>
+<style>
+:root{
+  --ink:#173f43;
+  --deep:#164c52;
+  --green:#2c9b74;
+  --mint:#6fd6a8;
+  --sky:#78d7ef;
+  --gold:#ffd44f;
+  --purple:#7758c7;
+  --panel:#fff;
+  --line:#dceee8;
+  --shadow:0 18px 45px rgba(20,65,67,.22);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  background:
+    radial-gradient(circle at 10% 8%,rgba(255,255,255,.9),transparent 18%),
+    radial-gradient(circle at 88% 12%,rgba(255,255,255,.65),transparent 16%),
+    linear-gradient(#73d2ef 0 40%,#dff9f3 40% 61%,#86d470 61% 100%);
+}
+button{font:inherit;cursor:pointer}
+button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
+.app{min-height:100vh;position:relative;overflow:hidden}
+.cloud{position:fixed;z-index:0;opacity:.72;pointer-events:none;animation:float 20s linear infinite}
+.cloud.one{top:100px;left:-140px;font-size:84px}
+.cloud.two{top:230px;left:-210px;font-size:64px;animation-delay:-8s}
+.cloud.three{top:55px;left:-250px;font-size:52px;animation-delay:-15s}
+@keyframes float{to{transform:translateX(calc(100vw + 360px))}}
+.topbar{
+  position:sticky;top:0;z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 14px;background:rgba(255,255,255,.94);border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(29,70,69,.15);backdrop-filter:blur(12px)
+}
+.leftbar,.stats{display:flex;align-items:center;gap:10px}
+.nav-btn,.sound-btn{
+  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;color:#27735e;background:#e5f8ef;
+  box-shadow:0 4px 0 #c2e4d4
+}
+.logo{
+  font-weight:1000;font-size:clamp(24px,3vw,38px);line-height:.9;color:#ffc72c;
+  text-shadow:-2px -2px 0 #2f7c66,2px -2px 0 #2f7c66,-2px 2px 0 #2f7c66,2px 2px 0 #2f7c66,0 5px 0 #1d594c
+}
+.stat{
+  min-width:92px;border-radius:999px;padding:9px 12px;background:#fff5c7;color:#5a3e75;
+  font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
+}
+.stat.xp{background:#e5f3ff}.stat.level{background:#e8ffe2}
+main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px}
+.hero{
+  position:relative;overflow:hidden;display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
+  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
+  background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(226,249,240,.95));box-shadow:var(--shadow)
+}
+.hero:after{content:"🔬";position:absolute;right:4%;bottom:-38px;font-size:180px;opacity:.1;transform:rotate(-8deg)}
+.hero h1{margin:0;color:#24785f;font-size:clamp(32px,4vw,57px)}
+.hero p{margin:8px 0 0;font-size:17px;font-weight:900;color:#647e83}
+.teacher-card{
+  position:relative;z-index:1;display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:center;
+  padding:15px;border-radius:24px;background:linear-gradient(#2d8e70,#1b5a50);color:#fff;
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.12)
+}
+.teacher-face{font-size:72px}
+.teacher-card strong{display:block;font-size:21px}
+.teacher-card small{display:block;margin-top:5px;font-weight:900;opacity:.9;line-height:1.35}
+.dashboard{display:grid;grid-template-columns:1.75fr .8fr;gap:15px;margin-top:15px}
+.panel{
+  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.96);
+  box-shadow:var(--shadow);overflow:hidden
+}
+.panel-head{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;padding:15px 18px;
+  border-bottom:1px solid var(--line);background:#f3fbf8
+}
+.panel-head h2{margin:0;color:#24785f;font-size:25px}
+.panel-body{padding:16px}
+.station-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
+.station{
+  position:relative;min-height:145px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
+  box-shadow:0 8px 0 rgba(30,76,71,.24);transition:.18s ease;overflow:hidden
+}
+.station:hover{transform:translateY(-3px)}
+.station:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(30,76,71,.24)}
+.station .icon{display:block;font-size:45px;margin-bottom:7px}
+.station strong{display:block;font-size:21px}
+.station small{display:block;margin-top:4px;font-weight:900;opacity:.94}
+.station .stars{position:absolute;right:12px;top:10px;font-size:17px}
+.station.locked{filter:grayscale(.75);opacity:.68}
+.station.animals{background:linear-gradient(135deg,#3a9a66,#6bc874)}
+.station.plants{background:linear-gradient(135deg,#5ea73b,#91d45a)}
+.station.weather{background:linear-gradient(135deg,#2f8ec7,#5bc8df)}
+.station.space{background:linear-gradient(135deg,#4f4db2,#805fd0)}
+.station.body{background:linear-gradient(135deg,#d35a77,#ef8d9e)}
+.station.matter{background:linear-gradient(135deg,#3f8c9f,#69c3c5)}
+.station.earth{background:linear-gradient(135deg,#a9733f,#d5a35d)}
+.station.energy{background:linear-gradient(135deg,#d9952e,#f2c951)}
+.station.lab{background:linear-gradient(135deg,#2d7d75,#51b4a6)}
+.station.quiz{background:linear-gradient(135deg,#29487f,#4d78b8)}
+.passport{display:grid;gap:10px}
+.pass-row{
+  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;padding:11px;
+  border:2px solid #dfeee9;border-radius:17px;background:#fff
+}
+.pass-icon{font-size:27px}.pass-name{font-weight:1000}
+.pass-sub{font-size:11px;color:#758b8f;font-weight:900;margin-top:2px}
+.pass-stars{font-size:14px;white-space:nowrap}
+.daily-card{
+  margin-top:12px;padding:14px;border-radius:20px;background:linear-gradient(135deg,#eaffd9,#c9f3a9);
+  border:2px solid #9fd56a
+}
+.daily-card strong{display:block;color:#356d2e}
+.daily-card p{margin:5px 0 10px;font-size:13px;font-weight:900;color:#5c7b52}
+.daily-card button{
+  width:100%;border:0;border-radius:15px;padding:11px;background:linear-gradient(#70cf58,#49ac36);
+  color:#fff;font-weight:1000;box-shadow:0 5px 0 #378a29
+}
+.daily-card button:disabled{opacity:.55;cursor:not-allowed}
+.modal{
+  position:fixed;inset:0;z-index:60;display:none;align-items:center;justify-content:center;padding:16px;
+  background:rgba(13,55,54,.58);backdrop-filter:blur(7px)
+}
+.modal.show{display:flex}
+.modal-card{
+  width:min(720px,100%);max-height:92vh;overflow:auto;border-radius:28px;padding:22px;background:#fff;
+  box-shadow:0 25px 70px rgba(16,64,57,.38);border:4px solid #fff
+}
+.modal-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.modal-title-wrap{display:flex;align-items:center;gap:11px}
+.modal-icon{font-size:55px}
+.modal-card h2{margin:0;color:#24785f;font-size:30px}
+.close-x{border:0;border-radius:14px;padding:9px 12px;background:#e7f3ef;color:#2c6758;font-weight:1000}
+.activity{
+  margin-top:16px;padding:18px;border-radius:22px;background:#f1fbf7;border:2px solid #d8eee6;text-align:center
+}
+.question{font-size:clamp(25px,4.6vw,44px);font-weight:1000;color:#205f53;line-height:1.3}
+.visual{font-size:clamp(28px,5vw,48px);letter-spacing:4px;margin:12px 0;line-height:1.35}
+.answers{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;margin-top:16px}
+.answer{
+  border:0;border-radius:17px;padding:14px;background:#fff;color:#285f55;font-weight:1000;font-size:19px;
+  box-shadow:0 5px 0 #c7ded6;border:2px solid #d9e9e4
+}
+.answer:hover{transform:translateY(-2px)}
+.feedback{min-height:30px;margin-top:12px;font-weight:1000;font-size:18px}
+.feedback.good{color:#27813f}.feedback.bad{color:#bd4552}
+.modal-actions{display:flex;gap:10px;margin-top:15px}
+.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
+.secondary{background:#e8f0ee;color:#3b665c}
+.primary{background:linear-gradient(#73cf58,#4cae35);color:#fff;box-shadow:0 5px 0 #388c28}
+.toast{
+  position:fixed;left:50%;bottom:22px;z-index:90;transform:translateX(-50%) translateY(150px);
+  padding:13px 19px;border-radius:999px;background:#174e48;color:#fff;font-weight:1000;
+  transition:.3s ease;box-shadow:0 12px 30px rgba(20,70,64,.28);white-space:nowrap
+}
+.toast.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:80;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+@media(max-width:950px){.dashboard,.hero{grid-template-columns:1fr}.stats .stat.xp{display:none}}
+@media(max-width:650px){
+  main{padding:8px}.topbar{padding:8px}.logo{font-size:23px}.sound-btn{display:none}
+  .stat{min-width:auto;padding:8px 9px;font-size:12px}.hero{padding:16px;border-radius:23px}
+  .station-grid{grid-template-columns:1fr}.station{min-height:125px}
+  .panel-head{padding:13px}.panel-body{padding:12px}.answers{grid-template-columns:1fr}
+  .teacher-face{font-size:58px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
+
+  <header class="topbar">
+    <div class="leftbar">
+      <button class="nav-btn" id="academyBtn">← Academy</button>
+      <div class="logo">ELCraft</div>
+    </div>
+    <div class="stats">
+      <div class="stat">🪙 <span id="coins">0</span></div>
+      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
+      <div class="stat level">🏅 L<span id="level">1</span></div>
+      <button class="sound-btn" id="soundBtn">🔊</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div>
+        <h1 id="heroTitle">Welcome to Science Center!</h1>
+        <p>Explore animals, plants, weather, space, the human body, experiments, and the world around us.</p>
+      </div>
+      <div class="teacher-card">
+        <div class="teacher-face">🐼</div>
+        <div>
+          <strong>Dr. Panda's Science Center</strong>
+          <small>Choose an investigation and earn stars in your Science Passport.</small>
+        </div>
+      </div>
+    </section>
+
+    <div class="dashboard">
+      <section class="panel">
+        <div class="panel-head">
+          <h2>🔬 Choose a Science Station</h2>
+          <strong id="masteryLabel">0 stars earned</strong>
+        </div>
+        <div class="panel-body">
+          <div class="station-grid" id="stationGrid"></div>
+        </div>
+      </section>
+
+      <aside class="panel">
+        <div class="panel-head"><h2>🧪 Science Passport</h2></div>
+        <div class="panel-body">
+          <div class="passport" id="passport"></div>
+          <div class="daily-card">
+            <strong>🌟 Daily Discovery Challenge</strong>
+            <p id="dailyText">Finish any 3 investigations today to earn a bonus.</p>
+            <button id="dailyReward" disabled>Complete 3 investigations</button>
+          </div>
+        </div>
+      </aside>
+    </div>
+  </main>
+
+  <div class="modal" id="activityModal">
+    <div class="modal-card">
+      <div class="modal-head">
+        <div class="modal-title-wrap">
+          <div class="modal-icon" id="modalIcon">🐾</div>
+          <div><h2 id="modalTitle">Animal Habitats</h2><div id="roundLabel">Question 1 of 5</div></div>
+        </div>
+        <button class="close-x" id="closeModal">✕</button>
+      </div>
+
+      <div class="activity">
+        <div class="question" id="question"></div>
+        <div class="visual" id="visual"></div>
+        <div class="answers" id="answers"></div>
+        <div class="feedback" id="feedback"></div>
+      </div>
+
+      <div class="modal-actions">
+        <button class="secondary" id="leaveActivity">Back to Dashboard</button>
+        <button class="primary" id="nextQuestion" disabled>Next Question</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const COINS_KEY='elcraft_coins';
+  const PROFILE_KEY='elcraft_profile_v1';
+  const SCIENCE_KEY='elcraft_science_v1';
+
+  const childName=localStorage.getItem(NAME_KEY)||'Student';
+  const today=new Date().toLocaleDateString('en-CA');
+  let soundOn=true;
+  let activeStation=null;
+  let currentQuestion=null;
+  let round=0;
+  let correctThisSession=0;
+  let answered=false;
+
+  let profile={
+    version:1,
+    coins:Number(localStorage.getItem(COINS_KEY)||100),
+    xp:0,
+    totalXp:0,
+    level:1,
+    achievements:[],
+    schoolCoinsEarned:0
+  };
+
+  let science={
+    version:1,
+    mastery:{animals:0,plants:0,weather:0,space:0,body:0,matter:0,earth:0,energy:0,lab:0,quiz:0},
+    plays:{animals:0,plants:0,weather:0,space:0,body:0,matter:0,earth:0,energy:0,lab:0,quiz:0},
+    completedByDate:{},
+    dailyRewardDates:[],
+    totalCorrect:0
+  };
+
+  try{
+    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
+    if(saved)profile={...profile,...saved};
+  }catch{}
+  try{
+    const saved=JSON.parse(localStorage.getItem(SCIENCE_KEY));
+    if(saved)science={...science,...saved,mastery:{...science.mastery,...(saved.mastery||{})},plays:{...science.plays,...(saved.plays||{})}};
+  }catch{}
+
+  const stations=[
+    {id:'animals',icon:'🐾',name:'Animal Habitats',color:'animals',desc:'Match animals with habitats and traits.',unlock:0},
+    {id:'plants',icon:'🌱',name:'Plant Lab',color:'plants',desc:'Learn how plants grow and what they need.',unlock:0},
+    {id:'weather',icon:'🌦️',name:'Weather Station',color:'weather',desc:'Explore clouds, seasons, rain, and storms.',unlock:0},
+    {id:'space',icon:'🚀',name:'Space Observatory',color:'space',desc:'Visit planets, moons, stars, and the Sun.',unlock:0},
+    {id:'body',icon:'🫀',name:'Human Body Center',color:'body',desc:'Discover organs, senses, bones, and muscles.',unlock:1},
+    {id:'matter',icon:'🧊',name:'Matter Lab',color:'matter',desc:'Explore solids, liquids, gases, and change.',unlock:1},
+    {id:'earth',icon:'🌍',name:'Earth Science',color:'earth',desc:'Learn about rocks, landforms, and oceans.',unlock:2},
+    {id:'energy',icon:'⚡',name:'Energy Workshop',color:'energy',desc:'Investigate light, sound, heat, and motion.',unlock:3},
+    {id:'lab',icon:'🧪',name:'Experiment Lab',color:'lab',desc:'Choose safe experiment steps and predictions.',unlock:4},
+    {id:'quiz',icon:'🎯',name:'Discovery Challenge',color:'quiz',desc:'Mixed science review from every station.',unlock:2}
+  ];
+
+  function save(){
+    profile.coins=Math.max(0,Number(profile.coins)||0);
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
+    localStorage.setItem(SCIENCE_KEY,JSON.stringify(science));
+    localStorage.setItem(COINS_KEY,String(profile.coins));
+  }
+
+  function totalStars(){return Object.values(science.mastery).reduce((a,b)=>a+b,0)}
+  function starsText(n){return '⭐'.repeat(Math.max(0,Math.min(5,n)))+'☆'.repeat(Math.max(0,5-Math.min(5,n)))}
+  function activitiesToday(){return (science.completedByDate[today]||[]).length}
+
+  function render(){
+    profile.level=Math.floor((profile.xp||0)/100)+1;
+    document.querySelector('#heroTitle').textContent=`Welcome, ${childName}!`;
+    document.querySelector('#coins').textContent=profile.coins||0;
+    document.querySelector('#xp').textContent=profile.xp||0;
+    document.querySelector('#level').textContent=profile.level||1;
+    document.querySelector('#masteryLabel').textContent=`${totalStars()} stars earned`;
+
+    const total=totalStars();
+    const grid=document.querySelector('#stationGrid');
+    grid.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const b=document.createElement('button');
+      b.className=`station ${s.color} ${locked?'locked':''}`;
+      b.innerHTML=`<span class="stars">${locked?'🔒':starsText(science.mastery[s.id]||0)}</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${locked?`Earn ${s.unlock} total stars to unlock`:s.desc}</small>`;
+      b.onclick=()=>locked?toast(`Earn ${s.unlock} total stars to unlock this station.`):startStation(s);
+      grid.append(b);
+    });
+
+    const passport=document.querySelector('#passport');
+    passport.innerHTML='';
+    stations.forEach(s=>{
+      const locked=total<s.unlock;
+      const row=document.createElement('div');
+      row.className='pass-row';
+      row.innerHTML=`<div class="pass-icon">${s.icon}</div><div><div class="pass-name">${s.name}</div><div class="pass-sub">${locked?'Locked':`${science.plays[s.id]||0} investigation sessions`}</div></div><div class="pass-stars">${locked?'🔒':starsText(science.mastery[s.id]||0)}</div>`;
+      passport.append(row);
+    });
+
+    const count=activitiesToday();
+    const claimed=science.dailyRewardDates.includes(today);
+    const btn=document.querySelector('#dailyReward');
+    btn.disabled=count<3||claimed;
+    btn.textContent=claimed?'✅ Bonus collected':count>=3?'Collect +20 coins and +30 XP':`${count}/3 investigations complete`;
+    document.querySelector('#dailyText').textContent=claimed?'You completed today’s Discovery Challenge!':'Finish any 3 investigations today to earn a bonus.';
+    save();
+  }
+
+  function startStation(station){
+    activeStation=station;
+    round=0;
+    correctThisSession=0;
+    answered=false;
+    document.querySelector('#modalIcon').textContent=station.icon;
+    document.querySelector('#modalTitle').textContent=station.name;
+    document.querySelector('#activityModal').classList.add('show');
+    nextQuestion();
+    sound('tap');
+  }
+
+  function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+  function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+
+  function pick(list){return list[rand(0,list.length-1)]}
+
+  function makeQuestion(id){
+    const banks={
+      animals:[
+        {q:'Where does a camel usually live?',v:'🐪',a:'desert',c:['desert','ocean','arctic','rainforest']},
+        {q:'Which animal is a mammal?',v:'🐬 🐟 🐙 🦀',a:'dolphin',c:['dolphin','fish','octopus','crab']},
+        {q:'What helps a fish breathe underwater?',v:'🐟',a:'gills',c:['gills','lungs','feathers','fur']},
+        {q:'Which animal changes from a caterpillar?',v:'🐛 ➜ ?',a:'butterfly',c:['butterfly','frog','bird','bee']}
+      ],
+      plants:[
+        {q:'What do roots usually absorb?',v:'🌱',a:'water',c:['water','sunlight','wind','rocks']},
+        {q:'Which part of a plant makes seeds?',v:'🌸',a:'flower',c:['flower','root','stem','soil']},
+        {q:'What do plants need for photosynthesis?',v:'☀️ 🌿',a:'sunlight',c:['sunlight','moonlight','sand','snow']},
+        {q:'What grows first from many seeds?',v:'🌰',a:'root',c:['root','flower','fruit','leaf']}
+      ],
+      weather:[
+        {q:'Which tool measures temperature?',v:'🌡️',a:'thermometer',c:['thermometer','ruler','scale','clock']},
+        {q:'What type of cloud often brings thunderstorms?',v:'⛈️',a:'cumulonimbus',c:['cumulonimbus','cirrus','fog','mist']},
+        {q:'Which season usually follows spring?',v:'🌸 ➜ ?',a:'summer',c:['summer','winter','fall','spring']},
+        {q:'What causes a rainbow?',v:'🌈',a:'sunlight and water droplets',c:['sunlight and water droplets','wind only','snow only','dark clouds only']}
+      ],
+      space:[
+        {q:'Which planet do we live on?',v:'🌍',a:'Earth',c:['Earth','Mars','Venus','Jupiter']},
+        {q:'What is the star closest to Earth?',v:'☀️',a:'the Sun',c:['the Sun','the Moon','Mars','Polaris']},
+        {q:'What moves around Earth?',v:'🌍 🌙',a:'the Moon',c:['the Moon','the Sun','Jupiter','Venus']},
+        {q:'Which planet is known for its rings?',v:'🪐',a:'Saturn',c:['Saturn','Mercury','Earth','Mars']}
+      ],
+      body:[
+        {q:'Which organ pumps blood?',v:'❤️',a:'heart',c:['heart','lungs','stomach','brain']},
+        {q:'Which body part helps you breathe?',v:'🫁',a:'lungs',c:['lungs','bones','skin','ears']},
+        {q:'Which sense uses your ears?',v:'👂',a:'hearing',c:['hearing','taste','smell','sight']},
+        {q:'What protects your brain?',v:'🧠',a:'skull',c:['skull','ribs','knees','elbows']}
+      ],
+      matter:[
+        {q:'Which is a solid?',v:'🧊 💧 💨',a:'ice',c:['ice','water vapor','steam','air']},
+        {q:'What happens when ice melts?',v:'🧊 ➜ 💧',a:'it becomes liquid water',c:['it becomes liquid water','it becomes rock','it disappears','it becomes metal']},
+        {q:'Which state of matter fills its container?',v:'💨',a:'gas',c:['gas','solid','rock','crystal']},
+        {q:'Which is a liquid?',v:'🥛',a:'milk',c:['milk','table','air','ice cube']}
+      ],
+      earth:[
+        {q:'Which layer is Earth’s outer surface?',v:'🌍',a:'crust',c:['crust','core','mantle','cloud']},
+        {q:'What is molten rock called before it reaches the surface?',v:'🌋',a:'magma',c:['magma','lava','sand','soil']},
+        {q:'Which landform is lower than the land around it?',v:'🏞️',a:'valley',c:['valley','mountain','plateau','hill']},
+        {q:'Most of Earth’s surface is covered by what?',v:'🌊',a:'water',c:['water','desert','forest','ice']}
+      ],
+      energy:[
+        {q:'Which form of energy lets us see?',v:'💡',a:'light',c:['light','sound','gravity','wind']},
+        {q:'What causes sound?',v:'🔔',a:'vibrations',c:['vibrations','shadows','colors','magnets']},
+        {q:'Which object gives off heat?',v:'🔥',a:'fire',c:['fire','ice','snow','fan']},
+        {q:'A moving bicycle has what kind of energy?',v:'🚲',a:'motion energy',c:['motion energy','sleep energy','color energy','shape energy']}
+      ],
+      lab:[
+        {q:'What should you do first before an experiment?',v:'🧪',a:'read the directions',c:['read the directions','mix everything','taste the materials','run around']},
+        {q:'Which is safest during an experiment?',v:'🥽',a:'wear safety goggles',c:['wear safety goggles','touch hot items','smell closely','ignore instructions']},
+        {q:'A prediction is what you think will...?',v:'🤔',a:'happen',c:['happen','already happened','never change','be erased']},
+        {q:'Why do scientists repeat experiments?',v:'🔁',a:'to check results',c:['to check results','to make noise','to waste time','to avoid learning']}
+      ]
+    };
+
+    if(id==='quiz'){
+      const ids=['animals','plants','weather','space','body','matter','earth','energy','lab'];
+      return pick(banks[pick(ids)]);
+    }
+    return pick(banks[id]);
+  }
+
+  function nextQuestion(){
+    if(round>=5){finishSession();return}
+    answered=false;
+    round++;
+    currentQuestion=makeQuestion(activeStation.id);
+    document.querySelector('#roundLabel').textContent=`Question ${round} of 5`;
+    document.querySelector('#question').textContent=currentQuestion.q;
+    document.querySelector('#visual').textContent=currentQuestion.v||'';
+    document.querySelector('#feedback').textContent='';
+    document.querySelector('#feedback').className='feedback';
+    document.querySelector('#nextQuestion').disabled=true;
+    document.querySelector('#nextQuestion').textContent=round===5?'Finish Investigation':'Next Question';
+
+    const box=document.querySelector('#answers');
+    box.innerHTML='';
+    shuffle(currentQuestion.c).forEach(choice=>{
+      const b=document.createElement('button');
+      b.className='answer';
+      b.textContent=choice;
+      b.onclick=()=>checkAnswer(choice);
+      box.append(b);
+    });
+  }
+
+  function checkAnswer(choice){
+    if(answered)return;
+    answered=true;
+    const good=String(choice)===String(currentQuestion.a);
+    const feedback=document.querySelector('#feedback');
+    if(good){
+      correctThisSession++;
+      science.totalCorrect=(science.totalCorrect||0)+1;
+      feedback.textContent='Excellent discovery! That is correct! 🎉';
+      feedback.className='feedback good';
+      sound('reward');
+    }else{
+      feedback.textContent=`Good try! The correct answer is ${currentQuestion.a}.`;
+      feedback.className='feedback bad';
+      sound('tap');
+    }
+    [...document.querySelectorAll('.answer')].forEach(b=>{
+      b.disabled=true;
+      if(String(b.textContent)===String(currentQuestion.a))b.style.background='#dcf7d6';
+    });
+    document.querySelector('#nextQuestion').disabled=false;
+  }
+
+  function finishSession(){
+    science.plays[activeStation.id]=(science.plays[activeStation.id]||0)+1;
+    const current=science.mastery[activeStation.id]||0;
+    if(correctThisSession>=4)science.mastery[activeStation.id]=Math.min(5,current+1);
+
+    if(!science.completedByDate[today])science.completedByDate[today]=[];
+    science.completedByDate[today].push(`${activeStation.id}-${Date.now()}`);
+
+    const coins=5+correctThisSession;
+    const xp=10+(correctThisSession*2);
+    profile.coins=(profile.coins||0)+coins;
+    profile.xp=(profile.xp||0)+xp;
+    profile.totalXp=(profile.totalXp||0)+xp;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+coins;
+
+    save();
+    document.querySelector('#activityModal').classList.remove('show');
+    confetti();
+    toast(`Science investigation complete! +${coins} coins and +${xp} XP`);
+    render();
+  }
+
+  function collectDaily(){
+    if(activitiesToday()<3||science.dailyRewardDates.includes(today))return;
+    science.dailyRewardDates.push(today);
+    profile.coins=(profile.coins||0)+20;
+    profile.xp=(profile.xp||0)+30;
+    profile.totalXp=(profile.totalXp||0)+30;
+    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+20;
+    save();
+    confetti();
+    toast('Daily Discovery Challenge complete! +20 coins and +30 XP');
+    render();
+  }
+
+  function toast(message){
+    const el=document.querySelector('#toast');
+    el.textContent=message;
+    el.classList.add('show');
+    clearTimeout(window.__scienceToast);
+    window.__scienceToast=setTimeout(()=>el.classList.remove('show'),2300);
+  }
+
+  function confetti(){
+    const c=document.querySelector('#confetti');
+    c.innerHTML='';
+    ['⭐','✨','🔬','🧪','🌱'].forEach(symbol=>{
+      for(let i=0;i<7;i++){
+        const n=document.createElement('i');
+        n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(17+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2400);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='reward'?720:480;
+      gain.gain.setValueAtTime(.04,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.14);
+      osc.start();osc.stop(ctx.currentTime+.15);
+    }catch{}
+  }
+
+  document.querySelector('#academyBtn').onclick=()=>location.href='school.html';
+  document.querySelector('#closeModal').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#leaveActivity').onclick=()=>document.querySelector('#activityModal').classList.remove('show');
+  document.querySelector('#nextQuestion').onclick=nextQuestion;
+  document.querySelector('#dailyReward').onclick=collectDaily;
+  document.querySelector('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;
+    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
+    if(soundOn)sound('tap');
+  };
+  document.querySelector('#activityModal').onclick=e=>{
+    if(e.target.id==='activityModal')document.querySelector('#activityModal').classList.remove('show');
+  };
+
+  render();
+})();
+</script>
+</body>
+</html>
