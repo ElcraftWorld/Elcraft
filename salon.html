@@ -1,0 +1,1479 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="theme-color" content="#fff7fb">
+
+  <title>ELCraft — Style Studio</title>
+
+  <style>
+    :root {
+      --purple: #6848ad;
+      --purple-dark: #4f348b;
+      --pink: #ff78ae;
+      --pink-dark: #d94f8a;
+      --blue: #62c9ed;
+      --blue-dark: #2789bb;
+      --green: #7acb55;
+      --yellow: #ffd761;
+      --ink: #32456e;
+      --panel: rgba(255, 255, 255, 0.96);
+      --header-height: 84px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+      overflow: hidden;
+      overscroll-behavior: none;
+      -webkit-text-size-adjust: 100%;
+      text-size-adjust: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100dvh;
+      padding-top: env(safe-area-inset-top);
+      padding-right: env(safe-area-inset-right);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      background: #f9d8ec;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      touch-action: manipulation;
+    }
+
+    button {
+      font: inherit;
+      -webkit-tap-highlight-color: transparent;
+      touch-action: manipulation;
+    }
+
+    .game-header {
+      position: relative;
+      z-index: 100;
+      flex: 0 0 auto;
+      min-height: var(--header-height);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      padding: 11px 18px;
+      border-bottom: 4px solid rgba(227, 113, 167, 0.22);
+      background: rgba(255, 252, 254, 0.97);
+      box-shadow: 0 5px 18px rgba(77, 47, 101, 0.14);
+    }
+
+    .header-left {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .home-button,
+    .header-button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 16px;
+      color: var(--purple);
+      background: #f0e5ff;
+      box-shadow: 0 5px 0 rgba(91, 61, 148, 0.14);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .home-button:active,
+    .header-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(91, 61, 148, 0.14);
+    }
+
+    .header-icon {
+      font-size: clamp(32px, 3.3vw, 50px);
+      line-height: 1;
+    }
+
+    .header-title h1 {
+      margin: 0;
+      color: var(--purple);
+      font-size: clamp(25px, 2.7vw, 42px);
+      line-height: 1;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .header-title p {
+      margin: 4px 0 0;
+      color: #6b6f9b;
+      font-size: clamp(12px, 1.05vw, 16px);
+      font-weight: 800;
+    }
+
+    .player-badge {
+      max-width: 250px;
+      overflow: hidden;
+      padding: 9px 15px;
+      border-radius: 999px;
+      color: var(--purple);
+      background: #f7eafa;
+      font-weight: 900;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .studio {
+      position: relative;
+      flex: 1 1 auto;
+      min-height: 0;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 18% 18%, rgba(255,255,255,.9) 0 4%, transparent 14%),
+        radial-gradient(circle at 82% 17%, rgba(255,255,255,.8) 0 3%, transparent 12%),
+        linear-gradient(145deg, #ffdff0 0%, #dff4ff 48%, #fff2cb 100%);
+    }
+
+    .studio::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle, rgba(255,255,255,.55) 0 3px, transparent 4px)
+        0 0 / 68px 68px;
+      opacity: .55;
+    }
+
+    .layout {
+      position: absolute;
+      inset: 16px;
+      display: grid;
+      grid-template-columns: minmax(220px, 0.8fr) minmax(380px, 1.45fr) minmax(230px, 0.85fr);
+      gap: 14px;
+      z-index: 5;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      border: 4px solid rgba(255,255,255,.9);
+      border-radius: 28px;
+      background: var(--panel);
+      box-shadow:
+        0 10px 0 rgba(166, 93, 133, .14),
+        0 18px 30px rgba(79, 55, 100, .16);
+      overflow: hidden;
+    }
+
+    .tool-panel,
+    .style-panel {
+      display: flex;
+      flex-direction: column;
+      padding: 14px;
+    }
+
+    .panel-title {
+      margin: 0 0 10px;
+      color: var(--purple);
+      font-size: clamp(20px, 1.9vw, 30px);
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .tab-button {
+      min-height: 44px;
+      border: 0;
+      border-radius: 15px;
+      padding: 7px;
+      color: #694e96;
+      background: #f0e7fb;
+      font-size: 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .tab-button.active {
+      color: #fff;
+      background: var(--purple);
+    }
+
+    .options {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-content: start;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .option-button {
+      min-height: 76px;
+      border: 3px solid #eee6f7;
+      border-radius: 18px;
+      padding: 8px 5px;
+      color: #4d4771;
+      background: #fff;
+      box-shadow: 0 4px 0 rgba(90, 72, 120, .1);
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .option-button .emoji {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 30px;
+      line-height: 1;
+    }
+
+    .option-button.active {
+      border-color: #ff78ae;
+      background: #fff0f7;
+      box-shadow: 0 4px 0 rgba(217, 79, 138, .18);
+    }
+
+    .color-grid {
+      flex: 1 1 auto;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      align-content: start;
+      gap: 8px;
+      overflow-y: auto;
+      padding: 2px;
+    }
+
+    .swatch {
+      min-height: 62px;
+      border: 4px solid #fff;
+      border-radius: 18px;
+      box-shadow: 0 0 0 2px #dbd0eb;
+      cursor: pointer;
+    }
+
+    .swatch.active {
+      box-shadow: 0 0 0 5px var(--purple);
+    }
+
+    .action-stack {
+      display: grid;
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .action-button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 17px;
+      padding: 10px 12px;
+      color: #fff;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .save-button {
+      background: var(--green);
+      box-shadow: 0 5px 0 #4d9431;
+    }
+
+    .random-button {
+      background: var(--blue);
+      box-shadow: 0 5px 0 var(--blue-dark);
+    }
+
+    .reset-button {
+      background: var(--pink);
+      box-shadow: 0 5px 0 var(--pink-dark);
+    }
+
+    .action-button:active {
+      transform: translateY(3px);
+      box-shadow: 0 2px 0 rgba(0,0,0,.16);
+    }
+
+    .mirror-panel {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+      background:
+        linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,.82)),
+        repeating-linear-gradient(
+          135deg,
+          #ffe7f3 0 25px,
+          #e6f6ff 25px 50px
+        );
+    }
+
+    .mirror {
+      position: relative;
+      width: min(100%, 640px);
+      height: min(100%, 760px);
+      min-height: 430px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 12px solid #f4bad8;
+      border-radius: 48% 48% 24% 24% / 34% 34% 18% 18%;
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255,255,255,.95), rgba(218,241,251,.92) 58%, #d7eaf4 100%);
+      box-shadow:
+        inset 0 0 0 7px #fff,
+        0 14px 0 #d98cb5,
+        0 28px 36px rgba(83, 55, 104, .2);
+      overflow: hidden;
+    }
+
+    .mirror-stars {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 15% 18%, #fff 0 4px, transparent 5px),
+        radial-gradient(circle at 82% 15%, #fff 0 5px, transparent 6px),
+        radial-gradient(circle at 90% 42%, #fff 0 3px, transparent 4px),
+        radial-gradient(circle at 12% 55%, #fff 0 3px, transparent 4px);
+      opacity: .85;
+    }
+
+    .bust {
+      position: relative;
+      width: 78%;
+      height: 88%;
+      min-width: 320px;
+      min-height: 400px;
+      transform: translateY(3%);
+    }
+
+    .shoulders {
+      position: absolute;
+      left: 50%;
+      bottom: -3%;
+      width: 79%;
+      height: 25%;
+      transform: translateX(-50%);
+      border-radius: 50% 50% 14% 14% / 65% 65% 25% 25%;
+      background: #7d65cf;
+      box-shadow: inset 0 16px 0 rgba(255,255,255,.18);
+    }
+
+    .neck {
+      position: absolute;
+      left: 50%;
+      bottom: 18%;
+      width: 22%;
+      height: 18%;
+      transform: translateX(-50%);
+      border-radius: 0 0 36% 36%;
+      background: var(--skin, #c9855d);
+    }
+
+    .head {
+      position: absolute;
+      left: 50%;
+      top: 21%;
+      width: 45%;
+      height: 48%;
+      transform: translateX(-50%);
+      border-radius: 48% 48% 44% 44% / 42% 42% 56% 56%;
+      background: var(--skin, #c9855d);
+      box-shadow: inset 0 -11px 0 rgba(124, 62, 39, .08);
+      z-index: 5;
+    }
+
+    .ear {
+      position: absolute;
+      top: 47%;
+      width: 12%;
+      height: 22%;
+      border-radius: 50%;
+      background: var(--skin, #c9855d);
+      z-index: 3;
+    }
+
+    .ear.left {
+      left: -7%;
+    }
+
+    .ear.right {
+      right: -7%;
+    }
+
+    .eye {
+      position: absolute;
+      top: 42%;
+      width: 15%;
+      height: 8%;
+      border-radius: 50%;
+      background: #fff;
+      z-index: 7;
+    }
+
+    .eye.left {
+      left: 22%;
+    }
+
+    .eye.right {
+      right: 22%;
+    }
+
+    .eye::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 42%;
+      aspect-ratio: 1;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: #36304b;
+    }
+
+    .eyebrow {
+      position: absolute;
+      top: 34%;
+      width: 18%;
+      height: 5%;
+      border-radius: 999px;
+      background: #5e3a30;
+      z-index: 8;
+    }
+
+    .eyebrow.left {
+      left: 20%;
+      transform: rotate(-5deg);
+    }
+
+    .eyebrow.right {
+      right: 20%;
+      transform: rotate(5deg);
+    }
+
+    .nose {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 8%;
+      height: 13%;
+      transform: translateX(-50%);
+      border-right: 3px solid rgba(102, 51, 40, .25);
+      border-bottom: 3px solid rgba(102, 51, 40, .18);
+      border-radius: 0 0 50% 0;
+      z-index: 7;
+    }
+
+    .mouth {
+      position: absolute;
+      left: 50%;
+      top: 69%;
+      width: 24%;
+      height: 8%;
+      transform: translateX(-50%);
+      border-radius: 15% 15% 55% 55%;
+      background: var(--lip-color, #dd6b7f);
+      box-shadow: inset 0 -4px 0 rgba(130, 42, 57, .12);
+      z-index: 7;
+    }
+
+    .cheek {
+      position: absolute;
+      top: 59%;
+      width: 17%;
+      height: 8%;
+      border-radius: 50%;
+      background: var(--blush-color, transparent);
+      filter: blur(1px);
+      opacity: .85;
+      z-index: 6;
+    }
+
+    .cheek.left {
+      left: 14%;
+    }
+
+    .cheek.right {
+      right: 14%;
+    }
+
+    .face-art {
+      position: absolute;
+      inset: 0;
+      z-index: 9;
+      pointer-events: none;
+    }
+
+    .face-art::before,
+    .face-art::after {
+      position: absolute;
+      top: 54%;
+      font-size: clamp(18px, 3vw, 34px);
+      line-height: 1;
+    }
+
+    .face-art::before {
+      left: 6%;
+    }
+
+    .face-art::after {
+      right: 6%;
+    }
+
+    .hair-back {
+      position: absolute;
+      left: 50%;
+      top: 10%;
+      width: 61%;
+      height: 65%;
+      transform: translateX(-50%);
+      border-radius: 48% 48% 42% 42% / 35% 35% 58% 58%;
+      background: var(--hair-color, #5b382a);
+      z-index: 2;
+    }
+
+    .hair-front {
+      position: absolute;
+      left: 50%;
+      top: 13%;
+      width: 51%;
+      height: 25%;
+      transform: translateX(-50%);
+      border-radius: 55% 55% 28% 28% / 55% 55% 35% 35%;
+      background: var(--hair-color, #5b382a);
+      z-index: 10;
+    }
+
+    .hair-front::before,
+    .hair-front::after {
+      content: "";
+      position: absolute;
+      top: 45%;
+      width: 23%;
+      height: 160%;
+      border-radius: 999px;
+      background: inherit;
+    }
+
+    .hair-front::before {
+      left: -2%;
+      transform: rotate(13deg);
+    }
+
+    .hair-front::after {
+      right: -2%;
+      transform: rotate(-13deg);
+    }
+
+    .hair-afro .hair-back {
+      top: 4%;
+      width: 66%;
+      height: 54%;
+      border-radius: 50%;
+      box-shadow:
+        -35px 12px 0 var(--hair-color),
+        35px 12px 0 var(--hair-color),
+        -53px 42px 0 var(--hair-color),
+        53px 42px 0 var(--hair-color);
+    }
+
+    .hair-afro .hair-front {
+      top: 6%;
+      width: 58%;
+      height: 27%;
+      border-radius: 50%;
+    }
+
+    .hair-bob .hair-back {
+      top: 12%;
+      width: 57%;
+      height: 50%;
+      border-radius: 48% 48% 28% 28% / 37% 37% 56% 56%;
+    }
+
+    .hair-bob .hair-front::before,
+    .hair-bob .hair-front::after {
+      height: 110%;
+    }
+
+    .hair-braids .hair-back {
+      width: 52%;
+      height: 38%;
+    }
+
+    .hair-braids .bust::before,
+    .hair-braids .bust::after {
+      content: "";
+      position: absolute;
+      top: 37%;
+      width: 9%;
+      height: 42%;
+      border-radius: 999px;
+      background:
+        repeating-linear-gradient(
+          to bottom,
+          var(--hair-color) 0 14px,
+          rgba(255,255,255,.16) 14px 18px
+        );
+      z-index: 3;
+    }
+
+    .hair-braids .bust::before {
+      left: 20%;
+    }
+
+    .hair-braids .bust::after {
+      right: 20%;
+    }
+
+    .hair-buns .hair-back::before,
+    .hair-buns .hair-back::after {
+      content: "";
+      position: absolute;
+      top: -9%;
+      width: 34%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .hair-buns .hair-back::before {
+      left: -6%;
+    }
+
+    .hair-buns .hair-back::after {
+      right: -6%;
+    }
+
+    .hair-mohawk .hair-back {
+      top: 4%;
+      width: 17%;
+      height: 38%;
+      border-radius: 55% 55% 15% 15%;
+      transform: translateX(-50%) skewX(-5deg);
+    }
+
+    .hair-mohawk .hair-front {
+      top: 5%;
+      width: 18%;
+      height: 37%;
+      border-radius: 55% 55% 15% 15%;
+    }
+
+    .hair-mohawk .hair-front::before,
+    .hair-mohawk .hair-front::after {
+      display: none;
+    }
+
+    .hair-ponytail .hair-back::after {
+      content: "";
+      position: absolute;
+      right: -29%;
+      top: 29%;
+      width: 31%;
+      height: 55%;
+      border-radius: 50% 50% 70% 30%;
+      background: inherit;
+      transform: rotate(-12deg);
+    }
+
+    .hair-short .hair-back {
+      top: 13%;
+      width: 50%;
+      height: 34%;
+      border-radius: 50% 50% 30% 30%;
+    }
+
+    .hair-short .hair-front::before,
+    .hair-short .hair-front::after {
+      height: 55%;
+    }
+
+    .accessory {
+      position: absolute;
+      left: 50%;
+      top: 11%;
+      z-index: 14;
+      transform: translateX(-50%);
+      font-size: clamp(52px, 7vw, 92px);
+      line-height: 1;
+      pointer-events: none;
+      filter: drop-shadow(0 5px 3px rgba(74, 49, 96, .18));
+    }
+
+    .glasses {
+      position: absolute;
+      left: 50%;
+      top: 38%;
+      z-index: 13;
+      display: none;
+      width: 44%;
+      height: 13%;
+      transform: translateX(-50%);
+      pointer-events: none;
+    }
+
+    .glasses.show {
+      display: block;
+    }
+
+    .glasses::before,
+    .glasses::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      width: 35%;
+      height: 100%;
+      border: 5px solid #5a3d8e;
+      border-radius: 35%;
+      background: rgba(255,255,255,.16);
+    }
+
+    .glasses::before {
+      left: 4%;
+    }
+
+    .glasses::after {
+      right: 4%;
+    }
+
+    .glasses span {
+      position: absolute;
+      left: 50%;
+      top: 38%;
+      width: 18%;
+      height: 5px;
+      transform: translateX(-50%);
+      border-radius: 999px;
+      background: #5a3d8e;
+    }
+
+    .save-note {
+      min-height: 20px;
+      margin-top: 8px;
+      color: #6d6290;
+      font-size: 12px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      top: calc(var(--header-height) + 14px + env(safe-area-inset-top));
+      z-index: 1600;
+      max-width: min(90vw, 560px);
+      padding: 12px 20px;
+      transform: translateX(-50%) translateY(-145px);
+      border: 3px solid rgba(255,255,255,.95);
+      border-radius: 999px;
+      color: var(--purple);
+      background: rgba(255,255,255,.98);
+      box-shadow: 0 12px 28px rgba(72, 48, 101, .22);
+      font-weight: 900;
+      text-align: center;
+      pointer-events: none;
+      transition: transform .25s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1050px) {
+      :root {
+        --header-height: 76px;
+      }
+
+      .game-header {
+        min-height: 76px;
+        padding: 8px 11px;
+      }
+
+      .header-icon,
+      .header-title p {
+        display: none;
+      }
+
+      .player-badge {
+        max-width: 170px;
+      }
+
+      .layout {
+        inset: 10px;
+        grid-template-columns: minmax(180px, .78fr) minmax(350px, 1.35fr) minmax(185px, .78fr);
+        gap: 9px;
+      }
+
+      .panel {
+        border-radius: 23px;
+      }
+
+      .tool-panel,
+      .style-panel {
+        padding: 10px;
+      }
+
+      .option-button {
+        min-height: 67px;
+      }
+
+      .bust {
+        width: 85%;
+      }
+    }
+
+    @media (max-width: 790px) and (orientation: portrait) {
+      html,
+      body {
+        overflow: auto;
+      }
+
+      .game-header {
+        position: sticky;
+        top: 0;
+      }
+
+      .player-badge {
+        display: none;
+      }
+
+      .studio {
+        flex: 0 0 auto;
+        min-height: 1420px;
+      }
+
+      .layout {
+        position: relative;
+        inset: auto;
+        width: calc(100% - 18px);
+        min-height: 1380px;
+        margin: 9px auto;
+        grid-template-columns: 1fr;
+        grid-template-rows: 350px 610px 390px;
+      }
+
+      .mirror {
+        width: min(94%, 560px);
+        min-height: 540px;
+      }
+
+      .options {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .color-grid {
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-height: 690px) and (orientation: landscape) {
+      :root {
+        --header-height: 62px;
+      }
+
+      .game-header {
+        min-height: 62px;
+        padding: 6px 10px;
+      }
+
+      .home-button,
+      .header-button {
+        min-height: 40px;
+        padding: 7px 12px;
+      }
+
+      .header-title h1 {
+        font-size: 27px;
+      }
+
+      .layout {
+        inset: 8px;
+      }
+
+      .panel-title {
+        font-size: 18px;
+        margin-bottom: 7px;
+      }
+
+      .tab-button {
+        min-height: 38px;
+      }
+
+      .option-button {
+        min-height: 58px;
+      }
+
+      .option-button .emoji {
+        font-size: 25px;
+      }
+
+      .action-button {
+        min-height: 41px;
+      }
+
+      .mirror {
+        min-height: 390px;
+      }
+    }
+
+    @media (hover: none) and (pointer: coarse) {
+      button {
+        min-height: 44px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .toast {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <header class="game-header">
+    <div class="header-left">
+      <button id="homeButton" class="home-button" type="button">← My City</button>
+      <div class="header-icon" aria-hidden="true">💇🏽‍♀️</div>
+
+      <div class="header-title">
+        <h1>Style Studio</h1>
+        <p>Create hair, makeup, face paint, and fun accessories.</p>
+      </div>
+    </div>
+
+    <div id="playerBadge" class="player-badge">✨ Player's Salon</div>
+  </header>
+
+  <main class="studio">
+    <div class="layout">
+      <section class="panel tool-panel">
+        <h2 class="panel-title">Choose a Style</h2>
+
+        <div class="tabs">
+          <button class="tab-button active" data-tab="hair" type="button">💇 Hair</button>
+          <button class="tab-button" data-tab="makeup" type="button">💄 Makeup</button>
+          <button class="tab-button" data-tab="paint" type="button">🎨 Face Paint</button>
+          <button class="tab-button" data-tab="accessory" type="button">👑 Extras</button>
+        </div>
+
+        <div id="options" class="options"></div>
+      </section>
+
+      <section class="panel mirror-panel">
+        <div id="mirror" class="mirror">
+          <div class="mirror-stars" aria-hidden="true"></div>
+
+          <div id="character" class="bust hair-long">
+            <div class="hair-back"></div>
+            <div class="shoulders"></div>
+            <div class="neck"></div>
+
+            <div class="head">
+              <div class="ear left"></div>
+              <div class="ear right"></div>
+
+              <div class="eyebrow left"></div>
+              <div class="eyebrow right"></div>
+
+              <div class="eye left"></div>
+              <div class="eye right"></div>
+
+              <div class="nose"></div>
+              <div class="mouth"></div>
+
+              <div class="cheek left"></div>
+              <div class="cheek right"></div>
+
+              <div id="faceArt" class="face-art"></div>
+              <div id="glasses" class="glasses"><span></span></div>
+            </div>
+
+            <div class="hair-front"></div>
+            <div id="accessory" class="accessory"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel style-panel">
+        <h2 class="panel-title">Colors & Save</h2>
+
+        <div id="colorGrid" class="color-grid"></div>
+
+        <div class="action-stack">
+          <button id="randomButton" class="action-button random-button" type="button">
+            🎲 Surprise Style
+          </button>
+
+          <button id="saveButton" class="action-button save-button" type="button">
+            💾 Save My Style
+          </button>
+
+          <button id="resetButton" class="action-button reset-button" type="button">
+            ↺ Start Over
+          </button>
+        </div>
+
+        <div class="save-note">
+          Saved styles stay on this device.
+        </div>
+      </section>
+    </div>
+
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  </main>
+
+  <script>
+    (() => {
+      'use strict';
+
+      const NAME_KEY = 'elcraft_child_name';
+      const STYLE_KEY = 'elcraft_salon_style';
+
+      const HAIR_OPTIONS = [
+        { id: 'long', label: 'Long', emoji: '💇🏽‍♀️' },
+        { id: 'bob', label: 'Bob', emoji: '💁🏽‍♀️' },
+        { id: 'afro', label: 'Afro', emoji: '🪮' },
+        { id: 'braids', label: 'Braids', emoji: '🧶' },
+        { id: 'buns', label: 'Space Buns', emoji: '🌙' },
+        { id: 'ponytail', label: 'Ponytail', emoji: '🎀' },
+        { id: 'short', label: 'Short', emoji: '✂️' },
+        { id: 'mohawk', label: 'Mohawk', emoji: '⚡' }
+      ];
+
+      const MAKEUP_OPTIONS = [
+        { id: 'none', label: 'No Makeup', emoji: '🙂' },
+        { id: 'pink', label: 'Pink Lips', emoji: '💗' },
+        { id: 'purple', label: 'Purple Lips', emoji: '💜' },
+        { id: 'red', label: 'Red Lips', emoji: '❤️' },
+        { id: 'peach', label: 'Peach Blush', emoji: '🍑' },
+        { id: 'rose', label: 'Rose Blush', emoji: '🌹' },
+        { id: 'sparkle', label: 'Sparkle Blush', emoji: '✨' },
+        { id: 'blue', label: 'Blue Lips', emoji: '💙' }
+      ];
+
+      const PAINT_OPTIONS = [
+        { id: 'none', label: 'No Paint', emoji: '🙂' },
+        { id: 'stars', label: 'Stars', emoji: '⭐' },
+        { id: 'hearts', label: 'Hearts', emoji: '❤️' },
+        { id: 'flowers', label: 'Flowers', emoji: '🌸' },
+        { id: 'butterfly', label: 'Butterflies', emoji: '🦋' },
+        { id: 'rainbow', label: 'Rainbows', emoji: '🌈' },
+        { id: 'snow', label: 'Snowflakes', emoji: '❄️' },
+        { id: 'tiger', label: 'Tiger', emoji: '🐯' }
+      ];
+
+      const ACCESSORY_OPTIONS = [
+        { id: 'none', label: 'No Extra', emoji: '🙂' },
+        { id: 'crown', label: 'Crown', emoji: '👑' },
+        { id: 'bow', label: 'Bow', emoji: '🎀' },
+        { id: 'flower', label: 'Flower', emoji: '🌺' },
+        { id: 'wizard', label: 'Wizard Hat', emoji: '🧙🏽‍♀️' },
+        { id: 'pirate', label: 'Pirate Hat', emoji: '🏴‍☠️' },
+        { id: 'unicorn', label: 'Unicorn', emoji: '🦄' },
+        { id: 'glasses', label: 'Glasses', emoji: '👓' }
+      ];
+
+      const HAIR_COLORS = [
+        '#4a2c23',
+        '#11131f',
+        '#8f5a35',
+        '#d6a554',
+        '#b74837',
+        '#f476b4',
+        '#7257d9',
+        '#55bfe7',
+        '#64c96b',
+        '#f4e9df',
+        'linear-gradient(90deg,#ff6f91,#ffd35a,#61d982,#5fc6ef,#7b5cdb)'
+      ];
+
+      const SKIN_COLORS = [
+        '#f5d2ba',
+        '#eab58d',
+        '#d89568',
+        '#c57d55',
+        '#9c5c3d',
+        '#71412f'
+      ];
+
+      const state = {
+        tab: 'hair',
+        hair: 'long',
+        hairColor: '#4a2c23',
+        skinColor: '#c57d55',
+        makeup: 'none',
+        paint: 'none',
+        accessory: 'none'
+      };
+
+      const homeButton = document.getElementById('homeButton');
+      const playerBadge = document.getElementById('playerBadge');
+      const character = document.getElementById('character');
+      const options = document.getElementById('options');
+      const colorGrid = document.getElementById('colorGrid');
+      const faceArt = document.getElementById('faceArt');
+      const accessory = document.getElementById('accessory');
+      const glasses = document.getElementById('glasses');
+      const saveButton = document.getElementById('saveButton');
+      const resetButton = document.getElementById('resetButton');
+      const randomButton = document.getElementById('randomButton');
+      const toast = document.getElementById('toast');
+
+      let toastTimer = null;
+
+      function cleanName(value) {
+        return String(value || '').trim().replace(/\s+/g, ' ').slice(0, 20);
+      }
+
+      function setPlayerName() {
+        const name = cleanName(localStorage.getItem(NAME_KEY)) || 'Player';
+        playerBadge.textContent = `✨ ${name}'s Salon`;
+      }
+
+      function optionListForTab(tab) {
+        if (tab === 'hair') {
+          return HAIR_OPTIONS;
+        }
+
+        if (tab === 'makeup') {
+          return MAKEUP_OPTIONS;
+        }
+
+        if (tab === 'paint') {
+          return PAINT_OPTIONS;
+        }
+
+        return ACCESSORY_OPTIONS;
+      }
+
+      function currentSelectionForTab(tab) {
+        if (tab === 'hair') {
+          return state.hair;
+        }
+
+        if (tab === 'makeup') {
+          return state.makeup;
+        }
+
+        if (tab === 'paint') {
+          return state.paint;
+        }
+
+        return state.accessory;
+      }
+
+      function renderOptions() {
+        const list = optionListForTab(state.tab);
+        const activeId = currentSelectionForTab(state.tab);
+
+        options.replaceChildren();
+
+        list.forEach(item => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `option-button${item.id === activeId ? ' active' : ''}`;
+          button.innerHTML = `<span class="emoji">${item.emoji}</span>${item.label}`;
+
+          button.addEventListener('click', () => {
+            if (state.tab === 'hair') {
+              state.hair = item.id;
+            } else if (state.tab === 'makeup') {
+              state.makeup = item.id;
+            } else if (state.tab === 'paint') {
+              state.paint = item.id;
+            } else {
+              state.accessory = item.id;
+            }
+
+            renderOptions();
+            applyStyle();
+          });
+
+          options.appendChild(button);
+        });
+      }
+
+      function renderColorGrid() {
+        colorGrid.replaceChildren();
+
+        const skinLabel = document.createElement('div');
+        skinLabel.textContent = 'Skin';
+        skinLabel.style.gridColumn = '1 / -1';
+        skinLabel.style.fontWeight = '900';
+        skinLabel.style.color = '#6848ad';
+        skinLabel.style.textAlign = 'center';
+        colorGrid.appendChild(skinLabel);
+
+        SKIN_COLORS.forEach(color => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `swatch${state.skinColor === color ? ' active' : ''}`;
+          button.style.background = color;
+          button.setAttribute('aria-label', 'Choose skin tone');
+
+          button.addEventListener('click', () => {
+            state.skinColor = color;
+            renderColorGrid();
+            applyStyle();
+          });
+
+          colorGrid.appendChild(button);
+        });
+
+        const hairLabel = document.createElement('div');
+        hairLabel.textContent = 'Hair';
+        hairLabel.style.gridColumn = '1 / -1';
+        hairLabel.style.marginTop = '4px';
+        hairLabel.style.fontWeight = '900';
+        hairLabel.style.color = '#6848ad';
+        hairLabel.style.textAlign = 'center';
+        colorGrid.appendChild(hairLabel);
+
+        HAIR_COLORS.forEach(color => {
+          const button = document.createElement('button');
+          button.type = 'button';
+          button.className = `swatch${state.hairColor === color ? ' active' : ''}`;
+          button.style.background = color;
+          button.setAttribute('aria-label', 'Choose hair color');
+
+          button.addEventListener('click', () => {
+            state.hairColor = color;
+            renderColorGrid();
+            applyStyle();
+          });
+
+          colorGrid.appendChild(button);
+        });
+      }
+
+      function applyMakeup() {
+        const makeupMap = {
+          none: {
+            lips: '#dd6b7f',
+            blush: 'transparent'
+          },
+          pink: {
+            lips: '#ff5fa2',
+            blush: 'rgba(255,120,174,.28)'
+          },
+          purple: {
+            lips: '#9b5bd6',
+            blush: 'rgba(220,131,218,.25)'
+          },
+          red: {
+            lips: '#d94a57',
+            blush: 'rgba(238,104,119,.2)'
+          },
+          peach: {
+            lips: '#e47c78',
+            blush: 'rgba(255,154,112,.35)'
+          },
+          rose: {
+            lips: '#c94f72',
+            blush: 'rgba(213,80,116,.31)'
+          },
+          sparkle: {
+            lips: '#f27eb1',
+            blush: 'rgba(255,213,93,.35)'
+          },
+          blue: {
+            lips: '#4d9be8',
+            blush: 'rgba(92,191,231,.25)'
+          }
+        };
+
+        const selected = makeupMap[state.makeup] || makeupMap.none;
+
+        character.style.setProperty('--lip-color', selected.lips);
+        character.style.setProperty('--blush-color', selected.blush);
+      }
+
+      function applyFacePaint() {
+        const paintMap = {
+          none: ['', ''],
+          stars: ['⭐', '⭐'],
+          hearts: ['❤️', '❤️'],
+          flowers: ['🌸', '🌸'],
+          butterfly: ['🦋', '🦋'],
+          rainbow: ['🌈', '🌈'],
+          snow: ['❄️', '❄️'],
+          tiger: ['🐯', '🐯']
+        };
+
+        const [left, right] = paintMap[state.paint] || paintMap.none;
+
+        faceArt.style.setProperty('--left-art', `"${left}"`);
+        faceArt.style.setProperty('--right-art', `"${right}"`);
+
+        const styleId = 'face-art-style';
+        let styleElement = document.getElementById(styleId);
+
+        if (!styleElement) {
+          styleElement = document.createElement('style');
+          styleElement.id = styleId;
+          document.head.appendChild(styleElement);
+        }
+
+        styleElement.textContent = `
+          .face-art::before { content: var(--left-art, ""); }
+          .face-art::after { content: var(--right-art, ""); }
+        `;
+      }
+
+      function applyAccessory() {
+        const accessoryMap = {
+          none: '',
+          crown: '👑',
+          bow: '🎀',
+          flower: '🌺',
+          wizard: '🧙🏽‍♀️',
+          pirate: '🏴‍☠️',
+          unicorn: '🦄',
+          glasses: ''
+        };
+
+        accessory.textContent = accessoryMap[state.accessory] || '';
+        glasses.classList.toggle('show', state.accessory === 'glasses');
+      }
+
+      function applyStyle() {
+        character.className = `bust hair-${state.hair}`;
+        character.style.setProperty('--skin', state.skinColor);
+        character.style.setProperty('--hair-color', state.hairColor);
+
+        applyMakeup();
+        applyFacePaint();
+        applyAccessory();
+      }
+
+      function saveStyle() {
+        localStorage.setItem(STYLE_KEY, JSON.stringify(state));
+        showToast('Your salon style was saved! ✨');
+      }
+
+      function restoreStyle() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STYLE_KEY) || 'null');
+
+          if (!saved) {
+            return;
+          }
+
+          Object.assign(state, saved);
+        } catch {
+          localStorage.removeItem(STYLE_KEY);
+        }
+      }
+
+      function resetStyle() {
+        Object.assign(state, {
+          tab: 'hair',
+          hair: 'long',
+          hairColor: '#4a2c23',
+          skinColor: '#c57d55',
+          makeup: 'none',
+          paint: 'none',
+          accessory: 'none'
+        });
+
+        document.querySelectorAll('.tab-button').forEach(button => {
+          button.classList.toggle('active', button.dataset.tab === 'hair');
+        });
+
+        renderOptions();
+        renderColorGrid();
+        applyStyle();
+        showToast('Ready for a brand-new look!');
+      }
+
+      function randomItem(list) {
+        return list[Math.floor(Math.random() * list.length)];
+      }
+
+      function surpriseStyle() {
+        state.hair = randomItem(HAIR_OPTIONS).id;
+        state.hairColor = randomItem(HAIR_COLORS);
+        state.skinColor = randomItem(SKIN_COLORS);
+        state.makeup = randomItem(MAKEUP_OPTIONS).id;
+        state.paint = randomItem(PAINT_OPTIONS).id;
+        state.accessory = randomItem(ACCESSORY_OPTIONS).id;
+
+        renderOptions();
+        renderColorGrid();
+        applyStyle();
+        showToast('Surprise makeover! 🎉');
+      }
+
+      function showToast(message) {
+        toast.textContent = message;
+        toast.classList.add('show');
+
+        clearTimeout(toastTimer);
+
+        toastTimer = setTimeout(() => {
+          toast.classList.remove('show');
+        }, 1800);
+      }
+
+      homeButton.addEventListener('click', () => {
+        window.location.href = 'my-city.html';
+      });
+
+      document.querySelectorAll('.tab-button').forEach(button => {
+        button.addEventListener('click', () => {
+          state.tab = button.dataset.tab;
+
+          document.querySelectorAll('.tab-button').forEach(item => {
+            item.classList.toggle('active', item === button);
+          });
+
+          renderOptions();
+        });
+      });
+
+      saveButton.addEventListener('click', saveStyle);
+      resetButton.addEventListener('click', resetStyle);
+      randomButton.addEventListener('click', surpriseStyle);
+
+      window.addEventListener('storage', event => {
+        if (event.key === NAME_KEY) {
+          setPlayerName();
+        }
+      });
+
+      window.addEventListener('pageshow', setPlayerName);
+
+      restoreStyle();
+      setPlayerName();
+      renderOptions();
+      renderColorGrid();
+      applyStyle();
+    })();
+  </script>
+</body>
+</html>
