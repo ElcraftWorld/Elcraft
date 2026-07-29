@@ -280,11 +280,12 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
     coins:'elcraft_coins',
     profile:'elcraft_profile_v1',
     school:'elcraft_school_v1',
-    reading:'elcraft_reading_library_v1'
+    reading:'elcraft_reading_library_v1',childBooks:'elcraft_child_books_v1'
   };
   const today=new Date().toLocaleDateString('en-CA');
   const childName=localStorage.getItem(KEYS.name)||'Reader';
   let books=[];
+  let childBooks=[];
   let activeBook=null;
   let soundOn=true;
 
@@ -309,6 +310,7 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
     school.completedByDate[date]=(school.completedByDate[date]||[]).filter(id=>id!=='reading');
   });
   try{const x=JSON.parse(localStorage.getItem(KEYS.reading));if(x)reading={...reading,...x}}catch{}
+  try{const x=JSON.parse(localStorage.getItem(KEYS.childBooks));if(Array.isArray(x))childBooks=x}catch{}
 
   function migrateOldReading(){
     const oldKeys=['elcraft_reading_v1','elcraft_reading_v2'];
@@ -458,6 +460,13 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
 
   function completeBook(book){
     document.querySelector('#quizStage').classList.remove('show');
+    if(book.isChildBook){
+      const saved=childBooks.find(x=>x.id===book.id);
+      if(saved)saved.readCount=(saved.readCount||0)+1;
+      localStorage.setItem(KEYS.childBooks,JSON.stringify(childBooks));
+      confetti();toast('📖 You reread a book you wrote!');
+      render();return;
+    }
     reading.readCounts[book.id]=(reading.readCounts[book.id]||0)+1;
     const firstDiscovery=!reading.completedBooks.includes(book.id);
     if(firstDiscovery)reading.completedBooks.push(book.id);
@@ -530,6 +539,35 @@ main{position:relative;z-index:2;width:min(1260px,100%);margin:auto;padding:16px
       books.filter(b=>b.level===level).forEach(book=>row.append(makeBookCard(book)));
       shelf.append(label,row);library.append(shelf);
     });
+
+    if(childBooks.length){
+      const shelf=document.createElement('div');shelf.className='shelf';
+      const label=document.createElement('div');label.className='shelf-label';
+      label.textContent='✍️ Written by Me';
+      const row=document.createElement('div');row.className='books';
+      childBooks.forEach(book=>{
+        const button=document.createElement('button');
+        button.className='book-card violet';
+        button.innerHTML=`<span class="emoji">${book.emoji||'📘'}</span><strong>${book.title}</strong><small>by ${book.author||childName}</small><span class="status">Read ${(book.readCount||0)} time${book.readCount===1?'':'s'}</span>`;
+        button.onclick=()=>{
+          const text=(book.body||'').split(/\n+/).filter(Boolean);
+          activeBook={
+            id:book.id,title:book.title,emoji:book.emoji||'📘',story:text.length?text:[book.body||''],
+            vocabulary:[],question:{prompt:'Did you enjoy your own book?',answers:['Yes!','Read it again'],correctIndex:0},
+            level:1,isChildBook:true
+          };
+          document.querySelector('#readerHeading').textContent=`${activeBook.emoji} ${activeBook.title}`;
+          document.querySelector('#bookTitle').textContent=activeBook.title;
+          document.querySelector('#storyText').innerHTML=activeBook.story.map(p=>`<p>${p}</p>`).join('');
+          document.querySelector('#vocab').innerHTML='';
+          document.querySelector('#favoriteBtn').textContent='♥ My Book';
+          document.querySelector('#rewardNote').textContent='Books written in the Writing Studio can be reread anytime.';
+          document.querySelector('#readerStage').classList.add('show');
+        };
+        row.append(button);
+      });
+      shelf.append(label,row);library.append(shelf);
+    }
 
     const totalReads=Object.values(reading.readCounts).reduce((a,b)=>a+(Number(b)||0),0);
     document.querySelector('#storiesRead').textContent=reading.completedBooks.length;
