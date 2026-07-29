@@ -324,10 +324,22 @@
     openNamePrompt();
   });
 
-  document.querySelectorAll('.hotspot:not(.profiles)').forEach(btn => {
+  // Open the working game pages.
+  document.querySelector('.sky').addEventListener('click',() => {
+    window.location.href = 'sky-world.html';
+  });
+
+  document.querySelector('.characters').addEventListener('click',() => {
+    window.location.href = 'my-character.html';
+  });
+
+  // The remaining worlds are not built yet, so they show a friendly message.
+  document.querySelectorAll(
+    '.hotspot:not(.profiles):not(.sky):not(.characters)'
+  ).forEach(btn => {
     btn.addEventListener('click',() => {
       const name = localStorage.getItem(NAME_KEY) || 'Player';
-      toast.textContent = btn.dataset.label + ' is opening for ' + name + '…';
+      toast.textContent = btn.dataset.label + ' is coming soon for ' + name + '!';
       toast.classList.add('show');
       clearTimeout(window.__toastTimer);
       window.__toastTimer = setTimeout(() => toast.classList.remove('show'),1400);
