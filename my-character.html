@@ -1,0 +1,784 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#111f57">
+<title>ELCraft | My Character</title>
+<style>
+:root{
+  --ink:#182653;
+  --deep:#111f57;
+  --deep2:#1c2f75;
+  --purple:#6f3fc2;
+  --purple2:#9c5dec;
+  --gold:#ffd84a;
+  --panel:#f7f5ff;
+  --line:#dcd7f4;
+  --shadow:0 18px 50px rgba(24,35,86,.25);
+}
+*{box-sizing:border-box}
+html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
+body{
+  min-height:100vh;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 14% 18%,rgba(255,255,255,.95),transparent 23%),
+    radial-gradient(circle at 85% 12%,rgba(255,255,255,.55),transparent 20%),
+    linear-gradient(145deg,#78d3ff 0%,#d2edff 40%,#ffd4dc 72%,#ffd36e 100%);
+}
+button,input{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible{outline:4px solid #ffce34;outline-offset:3px}
+
+.shell{height:100vh;display:grid;grid-template-rows:auto 1fr;position:relative}
+.sparkle{position:absolute;z-index:0;pointer-events:none;animation:twinkle 2.4s ease-in-out infinite}
+.sparkle.a{left:2.5%;top:16%;font-size:30px}.sparkle.b{right:3%;top:13%;font-size:25px;animation-delay:-1s}
+.sparkle.c{left:7%;bottom:5%;font-size:22px;animation-delay:-1.7s}
+
+.topbar{
+  position:relative;z-index:5;
+  display:flex;align-items:center;justify-content:space-between;gap:14px;
+  padding:11px 16px;
+  background:rgba(255,255,255,.92);
+  border-bottom:2px solid rgba(255,255,255,.9);
+  box-shadow:0 7px 22px rgba(29,39,89,.15);
+  backdrop-filter:blur(14px);
+}
+.brand{display:flex;align-items:center;gap:12px;min-width:0}
+.logo{
+  font-weight:1000;font-size:clamp(25px,3vw,43px);line-height:.9;
+  color:#ffc72c;
+  text-shadow:
+    -2px -2px 0 #6e3ca8,2px -2px 0 #6e3ca8,
+    -2px 2px 0 #6e3ca8,2px 2px 0 #6e3ca8,
+    0 5px 0 #43277a;
+  transform:rotate(-1deg);
+}
+.logo small{display:block;margin:8px 0 0 4px;font-size:11px;color:#6642a0;text-shadow:none;letter-spacing:.04em}
+.home-btn,.sound-btn{
+  border:0;border-radius:16px;padding:11px 14px;font-weight:900;color:#5e3ca2;background:#eee7ff;
+  box-shadow:0 4px 0 #d3c6ed;
+}
+.player-pill{white-space:nowrap;border-radius:999px;background:#fff0b9;padding:10px 14px;color:#604383;font-weight:900}
+
+.game{
+  position:relative;z-index:1;min-height:0;
+  display:grid;grid-template-columns:minmax(360px,.92fr) minmax(570px,1.45fr);
+  gap:13px;padding:13px;
+}
+.card{
+  min-height:0;border:2px solid rgba(255,255,255,.92);border-radius:29px;
+  box-shadow:var(--shadow);overflow:hidden;
+}
+
+/* Hero side */
+.hero-card{
+  position:relative;
+  display:grid;grid-template-rows:auto 1fr auto;
+  background:
+    linear-gradient(rgba(32,42,106,.05),rgba(32,42,106,.08)),
+    radial-gradient(circle at 50% 22%,rgba(255,255,255,.97),rgba(217,240,255,.86) 35%,rgba(255,208,226,.70) 75%);
+}
+.hero-heading{padding:15px 17px 6px;text-align:center}
+.hero-heading h1{margin:0;color:#59399e;font-size:clamp(24px,3vw,38px)}
+.hero-heading p{margin:5px 0 0;color:#68769a;font-weight:800;font-size:13px}
+.scene{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.castle,.cloud,.rainbow{position:absolute;pointer-events:none;user-select:none}
+.castle{right:3%;bottom:12%;font-size:105px;opacity:.24}
+.cloud.one{top:8%;left:1%;font-size:75px;opacity:.55}
+.cloud.two{top:18%;right:0;font-size:55px;opacity:.5}
+.rainbow{left:1%;bottom:15%;font-size:95px;opacity:.30}
+.platform{
+  position:absolute;bottom:6.5%;left:50%;transform:translateX(-50%);
+  width:68%;height:14%;border-radius:50%;
+  background:linear-gradient(#aa8a67,#6e5648);
+  box-shadow:inset 0 13px 0 #d7bd91,0 22px 30px rgba(38,30,75,.25);
+}
+.platform:before{
+  content:"";position:absolute;inset:14% 7% 20%;border-radius:50%;
+  background:radial-gradient(circle,#d8c7a1,#91745c 72%);
+  border:4px solid rgba(80,56,47,.2);
+}
+.hero-wrap{
+  z-index:2;width:min(87%,510px);height:92%;
+  display:flex;align-items:center;justify-content:center;
+  transform-origin:50% 89%;
+  animation:idle 3.8s ease-in-out infinite;
+}
+.hero-wrap.bounce{animation:celebrate .78s ease}
+@keyframes idle{50%{transform:translateY(-5px) scale(1.005)}}
+@keyframes celebrate{28%{transform:translateY(-32px) rotate(-2deg)}60%{transform:translateY(-8px) rotate(2deg)}}
+@keyframes twinkle{50%{opacity:.35;transform:scale(1.4) rotate(12deg)}}
+
+#heroSvg{width:100%;height:100%;filter:drop-shadow(0 18px 18px rgba(44,33,83,.22));overflow:visible}
+.eye-lids{transform-origin:center;animation:blink 5.2s infinite}
+@keyframes blink{0%,45%,49%,100%{transform:scaleY(1)}47%{transform:scaleY(.06)}}
+
+.hero-tools{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+  padding:10px 12px 13px;background:rgba(255,255,255,.89);border-top:1px solid #e6dff3
+}
+.tool-btn{
+  border:0;border-radius:15px;padding:10px 7px;background:#eee9fc;color:#63449d;font-weight:900;
+  box-shadow:0 4px 0 #d6caef;
+}
+.tool-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #d6caef}
+
+/* Controls side */
+.controls{
+  display:grid;grid-template-rows:auto 1fr auto;
+  background:rgba(247,246,255,.97);
+}
+.steps{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:7px;padding:12px;
+  background:linear-gradient(#25397d,#17285f);
+}
+.step{
+  border:2px solid rgba(255,255,255,.12);border-radius:15px;padding:9px 4px;
+  color:#d8def7;background:#1e316f;font-size:11px;font-weight:900;
+}
+.step b{display:block;font-size:19px;margin-bottom:1px}
+.step.active{background:linear-gradient(#9b5ee6,#6538b4);color:#fff;border-color:#ffd552;box-shadow:0 0 0 2px rgba(255,216,74,.25)}
+.step.done{background:#315f69;color:#dffff0}
+.editor{min-height:0;overflow:auto;padding:17px 18px 20px}
+.editor h2{margin:0;color:#5e3ea0;font-size:27px}
+.editor .help{margin:6px 0 17px;color:#68769b;font-weight:800;line-height:1.42}
+.group-title{
+  margin:18px 0 8px;color:#6e6792;text-transform:uppercase;letter-spacing:.09em;font-size:11px;font-weight:1000
+}
+.option-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}
+.option{
+  min-height:91px;border:3px solid transparent;border-radius:17px;background:#fff;
+  box-shadow:0 5px 15px rgba(38,45,90,.10);padding:7px;color:#34436c;font-weight:900
+}
+.option .preview{display:flex;align-items:center;justify-content:center;height:53px;font-size:36px}
+.option small{display:block;color:#7d86a4;font-size:10px;margin-top:2px}
+.option.selected{border-color:#7645c1;background:#eee7ff;transform:translateY(-2px)}
+.swatches{display:grid;grid-template-columns:repeat(8,1fr);gap:10px}
+.swatch{
+  aspect-ratio:1;border:4px solid #fff;border-radius:50%;box-shadow:0 4px 11px rgba(30,40,82,.22)
+}
+.swatch.selected{outline:4px solid #7849c0;outline-offset:2px}
+.name-input{
+  width:100%;padding:15px 16px;border-radius:17px;border:2px solid #d8ccef;background:#fff;
+  color:#34416c;font-size:20px;font-weight:900
+}
+.name-preview{
+  margin-top:12px;padding:15px;border-radius:18px;background:linear-gradient(#252f78,#151e56);
+  color:#fff;text-align:center;font-size:23px;font-weight:1000;box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)
+}
+.quick-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.quick{
+  border:0;border-radius:18px;min-height:98px;padding:8px;color:#fff;font-weight:1000;
+  box-shadow:0 6px 0 rgba(49,35,87,.27)
+}
+.quick span{display:block;font-size:37px;margin-bottom:5px}
+.quick.royal{background:linear-gradient(#a55de7,#6032a8)}
+.quick.artist{background:linear-gradient(#ef817d,#b94d6b)}
+.quick.explorer{background:linear-gradient(#c89548,#7c582d)}
+.quick.space{background:linear-gradient(#5e83de,#284aa2)}
+.quick.sport{background:linear-gradient(#48a9ce,#266b9c)}
+.quick.magic{background:linear-gradient(#7864dc,#3d318c)}
+
+.bottom-bar{
+  display:flex;gap:9px;padding:12px;background:#ece8fa;border-top:1px solid #ddd4f1
+}
+.nav{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
+.prev{background:#ddd5ef;color:#63499b;box-shadow:0 5px 0 #c4b8dc}
+.next{background:linear-gradient(#9562df,#6640b2);color:#fff;box-shadow:0 5px 0 #4d2e8d}
+.save{background:linear-gradient(#8bd84d,#59ad28);color:#fff;box-shadow:0 5px 0 #438b1d}
+.status{
+  position:absolute;left:50%;bottom:18px;transform:translateX(-50%) translateY(140px);
+  z-index:20;padding:12px 18px;border-radius:999px;background:#12235c;color:#fff;font-weight:900;
+  box-shadow:0 12px 30px rgba(20,29,70,.28);transition:.32s ease;white-space:nowrap
+}
+.status.show{transform:translateX(-50%) translateY(0)}
+.confetti{position:fixed;inset:0;z-index:50;pointer-events:none;overflow:hidden}
+.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.7s linear forwards}
+@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
+
+@media(max-width:980px){
+  body{overflow:auto}.shell{height:auto;min-height:100vh}
+  .game{grid-template-columns:1fr}.hero-card{min-height:660px}.controls{min-height:720px}
+}
+@media(max-width:580px){
+  .topbar{padding:8px}.logo{font-size:25px}.logo small{display:none}.player-pill{display:none}
+  .game{padding:7px;gap:8px}.hero-card{min-height:510px}
+  .hero-heading{padding:10px 10px 1px}.hero-heading h1{font-size:24px}
+  .steps{gap:4px;padding:8px}.step{font-size:9px;padding:7px 2px}.step b{font-size:15px}
+  .editor{padding:14px}.option-grid{grid-template-columns:repeat(3,1fr)}.swatches{grid-template-columns:repeat(6,1fr)}
+  .controls{min-height:700px}.hero-tools{padding:8px}.tool-btn{font-size:12px}
+}
+</style>
+</head>
+<body>
+<div class="shell">
+  <span class="sparkle a">✨</span><span class="sparkle b">⭐</span><span class="sparkle c">💫</span>
+
+  <header class="topbar">
+    <div class="brand">
+      <button class="home-btn" id="homeBtn">← Home</button>
+      <div class="logo">ELCraft<small>BE YOU. BUILD YOUR WORLD.</small></div>
+    </div>
+    <div class="player-pill">🌟 <span id="playerLabel">Player</span>'s Character</div>
+    <button class="sound-btn" id="soundBtn" aria-label="Toggle sound">🔊</button>
+  </header>
+
+  <main class="game">
+    <section class="card hero-card">
+      <div class="hero-heading">
+        <h1 id="heroTitle">Meet Your Hero!</h1>
+        <p>Make them yours. You can change them anytime.</p>
+      </div>
+
+      <div class="scene">
+        <div class="cloud one">☁️</div><div class="cloud two">☁️</div>
+        <div class="rainbow">🌈</div><div class="castle">🏰</div>
+        <div class="platform"></div>
+
+        <div class="hero-wrap" id="heroWrap">
+          <svg id="heroSvg" viewBox="0 0 600 790" role="img" aria-label="Custom ELCraft character">
+            <defs>
+              <radialGradient id="skinGradient" cx=".34" cy=".22" r=".9">
+                <stop id="skinLight" offset="0" stop-color="#f5c493"/>
+                <stop id="skinDark" offset="1" stop-color="#bd7649"/>
+              </radialGradient>
+              <linearGradient id="hairGradient" x1="0" y1="0" x2="1" y2="1">
+                <stop id="hairLight" offset="0" stop-color="#77462d"/>
+                <stop id="hairDark" offset="1" stop-color="#251512"/>
+              </linearGradient>
+              <linearGradient id="hoodieGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop id="hoodieLight" offset="0" stop-color="#f04b3f"/>
+                <stop id="hoodieDark" offset="1" stop-color="#a51f25"/>
+              </linearGradient>
+              <linearGradient id="shortsGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop id="shortsLight" offset="0" stop-color="#435a77"/>
+                <stop id="shortsDark" offset="1" stop-color="#202d42"/>
+              </linearGradient>
+              <linearGradient id="shoeGradient" x1="0" y1="0" x2="0" y2="1">
+                <stop id="shoeLight" offset="0" stop-color="#ffffff"/>
+                <stop id="shoeDark" offset="1" stop-color="#d9dde9"/>
+              </linearGradient>
+              <filter id="softShadow"><feDropShadow dx="0" dy="7" stdDeviation="8" flood-color="#32265d" flood-opacity=".22"/></filter>
+            </defs>
+
+            <ellipse cx="300" cy="736" rx="130" ry="24" fill="rgba(48,34,90,.20)"/>
+
+            <!-- back accessories -->
+            <g id="backAccessory"></g>
+
+            <!-- legs -->
+            <g id="legs">
+              <path d="M244 532 C239 585 236 636 230 684" stroke="url(#skinGradient)" stroke-width="64" stroke-linecap="round"/>
+              <path d="M356 532 C361 585 364 636 370 684" stroke="url(#skinGradient)" stroke-width="64" stroke-linecap="round"/>
+            </g>
+
+            <!-- shorts -->
+            <g id="bottoms">
+              <path d="M208 505 Q300 475 392 505 L390 585 Q350 601 310 576 L300 552 L290 576 Q250 601 210 585Z" fill="url(#shortsGradient)" stroke="rgba(21,28,55,.30)" stroke-width="7"/>
+              <path d="M300 516 V558" stroke="rgba(255,255,255,.20)" stroke-width="5"/>
+              <rect x="218" y="527" width="38" height="35" rx="7" fill="rgba(255,255,255,.09)" stroke="rgba(25,35,63,.22)" stroke-width="4"/>
+              <rect x="344" y="527" width="38" height="35" rx="7" fill="rgba(255,255,255,.09)" stroke="rgba(25,35,63,.22)" stroke-width="4"/>
+            </g>
+
+            <!-- shoes -->
+            <g id="shoes">
+              <path d="M171 666 Q218 645 269 673 L276 711 Q264 729 242 730 H166 Q144 714 153 688Z" fill="url(#shoeGradient)" stroke="#465984" stroke-width="8"/>
+              <path d="M331 673 Q382 645 429 666 L447 688 Q456 714 434 730 H358 Q336 729 324 711Z" fill="url(#shoeGradient)" stroke="#465984" stroke-width="8"/>
+              <path id="leftShoeAccent" d="M160 688 H266" stroke="#d23538" stroke-width="14" stroke-linecap="round"/>
+              <path id="rightShoeAccent" d="M334 688 H440" stroke="#d23538" stroke-width="14" stroke-linecap="round"/>
+              <path d="M181 675 H249 M351 675 H419" stroke="#7786a9" stroke-width="6" stroke-linecap="round"/>
+              <path d="M170 710 H264 M336 710 H430" stroke="#fff" stroke-width="7" stroke-linecap="round"/>
+            </g>
+
+            <!-- body and arms -->
+            <g id="body" filter="url(#softShadow)">
+              <path id="leftArm" d="M210 390 Q158 435 141 524" stroke="url(#hoodieGradient)" stroke-width="64" stroke-linecap="round"/>
+              <path id="rightArm" d="M390 390 Q442 435 459 524" stroke="url(#hoodieGradient)" stroke-width="64" stroke-linecap="round"/>
+              <circle id="leftHand" cx="137" cy="536" r="31" fill="url(#skinGradient)"/>
+              <circle id="rightHand" cx="463" cy="536" r="31" fill="url(#skinGradient)"/>
+
+              <path id="hoodieBody" d="M203 351 Q300 316 397 351 Q428 399 413 523 Q300 558 187 523 Q172 399 203 351Z" fill="url(#hoodieGradient)" stroke="rgba(78,28,54,.28)" stroke-width="8"/>
+              <path d="M257 355 Q300 391 343 355" fill="none" stroke="rgba(255,255,255,.38)" stroke-width="8" stroke-linecap="round"/>
+              <path d="M274 370 L284 429 M326 370 L316 429" stroke="#ffd362" stroke-width="7" stroke-linecap="round"/>
+              <circle cx="284" cy="432" r="7" fill="#ffd362"/><circle cx="316" cy="432" r="7" fill="#ffd362"/>
+              <path d="M252 470 Q300 448 348 470 L343 514 Q300 527 257 514Z" fill="rgba(70,21,66,.14)" stroke="rgba(255,255,255,.16)" stroke-width="5"/>
+
+              <!-- official ELCraft star -->
+              <path id="chestStar" d="M300 395 L315 426 L350 431 L325 455 L331 490 L300 474 L269 490 L275 455 L250 431 L285 426Z"
+                    fill="#ffd84a" stroke="#f2a91f" stroke-width="6"/>
+              <path d="M289 431 Q300 420 311 431" stroke="#fff2a2" stroke-width="5" stroke-linecap="round"/>
+
+              <path d="M276 318 H324 V365 Q300 385 276 365Z" fill="url(#skinGradient)"/>
+            </g>
+
+            <!-- hair back -->
+            <g id="hairBack"></g>
+
+            <!-- head -->
+            <g id="head">
+              <ellipse cx="300" cy="226" rx="125" ry="141" fill="url(#skinGradient)" stroke="rgba(115,64,48,.13)" stroke-width="5"/>
+              <ellipse cx="178" cy="233" rx="27" ry="38" fill="url(#skinGradient)"/>
+              <ellipse cx="422" cy="233" rx="27" ry="38" fill="url(#skinGradient)"/>
+
+              <g id="hairFront"></g>
+
+              <!-- eyebrows -->
+              <path d="M220 195 Q250 176 279 196" stroke="url(#hairGradient)" stroke-width="10" fill="none" stroke-linecap="round"/>
+              <path d="M321 196 Q350 176 380 195" stroke="url(#hairGradient)" stroke-width="10" fill="none" stroke-linecap="round"/>
+
+              <!-- eyes -->
+              <g class="eye-lids">
+                <ellipse cx="248" cy="235" rx="35" ry="42" fill="#fff"/>
+                <ellipse cx="352" cy="235" rx="35" ry="42" fill="#fff"/>
+                <circle id="irisL" cx="250" cy="241" r="21" fill="#6c4229"/>
+                <circle id="irisR" cx="350" cy="241" r="21" fill="#6c4229"/>
+                <circle cx="250" cy="243" r="11" fill="#151421"/>
+                <circle cx="350" cy="243" r="11" fill="#151421"/>
+                <circle cx="242" cy="231" r="7" fill="#fff"/>
+                <circle cx="342" cy="231" r="7" fill="#fff"/>
+                <circle cx="257" cy="251" r="3" fill="#fff"/>
+                <circle cx="357" cy="251" r="3" fill="#fff"/>
+              </g>
+
+              <path d="M300 255 Q286 286 306 290" fill="none" stroke="rgba(119,67,52,.40)" stroke-width="5" stroke-linecap="round"/>
+              <ellipse cx="209" cy="287" rx="28" ry="12" fill="rgba(235,92,112,.20)"/>
+              <ellipse cx="391" cy="287" rx="28" ry="12" fill="rgba(235,92,112,.20)"/>
+              <g id="mouth"></g>
+              <g id="freckles"></g>
+            </g>
+
+            <!-- front accessories -->
+            <g id="frontAccessory"></g>
+          </svg>
+        </div>
+      </div>
+
+      <div class="hero-tools">
+        <button class="tool-btn" id="poseBtn">👋 Pose</button>
+        <button class="tool-btn" id="randomBtn">🎲 Surprise Me</button>
+        <button class="tool-btn" id="resetBtn">↺ Reset</button>
+      </div>
+    </section>
+
+    <section class="card controls">
+      <div class="steps" id="steps"></div>
+      <div class="editor">
+        <h2 id="sectionTitle"></h2>
+        <p class="help" id="sectionHelp"></p>
+        <div id="editorContent"></div>
+      </div>
+      <div class="bottom-bar">
+        <button class="nav prev" id="prevBtn">← Back</button>
+        <button class="nav next" id="nextBtn">Next →</button>
+      </div>
+    </section>
+  </main>
+
+  <div class="status" id="status"></div>
+  <div class="confetti" id="confetti"></div>
+</div>
+
+<script>
+(() => {
+  const NAME_KEY='elcraft_child_name';
+  const AVATAR_KEY='elcraft_avatar_image';
+  const CONFIG_KEY='elcraft_character_v3';
+  const playerName=localStorage.getItem(NAME_KEY)||'Player';
+
+  const skinColors=['#f7cda1','#e6ad7b','#cf8d59','#ad6d43','#815039','#5a382d','#3e2924'];
+  const hairColors=['#241511','#54301f','#8c4c27','#d29a35','#e2c078','#b43c36','#673f92','#253d72'];
+  const eyeColors=['#6c4229','#2f6685','#387346','#6b4a90','#2e2d2c'];
+  const hoodieColors=['#d93637','#3374cc','#4f9a4d','#7247c3','#e06c9a','#e58c36','#1e293e','#f2f0e9'];
+  const shortsColors=['#26364e','#3e5874','#55505c','#635183','#6b7746','#8a6747'];
+  const shoeColors=['#d93637','#3374cc','#4f9a4d','#7247c3','#e06c9a','#222936'];
+
+  let state={
+    skin:1, hairStyle:0, hairColor:1, eyes:0, mouth:0, freckles:1,
+    hoodie:0, shorts:0, shoes:0, accessory:0, pose:0,
+    name:playerName
+  };
+  try{
+    const saved=JSON.parse(localStorage.getItem(CONFIG_KEY));
+    if(saved) state={...state,...saved};
+  }catch{}
+
+  let current=0;
+  let soundOn=true;
+  const $=s=>document.querySelector(s);
+
+  $('#playerLabel').textContent=playerName;
+
+  const stepsData=[
+    {
+      icon:'🙂',label:'Face',title:'Choose your face',
+      help:'Choose a skin tone, eye color, smile, and freckles.',
+      groups:[
+        {title:'Skin tone',type:'swatches',key:'skin',values:skinColors},
+        {title:'Eye color',type:'swatches',key:'eyes',values:eyeColors},
+        {title:'Expression',type:'options',key:'mouth',items:[['😊','Warm smile'],['😄','Big grin'],['😯','Surprised'],['😎','Cool smile']]},
+        {title:'Freckles',type:'options',key:'freckles',items:[['✨','None'],['🌟','A few'],['💫','Lots']]}
+      ]
+    },
+    {
+      icon:'💇',label:'Hair',title:'Choose your hair',
+      help:'Pick a hairstyle and color. All styles fit the same hero.',
+      groups:[
+        {title:'Hairstyle',type:'options',key:'hairStyle',items:[
+          ['🧒','Tousled'],['👦','Side sweep'],['🧑‍🦱','Curls'],['👧','Long waves'],
+          ['👧🏽','Ponytail'],['👩🏽‍🦱','Afro'],['👧🏻','Braids'],['🧑','Short crop']
+        ]},
+        {title:'Hair color',type:'swatches',key:'hairColor',values:hairColors}
+      ]
+    },
+    {
+      icon:'👕',label:'Outfit',title:'Choose your outfit',
+      help:'The gold-star hoodie is the official ELCraft look. Change its colors anytime.',
+      groups:[
+        {title:'Hoodie color',type:'swatches',key:'hoodie',values:hoodieColors},
+        {title:'Cargo shorts',type:'swatches',key:'shorts',values:shortsColors},
+        {title:'Sneaker accents',type:'swatches',key:'shoes',values:shoeColors}
+      ]
+    },
+    {
+      icon:'⭐',label:'Extras',title:'Add something special',
+      help:'Choose one optional extra for your hero.',
+      groups:[
+        {title:'Accessory',type:'options',key:'accessory',items:[
+          ['✨','None'],['🎒','Backpack'],['👑','Crown'],['🎧','Headphones'],
+          ['👓','Glasses'],['🦋','Wings'],['🧙','Wizard hat'],['🦸','Cape']
+        ]},
+        {title:'Quick styles',type:'quick'}
+      ]
+    },
+    {
+      icon:'✏️',label:'Name',title:'Name your hero',
+      help:'This name and character will be saved and used throughout ELCraft.',
+      groups:[{title:'Hero name',type:'name'}]
+    }
+  ];
+
+  function shade(hex,amount){
+    const n=parseInt(hex.slice(1),16);
+    const r=Math.max(0,Math.min(255,(n>>16)+amount));
+    const g=Math.max(0,Math.min(255,((n>>8)&255)+amount));
+    const b=Math.max(0,Math.min(255,(n&255)+amount));
+    return '#'+((r<<16)|(g<<8)|b).toString(16).padStart(6,'0');
+  }
+
+  function stop(prefix,color){
+    $('#'+prefix+'Light').setAttribute('stop-color',shade(color,25));
+    $('#'+prefix+'Dark').setAttribute('stop-color',shade(color,-31));
+  }
+
+  function svg(tag,attrs={}){
+    const el=document.createElementNS('http://www.w3.org/2000/svg',tag);
+    Object.entries(attrs).forEach(([k,v])=>el.setAttribute(k,v));
+    return el;
+  }
+
+  function renderHair(){
+    const back=$('#hairBack'), front=$('#hairFront');
+    back.innerHTML=''; front.innerHTML='';
+    const f='url(#hairGradient)', s=state.hairStyle;
+
+    if([3,4,5,6].includes(s)){
+      back.append(svg('path',{d:'M175 222 Q170 63 300 55 Q438 65 427 230 L411 388 Q358 359 300 375 Q242 359 189 388Z',fill:f}));
+    }
+    if(s===2 || s===5){
+      const count=s===5?24:18, radius=s===5?44:35, ring=s===5?132:122;
+      for(let i=0;i<count;i++){
+        const a=i*Math.PI*2/count;
+        back.append(svg('circle',{cx:300+Math.cos(a)*ring,cy:211+Math.sin(a)*118,r:radius,fill:f}));
+      }
+    }
+    if(s===4) back.append(svg('ellipse',{cx:431,cy:115,rx:58,ry:79,fill:f,transform:'rotate(25 431 115)'}));
+
+    const paths=[
+      'M177 216 Q185 78 298 67 Q421 76 423 220 Q363 166 312 161 Q258 190 177 216Z',
+      'M178 220 Q192 77 307 68 Q405 76 424 207 Q354 161 289 179 Q241 194 178 220Z',
+      'M174 221 Q184 74 300 67 Q420 76 426 225 Q365 171 301 166 Q238 180 174 221Z',
+      'M174 222 Q178 67 300 56 Q433 67 429 225 Q374 156 300 169 Q226 187 174 222Z',
+      'M177 218 Q184 72 300 62 Q421 72 424 220 Q366 158 299 171 Q238 184 177 218Z',
+      'M171 224 Q177 68 300 59 Q432 70 430 225 Q368 162 300 170 Q230 186 171 224Z',
+      'M176 219 Q185 70 300 62 Q421 72 425 222 Q367 165 300 171 Q238 185 176 219Z',
+      'M188 213 Q200 89 300 82 Q401 89 414 213 Q354 174 300 174 Q246 180 188 213Z'
+    ];
+    front.append(svg('path',{d:paths[s],fill:f}));
+
+    if(s===6){
+      back.append(svg('path',{d:'M211 165 Q149 258 194 355',fill:'none',stroke:f,'stroke-width':34,'stroke-linecap':'round'}));
+      back.append(svg('path',{d:'M389 165 Q451 258 406 355',fill:'none',stroke:f,'stroke-width':34,'stroke-linecap':'round'}));
+      for(const y of [225,270,315]){
+        back.append(svg('circle',{cx:190,cy:y,r:12,fill:'#ffd65a'}));
+        back.append(svg('circle',{cx:410,cy:y,r:12,fill:'#ffd65a'}));
+      }
+    }
+  }
+
+  function renderMouth(){
+    const g=$('#mouth'); g.innerHTML='';
+    if(state.mouth===0){
+      g.append(svg('path',{d:'M260 311 Q300 346 340 311',fill:'none',stroke:'#8d3c50','stroke-width':8,'stroke-linecap':'round'}));
+    }else if(state.mouth===1){
+      g.append(svg('path',{d:'M251 307 Q300 367 349 307 Q300 330 251 307Z',fill:'#d85167'}));
+      g.append(svg('path',{d:'M269 313 Q300 328 331 313',fill:'none',stroke:'#fff','stroke-width':7}));
+    }else if(state.mouth===2){
+      g.append(svg('ellipse',{cx:300,cy:321,rx:21,ry:27,fill:'#b84157'}));
+    }else{
+      g.append(svg('path',{d:'M264 316 Q300 342 336 316',fill:'none',stroke:'#8d3c50','stroke-width':8,'stroke-linecap':'round'}));
+      g.append(svg('path',{d:'M281 326 Q300 337 319 326',fill:'none',stroke:'#ff9aad','stroke-width':5,'stroke-linecap':'round'}));
+    }
+  }
+
+  function renderFreckles(){
+    const g=$('#freckles');g.innerHTML='';
+    if(!state.freckles)return;
+    const pts=state.freckles===1?[[220,270],[232,275],[380,270],[368,275]]:
+      [[214,267],[225,274],[238,269],[386,267],[375,274],[362,269],[244,281],[356,281]];
+    pts.forEach(([x,y])=>g.append(svg('circle',{cx:x,cy:y,r:3.2,fill:'rgba(116,66,45,.48)'})));
+  }
+
+  function renderAccessory(){
+    const back=$('#backAccessory'),front=$('#frontAccessory');
+    back.innerHTML='';front.innerHTML='';
+    const a=state.accessory;
+    if(a===1){
+      back.append(svg('path',{d:'M171 355 Q125 404 148 526 L205 512 L200 375Z',fill:'#296db5',stroke:'#173f78','stroke-width':8}));
+      back.append(svg('path',{d:'M183 369 Q157 404 170 470',fill:'none',stroke:'#ffd24d','stroke-width':9,'stroke-linecap':'round'}));
+    }
+    if(a===2){const t=svg('text',{x:300,y:106,'text-anchor':'middle','font-size':100});t.textContent='👑';front.append(t)}
+    if(a===3){const t=svg('text',{x:300,y:213,'text-anchor':'middle','font-size':110});t.textContent='🎧';front.append(t)}
+    if(a===4){const t=svg('text',{x:300,y:248,'text-anchor':'middle','font-size':85});t.textContent='👓';front.append(t)}
+    if(a===5){
+      back.append(svg('path',{d:'M187 330 Q79 347 93 482 Q158 460 216 401Z',fill:'#73c9f2',stroke:'#487ac6','stroke-width':7,opacity:.9}));
+      back.append(svg('path',{d:'M413 330 Q521 347 507 482 Q442 460 384 401Z',fill:'#d784ee',stroke:'#7f4fc5','stroke-width':7,opacity:.9}));
+    }
+    if(a===6){const t=svg('text',{x:300,y:102,'text-anchor':'middle','font-size':120});t.textContent='🧙';front.append(t)}
+    if(a===7){
+      back.append(svg('path',{d:'M205 355 Q126 402 151 585 Q226 550 265 412Z',fill:'#7445bf',stroke:'#4b2985','stroke-width':8}));
+      back.append(svg('path',{d:'M395 355 Q474 402 449 585 Q374 550 335 412Z',fill:'#7445bf',stroke:'#4b2985','stroke-width':8}));
+    }
+  }
+
+  function renderPose(){
+    const poses=[
+      ['M210 390 Q158 435 141 524','M390 390 Q442 435 459 524',137,536,463,536],
+      ['M210 390 Q156 420 103 383','M390 390 Q444 420 497 383',94,378,506,378],
+      ['M210 390 Q164 337 183 278','M390 390 Q436 337 417 278',184,265,416,265],
+      ['M210 390 Q170 465 189 548','M390 390 Q430 465 411 548',191,557,409,557]
+    ][state.pose];
+    $('#leftArm').setAttribute('d',poses[0]);$('#rightArm').setAttribute('d',poses[1]);
+    $('#leftHand').setAttribute('cx',poses[2]);$('#leftHand').setAttribute('cy',poses[3]);
+    $('#rightHand').setAttribute('cx',poses[4]);$('#rightHand').setAttribute('cy',poses[5]);
+  }
+
+  function renderHero(){
+    stop('skin',skinColors[state.skin]);
+    stop('hair',hairColors[state.hairColor]);
+    stop('hoodie',hoodieColors[state.hoodie]);
+    stop('shorts',shortsColors[state.shorts]);
+    stop('shoe',shade(shoeColors[state.shoes],90));
+
+    $('#irisL').setAttribute('fill',eyeColors[state.eyes]);
+    $('#irisR').setAttribute('fill',eyeColors[state.eyes]);
+    $('#leftShoeAccent').setAttribute('stroke',shoeColors[state.shoes]);
+    $('#rightShoeAccent').setAttribute('stroke',shoeColors[state.shoes]);
+
+    renderHair(); renderMouth(); renderFreckles(); renderAccessory(); renderPose();
+    $('#heroTitle').textContent=(state.name||'Your Hero')+'!';
+  }
+
+  function renderSteps(){
+    const box=$('#steps');box.innerHTML='';
+    stepsData.forEach((s,i)=>{
+      const b=document.createElement('button');
+      b.className='step'+(i===current?' active':i<current?' done':'');
+      b.innerHTML=`<b>${s.icon}</b>${i+1}. ${s.label}`;
+      b.onclick=()=>{current=i;renderEditor()};
+      box.append(b);
+    });
+  }
+
+  function buildOption(group,item,index){
+    const b=document.createElement('button');
+    b.className='option'+(state[group.key]===index?' selected':'');
+    b.innerHTML=`<span class="preview">${item[0]}</span>${item[1]}<small>Tap to choose</small>`;
+    b.onclick=()=>{state[group.key]=index;renderEditor();renderHero();sound('tap')};
+    return b;
+  }
+
+  function quickStyle(label,emoji,klass,changes){
+    const b=document.createElement('button');
+    b.className='quick '+klass;
+    b.innerHTML=`<span>${emoji}</span>${label}`;
+    b.onclick=()=>{Object.assign(state,changes);renderEditor();renderHero();bounce();toast(label+' style selected!');sound('magic')};
+    return b;
+  }
+
+  function renderEditor(){
+    renderSteps();
+    const step=stepsData[current];
+    $('#sectionTitle').textContent=step.title;
+    $('#sectionHelp').textContent=step.help;
+    const out=$('#editorContent');out.innerHTML='';
+
+    step.groups.forEach(group=>{
+      const title=document.createElement('div');title.className='group-title';title.textContent=group.title;out.append(title);
+
+      if(group.type==='swatches'){
+        const grid=document.createElement('div');grid.className='swatches';
+        group.values.forEach((color,i)=>{
+          const b=document.createElement('button');
+          b.className='swatch'+(state[group.key]===i?' selected':'');
+          b.style.background=color;
+          b.setAttribute('aria-label',group.title+' option '+(i+1));
+          b.onclick=()=>{state[group.key]=i;renderEditor();renderHero();sound('tap')};
+          grid.append(b);
+        });
+        out.append(grid);
+      }
+
+      if(group.type==='options'){
+        const grid=document.createElement('div');grid.className='option-grid';
+        group.items.forEach((item,i)=>grid.append(buildOption(group,item,i)));
+        out.append(grid);
+      }
+
+      if(group.type==='quick'){
+        const grid=document.createElement('div');grid.className='quick-grid';
+        grid.append(
+          quickStyle('Royal','👑','royal',{hoodie:3,shorts:3,shoes:3,accessory:2,hairStyle:3}),
+          quickStyle('Artist','🎨','artist',{hoodie:4,shorts:2,shoes:4,accessory:1,hairStyle:4}),
+          quickStyle('Explorer','🧭','explorer',{hoodie:5,shorts:5,shoes:5,accessory:1,hairStyle:0}),
+          quickStyle('Space','🚀','space',{hoodie:7,shorts:0,shoes:1,accessory:3,hairStyle:7}),
+          quickStyle('Sport','⚽','sport',{hoodie:1,shorts:1,shoes:1,accessory:0,hairStyle:1}),
+          quickStyle('Magic','✨','magic',{hoodie:3,shorts:3,shoes:3,accessory:6,hairStyle:2})
+        );
+        out.append(grid);
+      }
+
+      if(group.type==='name'){
+        const input=document.createElement('input');
+        input.className='name-input';input.maxLength=18;input.placeholder='Enter hero name';
+        input.value=state.name||'';
+        input.oninput=e=>{
+          state.name=e.target.value;
+          preview.textContent=(state.name.trim()||'Your Hero')+' is ready!';
+          $('#heroTitle').textContent=(state.name.trim()||'Your Hero')+'!';
+        };
+        const preview=document.createElement('div');preview.className='name-preview';
+        preview.textContent=(state.name.trim()||'Your Hero')+' is ready!';
+        out.append(input,preview);
+      }
+    });
+
+    $('#prevBtn').style.visibility=current===0?'hidden':'visible';
+    const last=current===stepsData.length-1;
+    $('#nextBtn').textContent=last?'⭐ Save My Character':'Next →';
+    $('#nextBtn').className='nav '+(last?'save':'next');
+  }
+
+  function bounce(){
+    const h=$('#heroWrap');h.classList.remove('bounce');void h.offsetWidth;h.classList.add('bounce');
+  }
+
+  function toast(message){
+    const el=$('#status');el.textContent=message;el.classList.add('show');
+    clearTimeout(window.__toast);window.__toast=setTimeout(()=>el.classList.remove('show'),1800);
+  }
+
+  function confetti(){
+    const c=$('#confetti');c.innerHTML='';
+    ['⭐','✨','💛','🎉','🌈'].forEach(symbol=>{
+      for(let j=0;j<7;j++){
+        const n=document.createElement('i');n.textContent=symbol;
+        n.style.left=(Math.random()*100)+'%';
+        n.style.fontSize=(16+Math.random()*22)+'px';
+        n.style.animationDelay=(Math.random()*.55)+'s';
+        c.append(n);
+      }
+    });
+    setTimeout(()=>c.innerHTML='',2300);
+  }
+
+  function sound(type){
+    if(!soundOn)return;
+    try{
+      const ctx=new (window.AudioContext||window.webkitAudioContext)();
+      const osc=ctx.createOscillator(),gain=ctx.createGain();
+      osc.connect(gain);gain.connect(ctx.destination);
+      osc.frequency.value=type==='magic'?660:440;
+      gain.gain.setValueAtTime(.045,ctx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.11);
+      osc.start();osc.stop(ctx.currentTime+.12);
+    }catch{}
+  }
+
+  function randomize(){
+    state={
+      ...state,
+      skin:Math.floor(Math.random()*skinColors.length),
+      hairStyle:Math.floor(Math.random()*8),
+      hairColor:Math.floor(Math.random()*hairColors.length),
+      eyes:Math.floor(Math.random()*eyeColors.length),
+      mouth:Math.floor(Math.random()*4),
+      freckles:Math.floor(Math.random()*3),
+      hoodie:Math.floor(Math.random()*hoodieColors.length),
+      shorts:Math.floor(Math.random()*shortsColors.length),
+      shoes:Math.floor(Math.random()*shoeColors.length),
+      accessory:Math.floor(Math.random()*8),
+      pose:Math.floor(Math.random()*4)
+    };
+    renderEditor();renderHero();bounce();toast('Surprise character created!');sound('magic');
+  }
+
+  function save(){
+    state.name=(state.name||playerName).trim()||playerName;
+    localStorage.setItem(CONFIG_KEY,JSON.stringify(state));
+    localStorage.setItem(NAME_KEY,state.name);
+
+    const original=$('#heroSvg');
+    const copy=original.cloneNode(true);
+    copy.setAttribute('xmlns','http://www.w3.org/2000/svg');
+    const xml=new XMLSerializer().serializeToString(copy);
+    const image=new Image();
+    image.onload=()=>{
+      const canvas=document.createElement('canvas');
+      canvas.width=600;canvas.height=790;
+      const ctx=canvas.getContext('2d');
+      ctx.clearRect(0,0,600,790);
+      ctx.drawImage(image,0,0,600,790);
+      localStorage.setItem(AVATAR_KEY,canvas.toDataURL('image/png'));
+      bounce();confetti();sound('magic');
+      toast(state.name+' has been saved!');
+      $('#playerLabel').textContent=state.name;
+    };
+    image.onerror=()=>{
+      localStorage.setItem(AVATAR_KEY,'');
+      toast('Character choices saved!');
+    };
+    image.src='data:image/svg+xml;charset=utf-8,'+encodeURIComponent(xml);
+  }
+
+  $('#prevBtn').onclick=()=>{if(current>0){current--;renderEditor();sound('tap')}};
+  $('#nextBtn').onclick=()=>{if(current<stepsData.length-1){current++;renderEditor();sound('tap')}else save()};
+  $('#poseBtn').onclick=()=>{state.pose=(state.pose+1)%4;renderHero();bounce();sound('tap')};
+  $('#randomBtn').onclick=randomize;
+  $('#resetBtn').onclick=()=>{
+    if(confirm('Reset this character and start again?')){
+      state={skin:1,hairStyle:0,hairColor:1,eyes:0,mouth:0,freckles:1,hoodie:0,shorts:0,shoes:0,accessory:0,pose:0,name:playerName};
+      current=0;renderEditor();renderHero();toast('Character reset.');
+    }
+  };
+  $('#homeBtn').onclick=()=>location.href='index.html';
+  $('#soundBtn').onclick=()=>{
+    soundOn=!soundOn;$('#soundBtn').textContent=soundOn?'🔊':'🔇';if(soundOn)sound('tap')
+  };
+
+  renderEditor();renderHero();
+})();
+</script>
+</body>
+</html>
