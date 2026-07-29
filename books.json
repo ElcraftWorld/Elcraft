@@ -1,0 +1,317 @@
+{
+  "version": 1,
+  "books": [
+    {
+      "id": "little-seed",
+      "title": "The Little Seed",
+      "emoji": "🌱",
+      "cover": "purple",
+      "level": 1,
+      "category": "Nature",
+      "summary": "A tiny seed grows into a bright yellow flower.",
+      "story": [
+        "A little seed rested in the soft brown soil.",
+        "The warm sun shined above it. Gentle rain fell from the sky.",
+        "Soon, the seed grew tiny roots. Then a green sprout reached up toward the sun.",
+        "Day by day, the sprout grew taller. At last, it became a bright yellow flower."
+      ],
+      "vocabulary": [
+        {
+          "word": "seed",
+          "meaning": "A small part of a plant that can grow into a new plant."
+        },
+        {
+          "word": "soil",
+          "meaning": "The earth where plants grow."
+        },
+        {
+          "word": "sprout",
+          "meaning": "A young plant beginning to grow."
+        }
+      ],
+      "question": {
+        "prompt": "What did the little seed become?",
+        "answers": [
+          "A yellow flower",
+          "A blue boat",
+          "A little bird",
+          "A red house"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "bear-picnic",
+      "title": "Bear's Picnic",
+      "emoji": "🐻",
+      "cover": "rose",
+      "level": 1,
+      "category": "Friends",
+      "summary": "Bear shares a picnic with Rabbit and Fox.",
+      "story": [
+        "Bear packed apples, bread, and a red blanket for a picnic.",
+        "He walked to a shady tree beside the pond.",
+        "Soon, Rabbit and Fox came to join him.",
+        "They shared their food, told funny stories, and watched the ducks swim."
+      ],
+      "vocabulary": [
+        {
+          "word": "picnic",
+          "meaning": "A meal eaten outside."
+        },
+        {
+          "word": "shady",
+          "meaning": "Protected from bright sunlight."
+        },
+        {
+          "word": "shared",
+          "meaning": "Gave some to others."
+        }
+      ],
+      "question": {
+        "prompt": "Where did Bear have his picnic?",
+        "answers": [
+          "Beside the pond",
+          "On the moon",
+          "Inside a train",
+          "Under the ocean"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "space-trip",
+      "title": "Trip to Space",
+      "emoji": "🚀",
+      "cover": "blue",
+      "level": 1,
+      "category": "Space",
+      "summary": "Maya takes a rocket beyond the clouds.",
+      "story": [
+        "Maya climbed into a silver rocket and fastened her seat belt.",
+        "The rocket roared and lifted high above the clouds.",
+        "Through the window, Maya saw the blue Earth and the glowing moon.",
+        "She waved to the stars before flying safely home."
+      ],
+      "vocabulary": [
+        {
+          "word": "rocket",
+          "meaning": "A vehicle that travels into space."
+        },
+        {
+          "word": "Earth",
+          "meaning": "The planet where we live."
+        },
+        {
+          "word": "glowing",
+          "meaning": "Shining with light."
+        }
+      ],
+      "question": {
+        "prompt": "What did Maya ride?",
+        "answers": [
+          "A rocket",
+          "A bicycle",
+          "A sailboat",
+          "A school bus"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "dino-discovery",
+      "title": "Dino Discovery",
+      "emoji": "🦕",
+      "cover": "green",
+      "level": 1,
+      "category": "Dinosaurs",
+      "summary": "Leo follows a trail of giant footprints.",
+      "story": [
+        "Leo found a large footprint beside the forest trail.",
+        "He followed the prints past tall ferns and smooth stones.",
+        "Behind a hill stood a gentle dinosaur eating green leaves.",
+        "Leo stayed quiet, drew a picture, and hurried home to tell his family."
+      ],
+      "vocabulary": [
+        {
+          "word": "footprint",
+          "meaning": "A mark left by a foot."
+        },
+        {
+          "word": "fern",
+          "meaning": "A green plant with many small leaves."
+        },
+        {
+          "word": "gentle",
+          "meaning": "Calm and kind."
+        }
+      ],
+      "question": {
+        "prompt": "What was the dinosaur eating?",
+        "answers": [
+          "Green leaves",
+          "Ice cream",
+          "A sandwich",
+          "Purple socks"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "ocean-rescue",
+      "title": "Ocean Rescue",
+      "emoji": "🐬",
+      "cover": "gold",
+      "level": 1,
+      "category": "Ocean",
+      "summary": "Nia helps a young dolphin in trouble.",
+      "story": [
+        "Nia sailed across the bright blue water with her father.",
+        "They heard a splash and saw a young dolphin tangled in a loose rope.",
+        "Nia held the boat steady while her father carefully freed the dolphin.",
+        "The dolphin jumped high into the air as if to say thank you."
+      ],
+      "vocabulary": [
+        {
+          "word": "tangled",
+          "meaning": "Twisted or caught together."
+        },
+        {
+          "word": "steady",
+          "meaning": "Still and balanced."
+        },
+        {
+          "word": "freed",
+          "meaning": "Let go or released."
+        }
+      ],
+      "question": {
+        "prompt": "What animal did Nia help?",
+        "answers": [
+          "A dolphin",
+          "A tiger",
+          "A chicken",
+          "A horse"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "castle-mystery",
+      "title": "The Castle Mystery",
+      "emoji": "🏰",
+      "cover": "violet",
+      "level": 1,
+      "category": "Mystery",
+      "summary": "Ella follows a bell through an old castle.",
+      "story": [
+        "Ella heard a tiny bell ring inside the old castle library.",
+        "She followed the sound behind a row of dusty books.",
+        "There she found a hidden door and a sleepy golden cat.",
+        "The cat wore the missing royal bell on its blue collar."
+      ],
+      "vocabulary": [
+        {
+          "word": "castle",
+          "meaning": "A large strong building where royalty may live."
+        },
+        {
+          "word": "hidden",
+          "meaning": "Kept where it is hard to see."
+        },
+        {
+          "word": "royal",
+          "meaning": "Connected to a king or queen."
+        }
+      ],
+      "question": {
+        "prompt": "Who had the missing bell?",
+        "answers": [
+          "A golden cat",
+          "A green dragon",
+          "A noisy frog",
+          "A little mouse"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "dragon-cave",
+      "title": "The Friendly Dragon",
+      "emoji": "🐉",
+      "cover": "green",
+      "level": 2,
+      "category": "Fantasy",
+      "summary": "A brave child discovers that a dragon needs help.",
+      "story": [
+        "Kai heard a soft rumble from the cave beyond the village.",
+        "Inside, he found a young dragon with a thorn stuck in its paw.",
+        "Kai moved slowly, pulled out the thorn, and wrapped the paw with cloth.",
+        "The dragon smiled, breathed a tiny puff of smoke, and carried Kai safely home."
+      ],
+      "vocabulary": [
+        {
+          "word": "rumble",
+          "meaning": "A low, deep sound."
+        },
+        {
+          "word": "thorn",
+          "meaning": "A sharp point on a plant."
+        },
+        {
+          "word": "village",
+          "meaning": "A small community where people live."
+        }
+      ],
+      "question": {
+        "prompt": "Why was the dragon upset?",
+        "answers": [
+          "A thorn was in its paw",
+          "It lost a hat",
+          "It was hungry for cake",
+          "It could not find a boat"
+        ],
+        "correctIndex": 0
+      }
+    },
+    {
+      "id": "rainbow-bridge",
+      "title": "The Rainbow Bridge",
+      "emoji": "🌈",
+      "cover": "rose",
+      "level": 2,
+      "category": "Fantasy",
+      "summary": "Lina crosses a magical bridge after a storm.",
+      "story": [
+        "After the storm, Lina saw a rainbow touching the hill.",
+        "When she reached it, the colors formed a bright bridge in the sky.",
+        "She walked carefully across and found a garden filled with singing birds.",
+        "Before sunset, Lina crossed back home with one sparkling feather."
+      ],
+      "vocabulary": [
+        {
+          "word": "storm",
+          "meaning": "Weather with strong rain, wind, or thunder."
+        },
+        {
+          "word": "bridge",
+          "meaning": "A path built over something."
+        },
+        {
+          "word": "sparkling",
+          "meaning": "Shining with small flashes of light."
+        }
+      ],
+      "question": {
+        "prompt": "What did Lina bring home?",
+        "answers": [
+          "A sparkling feather",
+          "A silver spoon",
+          "A toy train",
+          "A green apple"
+        ],
+        "correctIndex": 0
+      }
+    }
+  ]
+}
