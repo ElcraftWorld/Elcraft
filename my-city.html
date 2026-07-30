@@ -10,6 +10,7 @@
   <title>ELCraft — My City</title>
 
   <link rel="stylesheet" href="city.css">
+  <link rel="stylesheet" href="city-layout.css">
 
   <style>
     html,
@@ -2699,6 +2700,49 @@
   );
 
   loadAnnouncement();
+</script>
+
+
+<script>
+(() => {
+  'use strict';
+
+  const heroAvatar =
+    document.getElementById('heroAvatar');
+
+  if (!heroAvatar) {
+    return;
+  }
+
+  function showSavedAvatar() {
+    if (
+      heroAvatar.complete &&
+      heroAvatar.naturalWidth > 0
+    ) {
+      document.body.classList.add(
+        'has-saved-city-avatar'
+      );
+    }
+  }
+
+  heroAvatar.addEventListener(
+    'load',
+    showSavedAvatar
+  );
+
+  heroAvatar.addEventListener(
+    'error',
+    () => {
+      document.body.classList.remove(
+        'has-saved-city-avatar'
+      );
+
+      heroAvatar.style.display = 'none';
+    }
+  );
+
+  showSavedAvatar();
+})();
 </script>
 
 </body>
