@@ -2745,5 +2745,76 @@
 })();
 </script>
 
+
+<!-- ======================================================
+     ELCraft My City V2 — clean player and duplicate UI fixes
+     ====================================================== -->
+<script>
+(() => {
+  'use strict';
+
+  function placePlayerAvatarInsideHero() {
+    const hero = document.getElementById('hero');
+    const heroName = document.getElementById('heroName');
+    const profileAvatar = document.getElementById('dynamicProfileAvatar');
+
+    if (!hero || !profileAvatar || profileAvatar.parentElement === hero) {
+      return;
+    }
+
+    hero.insertBefore(profileAvatar, heroName || null);
+    profileAvatar.setAttribute('aria-hidden', 'true');
+  }
+
+  function removeDuplicateAnnouncementLauncher() {
+    const buttons = [...document.querySelectorAll('button, a')];
+
+    buttons.forEach(button => {
+      const label = String(button.textContent || '')
+        .trim()
+        .toLowerCase();
+
+      if (label !== 'view announcements') {
+        return;
+      }
+
+      const duplicatePanel =
+        button.closest(
+          '.announcement-card, .announcement-panel, .announcements-panel, ' +
+          '.city-news-panel, .news-panel, aside, section, article, div'
+        );
+
+      if (
+        duplicatePanel &&
+        duplicatePanel.id !== 'cityAnnouncement' &&
+        !duplicatePanel.classList.contains('city-announcement')
+      ) {
+        duplicatePanel.style.display = 'none';
+        duplicatePanel.setAttribute('aria-hidden', 'true');
+      }
+    });
+  }
+
+  function applyCityV2Fixes() {
+    placePlayerAvatarInsideHero();
+    removeDuplicateAnnouncementLauncher();
+  }
+
+  applyCityV2Fixes();
+
+  window.addEventListener('DOMContentLoaded', applyCityV2Fixes);
+  window.addEventListener('load', applyCityV2Fixes);
+  window.addEventListener('pageshow', applyCityV2Fixes);
+
+  const observer = new MutationObserver(applyCityV2Fixes);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });
+
+  setTimeout(() => observer.disconnect(), 5000);
+})();
+</script>
+
 </body>
 </html>
