@@ -491,3 +491,245 @@ body.has-saved-city-avatar .dynamic-profile-avatar {
     transform: none !important;
   }
 }
+
+
+/* ============================================================
+   9. MY CITY V2 — CLEAN PLAYER + PROFESSIONAL HUD
+   ============================================================ */
+
+/* The original yellow coded head is removed. The saved profile is the hero. */
+#hero {
+  position: absolute !important;
+  left: 50% !important;
+  top: 50% !important;
+  width: clamp(126px, 13vw, 205px) !important;
+  min-height: clamp(150px, 16vw, 235px) !important;
+  transform: translate(-50%, -45%) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+
+  padding: 0 !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+
+  color: inherit !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+
+  z-index: 215 !important;
+  overflow: visible !important;
+}
+
+#hero::before,
+#hero::after {
+  display: none !important;
+  visibility: hidden !important;
+  content: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+/* A rendered character image, when one exists. */
+#heroAvatar {
+  width: clamp(112px, 11.5vw, 180px) !important;
+  height: clamp(112px, 11.5vw, 180px) !important;
+
+  display: block;
+  object-fit: contain !important;
+
+  border: 6px solid rgba(255,255,255,.98) !important;
+  border-radius: 50% !important;
+
+  background:
+    radial-gradient(circle at 35% 25%, #f7f1ff, #b991ff) !important;
+
+  box-shadow:
+    0 8px 0 rgba(91,68,155,.18),
+    0 18px 30px rgba(44,47,88,.28) !important;
+}
+
+/* Emoji/profile fallback is now placed inside #hero by My City V2 JS. */
+#hero .dynamic-profile-avatar {
+  position: relative !important;
+  inset: auto !important;
+
+  width: clamp(112px, 11.5vw, 180px) !important;
+  height: clamp(112px, 11.5vw, 180px) !important;
+
+  display: grid !important;
+  place-items: center !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  transform: none !important;
+
+  border: 6px solid rgba(255,255,255,.98) !important;
+  border-radius: 50% !important;
+
+  color: inherit !important;
+  background:
+    radial-gradient(circle at 35% 25%, #f7f1ff, #b991ff) !important;
+
+  box-shadow:
+    0 8px 0 rgba(91,68,155,.18),
+    0 18px 30px rgba(44,47,88,.28) !important;
+
+  font-size: clamp(65px, 7vw, 112px) !important;
+  line-height: 1 !important;
+  z-index: 1 !important;
+}
+
+/* When a real rendered avatar loads, only the rendered avatar is shown. */
+body.has-saved-city-avatar #hero .dynamic-profile-avatar {
+  display: none !important;
+}
+
+#heroName {
+  position: relative !important;
+  inset: auto !important;
+
+  min-width: clamp(120px, 12vw, 190px) !important;
+  max-width: 220px !important;
+
+  margin-top: 9px !important;
+  padding: 8px 18px !important;
+
+  transform: none !important;
+
+  border: 4px solid rgba(255,255,255,.98) !important;
+  border-radius: 999px !important;
+
+  color: #6544af !important;
+  background: rgba(255,255,255,.97) !important;
+
+  box-shadow:
+    0 6px 0 rgba(91,68,155,.15),
+    0 12px 20px rgba(44,47,88,.22) !important;
+
+  font-size: clamp(18px, 1.75vw, 29px) !important;
+  font-weight: 1000 !important;
+  line-height: 1 !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+}
+
+/* Old detached name overlay is no longer needed. */
+.dynamic-player-name {
+  display: none !important;
+}
+
+/* Growth progress now lives in the header instead of floating over the city. */
+.game-header .city-growth-badge {
+  position: relative !important;
+  inset: auto !important;
+  flex: 0 0 auto !important;
+
+  min-width: 205px !important;
+  max-width: 285px !important;
+
+  margin: 0 !important;
+  padding: 9px 14px !important;
+
+  border: 3px solid rgba(255,255,255,.98) !important;
+  border-radius: 18px !important;
+
+  color: #60449d !important;
+  background: linear-gradient(145deg, #fffdf2, #f2e9ff) !important;
+
+  box-shadow:
+    0 5px 0 rgba(95,68,157,.12),
+    0 10px 18px rgba(58,63,105,.13) !important;
+
+  font-size: clamp(11px, .9vw, 14px) !important;
+  font-weight: 900 !important;
+  line-height: 1.25 !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  z-index: 205 !important;
+}
+
+.game-header .city-growth-badge strong {
+  display: block !important;
+  margin-bottom: 2px !important;
+  font-size: 1.05em !important;
+}
+
+/* Keep the top header orderly. */
+.game-header {
+  flex-wrap: nowrap !important;
+}
+
+.game-header .mail-counter {
+  order: 5;
+}
+
+.game-header .city-growth-badge {
+  order: 4;
+}
+
+.city-owner {
+  order: 3;
+}
+
+/* The real City News card remains the only announcement surface. */
+.city-announcement {
+  overflow: hidden !important;
+}
+
+@media (max-width: 1150px) {
+  .game-header .city-growth-badge {
+    min-width: 170px !important;
+    max-width: 200px !important;
+  }
+
+  .city-owner {
+    display: none !important;
+  }
+}
+
+@media (max-width: 860px) {
+  .game-header .city-growth-badge {
+    min-width: 130px !important;
+    max-width: 155px !important;
+    padding: 7px 9px !important;
+    font-size: 10px !important;
+  }
+
+  #hero {
+    transform: translate(-50%, -42%) !important;
+  }
+}
+
+@media (max-width: 650px) {
+  .game-header .city-growth-badge {
+    display: none !important;
+  }
+
+  #hero {
+    width: 118px !important;
+    min-height: 145px !important;
+  }
+
+  #heroAvatar,
+  #hero .dynamic-profile-avatar {
+    width: 102px !important;
+    height: 102px !important;
+  }
+
+  #hero .dynamic-profile-avatar {
+    font-size: 61px !important;
+  }
+
+  #heroName {
+    min-width: 105px !important;
+    padding: 6px 12px !important;
+    font-size: 16px !important;
+  }
+}
