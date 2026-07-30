@@ -1756,3 +1756,38 @@ input {
     min-height: 132px !important;
   }
 }
+/* Remove duplicate top-right City News panel */
+.city-news-panel,
+#cityNewsPanel,
+.top-city-news,
+.header-city-news,
+.announcement-shortcut {
+    display:none !important;
+}
+
+/* Make the child's avatar the focus */
+#hero{
+    cursor:pointer;
+}
+
+/* Put the emoji directly above the child */
+#hero .dynamic-profile-avatar{
+    position:absolute !important;
+    top:-54px !important;
+    left:50% !important;
+    transform:translateX(-50%) !important;
+    width:72px !important;
+    height:72px !important;
+    border:5px solid #fff !important;
+    border-radius:50% !important;
+    background:#f3ebff !important;
+    display:grid !important;
+    place-items:center !important;
+    font-size:42px !important;
+    z-index:20 !important;
+}
+
+/* Remove the separate name pill */
+#heroName{
+    display:none !important;
+}
