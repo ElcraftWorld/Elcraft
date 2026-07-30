@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Family Portal | ELCraft</title>
+  <style>
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;padding:24px;font-family:Arial,Helvetica,sans-serif;color:#353b68;background:linear-gradient(145deg,#72d5ff,#72b9ff 46%,#a889ff)}
+    button,input,select{font:inherit}.page{width:min(1050px,100%);margin:auto}.topbar{display:flex;justify-content:space-between;align-items:center;gap:14px;margin-bottom:22px;color:white}
+    .brand{display:flex;align-items:center;gap:12px}.brand span{font-size:42px}.brand h1{margin:0;font-size:clamp(28px,5vw,42px)}
+    .top-actions{display:flex;gap:10px;flex-wrap:wrap}.top-actions a,.top-actions button{border:2px solid rgba(255,255,255,.85);border-radius:14px;padding:10px 15px;color:#554dbd;background:white;text-decoration:none;font-weight:900;cursor:pointer}
+    .card{border:4px solid rgba(255,255,255,.85);border-radius:30px;padding:clamp(20px,4vw,36px);background:rgba(255,255,255,.97);box-shadow:0 24px 65px rgba(42,48,120,.28)}
+    .hero{text-align:center;margin-bottom:28px}.hero h2{margin:0;color:#554ecb;font-size:clamp(29px,5vw,46px)}.hero p{color:#697198;font-weight:700}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{border:2px solid #e1def8;border-radius:22px;padding:22px;background:#faf9ff}.panel h3{margin:0 0 8px;color:#554ecb}.panel>p{color:#747a9b;font-weight:700;line-height:1.45}
+    label{display:block;margin:14px 0 6px;font-weight:900}input,select{width:100%;min-height:50px;border:2px solid #d9dcef;border-radius:14px;padding:11px 13px;background:white;color:#30365d}
+    .children{display:grid;gap:8px;margin-top:8px}.child-choice{display:flex;align-items:center;gap:10px;padding:10px;border:2px solid #e2e0f5;border-radius:13px;background:white;font-weight:800}.child-choice input{width:auto;min-height:0}
+    .primary{width:100%;margin-top:18px;border:0;border-radius:14px;padding:14px;color:white;background:linear-gradient(135deg,#6559f4,#9168ff);box-shadow:0 5px 0 #4942bc;font-weight:900;cursor:pointer}.primary:disabled{opacity:.6;cursor:wait}
+    .message{min-height:22px;margin-top:12px;text-align:center;font-weight:800}.success{color:#27703f}.error{color:#a52d40}
+    .member-list{display:grid;gap:12px;margin-top:16px}.member{display:flex;align-items:center;justify-content:space-between;gap:12px;border:2px solid #e3e1f5;border-radius:16px;padding:14px;background:white}
+    .member-main{display:flex;align-items:center;gap:12px}.avatar{width:52px;height:52px;display:grid;place-items:center;border-radius:50%;background:#eee9ff;font-size:28px}.member strong{display:block;color:#4d47ba}.member small{color:#747a9b;font-weight:700}.remove{border:0;border-radius:11px;padding:9px 11px;color:#a52d40;background:#ffe8ec;font-weight:900;cursor:pointer}
+    .pending{margin-top:22px}.empty{padding:18px;text-align:center;color:#747a9b;font-weight:800}.note{margin-top:20px;border-radius:16px;padding:14px;background:#eef8ff;color:#4e6382;font-weight:700;line-height:1.45}
+    @media(max-width:760px){body{padding:14px}.grid{grid-template-columns:1fr}.topbar{align-items:flex-start;flex-direction:column}.member{align-items:flex-start}}
+  </style>
+</head>
+<body>
+<main class="page">
+  <header class="topbar">
+    <div class="brand"><span>🏰</span><h1>ELCraft Family</h1></div>
+    <div class="top-actions">
+      <a href="profiles.html">Child Profiles</a>
+      <button id="logoutButton" type="button">Log Out</button>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="hero">
+      <h2>Family Portal</h2>
+      <p>Invite trusted adults into your child's ELCraft world.</p>
+      <div id="accountEmail"></div>
+    </div>
+
+    <div class="grid">
+      <section class="panel">
+        <h3>Invite a Family Member</h3>
+        <p>They will receive a secure sign-in email and will only see the children you select.</p>
+
+        <form id="inviteForm">
+          <label for="memberName">Their name</label>
+          <input id="memberName" maxlength="40" placeholder="Grandma Sarah" required>
+
+          <label for="memberEmail">Their email</label>
+          <input id="memberEmail" type="email" placeholder="grandma@example.com" required>
+
+          <label for="relationship">Relationship</label>
+          <select id="relationship" required>
+            <option value="grandparent">Grandparent</option>
+            <option value="parent">Parent / Stepparent</option>
+            <option value="older_sibling">Older sibling</option>
+            <option value="aunt_uncle">Aunt / Uncle</option>
+            <option value="guardian">Guardian</option>
+            <option value="family_member">Family member</option>
+          </select>
+
+          <label>Give access to</label>
+          <div id="childrenList" class="children">
+            <div class="empty">Loading child profiles...</div>
+          </div>
+
+          <button id="inviteButton" class="primary" type="submit">Send Invitation</button>
+          <div id="inviteMessage" class="message" aria-live="polite"></div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h3>Your Family</h3>
+        <p>Adults who have accepted can enter the child profiles assigned to them.</p>
+        <div id="memberList" class="member-list">
+          <div class="empty">Loading family...</div>
+        </div>
+
+        <div class="pending">
+          <h3>Pending Invitations</h3>
+          <div id="pendingList" class="member-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <div class="note">
+      The invited adult receives access to the selected child—not ownership of your account.
+      They cannot create or delete children, change parent settings, or invite other people.
+    </div>
+  </section>
+</main>
+
+<script type="module">
+  import { supabase } from "./supabase-client.js";
+
+  const accountEmail = document.getElementById("accountEmail");
+  const childrenList = document.getElementById("childrenList");
+  const memberList = document.getElementById("memberList");
+  const pendingList = document.getElementById("pendingList");
+  const inviteForm = document.getElementById("inviteForm");
+  const inviteButton = document.getElementById("inviteButton");
+  const inviteMessage = document.getElementById("inviteMessage");
+  const logoutButton = document.getElementById("logoutButton");
+
+  let user = null;
+  let family = null;
+  let children = [];
+
+  function escapeHtml(value) {
+    return String(value ?? "")
+      .replaceAll("&","&amp;").replaceAll("<","&lt;")
+      .replaceAll(">","&gt;").replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  function relationshipLabel(value) {
+    return ({parent:"Parent / Stepparent",grandparent:"Grandparent",older_sibling:"Older sibling",aunt_uncle:"Aunt / Uncle",guardian:"Guardian",family_member:"Family member"})[value] || "Family member";
+  }
+
+  function relationshipEmoji(value) {
+    return ({parent:"👨‍👩‍👧",grandparent:"👵🏽",older_sibling:"🧑🏽",aunt_uncle:"💜",guardian:"🛡️",family_member:"⭐"})[value] || "⭐";
+  }
+
+  function showMessage(text, type = "") {
+    inviteMessage.textContent = text;
+    inviteMessage.className = `message ${type}`;
+  }
+
+  async function loadPage() {
+    const { data: { session }, error } = await supabase.auth.getSession();
+    if (error || !session) {
+      window.location.replace("auth.html");
+      return;
+    }
+
+    user = session.user;
+    accountEmail.textContent = user.email || "";
+
+    const { data: familyData, error: familyError } = await supabase.rpc("ensure_my_family");
+    if (familyError) {
+      showMessage(familyError.message, "error");
+      return;
+    }
+
+    family = familyData;
+    await Promise.all([loadChildren(), loadFamily()]);
+  }
+
+  async function loadChildren() {
+    const { data, error } = await supabase
+      .from("child_profiles")
+      .select("id, display_name, avatar")
+      .eq("parent_id", user.id)
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      childrenList.innerHTML = `<div class="empty">${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    children = data || [];
+    if (!children.length) {
+      childrenList.innerHTML = `<div class="empty">Create a child profile before inviting family.</div>`;
+      inviteButton.disabled = true;
+      return;
+    }
+
+    childrenList.innerHTML = children.map(child => `
+      <label class="child-choice">
+        <input type="checkbox" name="childAccess" value="${child.id}">
+        <span>${escapeHtml(child.avatar || "🌟")}</span>
+        <span>${escapeHtml(child.display_name)}</span>
+      </label>
+    `).join("");
+  }
+
+  async function loadFamily() {
+    const { data: members, error: memberError } = await supabase
+      .from("family_members")
+      .select("id, display_name, email, relationship, member_role, status, user_id")
+      .eq("family_id", family.id)
+      .eq("status", "active")
+      .order("created_at", { ascending: true });
+
+    if (memberError) {
+      memberList.innerHTML = `<div class="empty">${escapeHtml(memberError.message)}</div>`;
+    } else {
+      const list = members || [];
+      memberList.innerHTML = list.length ? list.map(member => `
+        <article class="member">
+          <div class="member-main">
+            <div class="avatar">${relationshipEmoji(member.relationship)}</div>
+            <div>
+              <strong>${escapeHtml(member.display_name)}</strong>
+              <small>${escapeHtml(relationshipLabel(member.relationship))} · ${escapeHtml(member.email)}</small>
+            </div>
+          </div>
+          ${member.member_role === "owner" ? "<small>Account owner</small>" : `<button class="remove" type="button" data-remove="${member.id}">Remove</button>`}
+        </article>
+      `).join("") : `<div class="empty">No family members yet.</div>`;
+
+      memberList.querySelectorAll("[data-remove]").forEach(button => {
+        button.addEventListener("click", async () => {
+          if (!confirm("Remove this family member's access?")) return;
+          button.disabled = true;
+          const { error } = await supabase.rpc("remove_family_member", { member_uuid: button.dataset.remove });
+          if (error) {
+            alert(error.message);
+            button.disabled = false;
+            return;
+          }
+          await loadFamily();
+        });
+      });
+    }
+
+    const { data: invites, error: inviteError } = await supabase
+      .from("family_invitations")
+      .select("id, display_name, email, relationship, expires_at, created_at")
+      .eq("family_id", family.id)
+      .eq("status", "pending")
+      .order("created_at", { ascending: false });
+
+    if (inviteError) {
+      pendingList.innerHTML = `<div class="empty">${escapeHtml(inviteError.message)}</div>`;
+      return;
+    }
+
+    const pending = invites || [];
+    pendingList.innerHTML = pending.length ? pending.map(invite => `
+      <article class="member">
+        <div class="member-main">
+          <div class="avatar">✉️</div>
+          <div>
+            <strong>${escapeHtml(invite.display_name)}</strong>
+            <small>${escapeHtml(relationshipLabel(invite.relationship))} · Waiting for ${escapeHtml(invite.email)}</small>
+          </div>
+        </div>
+      </article>
+    `).join("") : `<div class="empty">No pending invitations.</div>`;
+  }
+
+  inviteForm.addEventListener("submit", async event => {
+    event.preventDefault();
+    showMessage("");
+
+    const selectedChildren = [...document.querySelectorAll('input[name="childAccess"]:checked')].map(input => input.value);
+    if (!selectedChildren.length) {
+      showMessage("Choose at least one child.", "error");
+      return;
+    }
+
+    inviteButton.disabled = true;
+    inviteButton.textContent = "Sending...";
+
+    try {
+      const email = document.getElementById("memberEmail").value.trim().toLowerCase();
+      const name = document.getElementById("memberName").value.trim();
+      const relationship = document.getElementById("relationship").value;
+
+      const { data: invitation, error: inviteError } = await supabase.rpc("create_family_invitation", {
+        invited_email: email,
+        invited_name: name,
+        invited_relationship: relationship,
+        child_ids: selectedChildren
+      });
+
+      if (inviteError) throw inviteError;
+
+      const redirectUrl = new URL("accept-family-invite.html", window.location.href);
+      redirectUrl.searchParams.set("token", invitation.invite_token);
+
+      const { error: emailError } = await supabase.auth.signInWithOtp({
+        email,
+        options: {
+          shouldCreateUser: true,
+          emailRedirectTo: redirectUrl.href,
+          data: { display_name: name, elcraft_family_invite: true }
+        }
+      });
+
+      if (emailError) throw emailError;
+
+      inviteForm.reset();
+      showMessage(`Invitation sent to ${email}.`, "success");
+      await loadFamily();
+    } catch (error) {
+      console.error(error);
+      showMessage(error?.message || "Unable to send the invitation.", "error");
+    } finally {
+      inviteButton.disabled = !children.length;
+      inviteButton.textContent = "Send Invitation";
+    }
+  });
+
+  logoutButton.addEventListener("click", async () => {
+    await supabase.auth.signOut();
+    window.location.replace("auth.html");
+  });
+
+  loadPage();
+</script>
+</body>
+</html>
