@@ -628,7 +628,7 @@
   </style>
 </head>
 
-<body>
+<body data-page="clubhouse">
   <div class="page-shell">
 
     <header class="clubhouse-header">
@@ -643,7 +643,7 @@
         <div class="header-icon" aria-hidden="true">🏡</div>
 
         <div class="header-copy">
-          <h1>Clubhouse</h1>
+          <h1 id="clubhousePageTitle">Clubhouse</h1>
           <p>Friends, mail, art, and play—all in one safe place.</p>
         </div>
       </div>
@@ -799,6 +799,8 @@
   </div>
 
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module" src="./world-engine.js"></script>
 
   <script type="module">
     import { supabase } from "./supabase-client.js";
