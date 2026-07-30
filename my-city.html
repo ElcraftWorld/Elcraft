@@ -1,4 +1,3 @@
-<!-- ELCraft My City FINAL -->
 <!doctype html>
 <html lang="en">
 <head>
@@ -2747,22 +2746,55 @@
 </script>
 
 
-
-
-<!-- ELCraft My City final behavior -->
+<!-- My City correction: player identity + duplicate news cleanup -->
 <script>
 (() => {
   'use strict';
 
   const hero = document.getElementById('hero');
-  const emoji = document.getElementById('dynamicProfileAvatar');
+  const heroName = document.getElementById('heroName');
+  const profileEmoji = document.getElementById('dynamicProfileAvatar');
 
-  if (hero && emoji && emoji.parentElement !== hero) {
-    hero.insertBefore(emoji, hero.firstChild);
+  function cleanName(value) {
+    return String(value || '')
+      .trim()
+      .replace(/\s+/g, ' ')
+      .slice(0, 20) || 'Player';
   }
 
-  function removeDuplicateNews() {
-    document.querySelectorAll('button, a').forEach(control => {
+  function updatePlayerIdentity() {
+    const name = cleanName(
+      localStorage.getItem('elcraft_child_name') ||
+      localStorage.getItem('elcraft_player_name')
+    );
+
+    if (heroName) {
+      heroName.textContent = name;
+    }
+
+    if (profileEmoji) {
+      profileEmoji.textContent =
+        localStorage.getItem('elcraft_child_avatar') ||
+        '🌟';
+    }
+  }
+
+  function placeEmojiAbovePlayer() {
+    if (!hero || !profileEmoji) {
+      return;
+    }
+
+    if (profileEmoji.parentElement !== hero) {
+      hero.insertBefore(profileEmoji, hero.firstChild);
+    }
+  }
+
+  function removeDuplicateTopNews() {
+    const controls = [
+      ...document.querySelectorAll('button, a')
+    ];
+
+    controls.forEach(control => {
       const label = String(control.textContent || '')
         .trim()
         .toLowerCase();
@@ -2779,7 +2811,8 @@
         panel.id !== 'cityAnnouncement' &&
         !panel.classList.contains('city-announcement')
       ) {
-        const text = String(panel.textContent || '').toLowerCase();
+        const text = String(panel.textContent || '')
+          .toLowerCase();
 
         if (text.includes('city news')) {
           panel.remove();
@@ -2791,15 +2824,44 @@
     });
   }
 
-  removeDuplicateNews();
+  function applyMyCityCorrection() {
+    placeEmojiAbovePlayer();
+    updatePlayerIdentity();
+    removeDuplicateTopNews();
+  }
 
-  const observer = new MutationObserver(removeDuplicateNews);
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true
-  });
+  applyMyCityCorrection();
 
-  window.setTimeout(() => observer.disconnect(), 8000);
+  window.addEventListener(
+    'DOMContentLoaded',
+    applyMyCityCorrection
+  );
+
+  window.addEventListener(
+    'pageshow',
+    applyMyCityCorrection
+  );
+
+  window.addEventListener(
+    'storage',
+    applyMyCityCorrection
+  );
+
+  const observer =
+    new MutationObserver(removeDuplicateTopNews);
+
+  observer.observe(
+    document.body,
+    {
+      childList: true,
+      subtree: true
+    }
+  );
+
+  setTimeout(
+    () => observer.disconnect(),
+    8000
+  );
 })();
 </script>
 
