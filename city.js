@@ -1,4 +1,3 @@
-/* ELCraft My City FINAL */
 /* ELCraft My City — Pet Shop routing enabled */
 (() => {
   'use strict';
