@@ -791,9 +791,23 @@
       pageMessage.className = "message";
     }
 
+    function resetAvatarSelection() {
+      selectedAvatar = "🌟";
+
+      document
+        .querySelectorAll(".avatar-button")
+        .forEach(button => {
+          button.classList.toggle(
+            "selected",
+            button.dataset.avatar === "🌟"
+          );
+        });
+    }
+
     function openCreateModal() {
       modalError.textContent = "";
       childNameInput.value = "";
+      resetAvatarSelection();
       createModal.classList.add("open");
 
       setTimeout(() => {
@@ -805,6 +819,7 @@
       createModal.classList.remove("open");
       modalError.textContent = "";
       createForm.reset();
+      resetAvatarSelection();
     }
 
     function chooseProfile(profile) {
@@ -1153,7 +1168,22 @@
       }
     );
 
-    loadProfiles();
+    loadProfiles().then(() => {
+      const params =
+        new URLSearchParams(
+          window.location.search
+        );
+
+      if (params.get("create") === "true") {
+        openCreateModal();
+
+        window.history.replaceState(
+          {},
+          document.title,
+          "profiles.html"
+        );
+      }
+    });
   </script>
 </body>
 </html>
