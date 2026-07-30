@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#74c9ff">
+
+  <title>ELCraft — Pet Shop</title>
+
+  <link rel="stylesheet" href="pet-shop.css">
+</head>
+
+<body>
+  <main class="pet-shop-page">
+
+    <header class="pet-header">
+      <button
+        id="backButton"
+        class="header-button"
+        type="button">
+        ← My City
+      </button>
+
+      <div class="header-title">
+        <span class="header-icon">🐾</span>
+
+        <div>
+          <h1 id="pageTitle">Pet Shop</h1>
+          <p id="pageSubtitle">
+            Adopt, care for, and play with a magical pet.
+          </p>
+        </div>
+      </div>
+
+      <div class="header-player">
+        <span id="playerAvatar">🌟</span>
+
+        <div>
+          <strong id="playerName">Player</strong>
+          <span id="starCount">⭐ 0</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="game-shell">
+
+      <aside class="pet-list-panel">
+        <div class="panel-heading">
+          <h2>My Pets</h2>
+
+          <button
+            id="adoptAnotherButton"
+            class="small-action-button"
+            type="button">
+            + Adopt
+          </button>
+        </div>
+
+        <div
+          id="petList"
+          class="pet-list">
+        </div>
+      </aside>
+
+      <section class="pet-room">
+
+        <div class="room-sky" aria-hidden="true">
+          <div class="cloud cloud-one"></div>
+          <div class="cloud cloud-two"></div>
+          <div class="sun"></div>
+        </div>
+
+        <div class="room-wall">
+          <div class="window">
+            <div class="window-cross"></div>
+          </div>
+
+          <div class="wall-frame">
+            <span>🐾</span>
+          </div>
+
+          <div class="shelf">
+            <span>🧴</span>
+            <span>🦴</span>
+            <span>🎾</span>
+          </div>
+        </div>
+
+        <div class="room-floor"></div>
+
+        <section
+          id="emptyPetState"
+          class="empty-pet-state">
+
+          <div class="empty-pet-icon">🐶</div>
+
+          <h2>Choose your first pet!</h2>
+
+          <p>
+            Adopt a pet, give it a name, and start playing.
+          </p>
+
+          <button
+            id="startAdoptionButton"
+            class="primary-button"
+            type="button">
+            Adopt a Pet
+          </button>
+        </section>
+
+        <section
+          id="activePetArea"
+          class="active-pet-area"
+          hidden>
+
+          <div class="pet-status-card">
+            <div>
+              <h2 id="petName">Buddy</h2>
+              <p id="petType">Puppy</p>
+            </div>
+
+            <button
+              id="renamePetButton"
+              class="icon-button"
+              type="button"
+              aria-label="Rename pet">
+              ✏️
+            </button>
+          </div>
+
+          <div
+            id="petStage"
+            class="pet-stage"
+            aria-label="Pet play area">
+
+            <div
+              id="petThought"
+              class="pet-thought"
+              aria-live="polite">
+            </div>
+
+            <button
+              id="petCharacter"
+              class="pet-character"
+              type="button"
+              aria-label="Play with pet">
+              🐶
+            </button>
+
+            <div
+              id="petNameTag"
+              class="pet-name-tag">
+              Buddy
+            </div>
+          </div>
+
+          <div class="care-meters">
+
+            <div class="meter-card">
+              <div class="meter-label">
+                <span>😊 Happiness</span>
+                <strong id="happinessValue">80%</strong>
+              </div>
+
+              <div class="meter-track">
+                <div
+                  id="happinessBar"
+                  class="meter-fill">
+                </div>
+              </div>
+            </div>
+
+            <div class="meter-card">
+              <div class="meter-label">
+                <span>🍎 Hunger</span>
+                <strong id="hungerValue">80%</strong>
+              </div>
+
+              <div class="meter-track">
+                <div
+                  id="hungerBar"
+                  class="meter-fill">
+                </div>
+              </div>
+            </div>
+
+            <div class="meter-card">
+              <div class="meter-label">
+                <span>🫧 Cleanliness</span>
+                <strong id="cleanlinessValue">80%</strong>
+              </div>
+
+              <div class="meter-track">
+                <div
+                  id="cleanlinessBar"
+                  class="meter-fill">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="care-actions">
+
+            <button
+              class="care-button"
+              type="button"
+              data-action="feed">
+              <span>🍎</span>
+              Feed
+            </button>
+
+            <button
+              class="care-button"
+              type="button"
+              data-action="wash">
+              <span>🛁</span>
+              Wash
+            </button>
+
+            <button
+              class="care-button"
+              type="button"
+              data-action="brush">
+              <span>🪮</span>
+              Brush
+            </button>
+
+            <button
+              class="care-button"
+              type="button"
+              data-action="play">
+              <span>🎾</span>
+              Play
+            </button>
+
+            <button
+              class="care-button"
+              type="button"
+              data-action="treat">
+              <span>🦴</span>
+              Treat
+            </button>
+
+          </div>
+
+          <div class="pet-progress">
+            <div>
+              <span>Pet Level</span>
+              <strong id="petLevel">1</strong>
+            </div>
+
+            <div class="pet-xp-track">
+              <div
+                id="petXpBar"
+                class="pet-xp-fill">
+              </div>
+            </div>
+
+            <span id="petXpText">0 / 50 XP</span>
+          </div>
+
+        </section>
+
+        <div
+          id="rewardToast"
+          class="reward-toast"
+          role="status"
+          aria-live="polite">
+        </div>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <div
+    id="adoptionModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="adoptionTitle">
+
+    <section class="modal-card adoption-card">
+
+      <button
+        id="closeAdoptionButton"
+        class="modal-close"
+        type="button"
+        aria-label="Close adoption window">
+        ×
+      </button>
+
+      <h2 id="adoptionTitle">
+        Choose a Pet
+      </h2>
+
+      <p>
+        Every pet has its own personality.
+      </p>
+
+      <div
+        id="adoptionChoices"
+        class="adoption-grid">
+      </div>
+
+    </section>
+  </div>
+
+  <div
+    id="nameModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="namePetTitle">
+
+    <section class="modal-card name-card">
+
+      <button
+        id="closeNameButton"
+        class="modal-close"
+        type="button"
+        aria-label="Close name window">
+        ×
+      </button>
+
+      <div
+        id="namePetEmoji"
+        class="name-pet-emoji">
+        🐶
+      </div>
+
+      <h2 id="namePetTitle">
+        Name Your Pet
+      </h2>
+
+      <p>
+        Choose a short, friendly name.
+      </p>
+
+      <form id="namePetForm">
+
+        <input
+          id="petNameInput"
+          type="text"
+          maxlength="16"
+          autocomplete="off"
+          placeholder="Pet name"
+          required>
+
+        <div
+          id="nameError"
+          class="form-error"
+          aria-live="polite">
+        </div>
+
+        <button
+          id="savePetNameButton"
+          class="primary-button"
+          type="submit">
+          Save Pet
+        </button>
+
+      </form>
+
+    </section>
+  </div>
+
+  <script type="module" src="./pet-shop.js"></script>
+</body>
+</html>
