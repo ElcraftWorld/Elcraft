@@ -1,3 +1,4 @@
+/* ELCraft My City FINAL */
 /* ELCraft Living City Growth v1
    Load after city.js and world-engine.js.
    It keeps My City fully accessible while visual details grow with learning stars.
