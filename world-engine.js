@@ -1,304 +1,395 @@
-/* ELCraft World Engine v1
-   Shared progression system for every ELCraft page.
-   Save key: elcraft_world_v1
-*/
-(() => {
-  const WORLD_KEY = 'elcraft_world_v1';
-  const PROFILE_KEY = 'elcraft_profile_v1';
+/* =========================================================
+   ELCraft Cloud World Engine v2
+   Load with: <script type="module" src="./world-engine.js"></script>
+   ========================================================= */
 
-  const SUBJECT_KEYS = {
-    reading: 'elcraft_reading_library_v1',
-    writing: 'elcraft_writing_v1',
-    math: 'elcraft_math_v1',
-    science: 'elcraft_science_v1',
-    discovery: 'elcraft_discovery_v1',
-    music: 'elcraft_music_studio_v1'
+import { supabase } from "./supabase-client.js";
+
+const KEYS = Object.freeze({
+  childId: "elcraft_selected_child_id",
+  childName: "elcraft_child_name",
+  childAvatar: "elcraft_child_avatar",
+  legacyAvatarImage: "elcraft_avatar_image",
+  snapshot: "elcraft_cloud_world_snapshot_v2"
+});
+
+const DEFAULT_WORLD_STATE = Object.freeze({
+  version: 2,
+  nature: {
+    flowerStage: 0,
+    butterflyStage: 0,
+    treeStage: 0,
+    fountainStage: 0
+  },
+  buildingStages: {
+    library: 1,
+    school: 1,
+    market: 1,
+    petShop: 1,
+    styleStudio: 1,
+    clubhouse: 1,
+    castle: 1
+  },
+  achievements: []
+});
+
+let snapshot = null;
+let readyPromise = null;
+
+function possessive(name) {
+  const clean = String(name || "Player").trim() || "Player";
+  return /s$/i.test(clean) ? `${clean}'` : `${clean}'s`;
+}
+
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function merge(base, extra) {
+  const output = clone(base);
+
+  if (!extra || typeof extra !== "object") {
+    return output;
+  }
+
+  for (const [key, value] of Object.entries(extra)) {
+    if (
+      value &&
+      typeof value === "object" &&
+      !Array.isArray(value) &&
+      output[key] &&
+      typeof output[key] === "object" &&
+      !Array.isArray(output[key])
+    ) {
+      output[key] = merge(output[key], value);
+    } else {
+      output[key] = value;
+    }
+  }
+
+  return output;
+}
+
+function calculateLevel(experience, storedLevel = 1) {
+  return Math.max(
+    Number(storedLevel || 1),
+    Math.floor(Number(experience || 0) / 100) + 1
+  );
+}
+
+function nextLevelXP(experience) {
+  const xp = Number(experience || 0);
+  const level = Math.floor(xp / 100) + 1;
+  return {
+    current: xp % 100,
+    required: 100,
+    remaining: 100 - (xp % 100),
+    level
   };
+}
 
-  const DEFAULT_WORLD = {
-    version: 1,
-    totalStars: 0,
-    totalXP: 0,
-    coins: Number(localStorage.getItem('elcraft_coins') || 0),
+function cacheSnapshot(value) {
+  snapshot = value;
 
-    cityLevel: 1,
-    skyLevel: 1,
-    characterLevel: 1,
+  localStorage.setItem(KEYS.childName, value.child.display_name);
+  localStorage.setItem(KEYS.childAvatar, value.child.avatar || "🌟");
+  localStorage.setItem(KEYS.snapshot, JSON.stringify(value));
 
-    nature: {
-      flowerStage: 0,
-      butterflyStage: 0,
-      treeStage: 0,
-      fountainStage: 0,
-      birdStage: 0,
-      fireflyStage: 0
-    },
+  window.dispatchEvent(
+    new CustomEvent("elcraft:world-ready", {
+      detail: clone(value)
+    })
+  );
 
-    castleStage: 0,
-    roadStage: 0,
-    rainbowStage: 0,
+  applyPersonalization(document, value);
+  return value;
+}
 
-    skyIslands: {
-      rainbowPlaza: true,
-      artIsland: false,
-      musicIsland: false,
-      theaterIsland: false,
-      unicornMeadow: false,
-      wizardTower: false,
-      observatory: false,
-      inventorIsland: false,
-      spaceDock: false
-    },
+function cachedSnapshot() {
+  try {
+    return JSON.parse(localStorage.getItem(KEYS.snapshot) || "null");
+  } catch {
+    return null;
+  }
+}
 
-    characterUnlocks: {
-      cape: false,
-      backpack: false,
-      skates: false,
-      fairyWings: false,
-      dragonWings: false,
-      wizardRobes: false,
-      royalArmor: false,
-      legendaryOutfit: false
-    },
+async function requireSession() {
+  const {
+    data: { session },
+    error
+  } = await supabase.auth.getSession();
 
-    buildingStages: {
-      library: 1,
-      school: 1,
-      market: 1,
-      petShop: 1,
-      styleStudio: 1,
-      home: 1,
-      castle: 1
-    },
+  if (error || !session) {
+    throw new Error("A parent login is required.");
+  }
 
-    subjectStars: {
-      reading: 0,
-      writing: 0,
-      math: 0,
-      science: 0,
-      discovery: 0,
-      music: 0,
-      art: 0
-    },
+  return session;
+}
 
-    achievements: [],
-    lastCalculatedAt: null
-  };
+async function load({ redirect = true, force = false } = {}) {
+  if (readyPromise && !force) {
+    return readyPromise;
+  }
 
-  const deepMerge = (target, source) => {
-    if (!source || typeof source !== 'object') return target;
-    Object.keys(source).forEach(key => {
-      const value = source[key];
-      if (value && typeof value === 'object' && !Array.isArray(value)) {
-        target[key] = deepMerge(
-          target[key] && typeof target[key] === 'object' ? target[key] : {},
-          value
-        );
-      } else {
-        target[key] = value;
-      }
-    });
-    return target;
-  };
-
-  function readJSON(key, fallback = null) {
+  readyPromise = (async () => {
     try {
-      const value = JSON.parse(localStorage.getItem(key));
-      return value ?? fallback;
-    } catch {
-      return fallback;
+      const session = await requireSession();
+      const childId = localStorage.getItem(KEYS.childId);
+
+      if (!childId) {
+        if (redirect) window.location.replace("profiles.html");
+        throw new Error("No child profile is selected.");
+      }
+
+      const { data: child, error: childError } = await supabase
+        .from("child_profiles")
+        .select("id, parent_id, display_name, avatar, friend_code, stars, experience, level")
+        .eq("id", childId)
+        .eq("parent_id", session.user.id)
+        .maybeSingle();
+
+      if (childError || !child) {
+        localStorage.removeItem(KEYS.childId);
+        if (redirect) window.location.replace("profiles.html");
+        throw childError || new Error("The selected child profile was not found.");
+      }
+
+      let world = null;
+      const { data: worldData, error: worldError } = await supabase
+        .from("child_worlds")
+        .select("child_id, parent_id, city_name, clubhouse_name, city_level, clubhouse_level, coins, world_state, updated_at")
+        .eq("child_id", child.id)
+        .maybeSingle();
+
+      if (!worldError && worldData) {
+        world = worldData;
+      } else {
+        // The rest of ELCraft still works before the SQL migration is run.
+        if (worldError) {
+          console.warn("ELCraft cloud world table is not ready yet:", worldError.message);
+        }
+
+        const { data: city } = await supabase
+          .from("cities")
+          .select("city_name, city_level")
+          .eq("child_id", child.id)
+          .maybeSingle();
+
+        world = {
+          child_id: child.id,
+          parent_id: child.parent_id,
+          city_name: city?.city_name || `${possessive(child.display_name)} City`,
+          clubhouse_name: `${possessive(child.display_name)} Clubhouse`,
+          city_level: Number(city?.city_level || 1),
+          clubhouse_level: 1,
+          coins: Number(localStorage.getItem("elcraft_coins") || 0),
+          world_state: clone(DEFAULT_WORLD_STATE),
+          updated_at: null,
+          cloudReady: false
+        };
+      }
+
+      const normalized = {
+        user: {
+          id: session.user.id,
+          email: session.user.email || ""
+        },
+        child: {
+          ...child,
+          avatar: child.avatar || "🌟",
+          stars: Number(child.stars || 0),
+          experience: Number(child.experience || 0),
+          level: calculateLevel(child.experience, child.level)
+        },
+        world: {
+          ...world,
+          city_name: world.city_name || `${possessive(child.display_name)} City`,
+          clubhouse_name: world.clubhouse_name || `${possessive(child.display_name)} Clubhouse`,
+          city_level: Number(world.city_level || 1),
+          clubhouse_level: Number(world.clubhouse_level || 1),
+          coins: Number(world.coins || 0),
+          world_state: merge(DEFAULT_WORLD_STATE, world.world_state || {})
+        }
+      };
+
+      normalized.progress = nextLevelXP(normalized.child.experience);
+      return cacheSnapshot(normalized);
+    } catch (error) {
+      readyPromise = null;
+      const cached = cachedSnapshot();
+
+      if (cached && !redirect) {
+        snapshot = cached;
+        applyPersonalization(document, cached);
+        return cached;
+      }
+
+      throw error;
     }
-  }
+  })();
 
-  function getWorld() {
-    const saved = readJSON(WORLD_KEY, {});
-    return deepMerge(structuredClone(DEFAULT_WORLD), saved);
-  }
+  return readyPromise;
+}
 
-  function countMasteryStars(data) {
-    if (!data || typeof data !== 'object') return 0;
-    if (data.mastery && typeof data.mastery === 'object') {
-      return Object.values(data.mastery).reduce((sum, value) => sum + (Number(value) || 0), 0);
+function text(selector, value, root = document) {
+  const node = root.querySelector(selector);
+  if (node) node.textContent = value;
+}
+
+function applyPersonalization(root = document, data = snapshot) {
+  if (!data?.child || !data?.world) return;
+
+  const name = data.child.display_name || "Player";
+  const avatar = data.child.avatar || "🌟";
+  const cityName = data.world.city_name || `${possessive(name)} City`;
+  const clubhouseName = data.world.clubhouse_name || `${possessive(name)} Clubhouse`;
+
+  text("#profileName", name, root);
+  text("#greetingName", name, root);
+  text("#ownerName", name, root);
+  text("#heroName", name, root);
+  text("#welcomeName", name, root);
+  text("#headerAvatar", avatar, root);
+  text("#parentMenuAvatar", avatar, root);
+  text("#parentMenuName", name, root);
+  text("#cityOwner", `✨ ${cityName}`, root);
+  text("#cityPageTitle", cityName, root);
+  text("#headerName", clubhouseName, root);
+  text("#clubhousePageTitle", clubhouseName, root);
+  text("#clubhouseBuildingSign", clubhouseName.toUpperCase(), root);
+  text("#profileLevel", `Level ${data.child.level} • ⭐ ${data.child.stars}`, root);
+
+  root.querySelectorAll("[data-elcraft-name]").forEach(node => {
+    node.textContent = name;
+  });
+
+  root.querySelectorAll("[data-elcraft-avatar]").forEach(node => {
+    node.textContent = avatar;
+  });
+
+  root.querySelectorAll("[data-elcraft-city-name]").forEach(node => {
+    node.textContent = cityName;
+  });
+
+  root.querySelectorAll("[data-elcraft-clubhouse-name]").forEach(node => {
+    node.textContent = clubhouseName;
+  });
+
+  root.querySelectorAll("[data-elcraft-stars]").forEach(node => {
+    node.textContent = String(data.child.stars);
+  });
+
+  root.querySelectorAll("[data-elcraft-level]").forEach(node => {
+    node.textContent = String(data.child.level);
+  });
+
+  root.querySelectorAll("[data-elcraft-city-level]").forEach(node => {
+    node.textContent = String(data.world.city_level);
+  });
+
+  document.title = document.body?.dataset.page === "clubhouse"
+    ? `${clubhouseName} | ELCraft`
+    : document.body?.dataset.page === "city"
+      ? `${cityName} | ELCraft`
+      : `ELCraft — ${possessive(name)} World`;
+}
+
+async function award({
+  stars = 0,
+  experience = 0,
+  coins = 0,
+  source = "elcraft",
+  activityType = "reward",
+  details = {}
+} = {}) {
+  const data = snapshot || await load();
+
+  const { data: result, error } = await supabase.rpc(
+    "award_child_progress",
+    {
+      p_child_id: data.child.id,
+      p_stars: Math.max(0, Number(stars || 0)),
+      p_experience: Math.max(0, Number(experience || 0)),
+      p_coins: Math.max(0, Number(coins || 0)),
+      p_source: String(source || "elcraft"),
+      p_activity_type: String(activityType || "reward"),
+      p_details: details || {}
     }
-    return 0;
-  }
+  );
 
-  function calculateReadingStars(data) {
-    if (!data || typeof data !== 'object') return 0;
-    const passport = data.passport || data.progress || {};
-    if (passport && typeof passport === 'object') {
-      const values = Object.values(passport);
-      const completed = values.filter(v => {
-        if (typeof v === 'number') return v > 0;
-        if (typeof v === 'boolean') return v;
-        if (v && typeof v === 'object') return v.completed || v.read || v.finished;
-        return false;
-      }).length;
-      return Math.min(50, completed);
-    }
-    const completedBooks = Array.isArray(data.completedBooks) ? data.completedBooks.length : 0;
-    return Math.min(50, completedBooks);
-  }
+  if (error) throw error;
 
-  function calculateWritingStars(data) {
-    if (!data || typeof data !== 'object') return 0;
-    if (data.mastery) return countMasteryStars(data);
-    const portfolio = Array.isArray(data.portfolio) ? data.portfolio.length : 0;
-    const completed = Number(data.totalCompleted || data.completedActivities || 0);
-    return Math.min(50, portfolio + completed);
-  }
+  await load({ force: true, redirect: false });
 
-  function calculateSubjectStars() {
-    const result = {
-      reading: calculateReadingStars(readJSON(SUBJECT_KEYS.reading, {})),
-      writing: calculateWritingStars(readJSON(SUBJECT_KEYS.writing, {})),
-      math: countMasteryStars(readJSON(SUBJECT_KEYS.math, {})),
-      science: countMasteryStars(readJSON(SUBJECT_KEYS.science, {})),
-      discovery: countMasteryStars(readJSON(SUBJECT_KEYS.discovery, {})),
-      music: countMasteryStars(readJSON(SUBJECT_KEYS.music, {})),
-      art: 0
-    };
+  window.dispatchEvent(
+    new CustomEvent("elcraft:reward", {
+      detail: { stars, experience, coins, source, activityType, result }
+    })
+  );
 
-    const art = readJSON('elcraft_art_gallery_v1', {});
-    result.art = countMasteryStars(art) || Math.min(50, Array.isArray(art.gallery) ? art.gallery.length : 0);
+  return snapshot;
+}
 
-    return result;
-  }
+async function saveWorldPatch(patch = {}) {
+  const data = snapshot || await load();
+  const nextState = merge(data.world.world_state, patch);
 
-  function levelFromStars(stars, thresholds) {
-    let level = 1;
-    thresholds.forEach((threshold, index) => {
-      if (stars >= threshold) level = index + 2;
-    });
-    return level;
-  }
+  const { data: updated, error } = await supabase
+    .from("child_worlds")
+    .update({
+      world_state: nextState,
+      updated_at: new Date().toISOString()
+    })
+    .eq("child_id", data.child.id)
+    .select("*")
+    .single();
 
-  function unlockByThreshold(world, stars) {
-    world.cityLevel = levelFromStars(stars, [10, 25, 50, 90, 140, 220, 320, 450]);
-    world.skyLevel = levelFromStars(stars, [15, 35, 70, 120, 190, 280, 400, 550]);
-    world.characterLevel = levelFromStars(stars, [10, 20, 40, 70, 110, 170, 260, 400]);
+  if (error) throw error;
 
-    world.nature.flowerStage = stars >= 10 ? (stars >= 60 ? (stars >= 180 ? 3 : 2) : 1) : 0;
-    world.nature.butterflyStage = stars >= 20 ? (stars >= 75 ? (stars >= 220 ? 3 : 2) : 1) : 0;
-    world.nature.treeStage = stars >= 30 ? (stars >= 100 ? (stars >= 250 ? (stars >= 450 ? 4 : 3) : 2) : 1) : 0;
-    world.nature.fountainStage = stars >= 50 ? (stars >= 150 ? (stars >= 300 ? (stars >= 500 ? 4 : 3) : 2) : 1) : 0;
-    world.nature.birdStage = stars >= 40 ? (stars >= 130 ? (stars >= 350 ? 3 : 2) : 1) : 0;
-    world.nature.fireflyStage = stars >= 90 ? (stars >= 260 ? 2 : 1) : 0;
-
-    world.castleStage = stars >= 80 ? (stars >= 200 ? (stars >= 400 ? 3 : 2) : 1) : 0;
-    world.roadStage = stars >= 35 ? (stars >= 120 ? (stars >= 280 ? 3 : 2) : 1) : 0;
-    world.rainbowStage = stars >= 70 ? (stars >= 240 ? 2 : 1) : 0;
-
-    world.skyIslands.rainbowPlaza = true;
-    world.skyIslands.artIsland = stars >= 20;
-    world.skyIslands.musicIsland = stars >= 40;
-    world.skyIslands.theaterIsland = stars >= 70;
-    world.skyIslands.unicornMeadow = stars >= 110;
-    world.skyIslands.wizardTower = stars >= 160;
-    world.skyIslands.observatory = stars >= 220;
-    world.skyIslands.inventorIsland = stars >= 300;
-    world.skyIslands.spaceDock = stars >= 420;
-
-    world.characterUnlocks.cape = stars >= 10;
-    world.characterUnlocks.backpack = stars >= 20;
-    world.characterUnlocks.skates = stars >= 40;
-    world.characterUnlocks.fairyWings = stars >= 70;
-    world.characterUnlocks.dragonWings = stars >= 110;
-    world.characterUnlocks.wizardRobes = stars >= 170;
-    world.characterUnlocks.royalArmor = stars >= 260;
-    world.characterUnlocks.legendaryOutfit = stars >= 400;
-
-    world.buildingStages.library = 1 + (stars >= 60) + (stars >= 180) + (stars >= 360);
-    world.buildingStages.school = 1 + (stars >= 50) + (stars >= 160) + (stars >= 340);
-    world.buildingStages.market = 1 + (stars >= 40) + (stars >= 140) + (stars >= 300);
-    world.buildingStages.petShop = 1 + (stars >= 30) + (stars >= 120) + (stars >= 260);
-    world.buildingStages.styleStudio = 1 + (stars >= 25) + (stars >= 100) + (stars >= 240);
-    world.buildingStages.home = 1 + (stars >= 80) + (stars >= 220) + (stars >= 420);
-    world.buildingStages.castle = 1 + (stars >= 90) + (stars >= 220) + (stars >= 450);
-  }
-
-  function achievement(world, id, title, description, unlocked) {
-    const exists = world.achievements.some(item => item.id === id);
-    if (unlocked && !exists) {
-      world.achievements.push({
-        id,
-        title,
-        description,
-        unlockedAt: new Date().toISOString()
-      });
-    }
-  }
-
-  function calculateAchievements(world) {
-    const stars = world.totalStars;
-    achievement(world, 'first-star', 'First Spark', 'Earn your first learning star.', stars >= 1);
-    achievement(world, 'city-blooms', 'City in Bloom', 'Grow the first city flowers.', stars >= 10);
-    achievement(world, 'sky-builder', 'Sky Builder', 'Help the first new sky island appear.', stars >= 20);
-    achievement(world, 'world-grower', 'World Grower', 'Reach 100 total stars.', stars >= 100);
-    achievement(world, 'magic-city', 'Magical City', 'Reach 300 total stars.', stars >= 300);
-    achievement(world, 'legendary-learner', 'Legendary Learner', 'Reach 500 total stars.', stars >= 500);
-
-    Object.entries(world.subjectStars).forEach(([subject, value]) => {
-      achievement(
-        world,
-        `subject-${subject}-5`,
-        `${subject[0].toUpperCase() + subject.slice(1)} Explorer`,
-        `Earn 5 stars in ${subject}.`,
-        value >= 5
-      );
-    });
-  }
-
-  function recalculate() {
-    const world = getWorld();
-    const profile = readJSON(PROFILE_KEY, {});
-
-    world.subjectStars = calculateSubjectStars();
-    world.totalStars = Object.values(world.subjectStars).reduce((sum, value) => sum + (Number(value) || 0), 0);
-    world.totalXP = Number(profile.xp || profile.totalXp || 0);
-    world.coins = Number(profile.coins ?? localStorage.getItem('elcraft_coins') ?? world.coins ?? 0);
-
-    unlockByThreshold(world, world.totalStars);
-    calculateAchievements(world);
-    world.lastCalculatedAt = new Date().toISOString();
-
-    localStorage.setItem(WORLD_KEY, JSON.stringify(world));
-    return world;
-  }
-
-  function getNextUnlock(world = recalculate()) {
-    const unlocks = [
-      [10, 'City flowers begin to bloom'],
-      [20, 'Art Island appears in Sky World'],
-      [30, 'The first city tree grows'],
-      [40, 'Music Island appears in Sky World'],
-      [50, 'The fountain begins to upgrade'],
-      [70, 'Theater Island and fairy wings'],
-      [90, 'Castle decorations and fireflies'],
-      [110, 'Unicorn Meadow and dragon wings'],
-      [160, 'Wizard Tower'],
-      [220, 'Cloud Observatory'],
-      [300, 'Inventor Island'],
-      [420, 'Space Dock'],
-      [500, 'Rainbow Fountain']
-    ];
-
-    const next = unlocks.find(([stars]) => world.totalStars < stars);
-    if (!next) return { required: world.totalStars, remaining: 0, label: 'All current world upgrades discovered!' };
-
-    return {
-      required: next[0],
-      remaining: next[0] - world.totalStars,
-      label: next[1]
-    };
-  }
-
-  window.ELCraftWorld = {
-    key: WORLD_KEY,
-    get: getWorld,
-    recalculate,
-    getNextUnlock
+  snapshot.world = {
+    ...snapshot.world,
+    ...updated,
+    world_state: merge(DEFAULT_WORLD_STATE, updated.world_state || {})
   };
 
-  recalculate();
-})();
+  cacheSnapshot(snapshot);
+  return clone(snapshot);
+}
+
+async function renameWorld({ cityName, clubhouseName } = {}) {
+  const data = snapshot || await load();
+  const updates = { updated_at: new Date().toISOString() };
+
+  if (cityName?.trim()) updates.city_name = cityName.trim().slice(0, 40);
+  if (clubhouseName?.trim()) updates.clubhouse_name = clubhouseName.trim().slice(0, 40);
+
+  const { data: updated, error } = await supabase
+    .from("child_worlds")
+    .update(updates)
+    .eq("child_id", data.child.id)
+    .select("*")
+    .single();
+
+  if (error) throw error;
+
+  snapshot.world = { ...snapshot.world, ...updated };
+  cacheSnapshot(snapshot);
+  return clone(snapshot);
+}
+
+window.ELCraftWorld = Object.freeze({
+  load,
+  ready: () => load(),
+  get: () => clone(snapshot || cachedSnapshot()),
+  refresh: () => load({ force: true, redirect: false }),
+  applyPersonalization,
+  award,
+  saveWorldPatch,
+  renameWorld,
+  possessive,
+  keys: KEYS
+});
+
+load().catch(error => {
+  console.error("ELCraft World Engine:", error);
+});
