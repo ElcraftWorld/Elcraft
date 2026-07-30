@@ -508,6 +508,184 @@
       opacity: 1;
     }
 
+
+    /* Parent menu */
+    .parent-menu-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1200;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding:
+        calc(20px + env(safe-area-inset-top))
+        calc(20px + env(safe-area-inset-right))
+        calc(20px + env(safe-area-inset-bottom))
+        calc(20px + env(safe-area-inset-left));
+
+      background: rgba(27, 31, 78, 0.62);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    .parent-menu-backdrop.open {
+      display: flex;
+    }
+
+    .parent-menu-card {
+      width: min(390px, 94vw);
+      max-height: calc(100dvh - 40px);
+      overflow-y: auto;
+
+      border: 4px solid rgba(255, 255, 255, 0.95);
+      border-radius: 30px;
+      padding: 25px;
+
+      color: #34385f;
+      background: #fffaf3;
+      box-shadow: 0 24px 70px rgba(14, 20, 63, 0.42);
+    }
+
+    .parent-menu-player {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+
+      margin-bottom: 18px;
+      padding-bottom: 17px;
+
+      border-bottom: 2px solid #ece8f7;
+    }
+
+    .parent-menu-avatar {
+      width: 64px;
+      height: 64px;
+      flex: 0 0 auto;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #82d8ff,
+          #b28cff
+        );
+
+      box-shadow: 0 7px 16px rgba(68, 65, 145, 0.22);
+      font-size: 36px;
+    }
+
+    .parent-menu-player-text {
+      min-width: 0;
+    }
+
+    .parent-menu-label {
+      margin-bottom: 4px;
+
+      color: #8a8fab;
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+    }
+
+    .parent-menu-name {
+      overflow: hidden;
+
+      color: #5d43a2;
+      font-size: 23px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .parent-menu-card h2 {
+      margin: 0 0 14px;
+
+      color: #5d43a2;
+      font-size: 28px;
+      text-align: center;
+    }
+
+    .parent-menu-action {
+      width: 100%;
+      min-height: 52px;
+
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      margin-top: 11px;
+      border: 0;
+      border-radius: 16px;
+      padding: 12px 15px;
+
+      color: #454a72;
+      background: #efedf9;
+
+      font-size: 16px;
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .parent-menu-action:hover {
+      background: #e3dff7;
+    }
+
+    .parent-menu-action.logout {
+      color: #a32f43;
+      background: #ffe7ec;
+    }
+
+    .parent-menu-action.logout:hover {
+      background: #ffd9e1;
+    }
+
+    .parent-menu-action:disabled {
+      opacity: 0.65;
+      cursor: wait;
+    }
+
+    .parent-menu-icon {
+      width: 29px;
+      text-align: center;
+      font-size: 21px;
+    }
+
+    .parent-menu-close {
+      width: 100%;
+      min-height: 48px;
+      margin-top: 12px;
+
+      border: 0;
+      border-radius: 16px;
+
+      color: #626888;
+      background: #eceef6;
+
+      font-size: 16px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .parent-menu-message {
+      min-height: 18px;
+      margin-top: 12px;
+
+      color: #a32f43;
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.35;
+      text-align: center;
+    }
+
     /* iPad portrait */
     @media
       (min-width: 700px)
@@ -876,6 +1054,81 @@
 
   </div>
 
+
+  <div
+    id="parentMenu"
+    class="parent-menu-backdrop"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="parentMenuTitle">
+
+    <section class="parent-menu-card">
+
+      <div class="parent-menu-player">
+        <div
+          id="parentMenuAvatar"
+          class="parent-menu-avatar">
+          🌟
+        </div>
+
+        <div class="parent-menu-player-text">
+          <div class="parent-menu-label">
+            Current player
+          </div>
+
+          <div
+            id="parentMenuName"
+            class="parent-menu-name">
+            Player
+          </div>
+        </div>
+      </div>
+
+      <h2 id="parentMenuTitle">
+        Parent Menu
+      </h2>
+
+      <button
+        id="switchPlayerButton"
+        class="parent-menu-action"
+        type="button">
+        <span class="parent-menu-icon">👧</span>
+        Switch Player
+      </button>
+
+      <button
+        id="addPlayerButton"
+        class="parent-menu-action"
+        type="button">
+        <span class="parent-menu-icon">➕</span>
+        Add a Player
+      </button>
+
+      <button
+        id="logoutButton"
+        class="parent-menu-action logout"
+        type="button">
+        <span class="parent-menu-icon">🚪</span>
+        Log Out
+      </button>
+
+      <button
+        id="closeParentMenuButton"
+        class="parent-menu-close"
+        type="button">
+        Close
+      </button>
+
+      <div
+        id="parentMenuMessage"
+        class="parent-menu-message"
+        aria-live="polite">
+      </div>
+
+    </section>
+  </div>
+
+
   <script>
     (() => {
       'use strict';
@@ -1088,12 +1341,7 @@
       addTapAction(
         '.profiles',
         () => {
-          input.value =
-            getSavedName();
-
-          error.textContent = '';
-
-          openNamePrompt();
+          navigateTo('profiles.html');
         }
       );
 
@@ -1134,7 +1382,7 @@
 
       document
         .querySelectorAll(
-          '.hotspot:not(.profiles):not(.sky):not(.characters):not(.city):not(.music):not(.together)'
+          '.hotspot:not(.profiles):not(.settings):not(.sky):not(.characters):not(.city):not(.music):not(.together)'
         )
         .forEach(button => {
           button.addEventListener(
@@ -1190,6 +1438,261 @@
       );
     })();
   </script>
+
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
+
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const parentMenu =
+      document.getElementById("parentMenu");
+
+    const parentMenuName =
+      document.getElementById("parentMenuName");
+
+    const parentMenuAvatar =
+      document.getElementById("parentMenuAvatar");
+
+    const parentMenuMessage =
+      document.getElementById("parentMenuMessage");
+
+    const settingsButton =
+      document.querySelector(".settings");
+
+    const switchPlayerButton =
+      document.getElementById("switchPlayerButton");
+
+    const addPlayerButton =
+      document.getElementById("addPlayerButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    const closeParentMenuButton =
+      document.getElementById(
+        "closeParentMenuButton"
+      );
+
+    function clearPlayerSelection() {
+      localStorage.removeItem(
+        SELECTED_CHILD_ID_KEY
+      );
+
+      localStorage.removeItem(
+        CHILD_NAME_KEY
+      );
+
+      localStorage.removeItem(
+        CHILD_AVATAR_KEY
+      );
+    }
+
+    function openParentMenu() {
+      parentMenuMessage.textContent = "";
+
+      parentMenuName.textContent =
+        localStorage.getItem(CHILD_NAME_KEY) ||
+        "Player";
+
+      parentMenuAvatar.textContent =
+        localStorage.getItem(CHILD_AVATAR_KEY) ||
+        "🌟";
+
+      parentMenu.classList.add("open");
+    }
+
+    function closeParentMenu() {
+      parentMenu.classList.remove("open");
+    }
+
+    async function verifyPlayer() {
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        clearPlayerSelection();
+
+        window.location.replace(
+          "auth.html"
+        );
+
+        return;
+      }
+
+      const selectedChildId =
+        localStorage.getItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+      if (!selectedChildId) {
+        window.location.replace(
+          "profiles.html"
+        );
+
+        return;
+      }
+
+      const {
+        data: child,
+        error: childError
+      } = await supabase
+        .from("child_profiles")
+        .select(
+          "id, display_name, avatar"
+        )
+        .eq("id", selectedChildId)
+        .eq("parent_id", session.user.id)
+        .maybeSingle();
+
+      if (childError || !child) {
+        console.error(
+          "Selected player verification failed:",
+          childError
+        );
+
+        clearPlayerSelection();
+
+        window.location.replace(
+          "profiles.html"
+        );
+
+        return;
+      }
+
+      localStorage.setItem(
+        CHILD_NAME_KEY,
+        child.display_name
+      );
+
+      localStorage.setItem(
+        CHILD_AVATAR_KEY,
+        child.avatar || "🌟"
+      );
+
+      parentMenuName.textContent =
+        child.display_name;
+
+      parentMenuAvatar.textContent =
+        child.avatar || "🌟";
+
+      document.getElementById(
+        "profileName"
+      ).textContent = child.display_name;
+
+      document.getElementById(
+        "greetingName"
+      ).textContent = child.display_name;
+
+      document.getElementById(
+        "ownerName"
+      ).textContent = child.display_name;
+
+      document.title =
+        `ELCraft — ${child.display_name}'s World`;
+    }
+
+    settingsButton?.addEventListener(
+      "click",
+      openParentMenu
+    );
+
+    closeParentMenuButton.addEventListener(
+      "click",
+      closeParentMenu
+    );
+
+    parentMenu.addEventListener(
+      "click",
+      event => {
+        if (event.target === parentMenu) {
+          closeParentMenu();
+        }
+      }
+    );
+
+    document.addEventListener(
+      "keydown",
+      event => {
+        if (event.key === "Escape") {
+          closeParentMenu();
+        }
+      }
+    );
+
+    switchPlayerButton.addEventListener(
+      "click",
+      () => {
+        clearPlayerSelection();
+
+        window.location.href =
+          "profiles.html";
+      }
+    );
+
+    addPlayerButton.addEventListener(
+      "click",
+      () => {
+        clearPlayerSelection();
+
+        window.location.href =
+          "profiles.html?create=true";
+      }
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+        parentMenuMessage.textContent = "";
+
+        logoutButton.disabled = true;
+        logoutButton.innerHTML = `
+          <span class="parent-menu-icon">⏳</span>
+          Logging Out...
+        `;
+
+        const { error } =
+          await supabase.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          parentMenuMessage.textContent =
+            error.message ||
+            "Unable to log out.";
+
+          logoutButton.disabled = false;
+          logoutButton.innerHTML = `
+            <span class="parent-menu-icon">🚪</span>
+            Log Out
+          `;
+
+          return;
+        }
+
+        clearPlayerSelection();
+
+        window.location.replace(
+          "auth.html"
+        );
+      }
+    );
+
+    verifyPlayer();
+  </script>
+
 
 </body>
 </html>
