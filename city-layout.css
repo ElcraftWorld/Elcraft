@@ -1,3 +1,4 @@
+/* ELCraft My City FINAL */
 /*
   ============================================================
   ELCraft My City — Layout Corrections
@@ -731,5 +732,106 @@ body.has-saved-city-avatar #hero .dynamic-profile-avatar {
     min-width: 105px !important;
     padding: 6px 12px !important;
     font-size: 16px !important;
+  }
+}
+
+
+/* ============================================================
+   ELCraft My City FINAL — child hotspot and one City News card
+   ============================================================ */
+
+/* The illustrated girl remains visible in the background image.
+   This element becomes the clickable hotspot over her. */
+#hero {
+  position: absolute !important;
+  left: 49.2% !important;
+  top: 55.2% !important;
+  width: clamp(105px, 10vw, 165px) !important;
+  height: clamp(150px, 16vw, 235px) !important;
+  transform: translate(-50%, -50%) !important;
+  z-index: 225 !important;
+  display: block !important;
+  padding: 0 !important;
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  overflow: visible !important;
+  cursor: pointer !important;
+}
+
+#hero::before,
+#hero::after,
+#heroAvatar,
+#heroName,
+.dynamic-player-name {
+  display: none !important;
+  content: none !important;
+}
+
+/* Ella's selected emoji floats above the illustrated girl. */
+#hero .dynamic-profile-avatar {
+  position: absolute !important;
+  left: 50% !important;
+  top: -58px !important;
+  width: clamp(58px, 5.6vw, 86px) !important;
+  height: clamp(58px, 5.6vw, 86px) !important;
+  transform: translateX(-50%) !important;
+  display: grid !important;
+  place-items: center !important;
+  border: 5px solid #ffffff !important;
+  border-radius: 50% !important;
+  background: radial-gradient(circle at 35% 25%, #f7f1ff, #c6a7ff) !important;
+  box-shadow:
+    0 6px 0 rgba(91,68,155,.18),
+    0 12px 20px rgba(44,47,88,.25) !important;
+  font-size: clamp(36px, 4vw, 60px) !important;
+  line-height: 1 !important;
+  z-index: 4 !important;
+}
+
+#hero:hover {
+  transform: translate(-50%, -50%) scale(1.04) !important;
+}
+
+#hero:focus-visible {
+  outline: 6px solid #ffffff !important;
+  outline-offset: 8px !important;
+  border-radius: 30px !important;
+}
+
+/* Keep only the lower-right Supabase City News board. */
+#cityNewsPanel,
+.top-city-news,
+.header-city-news,
+.city-news-panel,
+.announcement-shortcut,
+.announcements-panel,
+.news-panel {
+  display: none !important;
+}
+
+/* No bottom navigation bar. */
+.bottom-navigation,
+.bottom-nav,
+.mobile-nav,
+.game-bottom-nav,
+.city-bottom-nav {
+  display: none !important;
+}
+
+@media (max-width: 760px) {
+  #hero {
+    left: 49.2% !important;
+    top: 56% !important;
+    width: 100px !important;
+    height: 145px !important;
+  }
+
+  #hero .dynamic-profile-avatar {
+    top: -47px !important;
+    width: 58px !important;
+    height: 58px !important;
+    font-size: 36px !important;
+    border-width: 4px !important;
   }
 }
