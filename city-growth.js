@@ -43,21 +43,24 @@
     }
 
     .city-growth-badge {
-      position: absolute;
-      right: 18px;
-      top: 16px;
-      z-index: 45;
-      min-width: 150px;
-      padding: 9px 13px;
-      border: 3px solid rgba(255,255,255,.95);
+      position: relative;
+      flex: 0 0 auto;
+      min-width: 205px;
+      max-width: 285px;
+      padding: 9px 14px;
+      border: 3px solid rgba(255,255,255,.98);
       border-radius: 18px;
-      color: #5b429a;
-      background: rgba(255,255,255,.94);
-      box-shadow: 0 8px 20px rgba(38,65,111,.2);
-      font-size: clamp(12px,1.05vw,16px);
+      color: #60449d;
+      background: linear-gradient(145deg,#fffdf2,#f2e9ff);
+      box-shadow:
+        0 5px 0 rgba(95,68,157,.12),
+        0 10px 18px rgba(58,63,105,.13);
+      font-size: clamp(11px,.9vw,14px);
       font-weight: 900;
+      line-height: 1.25;
       text-align: center;
       cursor: pointer;
+      z-index: 205;
     }
 
     .city-growth-badge strong {
@@ -198,14 +201,7 @@
     }
 
     @media (max-width:700px) {
-      .city-growth-badge {
-        right: 8px;
-        top: 8px;
-        min-width: 118px;
-        padding: 7px 9px;
-      }
-
-      .growth-bench.left { left: 20%; }
+.growth-bench.left { left: 20%; }
       .growth-bench.right { right: 20%; }
       .growth-lamp.three { display:none; }
     }
@@ -343,7 +339,19 @@
     badge.addEventListener('click', () => {
       window.location.href = 'progress.html';
     });
-    city.appendChild(badge);
+    const header = document.querySelector('.game-header');
+
+    if (header) {
+      const starCounter = document.getElementById('mailStarCounter');
+
+      if (starCounter) {
+        header.insertBefore(badge, starCounter);
+      } else {
+        header.appendChild(badge);
+      }
+    } else {
+      city.appendChild(badge);
+    }
   }
 
   function announceNewestGrowth() {
