@@ -1,0 +1,1159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#6ec6ff">
+
+  <title>Choose a Player | ELCraft</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      padding: 24px;
+
+      color: #30365d;
+      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 15% 15%,
+          rgba(255, 255, 255, 0.7),
+          transparent 24%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(176, 115, 255, 0.42),
+          transparent 28%
+        ),
+        linear-gradient(
+          145deg,
+          #72d5ff 0%,
+          #72b9ff 46%,
+          #a889ff 100%
+        );
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      color: white;
+      text-shadow: 0 3px 8px rgba(39, 46, 111, 0.3);
+    }
+
+    .brand-icon {
+      font-size: 42px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 42px);
+    }
+
+    .logout-button {
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      padding: 11px 16px;
+
+      color: #554dbd;
+      background: rgba(255, 255, 255, 0.94);
+
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .main-card {
+      border: 4px solid rgba(255, 255, 255, 0.85);
+      border-radius: 32px;
+      padding: clamp(22px, 5vw, 42px);
+
+      background: rgba(255, 255, 255, 0.97);
+
+      box-shadow:
+        0 24px 65px rgba(42, 48, 120, 0.28);
+    }
+
+    .heading {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .heading h2 {
+      margin: 0;
+
+      color: #554ecb;
+      font-size: clamp(30px, 6vw, 48px);
+    }
+
+    .heading p {
+      margin: 10px 0 0;
+
+      color: #697198;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .parent-email {
+      margin-top: 8px;
+
+      color: #8a8fab;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .profiles-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fit, minmax(190px, 1fr));
+      gap: 18px;
+    }
+
+    .profile-card {
+      position: relative;
+
+      min-height: 220px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      border: 3px solid #e0def8;
+      border-radius: 25px;
+      padding: 22px;
+
+      color: #353b68;
+      background:
+        linear-gradient(
+          150deg,
+          #ffffff,
+          #f4f2ff
+        );
+
+      box-shadow: 0 9px 20px rgba(73, 65, 157, 0.12);
+
+      cursor: pointer;
+
+      transition:
+        transform 0.16s ease,
+        box-shadow 0.16s ease,
+        border-color 0.16s ease;
+    }
+
+    .profile-card:hover {
+      transform: translateY(-4px);
+      border-color: #8879ef;
+
+      box-shadow: 0 14px 26px rgba(73, 65, 157, 0.2);
+    }
+
+    .profile-card:active {
+      transform: translateY(0);
+    }
+
+    .profile-avatar {
+      width: 92px;
+      height: 92px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 5px solid white;
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #82d8ff,
+          #b28cff
+        );
+
+      box-shadow: 0 8px 18px rgba(68, 65, 145, 0.22);
+
+      font-size: 50px;
+    }
+
+    .profile-card h3 {
+      max-width: 100%;
+      margin: 16px 0 5px;
+
+      color: #4d47ba;
+      font-size: 23px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .profile-card p {
+      margin: 0;
+
+      color: #747a9b;
+      font-size: 14px;
+      font-weight: 800;
+    }
+
+    .create-card {
+      border-style: dashed;
+      border-color: #a59bea;
+
+      background:
+        linear-gradient(
+          150deg,
+          #f7f4ff,
+          #ede9ff
+        );
+    }
+
+    .create-icon {
+      width: 92px;
+      height: 92px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      color: white;
+      background:
+        linear-gradient(
+          145deg,
+          #685cf0,
+          #a26cff
+        );
+
+      box-shadow: 0 8px 18px rgba(68, 65, 145, 0.22);
+
+      font-size: 48px;
+      font-weight: 900;
+    }
+
+    .empty-state {
+      grid-column: 1 / -1;
+
+      padding: 16px;
+
+      color: #747a9b;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+
+      min-height: 180px;
+
+      color: #5b54c9;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .message {
+      display: none;
+
+      margin: 20px 0 0;
+      padding: 13px 16px;
+
+      border-radius: 14px;
+
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .message.error {
+      display: block;
+
+      border: 1px solid #eeaab2;
+
+      color: #a52d40;
+      background: #ffe8ec;
+    }
+
+    .message.success {
+      display: block;
+
+      border: 1px solid #a7ddb6;
+
+      color: #27703f;
+      background: #e8f8ec;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 20px;
+
+      background: rgba(32, 35, 87, 0.62);
+      backdrop-filter: blur(7px);
+      -webkit-backdrop-filter: blur(7px);
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(460px, 100%);
+
+      border: 4px solid rgba(255, 255, 255, 0.9);
+      border-radius: 28px;
+      padding: 30px;
+
+      background: #fffdf8;
+
+      box-shadow: 0 24px 65px rgba(22, 25, 69, 0.4);
+    }
+
+    .modal-card h2 {
+      margin: 0;
+
+      color: #554ecb;
+      font-size: 31px;
+      text-align: center;
+    }
+
+    .modal-card > p {
+      margin: 10px 0 22px;
+
+      color: #747a9b;
+      line-height: 1.45;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+
+      margin: 15px 0 7px;
+
+      color: #353b68;
+      font-weight: 900;
+    }
+
+    input {
+      width: 100%;
+      min-height: 54px;
+
+      border: 2px solid #dadcef;
+      border-radius: 15px;
+      padding: 13px 15px;
+
+      color: #30365d;
+      background: white;
+
+      font-size: 17px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #786cf0;
+      box-shadow: 0 0 0 4px rgba(120, 108, 240, 0.14);
+    }
+
+    .avatar-options {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 8px;
+    }
+
+    .avatar-button {
+      min-width: 0;
+      aspect-ratio: 1;
+
+      border: 3px solid transparent;
+      border-radius: 14px;
+
+      background: #f1efff;
+
+      font-size: 29px;
+      cursor: pointer;
+    }
+
+    .avatar-button.selected {
+      border-color: #7468ed;
+      background: #ded9ff;
+    }
+
+    .modal-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+
+      margin-top: 23px;
+    }
+
+    .modal-actions button {
+      min-height: 52px;
+
+      border: 0;
+      border-radius: 15px;
+
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .cancel-button {
+      color: #626888;
+      background: #eceef6;
+    }
+
+    .save-button {
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #6559f4,
+          #9168ff
+        );
+
+      box-shadow: 0 6px 0 #4942bc;
+    }
+
+    .save-button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    .modal-error {
+      min-height: 20px;
+      margin-top: 12px;
+
+      color: #ab3043;
+      font-size: 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    @media (max-width: 560px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .brand-icon {
+        font-size: 34px;
+      }
+
+      .main-card {
+        border-radius: 25px;
+      }
+
+      .profiles-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .profile-card {
+        min-height: 190px;
+        padding: 16px 10px;
+      }
+
+      .profile-avatar,
+      .create-icon {
+        width: 78px;
+        height: 78px;
+        font-size: 40px;
+      }
+
+      .profile-card h3 {
+        font-size: 18px;
+      }
+
+      .avatar-options {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🏰</div>
+        <h1>ELCraft</h1>
+      </div>
+
+      <button
+        id="logoutButton"
+        class="logout-button"
+        type="button">
+        Log Out
+      </button>
+    </header>
+
+    <section class="main-card">
+
+      <div class="heading">
+        <h2>Who is playing?</h2>
+
+        <p>
+          Choose a child profile to enter ELCraft.
+        </p>
+
+        <div
+          id="parentEmail"
+          class="parent-email">
+        </div>
+      </div>
+
+      <div
+        id="loading"
+        class="loading">
+        Loading profiles...
+      </div>
+
+      <div
+        id="profilesGrid"
+        class="profiles-grid"
+        hidden>
+      </div>
+
+      <div
+        id="pageMessage"
+        class="message"
+        role="status"
+        aria-live="polite">
+      </div>
+
+    </section>
+
+  </main>
+
+  <div
+    id="createModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modalTitle">
+
+    <section class="modal-card">
+
+      <h2 id="modalTitle">
+        Create a Player
+      </h2>
+
+      <p>
+        This profile will have its own city, rewards,
+        character and progress.
+      </p>
+
+      <form id="createForm">
+
+        <label for="childName">
+          Child's first name
+        </label>
+
+        <input
+          id="childName"
+          type="text"
+          maxlength="20"
+          autocomplete="off"
+          placeholder="Enter a first name"
+          required>
+
+        <label>
+          Choose an icon
+        </label>
+
+        <div
+          id="avatarOptions"
+          class="avatar-options">
+
+          <button
+            class="avatar-button selected"
+            type="button"
+            data-avatar="🌟">
+            🌟
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🦄">
+            🦄
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🦊">
+            🦊
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🐼">
+            🐼
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🐶">
+            🐶
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🐱">
+            🐱
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🦋">
+            🦋
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🚀">
+            🚀
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🎨">
+            🎨
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🎵">
+            🎵
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="👑">
+            👑
+          </button>
+
+          <button
+            class="avatar-button"
+            type="button"
+            data-avatar="🏰">
+            🏰
+          </button>
+
+        </div>
+
+        <div
+          id="modalError"
+          class="modal-error"
+          aria-live="polite">
+        </div>
+
+        <div class="modal-actions">
+
+          <button
+            id="cancelButton"
+            class="cancel-button"
+            type="button">
+            Cancel
+          </button>
+
+          <button
+            id="saveProfileButton"
+            class="save-button"
+            type="submit">
+            Create Profile
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+  </div>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
+
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const loading =
+      document.getElementById("loading");
+
+    const profilesGrid =
+      document.getElementById("profilesGrid");
+
+    const parentEmail =
+      document.getElementById("parentEmail");
+
+    const pageMessage =
+      document.getElementById("pageMessage");
+
+    const createModal =
+      document.getElementById("createModal");
+
+    const createForm =
+      document.getElementById("createForm");
+
+    const childNameInput =
+      document.getElementById("childName");
+
+    const modalError =
+      document.getElementById("modalError");
+
+    const saveProfileButton =
+      document.getElementById("saveProfileButton");
+
+    const cancelButton =
+      document.getElementById("cancelButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    let currentUser = null;
+    let selectedAvatar = "🌟";
+
+    function cleanName(value) {
+      return String(value || "")
+        .trim()
+        .replace(/\s+/g, " ")
+        .slice(0, 20);
+    }
+
+    function showPageMessage(text, type = "error") {
+      pageMessage.textContent = text;
+      pageMessage.className = `message ${type}`;
+    }
+
+    function clearPageMessage() {
+      pageMessage.textContent = "";
+      pageMessage.className = "message";
+    }
+
+    function openCreateModal() {
+      modalError.textContent = "";
+      childNameInput.value = "";
+      createModal.classList.add("open");
+
+      setTimeout(() => {
+        childNameInput.focus();
+      }, 100);
+    }
+
+    function closeCreateModal() {
+      createModal.classList.remove("open");
+      modalError.textContent = "";
+      createForm.reset();
+    }
+
+    function chooseProfile(profile) {
+      localStorage.setItem(
+        SELECTED_CHILD_ID_KEY,
+        profile.id
+      );
+
+      localStorage.setItem(
+        CHILD_NAME_KEY,
+        profile.display_name
+      );
+
+      localStorage.setItem(
+        CHILD_AVATAR_KEY,
+        profile.avatar || "🌟"
+      );
+
+      window.location.href = "index.html";
+    }
+
+    function createProfileCard(profile) {
+      const button =
+        document.createElement("button");
+
+      button.className = "profile-card";
+      button.type = "button";
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className = "profile-avatar";
+      avatar.textContent = profile.avatar || "🌟";
+
+      const name =
+        document.createElement("h3");
+
+      name.textContent =
+        profile.display_name || "Player";
+
+      const level =
+        document.createElement("p");
+
+      level.textContent =
+        `Level ${profile.level || 1} • ${profile.stars || 0} stars`;
+
+      button.append(
+        avatar,
+        name,
+        level
+      );
+
+      button.addEventListener(
+        "click",
+        () => chooseProfile(profile)
+      );
+
+      return button;
+    }
+
+    function createNewProfileCard() {
+      const button =
+        document.createElement("button");
+
+      button.className =
+        "profile-card create-card";
+
+      button.type = "button";
+
+      button.innerHTML = `
+        <div class="create-icon">+</div>
+        <h3>Create Player</h3>
+        <p>Add a child profile</p>
+      `;
+
+      button.addEventListener(
+        "click",
+        openCreateModal
+      );
+
+      return button;
+    }
+
+    function renderProfiles(profiles) {
+      profilesGrid.replaceChildren();
+
+      profiles.forEach(profile => {
+        profilesGrid.appendChild(
+          createProfileCard(profile)
+        );
+      });
+
+      profilesGrid.appendChild(
+        createNewProfileCard()
+      );
+    }
+
+    async function loadProfiles() {
+      clearPageMessage();
+
+      const {
+        data: userData,
+        error: userError
+      } = await supabase.auth.getUser();
+
+      if (
+        userError ||
+        !userData.user
+      ) {
+        window.location.replace("auth.html");
+        return;
+      }
+
+      currentUser = userData.user;
+
+      parentEmail.textContent =
+        currentUser.email || "";
+
+      const {
+        data: profiles,
+        error
+      } = await supabase
+        .from("child_profiles")
+        .select(
+          "id, display_name, avatar, stars, level, experience, created_at"
+        )
+        .eq("parent_id", currentUser.id)
+        .order("created_at", {
+          ascending: true
+        });
+
+      loading.hidden = true;
+      profilesGrid.hidden = false;
+
+      if (error) {
+        console.error(
+          "Profile loading error:",
+          error
+        );
+
+        showPageMessage(
+          error.message ||
+            "Unable to load child profiles."
+        );
+
+        renderProfiles([]);
+        return;
+      }
+
+      renderProfiles(profiles || []);
+    }
+
+    document
+      .querySelectorAll(".avatar-button")
+      .forEach(button => {
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            document
+              .querySelectorAll(".avatar-button")
+              .forEach(option => {
+                option.classList.remove(
+                  "selected"
+                );
+              });
+
+            button.classList.add("selected");
+
+            selectedAvatar =
+              button.dataset.avatar || "🌟";
+          }
+        );
+      });
+
+    createForm.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        modalError.textContent = "";
+
+        const displayName =
+          cleanName(childNameInput.value);
+
+        if (!displayName) {
+          modalError.textContent =
+            "Please enter the child's first name.";
+
+          return;
+        }
+
+        if (!currentUser) {
+          modalError.textContent =
+            "Your login session has expired.";
+
+          return;
+        }
+
+        saveProfileButton.disabled = true;
+        saveProfileButton.textContent =
+          "Creating...";
+
+        try {
+          const {
+            data: child,
+            error: childError
+          } = await supabase
+            .from("child_profiles")
+            .insert({
+              parent_id: currentUser.id,
+              display_name: displayName,
+              avatar: selectedAvatar
+            })
+            .select(
+              "id, display_name, avatar, stars, level, experience, created_at"
+            )
+            .single();
+
+          if (childError) {
+            throw childError;
+          }
+
+          if (!child) {
+            throw new Error(
+              "The child profile was not returned."
+            );
+          }
+
+          const {
+            error: cityError
+          } = await supabase
+            .from("cities")
+            .insert({
+              child_id: child.id,
+              city_name:
+                `${displayName}'s City`,
+              city_level: 1
+            });
+
+          if (cityError) {
+            console.warn(
+              "City creation warning:",
+              cityError
+            );
+          }
+
+          closeCreateModal();
+
+          localStorage.setItem(
+            SELECTED_CHILD_ID_KEY,
+            child.id
+          );
+
+          localStorage.setItem(
+            CHILD_NAME_KEY,
+            child.display_name
+          );
+
+          localStorage.setItem(
+            CHILD_AVATAR_KEY,
+            child.avatar || "🌟"
+          );
+
+          window.location.href =
+            "index.html";
+
+        } catch (error) {
+          console.error(
+            "Profile creation error:",
+            error
+          );
+
+          modalError.textContent =
+            error?.message ||
+            "Unable to create the profile.";
+
+        } finally {
+          saveProfileButton.disabled = false;
+          saveProfileButton.textContent =
+            "Create Profile";
+        }
+      }
+    );
+
+    cancelButton.addEventListener(
+      "click",
+      closeCreateModal
+    );
+
+    createModal.addEventListener(
+      "click",
+      event => {
+        if (event.target === createModal) {
+          closeCreateModal();
+        }
+      }
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+
+        logoutButton.disabled = true;
+        logoutButton.textContent =
+          "Logging out...";
+
+        localStorage.removeItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_NAME_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_AVATAR_KEY
+        );
+
+        const { error } =
+          await supabase.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          logoutButton.disabled = false;
+          logoutButton.textContent =
+            "Log Out";
+
+          showPageMessage(
+            error.message ||
+              "Unable to log out."
+          );
+
+          return;
+        }
+
+        window.location.replace(
+          "auth.html"
+        );
+      }
+    );
+
+    loadProfiles();
+  </script>
+</body>
+</html>
