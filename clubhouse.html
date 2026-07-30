@@ -1,0 +1,1383 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <script type="module" src="./auth-guard.js"></script>
+
+  <meta charset="utf-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#7954bd">
+
+  <title>ELCraft — Clubhouse</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      color: #3f4168;
+      background:
+        radial-gradient(circle at 12% 12%, rgba(255,255,255,.8), transparent 24%),
+        radial-gradient(circle at 86% 18%, rgba(255,225,138,.48), transparent 24%),
+        linear-gradient(155deg, #77d6f5 0%, #8fdb91 45%, #6bbf68 100%);
+      font-family: Arial, Helvetica, sans-serif;
+      overflow-x: hidden;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    button {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .page-shell {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .clubhouse-header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      min-height: 88px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 12px 22px;
+      border-bottom: 4px solid rgba(89, 75, 151, .13);
+      background: rgba(250, 253, 255, .96);
+      box-shadow: 0 6px 20px rgba(49, 70, 111, .14);
+      backdrop-filter: blur(12px);
+    }
+
+    .header-left,
+    .header-player {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      min-width: 0;
+    }
+
+    .back-button,
+    .parent-button {
+      min-height: 48px;
+      border: 0;
+      border-radius: 999px;
+      padding: 10px 17px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .back-button {
+      color: #6747aa;
+      background: #eee2ff;
+      box-shadow: 0 5px 0 rgba(94, 62, 157, .17);
+    }
+
+    .parent-button {
+      color: white;
+      background: #7651ba;
+      box-shadow: 0 5px 0 #4f347e;
+    }
+
+    .header-icon {
+      font-size: 45px;
+      line-height: 1;
+    }
+
+    .header-copy {
+      min-width: 0;
+    }
+
+    .header-copy h1 {
+      margin: 0;
+      color: #6545aa;
+      font-size: clamp(28px, 4vw, 45px);
+      line-height: 1;
+    }
+
+    .header-copy p {
+      margin: 5px 0 0;
+      color: #637293;
+      font-weight: 800;
+    }
+
+    .player-chip {
+      max-width: 240px;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 9px 14px;
+      border: 3px solid white;
+      border-radius: 999px;
+      color: #6445a8;
+      background: #fff2c8;
+      font-weight: 900;
+      box-shadow: 0 6px 15px rgba(68, 57, 109, .13);
+    }
+
+    .player-chip span:last-child {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .clubhouse-world {
+      flex: 1 1 auto;
+      width: min(1220px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 30px 0 45px;
+    }
+
+    .welcome-card {
+      position: relative;
+      overflow: hidden;
+      display: grid;
+      grid-template-columns: minmax(0, 1.35fr) minmax(220px, .65fr);
+      gap: 22px;
+      align-items: center;
+      margin-bottom: 24px;
+      border: 5px solid rgba(255,255,255,.92);
+      border-radius: 34px;
+      padding: clamp(24px, 4vw, 42px);
+      background:
+        radial-gradient(circle at 88% 18%, rgba(255, 234, 146, .52), transparent 24%),
+        linear-gradient(145deg, rgba(255,255,255,.97), rgba(247,239,255,.96));
+      box-shadow: 0 24px 55px rgba(42, 57, 91, .22);
+    }
+
+    .welcome-card::after {
+      content: "✨";
+      position: absolute;
+      right: 24px;
+      top: 16px;
+      font-size: 34px;
+    }
+
+    .welcome-copy h2 {
+      margin: 0;
+      color: #6545aa;
+      font-size: clamp(31px, 5vw, 55px);
+      line-height: 1.02;
+    }
+
+    .welcome-copy p {
+      max-width: 700px;
+      margin: 13px 0 0;
+      color: #526582;
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.5;
+      font-weight: 800;
+    }
+
+    .treehouse-hero {
+      position: relative;
+      min-height: 190px;
+      display: grid;
+      place-items: center;
+    }
+
+    .treehouse-hero .tree {
+      font-size: clamp(125px, 17vw, 220px);
+      filter: drop-shadow(0 14px 10px rgba(45, 80, 47, .23));
+    }
+
+    .treehouse-hero .house {
+      position: absolute;
+      left: 51%;
+      top: 43%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(80px, 10vw, 135px);
+      filter: drop-shadow(0 7px 5px rgba(73, 52, 45, .22));
+    }
+
+    .treehouse-hero .flag {
+      position: absolute;
+      right: 18%;
+      top: 8%;
+      font-size: 34px;
+    }
+
+    .room-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .room-card {
+      position: relative;
+      min-height: 245px;
+      overflow: hidden;
+      border: 5px solid rgba(255,255,255,.9);
+      border-radius: 30px;
+      padding: 24px;
+      color: #43486f;
+      background: rgba(255,255,255,.96);
+      box-shadow: 0 17px 34px rgba(45, 62, 94, .19);
+      text-align: left;
+      cursor: pointer;
+      transition: transform .17s ease, box-shadow .17s ease;
+    }
+
+    .room-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 23px 42px rgba(45, 62, 94, .25);
+    }
+
+    .room-card:active {
+      transform: translateY(0);
+    }
+
+    .room-card:focus-visible {
+      outline: 5px solid #ffdf73;
+      outline-offset: 4px;
+    }
+
+    .room-card.mail { background: linear-gradient(145deg, #fff8da, #fff); }
+    .room-card.friends { background: linear-gradient(145deg, #e9f9ff, #fff); }
+    .room-card.play { background: linear-gradient(145deg, #eafbe8, #fff); }
+    .room-card.art { background: linear-gradient(145deg, #ffeaf4, #fff); }
+    .room-card.trophies { background: linear-gradient(145deg, #f2ebff, #fff); }
+    .room-card.parties { background: linear-gradient(145deg, #fff0dd, #fff); }
+
+    .room-icon {
+      font-size: 64px;
+      line-height: 1;
+    }
+
+    .room-card h3 {
+      margin: 15px 0 7px;
+      color: #6244a3;
+      font-size: 28px;
+    }
+
+    .room-card p {
+      margin: 0;
+      color: #63708a;
+      line-height: 1.45;
+      font-weight: 800;
+    }
+
+    .room-badge {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      min-width: 34px;
+      min-height: 34px;
+      display: grid;
+      place-items: center;
+      padding: 4px 8px;
+      border: 3px solid white;
+      border-radius: 999px;
+      color: white;
+      background: #ff5578;
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 5px 12px rgba(92, 35, 56, .22);
+    }
+
+    .room-badge[hidden] {
+      display: none;
+    }
+
+    .room-footer {
+      position: absolute;
+      left: 24px;
+      right: 24px;
+      bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: #7651ba;
+      font-weight: 900;
+    }
+
+    .status-strip {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .status-chip {
+      padding: 9px 13px;
+      border: 3px solid rgba(255,255,255,.9);
+      border-radius: 999px;
+      color: #5f4c82;
+      background: rgba(255,255,255,.88);
+      font-size: 13px;
+      font-weight: 900;
+      box-shadow: 0 5px 12px rgba(53, 68, 96, .1);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: none;
+      place-items: center;
+      padding: 18px;
+      background: rgba(32, 27, 65, .68);
+      backdrop-filter: blur(8px);
+    }
+
+    .modal.open {
+      display: grid;
+    }
+
+    .modal-card {
+      width: min(780px, 100%);
+      max-height: calc(100vh - 36px);
+      max-height: calc(100dvh - 36px);
+      overflow-y: auto;
+      border: 5px solid white;
+      border-radius: 31px;
+      background: #fbf9ff;
+      box-shadow: 0 30px 80px rgba(20, 16, 51, .45);
+    }
+
+    .modal-header {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 13px;
+      padding: 18px 21px;
+      color: white;
+      background: linear-gradient(135deg, #7150b5, #a467d0);
+    }
+
+    .modal-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .modal-title span {
+      font-size: 37px;
+    }
+
+    .modal-title h2 {
+      margin: 0;
+      font-size: clamp(25px, 4vw, 36px);
+    }
+
+    .modal-close {
+      flex: 0 0 auto;
+      width: 45px;
+      height: 45px;
+      border: 3px solid rgba(255,255,255,.75);
+      border-radius: 50%;
+      color: #6544a8;
+      background: white;
+      font-size: 23px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: clamp(19px, 3vw, 30px);
+    }
+
+    .feature-card,
+    .friend-card,
+    .parent-panel {
+      margin-bottom: 14px;
+      border: 3px solid #e6dcf3;
+      border-radius: 22px;
+      padding: 17px;
+      background: white;
+      box-shadow: 0 7px 17px rgba(65, 47, 94, .08);
+    }
+
+    .feature-card h3,
+    .parent-panel h3 {
+      margin: 0 0 7px;
+      color: #6546a4;
+    }
+
+    .feature-card p,
+    .parent-panel p {
+      margin: 0;
+      color: #62708a;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .friends-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+
+    .friend-card {
+      margin: 0;
+      text-align: center;
+    }
+
+    .friend-avatar {
+      font-size: 58px;
+    }
+
+    .friend-name {
+      margin-top: 6px;
+      color: #6546a4;
+      font-size: 21px;
+      font-weight: 900;
+    }
+
+    .friend-status {
+      margin-top: 3px;
+      color: #71809a;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .action-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .action-button {
+      min-height: 43px;
+      border: 0;
+      border-radius: 999px;
+      padding: 9px 14px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .action-button.primary {
+      color: white;
+      background: #7651ba;
+      box-shadow: 0 4px 0 #4f347e;
+    }
+
+    .action-button.soft {
+      color: #6546a4;
+      background: #eee7f8;
+      box-shadow: 0 4px 0 #dbd0ed;
+    }
+
+    .action-button.safe {
+      color: white;
+      background: #3c9d75;
+      box-shadow: 0 4px 0 #276f52;
+    }
+
+    .empty-state {
+      padding: 30px 18px;
+      border: 3px dashed #d8caec;
+      border-radius: 22px;
+      color: #766a8b;
+      background: rgba(255,255,255,.72);
+      text-align: center;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .friend-code-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-top: 13px;
+      border: 3px solid #ded1f2;
+      border-radius: 18px;
+      padding: 14px;
+      background: #f6f0ff;
+    }
+
+    .friend-code {
+      color: #5d3c9b;
+      font-size: clamp(20px, 4vw, 30px);
+      font-weight: 900;
+      letter-spacing: 2px;
+      overflow-wrap: anywhere;
+    }
+
+    .safety-box {
+      margin-top: 15px;
+      border: 3px solid #cbe5f4;
+      border-radius: 18px;
+      padding: 15px;
+      color: #4e6077;
+      background: #edf8ff;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 25px;
+      z-index: 1500;
+      max-width: min(460px, calc(100% - 28px));
+      transform: translateX(-50%) translateY(24px);
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 12px 18px;
+      color: white;
+      background: #6546a4;
+      box-shadow: 0 13px 30px rgba(31, 24, 62, .3);
+      font-weight: 900;
+      text-align: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: .24s ease;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+
+    @media (max-width: 900px) {
+      .room-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .welcome-card {
+        grid-template-columns: 1fr;
+      }
+
+      .treehouse-hero {
+        min-height: 160px;
+      }
+    }
+
+    @media (max-width: 650px) {
+      .clubhouse-header {
+        align-items: flex-start;
+        padding: 10px 12px;
+      }
+
+      .header-player {
+        gap: 7px;
+      }
+
+      .header-icon,
+      .header-copy p,
+      .player-chip {
+        display: none;
+      }
+
+      .back-button,
+      .parent-button {
+        min-height: 43px;
+        padding: 8px 12px;
+      }
+
+      .clubhouse-world {
+        width: min(100% - 18px, 1220px);
+        padding-top: 16px;
+      }
+
+      .welcome-card {
+        border-radius: 26px;
+        padding: 22px;
+      }
+
+      .room-grid {
+        grid-template-columns: 1fr;
+        gap: 13px;
+      }
+
+      .room-card {
+        min-height: 205px;
+        border-radius: 25px;
+      }
+
+      .friend-code-box {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .room-card,
+      .toast {
+        transition: none;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="page-shell">
+
+    <header class="clubhouse-header">
+      <div class="header-left">
+        <button
+          id="backButton"
+          class="back-button"
+          type="button">
+          ← My City
+        </button>
+
+        <div class="header-icon" aria-hidden="true">🏡</div>
+
+        <div class="header-copy">
+          <h1>Clubhouse</h1>
+          <p>Friends, mail, art, and play—all in one safe place.</p>
+        </div>
+      </div>
+
+      <div class="header-player">
+        <div class="player-chip">
+          <span id="headerAvatar">🌟</span>
+          <span id="headerName">Player's Clubhouse</span>
+        </div>
+
+        <button
+          id="parentButton"
+          class="parent-button"
+          type="button">
+          ⚙ Parent Room
+        </button>
+      </div>
+    </header>
+
+    <main class="clubhouse-world">
+
+      <section class="welcome-card">
+        <div class="welcome-copy">
+          <h2>
+            Welcome to the Clubhouse,
+            <span id="welcomeName">Player</span>!
+          </h2>
+
+          <p>
+            Meet approved friends, send safe letters and stickers,
+            invite someone to play, and display the things you create together.
+          </p>
+        </div>
+
+        <div class="treehouse-hero" aria-hidden="true">
+          <span class="tree">🌳</span>
+          <span class="house">🏡</span>
+          <span class="flag">🚩</span>
+        </div>
+      </section>
+
+      <section class="room-grid" aria-label="Clubhouse rooms">
+
+        <button class="room-card mail" type="button" data-room="mail">
+          <span id="mailBadge" class="room-badge" hidden>0</span>
+          <div class="room-icon">💌</div>
+          <h3>Mail Room</h3>
+          <p>Read letters, postcards, stickers, and play invitations.</p>
+          <div class="room-footer"><span>Open mail</span><span>→</span></div>
+        </button>
+
+        <button class="room-card friends" type="button" data-room="friends">
+          <span id="friendsBadge" class="room-badge" hidden>0</span>
+          <div class="room-icon">👥</div>
+          <h3>Friends Room</h3>
+          <p>See approved friends and choose who you want to visit.</p>
+          <div class="room-footer"><span>See friends</span><span>→</span></div>
+        </button>
+
+        <button class="room-card play" type="button" data-room="play">
+          <span id="playBadge" class="room-badge" hidden>0</span>
+          <div class="room-icon">🎮</div>
+          <h3>Play Together</h3>
+          <p>Invite a friend to learn, build, draw, or explore with you.</p>
+          <div class="room-footer"><span>Choose a game</span><span>→</span></div>
+        </button>
+
+        <button class="room-card art" type="button" data-room="art">
+          <div class="room-icon">🎨</div>
+          <h3>Art Wall</h3>
+          <p>Display drawings, stickers, postcards, and shared creations.</p>
+          <div class="room-footer"><span>Visit the wall</span><span>→</span></div>
+        </button>
+
+        <button class="room-card trophies" type="button" data-room="trophies">
+          <div class="room-icon">🏆</div>
+          <h3>Trophy Room</h3>
+          <p>Collect friendship badges and celebrate learning together.</p>
+          <div class="room-footer"><span>See trophies</span><span>→</span></div>
+        </button>
+
+        <button class="room-card parties" type="button" data-room="parties">
+          <div class="room-icon">🎉</div>
+          <h3>Party Room</h3>
+          <p>Join safe seasonal events, birthdays, and group challenges.</p>
+          <div class="room-footer"><span>See events</span><span>→</span></div>
+        </button>
+
+      </section>
+
+      <div class="status-strip" aria-label="Clubhouse safety features">
+        <div class="status-chip">🔒 Parent-approved friends only</div>
+        <div class="status-chip">💬 Safe phrases and stickers</div>
+        <div class="status-chip">🚫 No public child search</div>
+        <div class="status-chip">🛡️ Parent controls available</div>
+      </div>
+
+    </main>
+  </div>
+
+  <div
+    id="roomModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="roomTitle">
+
+    <section class="modal-card">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span id="roomIcon">🏡</span>
+          <h2 id="roomTitle">Clubhouse Room</h2>
+        </div>
+
+        <button
+          id="roomClose"
+          class="modal-close"
+          type="button"
+          aria-label="Close room">
+          ×
+        </button>
+      </header>
+
+      <div id="roomBody" class="modal-body"></div>
+    </section>
+  </div>
+
+  <div
+    id="parentModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="parentTitle">
+
+    <section class="modal-card">
+      <header class="modal-header">
+        <div class="modal-title">
+          <span>⚙️</span>
+          <h2 id="parentTitle">Parent Room</h2>
+        </div>
+
+        <button
+          id="parentClose"
+          class="modal-close"
+          type="button"
+          aria-label="Close Parent Room">
+          ×
+        </button>
+      </header>
+
+      <div id="parentBody" class="modal-body"></div>
+    </section>
+  </div>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
+
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const backButton =
+      document.getElementById("backButton");
+
+    const parentButton =
+      document.getElementById("parentButton");
+
+    const headerAvatar =
+      document.getElementById("headerAvatar");
+
+    const headerName =
+      document.getElementById("headerName");
+
+    const welcomeName =
+      document.getElementById("welcomeName");
+
+    const roomModal =
+      document.getElementById("roomModal");
+
+    const roomClose =
+      document.getElementById("roomClose");
+
+    const roomIcon =
+      document.getElementById("roomIcon");
+
+    const roomTitle =
+      document.getElementById("roomTitle");
+
+    const roomBody =
+      document.getElementById("roomBody");
+
+    const parentModal =
+      document.getElementById("parentModal");
+
+    const parentClose =
+      document.getElementById("parentClose");
+
+    const parentBody =
+      document.getElementById("parentBody");
+
+    const toast =
+      document.getElementById("toast");
+
+    let currentUser = null;
+    let currentChild = null;
+    let approvedFriends = [];
+    let pendingRequests = [];
+    let playInvites = [];
+
+    const roomInfo = {
+      mail: {
+        icon: "💌",
+        title: "Mail Room"
+      },
+      friends: {
+        icon: "👥",
+        title: "Friends Room"
+      },
+      play: {
+        icon: "🎮",
+        title: "Play Together"
+      },
+      art: {
+        icon: "🎨",
+        title: "Art Wall"
+      },
+      trophies: {
+        icon: "🏆",
+        title: "Trophy Room"
+      },
+      parties: {
+        icon: "🎉",
+        title: "Party Room"
+      }
+    };
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("show");
+
+      clearTimeout(showToast.timer);
+
+      showToast.timer = setTimeout(() => {
+        toast.classList.remove("show");
+      }, 2300);
+    }
+
+    function setBadge(id, count) {
+      const badge = document.getElementById(id);
+
+      if (!badge) {
+        return;
+      }
+
+      badge.hidden = !count;
+      badge.textContent = count > 9 ? "9+" : String(count);
+    }
+
+    function applyChild(child) {
+      const name =
+        child?.display_name ||
+        localStorage.getItem(CHILD_NAME_KEY) ||
+        "Player";
+
+      const avatar =
+        child?.avatar ||
+        localStorage.getItem(CHILD_AVATAR_KEY) ||
+        "🌟";
+
+      headerAvatar.textContent = avatar;
+      headerName.textContent = `${name}'s Clubhouse`;
+      welcomeName.textContent = name;
+
+      document.title =
+        `ELCraft — ${name}'s Clubhouse`;
+    }
+
+    function closeModal(modal) {
+      modal.classList.remove("open");
+    }
+
+    function openRoom(room) {
+      const info = roomInfo[room];
+
+      if (!info) {
+        return;
+      }
+
+      roomIcon.textContent = info.icon;
+      roomTitle.textContent = info.title;
+      roomBody.innerHTML = renderRoom(room);
+      roomModal.classList.add("open");
+      roomClose.focus();
+      installRoomActions(room);
+    }
+
+    function renderRoom(room) {
+      if (room === "friends") {
+        return renderFriendsRoom();
+      }
+
+      if (room === "play") {
+        return renderPlayRoom();
+      }
+
+      if (room === "mail") {
+        return `
+          <section class="feature-card">
+            <h3>Your safe Clubhouse mailbox</h3>
+            <p>
+              This room will combine NPC letters, approved pen-pal messages,
+              stickers, postcards, and play invitations.
+            </p>
+          </section>
+
+          <section class="feature-card">
+            <h3>📬 No new friend mail yet</h3>
+            <p>
+              Once a friendship is approved, messages and invitations will
+              appear here. NPC mail can be moved here from My City next.
+            </p>
+          </section>
+        `;
+      }
+
+      if (room === "art") {
+        return `
+          <section class="feature-card">
+            <h3>Art Wall</h3>
+            <p>
+              Drawings, stickers, postcards, and shared creations will hang
+              here after they are sent through an approved friendship.
+            </p>
+          </section>
+
+          <div class="empty-state">
+            🎨 The wall is ready for its first masterpiece.
+          </div>
+        `;
+      }
+
+      if (room === "trophies") {
+        return `
+          <section class="feature-card">
+            <h3>Friendship achievements</h3>
+            <p>
+              Children will earn badges for reading together, solving math,
+              visiting cities, creating art, and completing cooperative quests.
+            </p>
+          </section>
+
+          <div class="empty-state">
+            🏆 Your first friendship trophy is waiting to be earned.
+          </div>
+        `;
+      }
+
+      return `
+        <section class="feature-card">
+          <h3>Party Room</h3>
+          <p>
+            This room is reserved for birthdays, seasonal celebrations,
+            safe group challenges, and special Clubhouse events.
+          </p>
+        </section>
+
+        <div class="empty-state">
+          🎉 The decorations are going up. Events are coming soon.
+        </div>
+      `;
+    }
+
+    function renderFriendsRoom() {
+      if (!approvedFriends.length) {
+        return `
+          <section class="feature-card">
+            <h3>Approved Friends</h3>
+            <p>
+              Only friendships approved by both parent accounts appear here.
+            </p>
+          </section>
+
+          <div class="empty-state">
+            👋 No approved friends yet.<br>
+            A parent can use the Parent Room to share or enter a friend code.
+          </div>
+        `;
+      }
+
+      return `
+        <section class="feature-card">
+          <h3>Approved Friends</h3>
+          <p>Choose a friend to send a safe sticker or invite to play.</p>
+        </section>
+
+        <div class="friends-list">
+          ${approvedFriends.map(friend => `
+            <article class="friend-card">
+              <div class="friend-avatar">${escapeHtml(friend.avatar || "🌟")}</div>
+              <div class="friend-name">${escapeHtml(friend.display_name || "Friend")}</div>
+              <div class="friend-status">Approved Clubhouse Friend</div>
+
+              <div class="action-row">
+                <button
+                  class="action-button soft"
+                  type="button"
+                  data-wave-friend="${escapeHtml(friend.id)}">
+                  👋 Wave
+                </button>
+
+                <button
+                  class="action-button primary"
+                  type="button"
+                  data-play-friend="${escapeHtml(friend.id)}">
+                  🎮 Invite
+                </button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function renderPlayRoom() {
+      if (!approvedFriends.length) {
+        return `
+          <section class="feature-card">
+            <h3>Play Together</h3>
+            <p>
+              Approved friends will be able to join learning games,
+              creative activities, and city visits together.
+            </p>
+          </section>
+
+          <div class="empty-state">
+            🎮 Add an approved friend before sending a play invitation.
+          </div>
+        `;
+      }
+
+      return `
+        <section class="feature-card">
+          <h3>Choose a Friend</h3>
+          <p>
+            The first version sends an invitation to meet in the same ELCraft
+            activity. Shared live rooms come next.
+          </p>
+        </section>
+
+        <div class="friends-list">
+          ${approvedFriends.map(friend => `
+            <article class="friend-card">
+              <div class="friend-avatar">${escapeHtml(friend.avatar || "🌟")}</div>
+              <div class="friend-name">${escapeHtml(friend.display_name || "Friend")}</div>
+              <div class="friend-status">Ready for an invitation</div>
+
+              <div class="action-row">
+                <button
+                  class="action-button primary"
+                  type="button"
+                  data-play-friend="${escapeHtml(friend.id)}">
+                  Invite to Play
+                </button>
+              </div>
+            </article>
+          `).join("")}
+        </div>
+      `;
+    }
+
+    function installRoomActions(room) {
+      roomBody
+        .querySelectorAll("[data-wave-friend]")
+        .forEach(button => {
+          button.addEventListener("click", () => {
+            showToast("A friendly wave is ready for the Mail Room! 👋");
+          });
+        });
+
+      roomBody
+        .querySelectorAll("[data-play-friend]")
+        .forEach(button => {
+          button.addEventListener("click", () => {
+            showToast("Play invitations are connected in the next step. 🎮");
+          });
+        });
+    }
+
+    function openParentRoom() {
+      const friendCode =
+        currentChild?.friend_code ||
+        "Code unavailable";
+
+      parentBody.innerHTML = `
+        <section class="parent-panel">
+          <h3>${escapeHtml(currentChild?.display_name || "Player")}'s Friend Code</h3>
+          <p>
+            Share this private code only with a parent you know.
+            Both parent accounts must approve before the children connect.
+          </p>
+
+          <div class="friend-code-box">
+            <div id="friendCode" class="friend-code">
+              ${escapeHtml(friendCode)}
+            </div>
+
+            <button
+              id="copyCodeButton"
+              class="action-button soft"
+              type="button">
+              Copy Code
+            </button>
+          </div>
+        </section>
+
+        <section class="parent-panel">
+          <h3>Pending Requests</h3>
+          <p>
+            ${pendingRequests.length
+              ? `${pendingRequests.length} request${pendingRequests.length === 1 ? "" : "s"} need attention.`
+              : "There are no pending friendship requests right now."}
+          </p>
+        </section>
+
+        <section class="parent-panel">
+          <h3>Add a Friend</h3>
+          <p>
+            Friend-code entry and approval will connect here after the
+            friendship database is enabled.
+          </p>
+
+          <div class="action-row">
+            <button
+              id="addFriendButton"
+              class="action-button primary"
+              type="button">
+              Enter Friend Code
+            </button>
+          </div>
+        </section>
+
+        <div class="safety-box">
+          <strong>Clubhouse safety</strong><br>
+          • No public child search<br>
+          • Both parents approve every connection<br>
+          • Parents can remove or block a friend<br>
+          • The first version uses safe phrases, stickers, and invitations<br>
+          • Open, unmoderated chat is not enabled
+        </div>
+      `;
+
+      parentModal.classList.add("open");
+      parentClose.focus();
+
+      document
+        .getElementById("copyCodeButton")
+        ?.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(friendCode);
+            showToast("Friend code copied. 🔐");
+          } catch {
+            showToast(`Friend code: ${friendCode}`);
+          }
+        });
+
+      document
+        .getElementById("addFriendButton")
+        ?.addEventListener("click", () => {
+          showToast("Friend-code approval is the next database connection.");
+        });
+    }
+
+    async function loadClubhouse() {
+      const selectedChildId =
+        localStorage.getItem(SELECTED_CHILD_ID_KEY);
+
+      if (!selectedChildId) {
+        window.location.replace("profiles.html");
+        return;
+      }
+
+      const {
+        data: { session },
+        error: sessionError
+      } = await supabase.auth.getSession();
+
+      if (sessionError || !session) {
+        window.location.replace("auth.html");
+        return;
+      }
+
+      currentUser = session.user;
+
+      const {
+        data: child,
+        error: childError
+      } = await supabase
+        .from("child_profiles")
+        .select("id, display_name, avatar, friend_code, parent_id")
+        .eq("id", selectedChildId)
+        .eq("parent_id", currentUser.id)
+        .maybeSingle();
+
+      if (childError || !child) {
+        console.error("Clubhouse child loading error:", childError);
+        window.location.replace("profiles.html");
+        return;
+      }
+
+      currentChild = child;
+      applyChild(child);
+
+      localStorage.setItem(CHILD_NAME_KEY, child.display_name);
+      localStorage.setItem(CHILD_AVATAR_KEY, child.avatar || "🌟");
+
+      await loadSocialData();
+    }
+
+    async function loadSocialData() {
+      /*
+        This query is intentionally guarded. The page still works as a visual
+        Clubhouse if the friendship tables have not been created yet.
+      */
+      const { data, error } = await supabase
+        .from("child_friendships")
+        .select(`
+          id,
+          requester_child_id,
+          recipient_child_id,
+          requester_parent_approved,
+          recipient_parent_approved,
+          status
+        `)
+        .or(
+          `requester_child_id.eq.${currentChild.id},recipient_child_id.eq.${currentChild.id}`
+        );
+
+      if (error) {
+        console.warn("Clubhouse social tables are not connected yet:", error);
+        return;
+      }
+
+      const friendships = data || [];
+
+      pendingRequests = friendships.filter(
+        friendship => friendship.status === "pending"
+      );
+
+      const approved = friendships.filter(
+        friendship =>
+          friendship.status === "approved" &&
+          friendship.requester_parent_approved &&
+          friendship.recipient_parent_approved
+      );
+
+      const friendIds = approved.map(friendship =>
+        friendship.requester_child_id === currentChild.id
+          ? friendship.recipient_child_id
+          : friendship.requester_child_id
+      );
+
+      if (friendIds.length) {
+        const {
+          data: friends,
+          error: friendsError
+        } = await supabase
+          .from("child_profiles")
+          .select("id, display_name, avatar")
+          .in("id", friendIds);
+
+        if (!friendsError) {
+          approvedFriends = friends || [];
+        }
+      }
+
+      setBadge("friendsBadge", approvedFriends.length);
+      setBadge("playBadge", playInvites.length);
+    }
+
+    backButton.addEventListener("click", () => {
+      window.location.href = "my-city.html";
+    });
+
+    parentButton.addEventListener("click", openParentRoom);
+
+    document
+      .querySelectorAll("[data-room]")
+      .forEach(button => {
+        button.addEventListener("click", () => {
+          openRoom(button.dataset.room);
+        });
+      });
+
+    roomClose.addEventListener("click", () => {
+      closeModal(roomModal);
+    });
+
+    parentClose.addEventListener("click", () => {
+      closeModal(parentModal);
+    });
+
+    [roomModal, parentModal].forEach(modal => {
+      modal.addEventListener("click", event => {
+        if (event.target === modal) {
+          closeModal(modal);
+        }
+      });
+    });
+
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        closeModal(roomModal);
+        closeModal(parentModal);
+      }
+    });
+
+    applyChild(null);
+    loadClubhouse();
+  </script>
+</body>
+</html>
