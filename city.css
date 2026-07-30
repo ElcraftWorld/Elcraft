@@ -934,135 +934,825 @@ input {
 
 
 /* =========================================================
-   ELCraft Rich Scenic Background
-   Keeps every original building and interaction intact.
+   ELCraft Crisp Illustrated City Map
+   Image-map architecture: scenery is one sharp illustration;
+   HTML remains responsible for names, progress and clicks.
    ========================================================= */
 
 #city {
+  position: relative;
   isolation: isolate;
+  overflow: hidden;
+
   background:
-    linear-gradient(
-      rgba(238, 252, 255, 0.10),
-      rgba(81, 173, 78, 0.12)
-    ),
-    url("elcraft-city-scenery.png")
+    url("elcraft-city-world-clean.png")
     center center / cover
-    no-repeat;
+    no-repeat !important;
 }
 
-#city::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  pointer-events: none;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(82, 196, 241, 0.08) 0 35%,
-      rgba(117, 205, 76, 0.05) 35% 100%
-    ),
-    radial-gradient(
-      ellipse at center,
-      rgba(255, 255, 255, 0) 38%,
-      rgba(40, 79, 96, 0.10) 100%
-    );
+/* Remove old generated scenery. */
+#city::after,
+#sky,
+#road,
+#park::before,
+#park > .tree {
+  display: none !important;
 }
 
-/* Hide the old flat decorative sky only.
-   The real buildings and all interactive elements remain. */
-#sky {
-  opacity: 0;
-}
-
-/* Keep all game elements above the scenery. */
+/* The illustration supplies all visual buildings.
+   Existing elements remain as transparent accessible hotspots. */
 #castle,
 .building,
 #park,
-#road,
-#message {
-  z-index: 20;
-}
-
-#park {
-  z-index: 15;
-}
-
-#road {
-  z-index: 25;
-}
-
-#npcFriendsLayer {
-  z-index: 40 !important;
-}
-
-/* Give the existing assets more depth without changing layout. */
-#castle,
-.building,
 #hero,
 .npc-friend {
-  filter:
-    drop-shadow(0 12px 9px rgba(35, 61, 52, 0.24))
-    saturate(1.05);
+  filter: none !important;
 }
 
-.building .label,
-.buildingLabel,
-#heroName,
-.npc-name {
-  box-shadow:
-    0 6px 0 rgba(64, 61, 105, 0.13),
-    0 10px 18px rgba(34, 50, 72, 0.16);
+#castle,
+.building {
+  z-index: 80 !important;
+  opacity: 1 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  cursor: pointer;
 }
 
-/* A subtle glass treatment helps icons sit naturally in the richer world. */
-.building:not(.salon) .emoji,
+/* Hide the old CSS/emoji artwork and labels while retaining the hotspot. */
+#castle > *,
+.building > *,
+#park > * {
+  visibility: hidden !important;
+}
+
+/* Restore the actual player avatar and dynamic name layer. */
+#hero {
+  visibility: visible !important;
+}
+
+#hero > * {
+  visibility: visible !important;
+}
+
+/* Transparent hotspot positions aligned with the crisp illustration. */
+.library {
+  left: 6.8% !important;
+  top: 13% !important;
+  width: 20% !important;
+  height: 31% !important;
+}
+
 #castle {
-  backdrop-filter: blur(1.5px);
-  -webkit-backdrop-filter: blur(1.5px);
+  left: 37.5% !important;
+  top: 5% !important;
+  width: 27% !important;
+  height: 40% !important;
 }
 
-/* Do not apply filters to the custom Style Studio structure.
-   This protects its internal layout and labels. */
-.building.salon {
-  filter: none;
+.school {
+  left: 72.4% !important;
+  top: 7% !important;
+  width: 21% !important;
+  height: 39% !important;
 }
 
-.building.salon .salon-building {
-  filter:
-    drop-shadow(0 13px 9px rgba(57, 65, 74, 0.24))
-    saturate(1.04);
+.home.clubhouse-building {
+  left: 1.4% !important;
+  top: 42% !important;
+  width: 28% !important;
+  height: 51% !important;
 }
 
-/* Keep the personalized Clubhouse clear and prominent. */
-.clubhouse-treehouse {
-  filter:
-    drop-shadow(0 14px 9px rgba(45, 69, 42, 0.28))
-    saturate(1.07);
+.market {
+  left: 28.5% !important;
+  top: 69% !important;
+  width: 25% !important;
+  height: 30% !important;
 }
 
-/* Slightly soften the flat grass overlay around the park. */
+.pets {
+  left: 53.5% !important;
+  top: 67% !important;
+  width: 26% !important;
+  height: 32% !important;
+}
+
+.salon {
+  left: 76.2% !important;
+  top: 40% !important;
+  width: 23% !important;
+  height: 47% !important;
+}
+
+/* Center character hotspot. */
 #park {
-  background:
-    radial-gradient(
-      ellipse at center,
-      rgba(87, 183, 65, 0.76) 0 48%,
-      rgba(61, 151, 48, 0.54) 49% 57%,
-      rgba(61, 151, 48, 0) 58%
-    );
+  left: 37% !important;
+  top: 43% !important;
+  width: 29% !important;
+  height: 39% !important;
+  z-index: 70 !important;
+  background: transparent !important;
+  pointer-events: none;
 }
 
-@media (max-width: 700px), (max-height: 650px) {
+#hero {
+  position: absolute !important;
+  left: 50% !important;
+  top: 47% !important;
+  width: 38% !important;
+  height: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  pointer-events: auto;
+}
+
+#heroAvatar {
+  position: absolute !important;
+  left: 50% !important;
+  top: 46% !important;
+  width: 100% !important;
+  height: 100% !important;
+  transform: translate(-50%, -50%) !important;
+  object-fit: contain !important;
+  display: block;
+  filter:
+    drop-shadow(0 14px 8px rgba(50, 66, 47, .25));
+}
+
+/* Hide the old hero name because the dynamic overlay replaces it. */
+#heroName {
+  display: none !important;
+}
+
+/* Cover the name baked into the concept art with a live profile name. */
+.dynamic-map-label {
+  position: absolute;
+  z-index: 150;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 82px;
+  max-width: 180px;
+  min-height: 38px;
+  padding: 7px 18px;
+
+  border: 4px solid rgba(255, 255, 255, .96);
+  border-radius: 999px;
+
+  color: #5f3da1;
+  background: rgba(255, 255, 255, .98);
+
+  box-shadow:
+    0 7px 0 rgba(71, 62, 112, .14),
+    0 12px 20px rgba(40, 53, 73, .19);
+
+  font-size: clamp(14px, 1.35vw, 22px);
+  font-weight: 900;
+  line-height: 1;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  pointer-events: none;
+}
+
+.dynamic-player-name {
+  left: 50%;
+  top: 70.5%;
+  transform: translateX(-50%);
+}
+
+/* Cover the baked Ella clubhouse sign with a live child name. */
+.dynamic-clubhouse-sign {
+  position: absolute;
+  left: 4.6%;
+  top: 59.5%;
+  z-index: 151;
+
+  width: 20.5%;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  padding: 7px 11px;
+  border: 4px solid #f2cc82;
+  border-radius: 10px;
+
+  color: white;
+  background:
+    linear-gradient(
+      180deg,
+      #a9662e,
+      #74401f
+    );
+
+  box-shadow:
+    inset 0 2px 0 rgba(255,255,255,.25),
+    0 7px 0 rgba(83, 47, 28, .25),
+    0 12px 17px rgba(53, 45, 34, .22);
+
+  font-size: clamp(11px, 1.15vw, 19px);
+  font-weight: 900;
+  line-height: 1.05;
+  text-align: center;
+  text-transform: uppercase;
+
+  pointer-events: none;
+}
+
+/* Profile avatar fallback that covers the baked character face when
+   a custom transparent character image is not available. */
+.dynamic-profile-avatar {
+  position: absolute;
+  left: 50%;
+  top: 59%;
+  z-index: 145;
+
+  width: clamp(82px, 8.4vw, 142px);
+  aspect-ratio: 1;
+
+  display: grid;
+  place-items: center;
+
+  transform: translate(-50%, -50%);
+  border: 5px solid rgba(255,255,255,.9);
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      rgba(126,218,255,.94),
+      rgba(180,139,255,.94)
+    );
+
+  box-shadow:
+    0 12px 0 rgba(74, 65, 132, .13),
+    0 18px 27px rgba(39, 55, 75, .22);
+
+  font-size: clamp(45px, 5.7vw, 92px);
+  pointer-events: none;
+}
+
+/* If a real character image has loaded, show it above the fallback. */
+#heroAvatar[src]:not([src=""]) {
+  z-index: 160;
+}
+
+/* NPCs become invisible hotspots over the illustrated NPCs. */
+#npcFriendsLayer {
+  z-index: 170 !important;
+}
+
+.npc-friend {
+  opacity: 0 !important;
+  width: 9% !important;
+  height: 17% !important;
+  border-radius: 50% !important;
+}
+
+.npc-finn {
+  left: 23% !important;
+  top: 34% !important;
+}
+
+.npc-bibi {
+  left: 34% !important;
+  top: 48% !important;
+}
+
+.npc-nova {
+  right: 27% !important;
+  top: 32% !important;
+}
+
+.npc-melo {
+  right: 34% !important;
+  top: 49% !important;
+}
+
+/* Strong focus indicators for keyboard navigation. */
+#castle:focus-visible,
+.building:focus-visible,
+#hero:focus-visible,
+.npc-friend:focus-visible {
+  opacity: 1 !important;
+  outline: 6px solid white !important;
+  outline-offset: -6px !important;
+  border-radius: 28px !important;
+  background: rgba(255, 255, 255, .10) !important;
+}
+
+/* Keep messages and mail above the map. */
+#message {
+  z-index: 500 !important;
+}
+
+/* The generated mailbox remains interactive if city.js creates it. */
+#cityMailbox {
+  z-index: 190 !important;
+}
+
+/* Wide-screen layout: show the whole map without blur. */
+@media (min-aspect-ratio: 16 / 9) {
   #city {
-    background-position: center;
+    background-size: 100% 100% !important;
+  }
+}
+
+/* Portrait and small screens use cover and simplify dynamic overlays. */
+@media (max-width: 760px) {
+  #city {
+    background-position: center center;
   }
 
-  #city::after {
-    background:
-      linear-gradient(
-        rgba(255,255,255,0.05),
-        rgba(44,110,51,0.07)
-      );
+  .dynamic-clubhouse-sign {
+    left: 3%;
+    top: 59%;
+    width: 24%;
+    min-height: 34px;
+    padding: 4px 7px;
+    border-width: 3px;
+    font-size: 10px;
+  }
+
+  .dynamic-player-name {
+    top: 72%;
+    min-height: 30px;
+    padding: 5px 11px;
+    border-width: 3px;
+    font-size: 12px;
+  }
+
+  .dynamic-profile-avatar {
+    width: 74px;
+    border-width: 4px;
+    font-size: 42px;
+  }
+}
+
+@media (max-height: 650px) and (orientation: landscape) {
+  .dynamic-player-name {
+    top: 70%;
+  }
+
+  .dynamic-clubhouse-sign {
+    top: 58.5%;
+  }
+}
+
+
+/* =========================================================
+   Final dynamic identity cover
+   These live elements fully cover all placeholder text
+   painted into the concept artwork.
+   ========================================================= */
+
+.dynamic-player-name {
+  left: 50% !important;
+  top: 67.6% !important;
+  min-width: 150px !important;
+  min-height: 48px !important;
+  padding: 9px 24px !important;
+  border: 5px solid #ffffff !important;
+  background: #ffffff !important;
+  box-shadow:
+    0 7px 0 rgba(69, 59, 111, 0.16),
+    0 13px 22px rgba(36, 49, 72, 0.22) !important;
+  font-size: clamp(17px, 1.55vw, 25px) !important;
+}
+
+/* Large wooden sign completely covers "YOUR CLUBHOUSE". */
+.dynamic-clubhouse-sign {
+  left: 7.2% !important;
+  top: 55.2% !important;
+  width: 18.8% !important;
+  min-height: 64px !important;
+  padding: 9px 14px !important;
+  border: 5px solid #f2cc82 !important;
+  border-radius: 11px !important;
+  background:
+    linear-gradient(
+      180deg,
+      #a96931 0%,
+      #784321 100%
+    ) !important;
+  box-shadow:
+    inset 0 3px 0 rgba(255, 255, 255, 0.22),
+    0 7px 0 rgba(84, 48, 27, 0.28),
+    0 13px 20px rgba(54, 43, 30, 0.28) !important;
+  font-size: clamp(13px, 1.15vw, 20px) !important;
+  line-height: 1.08 !important;
+}
+
+/* Center profile avatar fully covers the placeholder child in the art. */
+.dynamic-profile-avatar {
+  left: 50% !important;
+  top: 55.6% !important;
+  width: clamp(118px, 10.8vw, 184px) !important;
+  border: 7px solid rgba(255, 255, 255, 0.98) !important;
+  background:
+    linear-gradient(
+      145deg,
+      #7edcff,
+      #bd91ff
+    ) !important;
+  box-shadow:
+    0 10px 0 rgba(72, 64, 130, 0.15),
+    0 20px 34px rgba(38, 52, 73, 0.28) !important;
+  font-size: clamp(62px, 7vw, 112px) !important;
+}
+
+/* The real saved character, when available, sits above the fallback. */
+#heroAvatar[src]:not([src=""]) {
+  z-index: 220 !important;
+}
+
+/* Keep the dynamic identity overlays above every world object. */
+.dynamic-map-label,
+.dynamic-clubhouse-sign,
+.dynamic-profile-avatar {
+  z-index: 210 !important;
+}
+
+/* Updated hotspots for the final illustrated map. */
+.library {
+  left: 5.5% !important;
+  top: 13% !important;
+  width: 22% !important;
+  height: 31% !important;
+}
+
+#castle {
+  left: 37% !important;
+  top: 5% !important;
+  width: 28% !important;
+  height: 40% !important;
+}
+
+.school {
+  left: 70.5% !important;
+  top: 9% !important;
+  width: 22% !important;
+  height: 37% !important;
+}
+
+.home.clubhouse-building {
+  left: 2.5% !important;
+  top: 39% !important;
+  width: 28% !important;
+  height: 52% !important;
+}
+
+.market {
+  left: 28.5% !important;
+  top: 69% !important;
+  width: 24% !important;
+  height: 29% !important;
+}
+
+.pets {
+  left: 53.5% !important;
+  top: 67% !important;
+  width: 25% !important;
+  height: 31% !important;
+}
+
+.salon {
+  left: 75% !important;
+  top: 39% !important;
+  width: 24% !important;
+  height: 48% !important;
+}
+
+/* Dynamic city title is always supplied by HTML/World Engine. */
+#cityOwner,
+.header-title-group h1 {
+  position: relative;
+  z-index: 300;
+}
+
+@media (max-width: 760px) {
+  .dynamic-player-name {
+    top: 68% !important;
+    min-width: 105px !important;
+    min-height: 34px !important;
+    padding: 5px 13px !important;
+    border-width: 3px !important;
+    font-size: 12px !important;
+  }
+
+  .dynamic-clubhouse-sign {
+    left: 4.5% !important;
+    top: 55% !important;
+    width: 24% !important;
+    min-height: 40px !important;
+    border-width: 3px !important;
+    padding: 5px 7px !important;
+    font-size: 10px !important;
+  }
+
+  .dynamic-profile-avatar {
+    width: 82px !important;
+    border-width: 4px !important;
+    font-size: 46px !important;
+  }
+}
+
+
+/* =========================================================
+   Dynamic City Announcement Board
+   Covers the event card baked into the concept artwork.
+   Content loads from Supabase and can be changed anytime.
+   ========================================================= */
+
+.city-announcement {
+  position: absolute;
+  right: 2.15%;
+  top: 62.5%;
+  z-index: 260;
+
+  width: clamp(190px, 15.7vw, 270px);
+  min-height: clamp(175px, 19vw, 285px);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding:
+    clamp(18px, 1.7vw, 27px)
+    clamp(14px, 1.45vw, 23px);
+
+  border: 5px solid rgba(255,255,255,.98);
+  border-radius: 26px;
+
+  color: #4d3b83;
+  background:
+    radial-gradient(
+      circle at 50% 0,
+      rgba(255, 243, 164, .82),
+      transparent 39%
+    ),
+    linear-gradient(
+      160deg,
+      #fffef6 0%,
+      #f8efff 100%
+    );
+
+  box-shadow:
+    0 8px 0 rgba(94, 73, 138, .16),
+    0 18px 35px rgba(47, 47, 79, .26);
+
+  text-align: center;
+}
+
+.announcement-icon {
+  display: grid;
+  place-items: center;
+
+  width: clamp(48px, 4.5vw, 72px);
+  aspect-ratio: 1;
+
+  margin-bottom: 8px;
+  border-radius: 50%;
+
+  background:
+    linear-gradient(
+      145deg,
+      #ffe47b,
+      #ffb96c
+    );
+
+  box-shadow:
+    0 6px 0 rgba(161, 111, 42, .17),
+    0 10px 17px rgba(81, 63, 57, .16);
+
+  font-size: clamp(27px, 2.8vw, 43px);
+}
+
+.announcement-copy {
+  width: 100%;
+}
+
+.announcement-title {
+  color: #6747ae;
+  font-size: clamp(18px, 1.65vw, 27px);
+  font-weight: 900;
+  line-height: 1.08;
+}
+
+.announcement-message {
+  margin-top: 9px;
+
+  color: #596580;
+  font-size: clamp(12px, 1.05vw, 16px);
+  font-weight: 800;
+  line-height: 1.35;
+}
+
+.announcement-countdown {
+  margin-top: 11px;
+  padding: 7px 9px;
+
+  border-radius: 999px;
+
+  color: #6a4aa4;
+  background: #efe7ff;
+
+  font-size: clamp(10px, .9vw, 14px);
+  font-weight: 900;
+}
+
+.announcement-button {
+  min-height: 42px;
+  margin-top: 13px;
+  border: 0;
+  border-radius: 999px;
+  padding: 9px 18px;
+
+  color: white;
+  background:
+    linear-gradient(
+      135deg,
+      #7350b9,
+      #9b69d2
+    );
+
+  box-shadow:
+    0 5px 0 #4d337e,
+    0 9px 16px rgba(75, 52, 126, .22);
+
+  font-size: clamp(12px, 1vw, 15px);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.announcement-button:hover {
+  transform: translateY(-2px);
+}
+
+.announcement-button:active {
+  transform: translateY(3px);
+  box-shadow:
+    0 2px 0 #4d337e,
+    0 5px 10px rgba(75, 52, 126, .2);
+}
+
+@media (max-width: 900px) {
+  .city-announcement {
+    right: 1%;
+    top: 64%;
+    width: 180px;
+    min-height: 165px;
+    padding: 14px 11px;
+    border-width: 4px;
+    border-radius: 21px;
+  }
+}
+
+@media (max-width: 700px) {
+  .city-announcement {
+    right: 8px;
+    bottom: 72px;
+    top: auto;
+
+    width: min(170px, 41vw);
+    min-height: 125px;
+
+    padding: 10px;
+    border-width: 3px;
+    border-radius: 17px;
+  }
+
+  .announcement-icon {
+    width: 38px;
+    margin-bottom: 5px;
+    font-size: 22px;
+  }
+
+  .announcement-title {
+    font-size: 14px;
+  }
+
+  .announcement-message {
+    margin-top: 5px;
+    font-size: 10px;
+  }
+
+  .announcement-countdown {
+    margin-top: 6px;
+    padding: 4px 6px;
+    font-size: 9px;
+  }
+
+  .announcement-button {
+    min-height: 31px;
+    margin-top: 7px;
+    padding: 5px 10px;
+    font-size: 10px;
+  }
+}
+
+
+/* =========================================================
+   Final clean announcement placement
+   The illustrated card underneath is completely covered by
+   this live Supabase-powered board.
+   ========================================================= */
+
+.city-announcement {
+  right: 2.0% !important;
+  top: 3.2% !important;
+  width: clamp(215px, 17.8vw, 305px) !important;
+  min-height: clamp(175px, 18vw, 275px) !important;
+  background:
+    radial-gradient(
+      circle at 50% 0,
+      rgba(255, 244, 173, .88),
+      transparent 40%
+    ),
+    linear-gradient(
+      160deg,
+      #fffef8 0%,
+      #f5edff 100%
+    ) !important;
+}
+
+/* Cover the placeholder center name and Clubhouse wording
+   with the selected child's real profile name. */
+.dynamic-player-name {
+  top: 65.5% !important;
+}
+
+.dynamic-clubhouse-sign {
+  left: 7.4% !important;
+  top: 55.5% !important;
+  width: 18.8% !important;
+}
+
+/* Keep the live profile identity above the illustrated placeholder. */
+.dynamic-profile-avatar {
+  top: 53.5% !important;
+}
+
+/* Adjust final transparent hotspots to the clean artwork. */
+.library {
+  left: 5.5% !important;
+  top: 11% !important;
+  width: 22% !important;
+  height: 32% !important;
+}
+
+#castle {
+  left: 36.5% !important;
+  top: 3% !important;
+  width: 29% !important;
+  height: 41% !important;
+}
+
+.school {
+  left: 68.8% !important;
+  top: 7% !important;
+  width: 23% !important;
+  height: 38% !important;
+}
+
+.home.clubhouse-building {
+  left: 2.5% !important;
+  top: 39% !important;
+  width: 28% !important;
+  height: 53% !important;
+}
+
+.market {
+  left: 27.5% !important;
+  top: 69% !important;
+  width: 25% !important;
+  height: 30% !important;
+}
+
+.pets {
+  left: 54% !important;
+  top: 68% !important;
+  width: 25% !important;
+  height: 30% !important;
+}
+
+.salon {
+  left: 75% !important;
+  top: 38% !important;
+  width: 24% !important;
+  height: 48% !important;
+}
+
+@media (max-width: 760px) {
+  .city-announcement {
+    right: 7px !important;
+    top: auto !important;
+    bottom: 70px !important;
+    width: min(174px, 42vw) !important;
+    min-height: 132px !important;
   }
 }
