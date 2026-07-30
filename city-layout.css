@@ -1,0 +1,493 @@
+/*
+  ============================================================
+  ELCraft My City — Layout Corrections
+  ============================================================
+
+  This stylesheet only handles positioning and visual overrides.
+
+  It intentionally:
+  - keeps the illustrated castle in the city artwork;
+  - keeps the castle clickable through an invisible hotspot;
+  - removes the coded castle card drawn over the artwork;
+  - removes the extra personalized sign sitting across the Clubhouse;
+  - keeps the Clubhouse button as the clickable entrance;
+  - moves the live City News board to the bottom-right;
+  - keeps the mailbox clickable while using the mailbox already
+    illustrated in the artwork;
+  - preserves the unread-mail badge;
+  - does not change Supabase, World Engine, NPC, mail, or building logic.
+*/
+
+
+/* ============================================================
+   1. CASTLE — KEEP ARTWORK, REMOVE DUPLICATE CODED CASTLE
+   ============================================================ */
+
+#castle {
+  position: absolute !important;
+
+  left: 36.5% !important;
+  top: 3% !important;
+  width: 29% !important;
+  height: 41% !important;
+
+  z-index: 90 !important;
+
+  border: 0 !important;
+  border-radius: 30px !important;
+  padding: 0 !important;
+
+  color: transparent !important;
+  background: transparent !important;
+
+  box-shadow: none !important;
+  filter: none !important;
+
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+/*
+  Older city CSS creates the duplicate castle using ::before.
+  Hide every coded castle visual while keeping #castle itself.
+*/
+#castle::before,
+#castle::after,
+#castle > *,
+#castle .buildingLabel {
+  display: none !important;
+  visibility: hidden !important;
+  content: none !important;
+}
+
+/* A very light hover glow confirms that the artwork is clickable. */
+#castle:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  box-shadow:
+    inset 0 0 0 5px rgba(255, 255, 255, 0.30) !important;
+}
+
+#castle:active {
+  transform: scale(0.985) !important;
+}
+
+#castle:focus-visible {
+  outline: 6px solid #ffffff !important;
+  outline-offset: -7px !important;
+
+  background: rgba(255, 255, 255, 0.10) !important;
+}
+
+
+/* ============================================================
+   2. CLUBHOUSE — REMOVE EXTRA SIGN, KEEP BUTTON/HOTSPOT
+   ============================================================ */
+
+/*
+  The artwork already shows the Clubhouse.
+  The white Clubhouse button remains the visible entrance.
+  Remove the brown name sign that was layered across the building.
+*/
+.dynamic-clubhouse-sign,
+#clubhouseBuildingSign,
+.clubhouse-building .clubhouse-sign {
+  display: none !important;
+}
+
+/* Hide every coded treehouse drawing, but keep its click area. */
+.clubhouse-building > * {
+  visibility: hidden !important;
+}
+
+.clubhouse-building {
+  position: absolute !important;
+
+  left: 2.5% !important;
+  top: 39% !important;
+  width: 28% !important;
+  height: 53% !important;
+
+  z-index: 90 !important;
+
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+
+  opacity: 1 !important;
+  cursor: pointer !important;
+}
+
+/*
+  The button label is painted into the illustration.
+  The hotspot itself remains transparent.
+*/
+.clubhouse-building:hover {
+  background: rgba(255, 255, 255, 0.055) !important;
+  border-radius: 28px !important;
+}
+
+.clubhouse-building:focus-visible {
+  outline: 6px solid #ffffff !important;
+  outline-offset: -7px !important;
+  border-radius: 28px !important;
+}
+
+
+/* ============================================================
+   3. CITY NEWS — LIVE BOARD IN THE BOTTOM-RIGHT
+   ============================================================ */
+
+.city-announcement {
+  position: absolute !important;
+
+  top: auto !important;
+  right: 1.55% !important;
+  bottom: 2.8% !important;
+  left: auto !important;
+
+  z-index: 270 !important;
+
+  width: clamp(205px, 16.5vw, 285px) !important;
+  min-height: clamp(170px, 18vw, 265px) !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  margin: 0 !important;
+  padding:
+    clamp(17px, 1.55vw, 25px)
+    clamp(14px, 1.35vw, 22px) !important;
+
+  border: 5px solid rgba(255, 255, 255, 0.98) !important;
+  border-radius: 25px !important;
+
+  background:
+    radial-gradient(
+      circle at 50% 0%,
+      rgba(255, 240, 155, 0.84),
+      transparent 42%
+    ),
+    linear-gradient(
+      160deg,
+      #fffef7 0%,
+      #f5edff 100%
+    ) !important;
+
+  box-shadow:
+    0 8px 0 rgba(91, 70, 133, 0.16),
+    0 18px 34px rgba(38, 42, 69, 0.28) !important;
+
+  text-align: center !important;
+}
+
+/* Keep the board compact so it does not cover Style Studio. */
+.announcement-icon {
+  width: clamp(45px, 4vw, 66px) !important;
+  margin-bottom: 7px !important;
+}
+
+.announcement-title {
+  font-size: clamp(18px, 1.5vw, 25px) !important;
+}
+
+.announcement-message {
+  margin-top: 8px !important;
+  font-size: clamp(12px, 0.98vw, 16px) !important;
+}
+
+.announcement-button {
+  min-height: 40px !important;
+  margin-top: 12px !important;
+}
+
+
+/* ============================================================
+   4. MAILBOX — USE ARTWORK MAILBOX AS THE VISUAL
+   ============================================================ */
+
+/*
+  city.js still creates #cityMailbox and all mail functionality.
+  This turns it into a transparent click target over the mailbox
+  already illustrated at the bottom-left of the city artwork.
+*/
+#cityMailbox {
+  position: absolute !important;
+
+  left: 0.55% !important;
+  bottom: 3.3% !important;
+
+  z-index: 230 !important;
+
+  width: 8.3% !important;
+  min-width: 72px !important;
+  max-width: 132px !important;
+
+  height: 19% !important;
+  min-height: 112px !important;
+
+  margin: 0 !important;
+  padding: 0 !important;
+
+  border: 0 !important;
+  border-radius: 22px !important;
+
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+
+  cursor: pointer !important;
+  pointer-events: auto !important;
+}
+
+/* Remove the second CSS mailbox drawing. */
+#cityMailbox .mailbox-box,
+#cityMailbox .mailbox-door,
+#cityMailbox .mailbox-handle,
+#cityMailbox .mailbox-flag,
+#cityMailbox .mailbox-post {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+}
+
+#cityMailbox .mailbox-door,
+#cityMailbox .mailbox-handle,
+#cityMailbox .mailbox-flag,
+#cityMailbox .mailbox-post {
+  display: none !important;
+}
+
+/*
+  Keep the wrapper so Magical Mail can insert its unread badge.
+  It fills the transparent mailbox hotspot.
+*/
+#cityMailbox .mailbox-box {
+  position: absolute !important;
+  inset: 0 !important;
+
+  display: block !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
+  aspect-ratio: auto !important;
+}
+
+/* Preserve and improve the unread badge. */
+#cityMailbox .mail-badge {
+  position: absolute !important;
+
+  top: 2px !important;
+  right: 1px !important;
+  left: auto !important;
+
+  z-index: 5 !important;
+
+  min-width: 31px !important;
+  height: 31px !important;
+  padding: 0 6px !important;
+
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+
+  border: 3px solid #ffffff !important;
+  border-radius: 999px !important;
+
+  color: #ffffff !important;
+  background: #ff4d6d !important;
+
+  box-shadow:
+    0 5px 0 rgba(141, 43, 68, 0.20),
+    0 9px 15px rgba(61, 47, 70, 0.22) !important;
+
+  font-size: 13px !important;
+  font-weight: 900 !important;
+  line-height: 1 !important;
+}
+
+#cityMailbox:hover {
+  transform: translateY(-4px) !important;
+
+  background: rgba(255, 255, 255, 0.055) !important;
+}
+
+#cityMailbox:active {
+  transform: translateY(-1px) scale(0.98) !important;
+}
+
+#cityMailbox:focus-visible {
+  outline: 5px solid #ffffff !important;
+  outline-offset: -4px !important;
+}
+
+
+/* ============================================================
+   5. PLAYER — REMOVE OLD BROKEN PLACEHOLDER TEXT
+   ============================================================ */
+
+/* Hide the visible broken-alt text from an unavailable character image. */
+#heroAvatar:not([src]),
+#heroAvatar[src=""] {
+  display: none !important;
+}
+
+/*
+  The emoji/profile fallback remains visible when no rendered
+  character image has been saved.
+*/
+.dynamic-profile-avatar {
+  z-index: 210 !important;
+}
+
+/* When a real saved avatar successfully loads, hide the fallback. */
+body.has-saved-city-avatar .dynamic-profile-avatar {
+  display: none !important;
+}
+
+
+/* ============================================================
+   6. ACCESSIBLE INVISIBLE BUILDING HOTSPOTS
+   ============================================================ */
+
+.library,
+.school,
+.market,
+.pets,
+.salon {
+  background: transparent !important;
+  box-shadow: none !important;
+  filter: none !important;
+}
+
+/* Hide old coded artwork inside image-map hotspots. */
+.library > *,
+.school > *,
+.market > *,
+.pets > *,
+.salon > * {
+  visibility: hidden !important;
+}
+
+
+/* ============================================================
+   7. RESPONSIVE PLACEMENT
+   ============================================================ */
+
+@media (max-width: 1050px) {
+  .city-announcement {
+    right: 1% !important;
+    bottom: 2% !important;
+
+    width: 196px !important;
+    min-height: 160px !important;
+
+    padding: 14px 12px !important;
+    border-width: 4px !important;
+  }
+
+  #cityMailbox {
+    width: 9.5% !important;
+    height: 18% !important;
+  }
+}
+
+@media (max-width: 760px) {
+  .city-announcement {
+    right: 8px !important;
+    bottom: 62px !important;
+
+    width: min(170px, 42vw) !important;
+    min-height: 126px !important;
+
+    padding: 10px !important;
+
+    border-width: 3px !important;
+    border-radius: 18px !important;
+  }
+
+  .announcement-icon {
+    width: 38px !important;
+    margin-bottom: 4px !important;
+    font-size: 22px !important;
+  }
+
+  .announcement-title {
+    font-size: 14px !important;
+  }
+
+  .announcement-message {
+    margin-top: 5px !important;
+    font-size: 10px !important;
+  }
+
+  .announcement-countdown {
+    margin-top: 6px !important;
+    padding: 4px 6px !important;
+    font-size: 9px !important;
+  }
+
+  .announcement-button {
+    min-height: 31px !important;
+    margin-top: 7px !important;
+    padding: 5px 10px !important;
+    font-size: 10px !important;
+  }
+
+  #cityMailbox {
+    left: 1% !important;
+    bottom: 9% !important;
+
+    width: 12% !important;
+    min-width: 58px !important;
+
+    height: 17% !important;
+    min-height: 80px !important;
+  }
+
+  #cityMailbox .mail-badge {
+    min-width: 25px !important;
+    height: 25px !important;
+    border-width: 2px !important;
+    font-size: 11px !important;
+  }
+}
+
+@media (max-height: 650px) and (orientation: landscape) {
+  .city-announcement {
+    right: 1% !important;
+    bottom: 1.5% !important;
+
+    width: 185px !important;
+    min-height: 142px !important;
+  }
+
+  #cityMailbox {
+    bottom: 3% !important;
+    height: 20% !important;
+  }
+}
+
+
+/* ============================================================
+   8. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  #castle,
+  .clubhouse-building,
+  #cityMailbox,
+  .announcement-button {
+    transition: none !important;
+  }
+
+  #castle:active,
+  .clubhouse-building:active,
+  #cityMailbox:active,
+  .announcement-button:active {
+    transform: none !important;
+  }
+}
