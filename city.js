@@ -1245,4 +1245,40 @@
       loadPlayerAvatar();
     }
   });
+  (function(){
+
+    const hero=document.getElementById("hero");
+
+    if(hero){
+
+        hero.title="My Character";
+
+        hero.addEventListener("click",()=>{
+            window.location.href="my-character.html";
+        });
+
+        hero.addEventListener("keydown",(e)=>{
+            if(e.key==="Enter" || e.key===" "){
+                e.preventDefault();
+                window.location.href="my-character.html";
+            }
+        });
+
+    }
+
+    /* Remove duplicate City News card if one exists */
+    const cards=[...document.querySelectorAll("div,section,aside")];
+
+    cards.forEach(card=>{
+        const txt=(card.textContent||"").toLowerCase();
+
+        if(txt.includes("city news") &&
+           txt.includes("view announcements") &&
+           !card.classList.contains("city-announcement")){
+
+            card.remove();
+        }
+    });
+
+})();
 })();
