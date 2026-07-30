@@ -1,3 +1,4 @@
+/* ELCraft My City — Pet Shop routing enabled */
 (() => {
   'use strict';
 
@@ -125,7 +126,7 @@
         break;
 
       case 'pets':
-        showComingSoon('The Pet Shop');
+        openPage('pet-shop.html');
         break;
 
       case 'salon':
