@@ -51,7 +51,8 @@
     }
 
     button,
-    input {
+    input,
+    select {
       font: inherit;
     }
 
@@ -319,6 +320,150 @@
       background: #e8f8ec;
     }
 
+    .family-section {
+      margin-top: 38px;
+      padding-top: 32px;
+      border-top: 3px solid #eceafd;
+    }
+
+    .family-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 18px;
+    }
+
+    .family-heading h2 {
+      margin: 0;
+      color: #554ecb;
+      font-size: clamp(25px, 4vw, 34px);
+    }
+
+    .family-heading p {
+      margin: 6px 0 0;
+      color: #747a9b;
+      font-weight: 700;
+    }
+
+    .invite-family-button {
+      flex: 0 0 auto;
+      min-height: 48px;
+      border: 0;
+      border-radius: 15px;
+      padding: 11px 17px;
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #6559f4,
+          #9168ff
+        );
+      box-shadow: 0 5px 0 #4942bc;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .family-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .family-member {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      border: 2px solid #e3e1f7;
+      border-radius: 19px;
+      padding: 15px;
+
+      background:
+        linear-gradient(
+          150deg,
+          #ffffff,
+          #f7f5ff
+        );
+    }
+
+    .family-member-main {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 13px;
+    }
+
+    .family-avatar {
+      flex: 0 0 auto;
+      width: 52px;
+      height: 52px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+      background: #ebe7ff;
+      font-size: 28px;
+    }
+
+    .family-member strong {
+      display: block;
+      color: #4d47ba;
+      font-size: 17px;
+    }
+
+    .family-member small {
+      display: block;
+      margin-top: 3px;
+      color: #777d9e;
+      font-weight: 700;
+      overflow-wrap: anywhere;
+    }
+
+    .member-status {
+      flex: 0 0 auto;
+      border-radius: 999px;
+      padding: 7px 10px;
+      color: #287342;
+      background: #e4f7ea;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .member-status.pending {
+      color: #8a5d19;
+      background: #fff1d7;
+    }
+
+    .remove-member-button {
+      flex: 0 0 auto;
+      border: 0;
+      border-radius: 11px;
+      padding: 8px 11px;
+      color: #a52d40;
+      background: #ffe8ec;
+      font-size: 12px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .family-empty {
+      padding: 18px;
+      border: 2px dashed #d8d4f4;
+      border-radius: 17px;
+      color: #747a9b;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .pending-title {
+      margin: 24px 0 10px;
+      color: #555b83;
+      font-size: 18px;
+    }
+
     .modal {
       position: fixed;
       inset: 0;
@@ -341,6 +486,8 @@
 
     .modal-card {
       width: min(460px, 100%);
+      max-height: calc(100vh - 40px);
+      overflow-y: auto;
 
       border: 4px solid rgba(255, 255, 255, 0.9);
       border-radius: 28px;
@@ -377,7 +524,8 @@
       font-weight: 900;
     }
 
-    input {
+    input,
+    select {
       width: 100%;
       min-height: 54px;
 
@@ -392,7 +540,8 @@
       outline: none;
     }
 
-    input:focus {
+    input:focus,
+    select:focus {
       border-color: #786cf0;
       box-shadow: 0 0 0 4px rgba(120, 108, 240, 0.14);
     }
@@ -419,6 +568,37 @@
     .avatar-button.selected {
       border-color: #7468ed;
       background: #ded9ff;
+    }
+
+    .child-access-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .child-choice {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      margin: 0;
+      border: 2px solid #e2dff7;
+      border-radius: 14px;
+      padding: 11px 13px;
+
+      background: #f8f6ff;
+      cursor: pointer;
+    }
+
+    .child-choice input {
+      width: 20px;
+      min-height: 20px;
+      height: 20px;
+      margin: 0;
+      padding: 0;
+    }
+
+    .child-choice-avatar {
+      font-size: 25px;
     }
 
     .modal-actions {
@@ -471,6 +651,17 @@
       text-align: center;
     }
 
+    @media (max-width: 700px) {
+      .family-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .invite-family-button {
+        width: 100%;
+      }
+    }
+
     @media (max-width: 560px) {
       body {
         padding: 14px;
@@ -512,6 +703,16 @@
       .avatar-options {
         grid-template-columns: repeat(4, 1fr);
       }
+
+      .family-member {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .member-status,
+      .remove-member-button {
+        align-self: flex-end;
+      }
     }
   </style>
 </head>
@@ -536,9 +737,9 @@
     <section class="main-card">
 
       <div class="heading">
-        <h2>Who is playing?</h2>
+        <h2 id="pageTitle">Who is playing?</h2>
 
-        <p>
+        <p id="pageSubtitle">
           Choose a child profile to enter ELCraft.
         </p>
 
@@ -566,6 +767,54 @@
         role="status"
         aria-live="polite">
       </div>
+
+      <section
+        id="familySection"
+        class="family-section"
+        hidden>
+
+        <div class="family-heading">
+          <div>
+            <h2>Family Members</h2>
+            <p>
+              Invite trusted adults to join selected child profiles.
+            </p>
+          </div>
+
+          <button
+            id="inviteFamilyButton"
+            class="invite-family-button"
+            type="button">
+            + Invite Family Member
+          </button>
+        </div>
+
+        <div
+          id="familyLoading"
+          class="family-empty">
+          Loading family...
+        </div>
+
+        <div
+          id="familyMembersList"
+          class="family-list"
+          hidden>
+        </div>
+
+        <h3
+          id="pendingTitle"
+          class="pending-title"
+          hidden>
+          Pending Invitations
+        </h3>
+
+        <div
+          id="pendingInvitationsList"
+          class="family-list"
+          hidden>
+        </div>
+
+      </section>
 
     </section>
 
@@ -611,89 +860,18 @@
           id="avatarOptions"
           class="avatar-options">
 
-          <button
-            class="avatar-button selected"
-            type="button"
-            data-avatar="🌟">
-            🌟
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🦄">
-            🦄
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🦊">
-            🦊
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🐼">
-            🐼
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🐶">
-            🐶
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🐱">
-            🐱
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🦋">
-            🦋
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🚀">
-            🚀
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🎨">
-            🎨
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🎵">
-            🎵
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="👑">
-            👑
-          </button>
-
-          <button
-            class="avatar-button"
-            type="button"
-            data-avatar="🏰">
-            🏰
-          </button>
+          <button class="avatar-button selected" type="button" data-avatar="🌟">🌟</button>
+          <button class="avatar-button" type="button" data-avatar="🦄">🦄</button>
+          <button class="avatar-button" type="button" data-avatar="🦊">🦊</button>
+          <button class="avatar-button" type="button" data-avatar="🐼">🐼</button>
+          <button class="avatar-button" type="button" data-avatar="🐶">🐶</button>
+          <button class="avatar-button" type="button" data-avatar="🐱">🐱</button>
+          <button class="avatar-button" type="button" data-avatar="🦋">🦋</button>
+          <button class="avatar-button" type="button" data-avatar="🚀">🚀</button>
+          <button class="avatar-button" type="button" data-avatar="🎨">🎨</button>
+          <button class="avatar-button" type="button" data-avatar="🎵">🎵</button>
+          <button class="avatar-button" type="button" data-avatar="👑">👑</button>
+          <button class="avatar-button" type="button" data-avatar="🏰">🏰</button>
 
         </div>
 
@@ -726,6 +904,103 @@
     </section>
   </div>
 
+  <div
+    id="inviteModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="inviteModalTitle">
+
+    <section class="modal-card">
+
+      <h2 id="inviteModalTitle">
+        Invite Family
+      </h2>
+
+      <p>
+        They will receive a secure sign-in email and can only
+        enter the child profiles you select.
+      </p>
+
+      <form id="inviteForm">
+
+        <label for="memberName">
+          Their name
+        </label>
+
+        <input
+          id="memberName"
+          type="text"
+          maxlength="40"
+          autocomplete="name"
+          placeholder="Grandma Sarah"
+          required>
+
+        <label for="memberEmail">
+          Their email
+        </label>
+
+        <input
+          id="memberEmail"
+          type="email"
+          maxlength="254"
+          autocomplete="email"
+          placeholder="grandma@example.com"
+          required>
+
+        <label for="relationship">
+          Relationship
+        </label>
+
+        <select
+          id="relationship"
+          required>
+          <option value="grandparent">Grandparent</option>
+          <option value="parent">Parent / Stepparent</option>
+          <option value="older_sibling">Older sibling</option>
+          <option value="aunt_uncle">Aunt / Uncle</option>
+          <option value="guardian">Guardian</option>
+          <option value="family_member">Family member</option>
+        </select>
+
+        <label>
+          Give access to
+        </label>
+
+        <div
+          id="childAccessList"
+          class="child-access-list">
+        </div>
+
+        <div
+          id="inviteModalError"
+          class="modal-error"
+          aria-live="polite">
+        </div>
+
+        <div class="modal-actions">
+
+          <button
+            id="cancelInviteButton"
+            class="cancel-button"
+            type="button">
+            Cancel
+          </button>
+
+          <button
+            id="sendInviteButton"
+            class="save-button"
+            type="submit">
+            Send Invitation
+          </button>
+
+        </div>
+
+      </form>
+
+    </section>
+  </div>
+
   <script type="module">
     import { supabase } from "./supabase-client.js";
 
@@ -746,6 +1021,12 @@
 
     const parentEmail =
       document.getElementById("parentEmail");
+
+    const pageTitle =
+      document.getElementById("pageTitle");
+
+    const pageSubtitle =
+      document.getElementById("pageSubtitle");
 
     const pageMessage =
       document.getElementById("pageMessage");
@@ -771,14 +1052,63 @@
     const logoutButton =
       document.getElementById("logoutButton");
 
+    const familySection =
+      document.getElementById("familySection");
+
+    const familyLoading =
+      document.getElementById("familyLoading");
+
+    const familyMembersList =
+      document.getElementById("familyMembersList");
+
+    const pendingTitle =
+      document.getElementById("pendingTitle");
+
+    const pendingInvitationsList =
+      document.getElementById("pendingInvitationsList");
+
+    const inviteFamilyButton =
+      document.getElementById("inviteFamilyButton");
+
+    const inviteModal =
+      document.getElementById("inviteModal");
+
+    const inviteForm =
+      document.getElementById("inviteForm");
+
+    const memberNameInput =
+      document.getElementById("memberName");
+
+    const memberEmailInput =
+      document.getElementById("memberEmail");
+
+    const relationshipInput =
+      document.getElementById("relationship");
+
+    const childAccessList =
+      document.getElementById("childAccessList");
+
+    const inviteModalError =
+      document.getElementById("inviteModalError");
+
+    const cancelInviteButton =
+      document.getElementById("cancelInviteButton");
+
+    const sendInviteButton =
+      document.getElementById("sendInviteButton");
+
     let currentUser = null;
     let selectedAvatar = "🌟";
+    let currentFamily = null;
+    let currentMembership = null;
+    let isFamilyOwner = false;
+    let profiles = [];
 
-    function cleanName(value) {
+    function cleanName(value, maxLength = 40) {
       return String(value || "")
         .trim()
         .replace(/\s+/g, " ")
-        .slice(0, 20);
+        .slice(0, maxLength);
     }
 
     function showPageMessage(text, type = "error") {
@@ -789,6 +1119,32 @@
     function clearPageMessage() {
       pageMessage.textContent = "";
       pageMessage.className = "message";
+    }
+
+    function relationshipLabel(value) {
+      const labels = {
+        parent: "Parent / Stepparent",
+        grandparent: "Grandparent",
+        older_sibling: "Older sibling",
+        aunt_uncle: "Aunt / Uncle",
+        guardian: "Guardian",
+        family_member: "Family member"
+      };
+
+      return labels[value] || "Family member";
+    }
+
+    function relationshipEmoji(value) {
+      const emojis = {
+        parent: "👨‍👩‍👧",
+        grandparent: "👵",
+        older_sibling: "🧑",
+        aunt_uncle: "💜",
+        guardian: "🛡️",
+        family_member: "⭐"
+      };
+
+      return emojis[value] || "⭐";
     }
 
     function resetAvatarSelection() {
@@ -805,6 +1161,10 @@
     }
 
     function openCreateModal() {
+      if (!isFamilyOwner) {
+        return;
+      }
+
       modalError.textContent = "";
       childNameInput.value = "";
       resetAvatarSelection();
@@ -820,6 +1180,77 @@
       modalError.textContent = "";
       createForm.reset();
       resetAvatarSelection();
+    }
+
+    function renderChildAccessChoices() {
+      childAccessList.replaceChildren();
+
+      if (!profiles.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "family-empty";
+        empty.textContent =
+          "Create a child profile before inviting family.";
+
+        childAccessList.appendChild(empty);
+        sendInviteButton.disabled = true;
+        return;
+      }
+
+      profiles.forEach(profile => {
+        const label =
+          document.createElement("label");
+
+        label.className = "child-choice";
+
+        const checkbox =
+          document.createElement("input");
+
+        checkbox.type = "checkbox";
+        checkbox.name = "childAccess";
+        checkbox.value = profile.id;
+
+        const avatar =
+          document.createElement("span");
+
+        avatar.className = "child-choice-avatar";
+        avatar.textContent = profile.avatar || "🌟";
+
+        const name =
+          document.createElement("span");
+
+        name.textContent =
+          profile.display_name || "Player";
+
+        label.append(
+          checkbox,
+          avatar,
+          name
+        );
+
+        childAccessList.appendChild(label);
+      });
+
+      sendInviteButton.disabled = false;
+    }
+
+    function openInviteModal() {
+      inviteModalError.textContent = "";
+      inviteForm.reset();
+      relationshipInput.value = "grandparent";
+      renderChildAccessChoices();
+      inviteModal.classList.add("open");
+
+      setTimeout(() => {
+        memberNameInput.focus();
+      }, 100);
+    }
+
+    function closeInviteModal() {
+      inviteModal.classList.remove("open");
+      inviteModalError.textContent = "";
+      inviteForm.reset();
     }
 
     function chooseProfile(profile) {
@@ -903,7 +1334,7 @@
       return button;
     }
 
-    function renderProfiles(profiles) {
+    function renderProfiles() {
       profilesGrid.replaceChildren();
 
       profiles.forEach(profile => {
@@ -912,9 +1343,451 @@
         );
       });
 
-      profilesGrid.appendChild(
-        createNewProfileCard()
+      if (isFamilyOwner) {
+        profilesGrid.appendChild(
+          createNewProfileCard()
+        );
+      }
+
+      if (
+        !profiles.length &&
+        !isFamilyOwner
+      ) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "No child profiles have been shared with this account yet.";
+
+        profilesGrid.appendChild(empty);
+      }
+    }
+
+    function createFamilyMemberElement(member) {
+      const row =
+        document.createElement("article");
+
+      row.className = "family-member";
+
+      const main =
+        document.createElement("div");
+
+      main.className = "family-member-main";
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className = "family-avatar";
+      avatar.textContent =
+        relationshipEmoji(member.relationship);
+
+      const text =
+        document.createElement("div");
+
+      const name =
+        document.createElement("strong");
+
+      name.textContent =
+        member.display_name || "Family member";
+
+      const details =
+        document.createElement("small");
+
+      details.textContent =
+        `${relationshipLabel(member.relationship)} · ${member.email || ""}`;
+
+      text.append(
+        name,
+        details
       );
+
+      main.append(
+        avatar,
+        text
+      );
+
+      row.appendChild(main);
+
+      if (member.member_role === "owner") {
+        const status =
+          document.createElement("span");
+
+        status.className = "member-status";
+        status.textContent = "Account owner";
+        row.appendChild(status);
+      } else {
+        const remove =
+          document.createElement("button");
+
+        remove.className =
+          "remove-member-button";
+
+        remove.type = "button";
+        remove.textContent = "Remove";
+
+        remove.addEventListener(
+          "click",
+          async () => {
+            const confirmed =
+              window.confirm(
+                `Remove ${member.display_name || "this family member"}'s access?`
+              );
+
+            if (!confirmed) {
+              return;
+            }
+
+            remove.disabled = true;
+            remove.textContent = "Removing...";
+
+            const {
+              error
+            } = await supabase.rpc(
+              "remove_family_member",
+              {
+                member_uuid: member.id
+              }
+            );
+
+            if (error) {
+              showPageMessage(
+                error.message ||
+                  "Unable to remove the family member."
+              );
+
+              remove.disabled = false;
+              remove.textContent = "Remove";
+              return;
+            }
+
+            await loadFamilyLists();
+          }
+        );
+
+        row.appendChild(remove);
+      }
+
+      return row;
+    }
+
+    function createPendingInvitationElement(invitation) {
+      const row =
+        document.createElement("article");
+
+      row.className = "family-member";
+
+      const main =
+        document.createElement("div");
+
+      main.className = "family-member-main";
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className = "family-avatar";
+      avatar.textContent = "✉️";
+
+      const text =
+        document.createElement("div");
+
+      const name =
+        document.createElement("strong");
+
+      name.textContent =
+        invitation.display_name ||
+        "Pending family member";
+
+      const details =
+        document.createElement("small");
+
+      details.textContent =
+        `${relationshipLabel(invitation.relationship)} · ${invitation.email || ""}`;
+
+      text.append(
+        name,
+        details
+      );
+
+      main.append(
+        avatar,
+        text
+      );
+
+      const status =
+        document.createElement("span");
+
+      status.className =
+        "member-status pending";
+
+      status.textContent = "Pending";
+
+      row.append(
+        main,
+        status
+      );
+
+      return row;
+    }
+
+    async function identifyAccountRole() {
+      const {
+        data: memberships,
+        error
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, family_id, display_name, relationship, member_role, status"
+        )
+        .eq("user_id", currentUser.id)
+        .eq("status", "active");
+
+      if (error) {
+        throw error;
+      }
+
+      const membershipList =
+        memberships || [];
+
+      currentMembership =
+        membershipList.find(
+          member => member.member_role === "owner"
+        ) ||
+        membershipList[0] ||
+        null;
+
+      isFamilyOwner =
+        currentMembership?.member_role === "owner";
+
+      if (isFamilyOwner) {
+        const {
+          data: familyData,
+          error: familyError
+        } = await supabase.rpc(
+          "ensure_my_family"
+        );
+
+        if (familyError) {
+          throw familyError;
+        }
+
+        currentFamily = familyData;
+        return;
+      }
+
+      if (currentMembership) {
+        const {
+          data: familyData,
+          error: familyError
+        } = await supabase
+          .from("family_accounts")
+          .select("id, family_name, owner_id")
+          .eq(
+            "id",
+            currentMembership.family_id
+          )
+          .single();
+
+        if (familyError) {
+          throw familyError;
+        }
+
+        currentFamily = familyData;
+        return;
+      }
+
+      const {
+        data: familyData,
+        error: familyError
+      } = await supabase.rpc(
+        "ensure_my_family"
+      );
+
+      if (familyError) {
+        throw familyError;
+      }
+
+      currentFamily = familyData;
+      isFamilyOwner = true;
+
+      const {
+        data: ownerMembership
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, family_id, display_name, relationship, member_role, status"
+        )
+        .eq("family_id", currentFamily.id)
+        .eq("user_id", currentUser.id)
+        .eq("status", "active")
+        .maybeSingle();
+
+      currentMembership =
+        ownerMembership || null;
+    }
+
+    function updateHeading() {
+      if (isFamilyOwner) {
+        pageTitle.textContent =
+          "Who is playing?";
+
+        pageSubtitle.textContent =
+          "Choose a child profile to enter ELCraft.";
+
+        familySection.hidden = false;
+        return;
+      }
+
+      const name =
+        currentMembership?.display_name ||
+        "Family";
+
+      pageTitle.textContent =
+        `Hi ${name}!`;
+
+      pageSubtitle.textContent =
+        "Choose a child to join.";
+    }
+
+    async function loadAccessibleProfiles() {
+      const {
+        data,
+        error
+      } = await supabase.rpc(
+        "list_accessible_children"
+      );
+
+      if (error) {
+        throw error;
+      }
+
+      profiles = (data || []).sort(
+        (first, second) => {
+          const firstDate =
+            new Date(
+              first.created_at || 0
+            ).getTime();
+
+          const secondDate =
+            new Date(
+              second.created_at || 0
+            ).getTime();
+
+          return firstDate - secondDate;
+        }
+      );
+    }
+
+    async function loadFamilyLists() {
+      if (
+        !isFamilyOwner ||
+        !currentFamily
+      ) {
+        return;
+      }
+
+      familyLoading.hidden = false;
+      familyMembersList.hidden = true;
+      pendingTitle.hidden = true;
+      pendingInvitationsList.hidden = true;
+
+      const [
+        memberResult,
+        invitationResult
+      ] = await Promise.all([
+        supabase
+          .from("family_members")
+          .select(
+            "id, display_name, email, relationship, member_role, status, user_id, created_at"
+          )
+          .eq(
+            "family_id",
+            currentFamily.id
+          )
+          .eq("status", "active")
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          ),
+
+        supabase
+          .from("family_invitations")
+          .select(
+            "id, display_name, email, relationship, status, expires_at, created_at"
+          )
+          .eq(
+            "family_id",
+            currentFamily.id
+          )
+          .eq("status", "pending")
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          )
+      ]);
+
+      familyLoading.hidden = true;
+
+      if (memberResult.error) {
+        showPageMessage(
+          memberResult.error.message ||
+            "Unable to load family members."
+        );
+      } else {
+        familyMembersList.replaceChildren();
+
+        const members =
+          memberResult.data || [];
+
+        if (!members.length) {
+          const empty =
+            document.createElement("div");
+
+          empty.className = "family-empty";
+          empty.textContent =
+            "No family members yet.";
+
+          familyMembersList.appendChild(empty);
+        } else {
+          members.forEach(member => {
+            familyMembersList.appendChild(
+              createFamilyMemberElement(member)
+            );
+          });
+        }
+
+        familyMembersList.hidden = false;
+      }
+
+      if (invitationResult.error) {
+        showPageMessage(
+          invitationResult.error.message ||
+            "Unable to load pending invitations."
+        );
+        return;
+      }
+
+      const invitations =
+        invitationResult.data || [];
+
+      if (invitations.length) {
+        pendingInvitationsList.replaceChildren();
+
+        invitations.forEach(invitation => {
+          pendingInvitationsList.appendChild(
+            createPendingInvitationElement(
+              invitation
+            )
+          );
+        });
+
+        pendingTitle.hidden = false;
+        pendingInvitationsList.hidden = false;
+      }
     }
 
     async function loadProfiles() {
@@ -938,38 +1811,35 @@
       parentEmail.textContent =
         currentUser.email || "";
 
-      const {
-        data: profiles,
-        error
-      } = await supabase
-        .from("child_profiles")
-        .select(
-          "id, display_name, avatar, stars, level, experience, created_at"
-        )
-        .eq("parent_id", currentUser.id)
-        .order("created_at", {
-          ascending: true
-        });
+      try {
+        await identifyAccountRole();
+        updateHeading();
+        await loadAccessibleProfiles();
 
-      loading.hidden = true;
-      profilesGrid.hidden = false;
+        loading.hidden = true;
+        profilesGrid.hidden = false;
 
-      if (error) {
+        renderProfiles();
+
+        if (isFamilyOwner) {
+          await loadFamilyLists();
+        }
+      } catch (error) {
         console.error(
           "Profile loading error:",
           error
         );
 
+        loading.hidden = true;
+        profilesGrid.hidden = false;
+
         showPageMessage(
-          error.message ||
-            "Unable to load child profiles."
+          error?.message ||
+            "Unable to load profiles."
         );
 
-        renderProfiles([]);
-        return;
+        renderProfiles();
       }
-
-      renderProfiles(profiles || []);
     }
 
     document
@@ -1005,7 +1875,10 @@
         modalError.textContent = "";
 
         const displayName =
-          cleanName(childNameInput.value);
+          cleanName(
+            childNameInput.value,
+            20
+          );
 
         if (!displayName) {
           modalError.textContent =
@@ -1014,9 +1887,12 @@
           return;
         }
 
-        if (!currentUser) {
+        if (
+          !currentUser ||
+          !isFamilyOwner
+        ) {
           modalError.textContent =
-            "Your login session has expired.";
+            "Only the parent account can create child profiles.";
 
           return;
         }
@@ -1107,9 +1983,157 @@
       }
     );
 
+    inviteForm.addEventListener(
+      "submit",
+      async event => {
+
+        event.preventDefault();
+
+        inviteModalError.textContent = "";
+
+        const name =
+          cleanName(
+            memberNameInput.value,
+            40
+          );
+
+        const email =
+          String(
+            memberEmailInput.value || ""
+          )
+            .trim()
+            .toLowerCase();
+
+        const relationship =
+          relationshipInput.value;
+
+        const selectedChildren =
+          Array.from(
+            document.querySelectorAll(
+              'input[name="childAccess"]:checked'
+            )
+          ).map(input => input.value);
+
+        if (!name) {
+          inviteModalError.textContent =
+            "Please enter the family member's name.";
+          return;
+        }
+
+        if (!email) {
+          inviteModalError.textContent =
+            "Please enter the family member's email.";
+          return;
+        }
+
+        if (!selectedChildren.length) {
+          inviteModalError.textContent =
+            "Choose at least one child.";
+          return;
+        }
+
+        sendInviteButton.disabled = true;
+        sendInviteButton.textContent =
+          "Sending...";
+
+        try {
+          const {
+            data: invitation,
+            error: inviteError
+          } = await supabase.rpc(
+            "create_family_invitation",
+            {
+              invited_email: email,
+              invited_name: name,
+              invited_relationship:
+                relationship,
+              child_ids:
+                selectedChildren
+            }
+          );
+
+          if (inviteError) {
+            throw inviteError;
+          }
+
+          if (!invitation?.invite_token) {
+            throw new Error(
+              "The invitation token was not returned."
+            );
+          }
+
+          const redirectUrl =
+            new URL(
+              "accept-family-invite.html",
+              window.location.href
+            );
+
+          redirectUrl.searchParams.set(
+            "token",
+            invitation.invite_token
+          );
+
+          const {
+            error: emailError
+          } = await supabase.auth.signInWithOtp({
+            email,
+            options: {
+              shouldCreateUser: true,
+              emailRedirectTo:
+                redirectUrl.href,
+              data: {
+                display_name: name,
+                elcraft_family_invite: true
+              }
+            }
+          });
+
+          if (emailError) {
+            throw emailError;
+          }
+
+          closeInviteModal();
+
+          showPageMessage(
+            `Invitation sent to ${email}.`,
+            "success"
+          );
+
+          await loadFamilyLists();
+
+        } catch (error) {
+          console.error(
+            "Family invitation error:",
+            error
+          );
+
+          inviteModalError.textContent =
+            error?.message ||
+            "Unable to send the invitation.";
+
+        } finally {
+          sendInviteButton.disabled =
+            !profiles.length;
+
+          sendInviteButton.textContent =
+            "Send Invitation";
+        }
+      }
+    );
+
     cancelButton.addEventListener(
       "click",
       closeCreateModal
+    );
+
+    cancelInviteButton.addEventListener(
+      "click",
+      closeInviteModal
+    );
+
+    inviteFamilyButton.addEventListener(
+      "click",
+      openInviteModal
     );
 
     createModal.addEventListener(
@@ -1117,6 +2141,15 @@
       event => {
         if (event.target === createModal) {
           closeCreateModal();
+        }
+      }
+    );
+
+    inviteModal.addEventListener(
+      "click",
+      event => {
+        if (event.target === inviteModal) {
+          closeInviteModal();
         }
       }
     );
@@ -1174,7 +2207,10 @@
           window.location.search
         );
 
-      if (params.get("create") === "true") {
+      if (
+        params.get("create") === "true" &&
+        isFamilyOwner
+      ) {
         openCreateModal();
 
         window.history.replaceState(
