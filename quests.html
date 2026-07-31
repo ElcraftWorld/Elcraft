@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#6f58e8">
+
+    <title>Quest Book | ELCraft</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        :root {
+            --purple: #6f58e8;
+            --purple-dark: #4634a4;
+            --purple-light: #eeeaff;
+            --gold: #ffd45d;
+            --ink: #34385d;
+            --muted: #777d9e;
+            --green: #39a86b;
+            --blue: #4f9ee8;
+            --card: rgba(255,255,255,.94);
+        }
+
+        html,
+        body {
+            min-height: 100%;
+            margin: 0;
+        }
+
+        body {
+            color: var(--ink);
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(
+                    circle at 10% 10%,
+                    rgba(255,255,255,.9),
+                    transparent 32%
+                ),
+                linear-gradient(
+                    145deg,
+                    #9ddfff,
+                    #d7c8ff 50%,
+                    #ffe7a5
+                );
+        }
+
+        button {
+            font: inherit;
+            cursor: pointer;
+        }
+
+        .page {
+            width: min(1180px, calc(100% - 28px));
+            margin: 0 auto;
+            padding: 18px 0 40px;
+        }
+
+        .topbar {
+            position: sticky;
+            top: 12px;
+            z-index: 30;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+
+            border: 3px solid rgba(255,255,255,.82);
+            border-radius: 22px;
+            padding: 12px 14px;
+
+            background: rgba(255,255,255,.88);
+            backdrop-filter: blur(14px);
+
+            box-shadow:
+                0 12px 30px rgba(58,61,116,.18);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+        }
+
+        .brand-icon {
+            font-size: 36px;
+        }
+
+        .brand h1 {
+            margin: 0;
+            color: var(--purple-dark);
+            font-size: clamp(21px, 4vw, 31px);
+        }
+
+        .brand p {
+            margin: 2px 0 0;
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .top-button {
+            border: 0;
+            border-radius: 13px;
+            padding: 10px 13px;
+            color: var(--purple-dark);
+            background: var(--purple-light);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .top-button.primary {
+            color: white;
+            background: linear-gradient(
+                135deg,
+                var(--purple),
+                #9579ff
+            );
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.15fr .85fr;
+            gap: 18px;
+            margin-top: 22px;
+        }
+
+        .hero-card,
+        .wallet-card {
+            border: 4px solid rgba(255,255,255,.82);
+            border-radius: 28px;
+            background: var(--card);
+            box-shadow:
+                0 18px 40px rgba(60,65,118,.2);
+        }
+
+        .hero-card {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 24px;
+        }
+
+        .hero-icon {
+            font-size: clamp(72px, 11vw, 116px);
+            filter: drop-shadow(
+                0 9px 8px rgba(61,54,113,.18)
+            );
+        }
+
+        .hero-card h2 {
+            margin: 0;
+            color: var(--purple-dark);
+            font-size: clamp(27px, 5vw, 43px);
+        }
+
+        .hero-card p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+            font-weight: 800;
+            line-height: 1.5;
+        }
+
+        .wallet-card {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            padding: 16px;
+        }
+
+        .wallet-stat {
+            border: 2px solid #ece8fb;
+            border-radius: 17px;
+            padding: 14px;
+            background: white;
+            text-align: center;
+        }
+
+        .wallet-value {
+            color: var(--purple);
+            font-size: 25px;
+            font-weight: 900;
+        }
+
+        .wallet-label {
+            margin-top: 3px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .filters {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 18px;
+        }
+
+        .filter {
+            border: 2px solid rgba(255,255,255,.82);
+            border-radius: 14px;
+            padding: 10px 13px;
+            color: var(--purple-dark);
+            background: rgba(255,255,255,.88);
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .filter.active {
+            color: white;
+            background: var(--purple);
+        }
+
+        .quest-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(auto-fill, minmax(270px, 1fr));
+            gap: 15px;
+            margin-top: 18px;
+        }
+
+        .quest-card {
+            position: relative;
+            overflow: hidden;
+
+            border: 4px solid rgba(255,255,255,.84);
+            border-radius: 23px;
+            padding: 16px;
+
+            background: var(--card);
+            box-shadow:
+                0 12px 28px rgba(62,66,117,.17);
+        }
+
+        .quest-card.completed {
+            outline: 4px solid var(--gold);
+        }
+
+        .quest-card.claimed {
+            opacity: .68;
+        }
+
+        .quest-head {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .quest-icon {
+            flex: 0 0 58px;
+            width: 58px;
+            height: 58px;
+
+            display: grid;
+            place-items: center;
+
+            border-radius: 17px;
+            background: linear-gradient(
+                145deg,
+                #f5f2ff,
+                #fff4c8
+            );
+            font-size: 34px;
+        }
+
+        .quest-title {
+            margin: 0;
+            color: var(--purple-dark);
+            font-size: 17px;
+            font-weight: 900;
+        }
+
+        .quest-type {
+            display: inline-flex;
+            margin-top: 5px;
+            border-radius: 999px;
+            padding: 5px 9px;
+            color: var(--purple-dark);
+            background: var(--purple-light);
+            font-size: 9px;
+            font-weight: 900;
+            text-transform: uppercase;
+        }
+
+        .quest-description {
+            min-height: 39px;
+            margin: 13px 0 0;
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 700;
+            line-height: 1.45;
+        }
+
+        .progress-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-top: 15px;
+            color: var(--muted);
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .progress-track {
+            height: 13px;
+            margin-top: 6px;
+            overflow: hidden;
+            border-radius: 999px;
+            background: #e9e7f5;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: linear-gradient(
+                90deg,
+                var(--blue),
+                var(--purple)
+            );
+            transition: width .25s ease;
+        }
+
+        .rewards {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 7px;
+            margin-top: 14px;
+        }
+
+        .reward {
+            border-radius: 999px;
+            padding: 6px 9px;
+            color: var(--purple-dark);
+            background: #f4f1ff;
+            font-size: 10px;
+            font-weight: 900;
+        }
+
+        .claim-button {
+            width: 100%;
+            margin-top: 13px;
+            border: 0;
+            border-radius: 13px;
+            padding: 11px;
+            color: white;
+            background: linear-gradient(
+                135deg,
+                var(--purple),
+                #9478ff
+            );
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .claim-button:disabled {
+            cursor: default;
+            color: #85899e;
+            background: #e7e7ee;
+        }
+
+        .empty,
+        .loading {
+            grid-column: 1 / -1;
+            border: 4px dashed rgba(255,255,255,.85);
+            border-radius: 24px;
+            padding: 42px 20px;
+            color: var(--purple-dark);
+            background: rgba(255,255,255,.76);
+            font-size: 14px;
+            font-weight: 900;
+            text-align: center;
+        }
+
+        .toast {
+            position: fixed;
+            right: 20px;
+            bottom: 20px;
+            z-index: 1000;
+            display: none;
+            max-width: 350px;
+            border: 3px solid white;
+            border-radius: 16px;
+            padding: 13px 15px;
+            color: white;
+            background: var(--purple-dark);
+            box-shadow:
+                0 13px 30px rgba(37,34,85,.28);
+            font-size: 12px;
+            font-weight: 900;
+        }
+
+        .toast.visible {
+            display: block;
+        }
+
+        @media (max-width: 780px) {
+            .hero {
+                grid-template-columns: 1fr;
+            }
+
+            .topbar {
+                align-items: flex-start;
+            }
+
+            .top-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .hero-card {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+
+            .quest-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+
+        <header class="topbar">
+
+            <div class="brand">
+                <div class="brand-icon">
+                    📜
+                </div>
+
+                <div>
+                    <h1>Quest Book</h1>
+
+                    <p id="childName">
+                        Loading adventurer...
+                    </p>
+                </div>
+            </div>
+
+            <div class="top-actions">
+
+                <button
+                    id="mapButton"
+                    class="top-button"
+                    type="button">
+                    World Map
+                </button>
+
+                <button
+                    id="inventoryButton"
+                    class="top-button primary"
+                    type="button">
+                    Backpack
+                </button>
+
+            </div>
+
+        </header>
+
+        <section class="hero">
+
+            <article class="hero-card">
+
+                <div class="hero-icon">
+                    📜
+                </div>
+
+                <div>
+                    <h2>
+                        Today's Adventures
+                    </h2>
+
+                    <p>
+                        Complete learning quests, family missions and
+                        story adventures to earn XP, coins and special
+                        treasures.
+                    </p>
+                </div>
+
+            </article>
+
+            <article class="wallet-card">
+
+                <div class="wallet-stat">
+                    <div
+                        id="xpValue"
+                        class="wallet-value">
+                        0
+                    </div>
+
+                    <div class="wallet-label">
+                        XP
+                    </div>
+                </div>
+
+                <div class="wallet-stat">
+                    <div
+                        id="coinValue"
+                        class="wallet-value">
+                        0
+                    </div>
+
+                    <div class="wallet-label">
+                        Coins
+                    </div>
+                </div>
+
+                <div class="wallet-stat">
+                    <div
+                        id="completedValue"
+                        class="wallet-value">
+                        0
+                    </div>
+
+                    <div class="wallet-label">
+                        Ready to Claim
+                    </div>
+                </div>
+
+                <div class="wallet-stat">
+                    <div
+                        id="activeValue"
+                        class="wallet-value">
+                        0
+                    </div>
+
+                    <div class="wallet-label">
+                        Active Quests
+                    </div>
+                </div>
+
+            </article>
+
+        </section>
+
+        <section
+            id="filters"
+            class="filters">
+
+            <button
+                class="filter active"
+                type="button"
+                data-type="all">
+                All
+            </button>
+
+            <button
+                class="filter"
+                type="button"
+                data-type="daily">
+                ☀️ Daily
+            </button>
+
+            <button
+                class="filter"
+                type="button"
+                data-type="weekly">
+                🗓️ Weekly
+            </button>
+
+            <button
+                class="filter"
+                type="button"
+                data-type="story">
+                📖 Story
+            </button>
+
+            <button
+                class="filter"
+                type="button"
+                data-type="family">
+                💛 Family
+            </button>
+
+            <button
+                class="filter"
+                type="button"
+                data-type="claimed">
+                ✅ Claimed
+            </button>
+
+        </section>
+
+        <section
+            id="questGrid"
+            class="quest-grid">
+
+            <div class="loading">
+                Opening the quest book...
+            </div>
+
+        </section>
+
+    </main>
+
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite">
+    </div>
+
+    <script type="module">
+        import {
+            getSelectedChildId,
+            loadQuests,
+            loadWallet,
+            claimQuest
+        } from "./quest-engine.js";
+
+        import { supabase } from "./supabase-client.js";
+
+        const childId =
+            getSelectedChildId();
+
+        const childName =
+            document.getElementById("childName");
+
+        const questGrid =
+            document.getElementById("questGrid");
+
+        const filters =
+            document.getElementById("filters");
+
+        const xpValue =
+            document.getElementById("xpValue");
+
+        const coinValue =
+            document.getElementById("coinValue");
+
+        const completedValue =
+            document.getElementById("completedValue");
+
+        const activeValue =
+            document.getElementById("activeValue");
+
+        const toast =
+            document.getElementById("toast");
+
+        let quests = [];
+        let activeType = "all";
+
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add("visible");
+
+            window.setTimeout(
+                () => {
+                    toast.classList.remove("visible");
+                },
+                2800
+            );
+        }
+
+        function visibleQuests() {
+            if (activeType === "all") {
+                return quests;
+            }
+
+            if (activeType === "claimed") {
+                return quests.filter(
+                    item => item.status === "claimed"
+                );
+            }
+
+            return quests.filter(
+                item =>
+                    item.quest?.quest_type === activeType &&
+                    item.status !== "claimed"
+            );
+        }
+
+        function updateQuestStats() {
+            completedValue.textContent =
+                String(
+                    quests.filter(
+                        item => item.status === "completed"
+                    ).length
+                );
+
+            activeValue.textContent =
+                String(
+                    quests.filter(
+                        item => item.status === "active"
+                    ).length
+                );
+        }
+
+        function createQuestCard(item) {
+            const quest = item.quest || {};
+
+            const card =
+                document.createElement("article");
+
+            card.className =
+                `quest-card ${item.status || "active"}`;
+
+            const progress =
+                Math.min(
+                    Number(item.progress_value || 0),
+                    Number(quest.target_value || 1)
+                );
+
+            const target =
+                Math.max(
+                    Number(quest.target_value || 1),
+                    1
+                );
+
+            const percent =
+                Math.round(
+                    (progress / target) * 100
+                );
+
+            const head =
+                document.createElement("div");
+
+            head.className =
+                "quest-head";
+
+            const icon =
+                document.createElement("div");
+
+            icon.className =
+                "quest-icon";
+
+            icon.textContent =
+                quest.icon || "⭐";
+
+            const titleWrap =
+                document.createElement("div");
+
+            const title =
+                document.createElement("h3");
+
+            title.className =
+                "quest-title";
+
+            title.textContent =
+                quest.title || "Untitled Quest";
+
+            const type =
+                document.createElement("span");
+
+            type.className =
+                "quest-type";
+
+            type.textContent =
+                quest.quest_type || "quest";
+
+            titleWrap.append(
+                title,
+                type
+            );
+
+            head.append(
+                icon,
+                titleWrap
+            );
+
+            const description =
+                document.createElement("p");
+
+            description.className =
+                "quest-description";
+
+            description.textContent =
+                quest.description ||
+                "Complete this adventure.";
+
+            const progressRow =
+                document.createElement("div");
+
+            progressRow.className =
+                "progress-row";
+
+            progressRow.innerHTML =
+                `<span>Progress</span><span>${progress} / ${target}</span>`;
+
+            const track =
+                document.createElement("div");
+
+            track.className =
+                "progress-track";
+
+            const fill =
+                document.createElement("div");
+
+            fill.className =
+                "progress-fill";
+
+            fill.style.width =
+                `${percent}%`;
+
+            track.appendChild(fill);
+
+            const rewards =
+                document.createElement("div");
+
+            rewards.className =
+                "rewards";
+
+            if (Number(quest.xp_reward || 0) > 0) {
+                rewards.appendChild(
+                    rewardChip(
+                        `✨ ${quest.xp_reward} XP`
+                    )
+                );
+            }
+
+            if (Number(quest.coin_reward || 0) > 0) {
+                rewards.appendChild(
+                    rewardChip(
+                        `🪙 ${quest.coin_reward} Coins`
+                    )
+                );
+            }
+
+            if (
+                Number(
+                    quest.item_reward_quantity || 0
+                ) > 0
+            ) {
+                rewards.appendChild(
+                    rewardChip(
+                        `${
+                            quest.item_reward_icon || "🎁"
+                        } ${
+                            quest.item_reward_name || "Item"
+                        }`
+                    )
+                );
+            }
+
+            const button =
+                document.createElement("button");
+
+            button.className =
+                "claim-button";
+
+            button.type =
+                "button";
+
+            if (item.status === "completed") {
+                button.textContent =
+                    "Claim Rewards";
+            } else if (item.status === "claimed") {
+                button.textContent =
+                    "Rewards Claimed";
+
+                button.disabled = true;
+            } else {
+                button.textContent =
+                    `${percent}% Complete`;
+
+                button.disabled = true;
+            }
+
+            button.addEventListener(
+                "click",
+                async () => {
+                    if (item.status !== "completed") {
+                        return;
+                    }
+
+                    button.disabled = true;
+                    button.textContent =
+                        "Claiming...";
+
+                    try {
+                        await claimQuest(item.id);
+
+                        showToast(
+                            `Rewards claimed for ${quest.title}!`
+                        );
+
+                        await refresh();
+                    } catch (error) {
+                        button.disabled = false;
+                        button.textContent =
+                            "Claim Rewards";
+
+                        showToast(
+                            error.message ||
+                            "Unable to claim this quest."
+                        );
+                    }
+                }
+            );
+
+            card.append(
+                head,
+                description,
+                progressRow,
+                track,
+                rewards,
+                button
+            );
+
+            return card;
+        }
+
+        function rewardChip(text) {
+            const chip =
+                document.createElement("span");
+
+            chip.className =
+                "reward";
+
+            chip.textContent =
+                text;
+
+            return chip;
+        }
+
+        function renderQuests() {
+            questGrid.replaceChildren();
+
+            const visible =
+                visibleQuests();
+
+            if (!visible.length) {
+                const empty =
+                    document.createElement("div");
+
+                empty.className =
+                    "empty";
+
+                empty.textContent =
+                    "No quests are available in this section.";
+
+                questGrid.appendChild(empty);
+                updateQuestStats();
+                return;
+            }
+
+            visible.forEach(item => {
+                questGrid.appendChild(
+                    createQuestCard(item)
+                );
+            });
+
+            updateQuestStats();
+        }
+
+        async function loadChildName() {
+            if (!childId) {
+                childName.textContent =
+                    "No child selected";
+
+                return;
+            }
+
+            const {
+                data,
+                error
+            } = await supabase
+                .from("child_profiles")
+                .select("display_name")
+                .eq("id", childId)
+                .single();
+
+            if (!error && data) {
+                childName.textContent =
+                    `${
+                        data.display_name || "Adventurer"
+                    }'s Adventures`;
+            }
+        }
+
+        async function refresh() {
+            const questResult =
+                await loadQuests(childId);
+
+            if (questResult.error) {
+                throw questResult.error;
+            }
+
+            quests =
+                questResult.data
+                    .filter(item => item.quest)
+                    .sort((a, b) => {
+                        const aOrder =
+                            Number(
+                                a.quest?.sort_order || 0
+                            );
+
+                        const bOrder =
+                            Number(
+                                b.quest?.sort_order || 0
+                            );
+
+                        return aOrder - bOrder;
+                    });
+
+            const walletResult =
+                await loadWallet(childId);
+
+            if (!walletResult.error) {
+                xpValue.textContent =
+                    String(
+                        walletResult.data?.xp || 0
+                    );
+
+                coinValue.textContent =
+                    String(
+                        walletResult.data?.coins || 0
+                    );
+            }
+
+            renderQuests();
+        }
+
+        async function initialize() {
+            if (!childId) {
+                childName.textContent =
+                    "No child selected";
+
+                questGrid.innerHTML =
+                    '<div class="empty">Choose a child profile before opening the quest book.</div>';
+
+                return;
+            }
+
+            try {
+                await loadChildName();
+                await refresh();
+            } catch (error) {
+                questGrid.innerHTML =
+                    `<div class="empty">${
+                        error.message ||
+                        "Unable to load quests."
+                    }</div>`;
+            }
+        }
+
+        filters.addEventListener(
+            "click",
+            event => {
+                const button =
+                    event.target.closest(
+                        "[data-type]"
+                    );
+
+                if (!button) {
+                    return;
+                }
+
+                activeType =
+                    button.dataset.type;
+
+                filters
+                    .querySelectorAll(
+                        "[data-type]"
+                    )
+                    .forEach(filter => {
+                        filter.classList.toggle(
+                            "active",
+                            filter === button
+                        );
+                    });
+
+                renderQuests();
+            }
+        );
+
+        document
+            .getElementById("mapButton")
+            .addEventListener(
+                "click",
+                () => {
+                    window.location.href =
+                        "world-map.html";
+                }
+            );
+
+        document
+            .getElementById("inventoryButton")
+            .addEventListener(
+                "click",
+                () => {
+                    window.location.href =
+                        "inventory.html";
+                }
+            );
+
+        initialize();
+    </script>
+
+    <script
+        type="module"
+        src="parent-gate.js">
+    </script>
+</body>
+</html>
