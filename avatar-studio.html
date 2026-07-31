@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7efff">
+  <title>ELCraft — Avatar Studio</title>
+
+  <style>
+    *{box-sizing:border-box}
+    :root{
+      --purple:#7057d8;--purple-dark:#4e3aa9;--purple-light:#efeaff;
+      --pink:#ff79ae;--blue:#65c8ee;--green:#78ca5c;
+      --ink:#35415f;--muted:#747c98
+    }
+    html,body{min-height:100%;margin:0}
+    body{
+      min-height:100vh;color:var(--ink);font-family:Arial,Helvetica,sans-serif;
+      background:
+        radial-gradient(circle at 10% 8%,rgba(255,255,255,.92),transparent 24%),
+        linear-gradient(145deg,#ffe3f1,#eadfff 48%,#dff6ff)
+    }
+    button{font:inherit;cursor:pointer}
+    .page{min-height:100vh;display:flex;flex-direction:column}
+    .header{
+      min-height:82px;display:flex;align-items:center;justify-content:space-between;
+      gap:14px;padding:12px 18px;position:sticky;top:0;z-index:100;
+      background:rgba(255,255,255,.96);border-bottom:4px solid rgba(111,85,217,.12);
+      box-shadow:0 7px 22px rgba(63,52,115,.12)
+    }
+    .header-left{display:flex;align-items:center;gap:13px;min-width:0}
+    .back-button{
+      border:0;border-radius:999px;padding:11px 17px;color:var(--purple-dark);
+      background:var(--purple-light);font-weight:900;box-shadow:0 5px 0 rgba(79,58,169,.13)
+    }
+    .header-icon{font-size:40px}
+    .title-group h1{margin:0;color:var(--purple-dark);font-size:clamp(26px,3vw,42px);line-height:1}
+    .title-group p{margin:5px 0 0;color:var(--muted);font-size:13px;font-weight:800}
+    .player-pill{
+      max-width:240px;overflow:hidden;border-radius:999px;padding:11px 16px;
+      color:var(--purple-dark);background:#f6ecff;font-weight:900;text-overflow:ellipsis;white-space:nowrap
+    }
+    .workspace{
+      flex:1;display:grid;grid-template-columns:minmax(275px,.85fr) minmax(440px,1.25fr) minmax(270px,.85fr);
+      gap:15px;padding:15px
+    }
+    .panel{
+      min-width:0;border:4px solid rgba(255,255,255,.93);border-radius:28px;
+      background:rgba(255,255,255,.97);
+      box-shadow:0 12px 0 rgba(97,70,144,.08),0 22px 42px rgba(75,61,120,.15)
+    }
+    .controls,.colors{padding:16px;display:flex;flex-direction:column}
+    .panel-title{margin:0 0 8px;color:var(--purple-dark);font-size:23px;text-align:center}
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+    .tab{
+      border:0;border-radius:14px;padding:10px;color:#685a8b;background:#f0ecf8;
+      font-size:12px;font-weight:900
+    }
+    .tab.active{color:white;background:linear-gradient(135deg,var(--purple),#987cf7)}
+    .options{display:grid;grid-template-columns:1fr 1fr;gap:9px;overflow:auto}
+    .option{
+      min-height:76px;border:3px solid #ece7f7;border-radius:18px;padding:8px;
+      background:white;color:#4e4b70;font-size:11px;font-weight:900
+    }
+    .option.active{border-color:var(--pink);background:#fff2f8}
+    .option-icon{display:block;font-size:31px;line-height:1;margin-bottom:5px}
+    .preview{
+      position:relative;overflow:hidden;min-height:680px;display:grid;place-items:center;padding:24px;
+      background:repeating-linear-gradient(135deg,#fff8fc 0 28px,#eef8ff 28px 56px)
+    }
+    .preview::before{
+      content:"";position:absolute;inset:28px;border:9px solid #efb2d0;
+      border-radius:46% 46% 25% 25% / 28% 28% 18% 18%;
+      background:radial-gradient(circle at 50% 20%,rgba(255,255,255,.96),rgba(222,243,252,.91) 58%,#d7eaf4);
+      box-shadow:inset 0 0 0 7px white,0 14px 0 #d98fb5,0 26px 35px rgba(83,55,104,.17)
+    }
+    #avatarPreview{position:relative;z-index:2;width:min(100%,500px)}
+    #avatarPreview svg{display:block;width:100%;height:auto;filter:drop-shadow(0 17px 12px rgba(50,52,96,.18))}
+    .avatar-name{
+      position:absolute;z-index:3;left:50%;bottom:28px;transform:translateX(-50%);
+      max-width:220px;overflow:hidden;border:4px solid white;border-radius:999px;padding:8px 17px;
+      color:var(--purple-dark);background:white;font-size:17px;font-weight:900;text-overflow:ellipsis;white-space:nowrap
+    }
+    .color-group{margin-bottom:13px}
+    .color-label{margin:0 0 7px;color:var(--purple-dark);font-size:12px;font-weight:900;text-align:center}
+    .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .swatch{min-height:45px;border:4px solid white;border-radius:14px;box-shadow:0 0 0 2px #dad2eb}
+    .swatch.active{box-shadow:0 0 0 5px var(--purple)}
+    .actions{display:grid;gap:9px;margin-top:auto;padding-top:12px}
+    .action{min-height:50px;border:0;border-radius:16px;padding:11px;color:white;font-weight:900}
+    .random{background:var(--blue);box-shadow:0 5px 0 #3499bd}
+    .save{background:var(--green);box-shadow:0 5px 0 #4d9636}
+    .reset{background:var(--pink);box-shadow:0 5px 0 #d6578f}
+    .note{margin-top:9px;color:var(--muted);font-size:10px;font-weight:800;text-align:center;line-height:1.4}
+    .toast{
+      position:fixed;left:50%;top:98px;z-index:1000;transform:translateX(-50%) translateY(-150px);
+      max-width:min(90vw,540px);border:4px solid white;border-radius:999px;padding:13px 20px;
+      color:var(--purple-dark);background:white;font-weight:900;text-align:center;
+      box-shadow:0 13px 30px rgba(48,39,90,.25);transition:transform .25s ease
+    }
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    @media(max-width:900px){
+      .workspace{grid-template-columns:1fr}
+      .preview{order:-1;min-height:600px}
+      .options{grid-template-columns:repeat(3,1fr)}
+      .header-icon,.title-group p,.player-pill{display:none}
+    }
+    @media(max-width:540px){
+      .options{grid-template-columns:1fr 1fr}
+      .preview{min-height:520px}
+      .header{min-height:72px;padding:9px 10px}
+      .title-group h1{font-size:23px}
+    }
+  </style>
+</head>
+<body>
+<main class="page">
+  <header class="header">
+    <div class="header-left">
+      <button id="backButton" class="back-button" type="button">← My World</button>
+      <div class="header-icon">🧒</div>
+      <div class="title-group">
+        <h1>Avatar Studio</h1>
+        <p>Build the permanent character used throughout ELCraft.</p>
+      </div>
+    </div>
+    <div id="playerPill" class="player-pill">✨ Player's Avatar</div>
+  </header>
+
+  <section class="workspace">
+    <aside class="panel controls">
+      <h2 class="panel-title">Create Your Character</h2>
+
+      <div class="tabs">
+        <button class="tab active" type="button" data-tab="hairStyle">💇 Hair</button>
+        <button class="tab" type="button" data-tab="eyeStyle">👀 Eyes</button>
+        <button class="tab" type="button" data-tab="mouth">😊 Smile</button>
+        <button class="tab" type="button" data-tab="shirtStyle">👕 Clothes</button>
+        <button class="tab" type="button" data-tab="accessory">✨ Extras</button>
+        <button class="tab" type="button" data-tab="freckles">🌟 Details</button>
+      </div>
+
+      <div id="options" class="options"></div>
+    </aside>
+
+    <section class="panel preview">
+      <div id="avatarPreview"></div>
+      <div id="avatarName" class="avatar-name">Player</div>
+    </section>
+
+    <aside class="panel colors">
+      <h2 class="panel-title">Colors & Save</h2>
+
+      <div class="color-group">
+        <div class="color-label">Skin Tone</div>
+        <div id="skinColors" class="swatches"></div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">Hair Color</div>
+        <div id="hairColors" class="swatches"></div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">Eye Color</div>
+        <div id="eyeColors" class="swatches"></div>
+      </div>
+
+      <div class="color-group">
+        <div class="color-label">Shirt Color</div>
+        <div id="shirtColors" class="swatches"></div>
+      </div>
+
+      <div class="actions">
+        <button id="randomButton" class="action random" type="button">🎲 Surprise Me</button>
+        <button id="saveButton" class="action save" type="button">💾 Save My Avatar</button>
+        <button id="resetButton" class="action reset" type="button">↺ Start Over</button>
+      </div>
+
+      <div class="note">The saved avatar appears in My World and becomes the character used by Style Studio.</div>
+    </aside>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script type="module">
+  import {
+    DEFAULT_AVATAR,
+    loadAvatarStyle,
+    saveAvatarStyle,
+    saveAvatarImage,
+    renderAvatar
+  } from "./avatar-engine.js";
+
+  const childName=(localStorage.getItem("elcraft_child_name")||"Player").trim().slice(0,24)||"Player";
+  const state=loadAvatarStyle();
+  let tab="hairStyle";
+  let toastTimer=null;
+
+  const choices={
+    hairStyle:[
+      {id:"waves",label:"Soft Waves",icon:"🌊"},
+      {id:"short",label:"Short",icon:"✂️"},
+      {id:"afro",label:"Afro",icon:"☁️"},
+      {id:"braids",label:"Braids",icon:"🪢"},
+      {id:"buns",label:"Two Buns",icon:"🌟"},
+      {id:"locs",label:"Locs",icon:"〰️"},
+      {id:"ponytail",label:"Ponytail",icon:"🎀"}
+    ],
+    eyeStyle:[
+      {id:"round",label:"Round",icon:"👀"},
+      {id:"wide",label:"Bright",icon:"✨"},
+      {id:"sleepy",label:"Calm",icon:"😊"}
+    ],
+    mouth:[
+      {id:"smile",label:"Smile",icon:"🙂"},
+      {id:"grin",label:"Big Grin",icon:"😁"},
+      {id:"small",label:"Little Smile",icon:"☺️"},
+      {id:"open",label:"Surprised",icon:"😮"}
+    ],
+    shirtStyle:[
+      {id:"tee",label:"T-Shirt",icon:"👕"},
+      {id:"hoodie",label:"Hoodie",icon:"🧥"},
+      {id:"overalls",label:"Overalls",icon:"🩳"},
+      {id:"dress",label:"Adventure Dress",icon:"👗"},
+      {id:"jacket",label:"Explorer Jacket",icon:"🥾"}
+    ],
+    accessory:[
+      {id:"none",label:"No Extra",icon:"🙂"},
+      {id:"glasses",label:"Glasses",icon:"👓"},
+      {id:"crown",label:"Crown",icon:"👑"},
+      {id:"cap",label:"Cap",icon:"🧢"},
+      {id:"flower",label:"Flower",icon:"🌺"},
+      {id:"bow",label:"Bow",icon:"🎀"}
+    ],
+    freckles:[
+      {id:false,label:"No Freckles",icon:"🙂"},
+      {id:true,label:"Freckles",icon:"✨"}
+    ]
+  };
+
+  const palettes={
+    skin:["#f4cfb2","#e7b187","#d6966b","#c9865b","#a96648","#824d38","#5d382d","#3e2923"],
+    hairColor:["#151722","#4a2d25","#70442e","#99623b","#d19a50","#b84d3f","#7754cf","#e875b2"],
+    eyeColor:["#49342d","#765039","#2f5b48","#315d88","#4b3b76","#292a31","#9a6b47","#563d31"],
+    shirtColor:["#7259d6","#4f68cb","#4cb6da","#57b95f","#f0b63e","#ea6e6b","#ef78ad","#384765"]
+  };
+
+  const preview=document.getElementById("avatarPreview");
+  const options=document.getElementById("options");
+  const toast=document.getElementById("toast");
+
+  function showToast(text){
+    toast.textContent=text;toast.classList.add("show");clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove("show"),2200);
+  }
+
+  function render(){
+    renderAvatar(preview,state,{transparent:true});
+  }
+
+  function renderOptions(){
+    options.replaceChildren();
+    choices[tab].forEach(choice=>{
+      const button=document.createElement("button");
+      button.type="button";
+      const active=state[tab]===choice.id;
+      button.className=`option${active?" active":""}`;
+      button.innerHTML=`<span class="option-icon">${choice.icon}</span>${choice.label}`;
+      button.onclick=()=>{
+        state[tab]=choice.id;
+        renderOptions();
+        render();
+      };
+      options.appendChild(button);
+    });
+  }
+
+  function renderPalette(id,key){
+    const container=document.getElementById(id);
+    container.replaceChildren();
+    palettes[key].forEach(color=>{
+      const button=document.createElement("button");
+      button.type="button";
+      button.className=`swatch${state[key]===color?" active":""}`;
+      button.style.background=color;
+      button.onclick=()=>{
+        state[key]=color;
+        renderPalettes();
+        render();
+      };
+      container.appendChild(button);
+    });
+  }
+
+  function renderPalettes(){
+    renderPalette("skinColors","skin");
+    renderPalette("hairColors","hairColor");
+    renderPalette("eyeColors","eyeColor");
+    renderPalette("shirtColors","shirtColor");
+  }
+
+  document.querySelectorAll(".tab").forEach(button=>{
+    button.onclick=()=>{
+      tab=button.dataset.tab;
+      document.querySelectorAll(".tab").forEach(item=>item.classList.toggle("active",item===button));
+      renderOptions();
+    };
+  });
+
+  document.getElementById("backButton").onclick=()=>location.href="my-city.html";
+
+  document.getElementById("saveButton").onclick=()=>{
+    saveAvatarStyle(state);
+    saveAvatarImage(state);
+    showToast("Your avatar was saved to My World! ✨");
+  };
+
+  document.getElementById("resetButton").onclick=()=>{
+    Object.assign(state,DEFAULT_AVATAR);
+    renderOptions();renderPalettes();render();
+    showToast("Ready for a brand-new character.");
+  };
+
+  document.getElementById("randomButton").onclick=()=>{
+    const random=list=>list[Math.floor(Math.random()*list.length)];
+    state.hairStyle=random(choices.hairStyle).id;
+    state.eyeStyle=random(choices.eyeStyle).id;
+    state.mouth=random(choices.mouth).id;
+    state.shirtStyle=random(choices.shirtStyle).id;
+    state.accessory=random(choices.accessory).id;
+    state.freckles=random(choices.freckles).id;
+    state.skin=random(palettes.skin);
+    state.hairColor=random(palettes.hairColor);
+    state.eyeColor=random(palettes.eyeColor);
+    state.shirtColor=random(palettes.shirtColor);
+    renderOptions();renderPalettes();render();
+    showToast("Surprise character created! 🎉");
+  };
+
+  document.getElementById("avatarName").textContent=childName;
+  document.getElementById("playerPill").textContent=`✨ ${childName.endsWith("s")?`${childName}' Avatar`:`${childName}'s Avatar`}`;
+
+  renderOptions();
+  renderPalettes();
+  render();
+</script>
+
+<script type="module" src="notification-bell.js"></script>
+<script type="module" src="parent-gate.js"></script>
+</body>
+</html>
