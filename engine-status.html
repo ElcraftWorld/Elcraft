@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>ELCraft Engine Status</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+
+            color: #35395f;
+            font-family: Arial, Helvetica, sans-serif;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #8edaff,
+                    #d4c6ff,
+                    #ffe4a5
+                );
+        }
+
+        .page {
+            width: min(880px, 100%);
+            margin: 0 auto;
+        }
+
+        .card {
+            border: 4px solid rgba(255,255,255,.85);
+            border-radius: 28px;
+            padding: 26px;
+
+            background: rgba(255,255,255,.94);
+
+            box-shadow:
+                0 18px 40px rgba(59,61,116,.2);
+        }
+
+        h1 {
+            margin: 0;
+            color: #4d3eae;
+        }
+
+        .subtitle {
+            margin: 7px 0 22px;
+            color: #777d9c;
+            font-weight: 700;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns:
+                repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .status {
+            border: 2px solid #e6e2f8;
+            border-radius: 17px;
+            padding: 15px;
+            background: #fbfaff;
+        }
+
+        .status-name {
+            color: #777d9c;
+            font-size: 11px;
+            font-weight: 900;
+        }
+
+        .status-value {
+            margin-top: 5px;
+            color: #4d3eae;
+            font-size: 18px;
+            font-weight: 900;
+            overflow-wrap: anywhere;
+        }
+
+        .actions {
+            display: grid;
+            grid-template-columns:
+                repeat(3, minmax(0, 1fr));
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        button {
+            min-height: 48px;
+
+            border: 0;
+            border-radius: 14px;
+            padding: 10px;
+
+            color: white;
+            background:
+                linear-gradient(
+                    135deg,
+                    #6655dd,
+                    #9375f4
+                );
+
+            font-weight: 900;
+            cursor: pointer;
+        }
+
+        button.secondary {
+            color: #4d3eae;
+            background: #eeeaff;
+        }
+
+        .message {
+            margin-top: 18px;
+            border-radius: 15px;
+            padding: 14px;
+
+            color: #4d3eae;
+            background: #eeeaff;
+
+            font-size: 13px;
+            font-weight: 800;
+            white-space: pre-wrap;
+        }
+
+        .error {
+            color: #a52e45;
+            background: #ffe8ed;
+        }
+
+        @media (max-width: 620px) {
+            .status-grid,
+            .actions {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="page">
+
+        <section class="card">
+
+            <h1>
+                ⚙️ ELCraft Engine
+            </h1>
+
+            <p class="subtitle">
+                This page checks whether the major game systems
+                can communicate with each other.
+            </p>
+
+            <div class="status-grid">
+
+                <article class="status">
+                    <div class="status-name">
+                        SIGNED-IN USER
+                    </div>
+
+                    <div
+                        id="userStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+                <article class="status">
+                    <div class="status-name">
+                        SELECTED CHILD
+                    </div>
+
+                    <div
+                        id="childStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+                <article class="status">
+                    <div class="status-name">
+                        WALLET
+                    </div>
+
+                    <div
+                        id="walletStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+                <article class="status">
+                    <div class="status-name">
+                        FAMILY
+                    </div>
+
+                    <div
+                        id="familyStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+                <article class="status">
+                    <div class="status-name">
+                        INVENTORY
+                    </div>
+
+                    <div
+                        id="inventoryStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+                <article class="status">
+                    <div class="status-name">
+                        QUESTS
+                    </div>
+
+                    <div
+                        id="questStatus"
+                        class="status-value">
+                        Checking...
+                    </div>
+                </article>
+
+            </div>
+
+            <div class="actions">
+
+                <button
+                    id="refreshButton"
+                    type="button">
+                    Refresh Status
+                </button>
+
+                <button
+                    id="mapButton"
+                    class="secondary"
+                    type="button">
+                    World Map
+                </button>
+
+                <button
+                    id="gameButton"
+                    class="secondary"
+                    type="button">
+                    Return to Game
+                </button>
+
+            </div>
+
+            <div
+                id="message"
+                class="message">
+                Waiting for the engine...
+            </div>
+
+        </section>
+
+    </main>
+
+    <script type="module">
+        import {
+            initializeELCraft,
+            loadFamilyContext,
+            loadInventory,
+            loadQuests
+        } from "./elcraft-engine.js";
+
+        const userStatus =
+            document.getElementById(
+                "userStatus"
+            );
+
+        const childStatus =
+            document.getElementById(
+                "childStatus"
+            );
+
+        const walletStatus =
+            document.getElementById(
+                "walletStatus"
+            );
+
+        const familyStatus =
+            document.getElementById(
+                "familyStatus"
+            );
+
+        const inventoryStatus =
+            document.getElementById(
+                "inventoryStatus"
+            );
+
+        const questStatus =
+            document.getElementById(
+                "questStatus"
+            );
+
+        const message =
+            document.getElementById(
+                "message"
+            );
+
+        function resetStatus() {
+            [
+                userStatus,
+                childStatus,
+                walletStatus,
+                familyStatus,
+                inventoryStatus,
+                questStatus
+            ].forEach(element => {
+                element.textContent =
+                    "Checking...";
+            });
+
+            message.className =
+                "message";
+
+            message.textContent =
+                "Testing ELCraft systems...";
+        }
+
+        async function runStatusCheck() {
+            resetStatus();
+
+            try {
+                const state =
+                    await initializeELCraft({
+                        requireChild: true
+                    });
+
+                userStatus.textContent =
+                    state.user.email ||
+                    state.user.id;
+
+                childStatus.textContent =
+                    `${
+                        state.child.avatar || "🌟"
+                    } ${
+                        state.child.display_name ||
+                        "Player"
+                    }`;
+
+                walletStatus.textContent =
+                    state.wallet
+                        ? `🪙 ${
+                            state.wallet.coins || 0
+                        } | ✨ ${
+                            state.wallet.xp || 0
+                        } XP`
+                        : "Wallet table not ready";
+
+                try {
+                    const family =
+                        await loadFamilyContext({
+                            forceRefresh: true
+                        });
+
+                    familyStatus.textContent =
+                        family.isOwner
+                            ? "Owner account"
+                            : "Family member";
+                } catch (error) {
+                    familyStatus.textContent =
+                        "Not connected";
+                }
+
+                try {
+                    const inventory =
+                        await loadInventory();
+
+                    inventoryStatus.textContent =
+                        `${inventory.length} item${
+                            inventory.length === 1
+                                ? ""
+                                : "s"
+                        }`;
+                } catch (error) {
+                    inventoryStatus.textContent =
+                        "Inventory unavailable";
+                }
+
+                try {
+                    const quests =
+                        await loadQuests();
+
+                    questStatus.textContent =
+                        `${quests.length} quest${
+                            quests.length === 1
+                                ? ""
+                                : "s"
+                        }`;
+                } catch (error) {
+                    questStatus.textContent =
+                        "Quests unavailable";
+                }
+
+                message.textContent =
+                    "✅ The central ELCraft Engine loaded successfully.";
+
+            } catch (error) {
+                console.error(
+                    "Engine status error:",
+                    error
+                );
+
+                message.className =
+                    "message error";
+
+                message.textContent =
+                    error?.message ||
+                    "The engine could not finish loading.";
+            }
+        }
+
+        document
+            .getElementById(
+                "refreshButton"
+            )
+            .addEventListener(
+                "click",
+                runStatusCheck
+            );
+
+        document
+            .getElementById(
+                "mapButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    window.location.href =
+                        "world-map.html";
+                }
+            );
+
+        document
+            .getElementById(
+                "gameButton"
+            )
+            .addEventListener(
+                "click",
+                () => {
+                    window.location.href =
+                        "index.html";
+                }
+            );
+
+        runStatusCheck();
+    </script>
+
+    <script
+        type="module"
+        src="parent-gate.js">
+    </script>
+</body>
+</html>
