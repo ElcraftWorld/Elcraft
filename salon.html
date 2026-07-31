@@ -2,2392 +2,353 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover">
-
-  <meta name="theme-color" content="#f7efff">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f8efff">
   <title>ELCraft — Style Studio</title>
 
   <style>
-    * {
-      box-sizing: border-box;
+    *{box-sizing:border-box}
+    :root{
+      --purple:#7057d8;--purple-dark:#4e3aa9;--purple-light:#efeaff;
+      --pink:#ff79ae;--blue:#65c8ee;--green:#78ca5c;
+      --ink:#35415f;--muted:#747c98
     }
-
-    :root {
-      --purple: #7057d8;
-      --purple-dark: #4e3aa9;
-      --purple-light: #efeaff;
-      --pink: #ff79ae;
-      --pink-dark: #d9508b;
-      --blue: #68c8ef;
-      --green: #79c95d;
-      --gold: #ffd75e;
-      --ink: #35415f;
-      --muted: #747c98;
-      --panel: rgba(255,255,255,.97);
+    html,body{min-height:100%;margin:0}
+    body{
+      min-height:100vh;color:var(--ink);font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(145deg,#ffe3f1,#eadfff 48%,#dff6ff)
     }
-
-    html,
-    body {
-      min-height: 100%;
-      margin: 0;
+    button{font:inherit;cursor:pointer}
+    .page{min-height:100vh;display:flex;flex-direction:column}
+    .header{
+      min-height:82px;display:flex;align-items:center;justify-content:space-between;
+      gap:14px;padding:12px 18px;background:rgba(255,255,255,.96);
+      border-bottom:4px solid rgba(111,85,217,.12);box-shadow:0 7px 22px rgba(63,52,115,.12)
     }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-
-      color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
-
-      background:
-        radial-gradient(
-          circle at 12% 10%,
-          rgba(255,255,255,.92),
-          transparent 24%
-        ),
-        linear-gradient(
-          145deg,
-          #ffe3f1,
-          #e9ddff 48%,
-          #dff5ff
-        );
+    .header-left{display:flex;align-items:center;gap:13px;min-width:0}
+    .back-button{
+      border:0;border-radius:999px;padding:11px 17px;color:var(--purple-dark);
+      background:var(--purple-light);font-weight:900;box-shadow:0 5px 0 rgba(79,58,169,.13)
     }
-
-    button {
-      font: inherit;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
+    .header-icon{font-size:40px}
+    .title-group h1{margin:0;color:var(--purple-dark);font-size:clamp(26px,3vw,42px);line-height:1}
+    .title-group p{margin:5px 0 0;color:var(--muted);font-size:13px;font-weight:800}
+    .player-pill{
+      max-width:240px;overflow:hidden;border-radius:999px;padding:11px 16px;
+      color:var(--purple-dark);background:#f6ecff;font-weight:900;text-overflow:ellipsis;white-space:nowrap
     }
-
-    button:disabled {
-      cursor: wait;
-      opacity: .65;
+    .workspace{
+      flex:1;display:grid;grid-template-columns:minmax(260px,.8fr) minmax(460px,1.35fr) minmax(250px,.8fr);
+      gap:15px;padding:15px
     }
-
-    .page {
-      min-height: 100vh;
-      min-height: 100dvh;
-
-      display: flex;
-      flex-direction: column;
+    .panel{
+      min-width:0;border:4px solid rgba(255,255,255,.93);border-radius:28px;
+      background:rgba(255,255,255,.97);
+      box-shadow:0 12px 0 rgba(97,70,144,.08),0 22px 42px rgba(75,61,120,.15)
     }
-
-    .header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-
-      min-height: 84px;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-
-      padding: 12px 18px;
-
-      border-bottom: 4px solid rgba(111,85,217,.12);
-
-      background: rgba(255,255,255,.95);
-      backdrop-filter: blur(14px);
-
-      box-shadow:
-        0 7px 22px rgba(63,52,115,.12);
+    .tools,.finish{padding:16px;display:flex;flex-direction:column}
+    .panel-title{margin:0 0 7px;color:var(--purple-dark);font-size:23px;text-align:center}
+    .copy{margin:0 0 13px;color:var(--muted);font-size:11px;font-weight:800;line-height:1.45;text-align:center}
+    .request{
+      margin-bottom:13px;border:3px solid #ffe397;border-radius:18px;padding:11px;
+      color:#775c25;background:#fff8d9;font-size:11px;font-weight:900;text-align:center
     }
-
-    .header-left {
-      min-width: 0;
-
-      display: flex;
-      align-items: center;
-      gap: 13px;
+    .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
+    .tool{
+      min-height:79px;border:3px solid #ece7f7;border-radius:18px;padding:8px;
+      background:white;color:#4e4b70;font-size:11px;font-weight:900
     }
-
-    .back-button {
-      flex: 0 0 auto;
-
-      border: 0;
-      border-radius: 999px;
-      padding: 11px 17px;
-
-      color: var(--purple-dark);
-      background: var(--purple-light);
-
-      font-weight: 900;
-
-      box-shadow:
-        0 5px 0 rgba(79,58,169,.13);
+    .tool.active{border-color:var(--pink);background:#fff2f8}
+    .tool-icon{display:block;font-size:32px;line-height:1;margin-bottom:5px}
+    .stage{
+      position:relative;overflow:hidden;min-height:680px;display:grid;place-items:center;padding:24px;
+      background:repeating-linear-gradient(135deg,#fff8fc 0 28px,#eef8ff 28px 56px)
     }
-
-    .header-icon {
-      font-size: 42px;
+    .stage::before{
+      content:"";position:absolute;inset:28px;border:9px solid #efb2d0;
+      border-radius:46% 46% 25% 25% / 28% 28% 18% 18%;
+      background:radial-gradient(circle at 50% 20%,rgba(255,255,255,.96),rgba(222,243,252,.91) 58%,#d7eaf4);
+      box-shadow:inset 0 0 0 7px white,0 14px 0 #d98fb5,0 26px 35px rgba(83,55,104,.17)
     }
-
-    .title-group {
-      min-width: 0;
+    #avatarStage{position:relative;z-index:2;width:min(100%,500px);touch-action:none;cursor:crosshair}
+    #avatarStage svg{display:block;width:100%;height:auto;filter:drop-shadow(0 17px 12px rgba(50,52,96,.18))}
+    .instruction{
+      position:absolute;z-index:3;left:50%;bottom:24px;transform:translateX(-50%);
+      max-width:86%;width:max-content;border:4px solid white;border-radius:999px;padding:8px 15px;
+      color:var(--purple-dark);background:white;font-size:11px;font-weight:900;text-align:center
     }
-
-    .title-group h1 {
-      margin: 0;
-
-      color: var(--purple-dark);
-      font-size: clamp(27px,3vw,43px);
-      line-height: 1;
-      white-space: nowrap;
+    .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+    .swatch{min-height:48px;border:4px solid white;border-radius:15px;box-shadow:0 0 0 2px #dad2eb}
+    .swatch.active{box-shadow:0 0 0 5px var(--purple)}
+    .progress-card{margin-top:14px;border:3px solid #e6e1f5;border-radius:18px;padding:13px;background:white}
+    .progress-title{display:flex;justify-content:space-between;color:var(--purple-dark);font-size:11px;font-weight:900}
+    .progress-track{height:12px;margin-top:8px;overflow:hidden;border-radius:999px;background:#e8e4f2}
+    .progress-fill{width:0;height:100%;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .2s ease}
+    .actions{display:grid;gap:9px;margin-top:auto;padding-top:14px}
+    .action{min-height:50px;border:0;border-radius:16px;padding:11px;color:white;font-weight:900}
+    .avatar{background:var(--blue);box-shadow:0 5px 0 #3499bd}
+    .save{background:var(--green);box-shadow:0 5px 0 #4d9636}
+    .reset{background:var(--pink);box-shadow:0 5px 0 #d6578f}
+    .note{margin-top:9px;color:var(--muted);font-size:10px;font-weight:800;text-align:center;line-height:1.4}
+    .toast{
+      position:fixed;left:50%;top:98px;z-index:1000;transform:translateX(-50%) translateY(-150px);
+      max-width:min(90vw,540px);border:4px solid white;border-radius:999px;padding:13px 20px;
+      color:var(--purple-dark);background:white;font-weight:900;text-align:center;
+      box-shadow:0 13px 30px rgba(48,39,90,.25);transition:transform .25s ease
     }
-
-    .title-group p {
-      margin: 5px 0 0;
-
-      color: var(--muted);
-      font-size: 13px;
-      font-weight: 800;
+    .toast.show{transform:translateX(-50%) translateY(0)}
+    @media(max-width:900px){
+      .workspace{grid-template-columns:1fr}
+      .stage{order:-1;min-height:600px}
+      .tool-grid{grid-template-columns:repeat(3,1fr)}
+      .header-icon,.title-group p,.player-pill{display:none}
     }
-
-    .player-pill {
-      max-width: 250px;
-
-      overflow: hidden;
-
-      border-radius: 999px;
-      padding: 11px 16px;
-
-      color: var(--purple-dark);
-      background: #f6ecff;
-
-      font-weight: 900;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .workspace {
-      flex: 1 1 auto;
-
-      display: grid;
-      grid-template-columns:
-        minmax(260px,.82fr)
-        minmax(460px,1.38fr)
-        minmax(250px,.8fr);
-      gap: 15px;
-
-      padding: 15px;
-    }
-
-    .panel {
-      min-width: 0;
-
-      border: 4px solid rgba(255,255,255,.92);
-      border-radius: 28px;
-
-      background: var(--panel);
-
-      box-shadow:
-        0 12px 0 rgba(97,70,144,.08),
-        0 22px 42px rgba(75,61,120,.15);
-    }
-
-    .tools-panel,
-    .colors-panel {
-      display: flex;
-      flex-direction: column;
-
-      padding: 16px;
-    }
-
-    .panel-title {
-      margin: 0 0 6px;
-
-      color: var(--purple-dark);
-      font-size: 24px;
-      text-align: center;
-    }
-
-    .panel-copy {
-      margin: 0 0 14px;
-
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.45;
-      text-align: center;
-    }
-
-    .request-card {
-      margin-bottom: 13px;
-      border: 3px solid #ffe397;
-      border-radius: 18px;
-      padding: 12px;
-
-      color: #775c25;
-      background: #fff8d9;
-
-      font-size: 11px;
-      font-weight: 900;
-      line-height: 1.45;
-      text-align: center;
-    }
-
-    .tool-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(2,minmax(0,1fr));
-      gap: 9px;
-
-      min-height: 0;
-      overflow-y: auto;
-    }
-
-    .tool-button {
-      min-height: 82px;
-
-      border: 3px solid #ece7f7;
-      border-radius: 18px;
-      padding: 9px 6px;
-
-      color: #4e4b70;
-      background: white;
-
-      font-size: 11px;
-      font-weight: 900;
-
-      box-shadow:
-        0 4px 0 rgba(80,65,120,.09);
-    }
-
-    .tool-button.active {
-      border-color: var(--pink);
-      background: #fff2f8;
-      box-shadow:
-        0 4px 0 rgba(217,79,138,.17);
-    }
-
-    .tool-icon {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 32px;
-      line-height: 1;
-    }
-
-    .studio-panel {
-      position: relative;
-      overflow: hidden;
-
-      min-height: 680px;
-
-      display: grid;
-      place-items: center;
-
-      padding: 20px;
-
-      background:
-        radial-gradient(
-          circle at 50% 18%,
-          rgba(255,255,255,.95),
-          transparent 28%
-        ),
-        repeating-linear-gradient(
-          135deg,
-          #fff8fc 0 28px,
-          #eef8ff 28px 56px
-        );
-    }
-
-    .studio-panel::before {
-      content: "";
-
-      position: absolute;
-      inset: 26px;
-
-      border: 9px solid #efb2d0;
-      border-radius: 46% 46% 25% 25% / 28% 28% 18% 18%;
-
-      background:
-        radial-gradient(
-          circle at 50% 20%,
-          rgba(255,255,255,.96),
-          rgba(222,243,252,.91) 58%,
-          #d7eaf4
-        );
-
-      box-shadow:
-        inset 0 0 0 7px white,
-        0 14px 0 #d98fb5,
-        0 26px 35px rgba(83,55,104,.17);
-    }
-
-    .canvas-wrap {
-      position: relative;
-      z-index: 2;
-
-      width: min(100%,580px);
-      aspect-ratio: 4 / 5;
-
-      display: grid;
-      place-items: center;
-    }
-
-    #salonCanvas {
-      width: 100%;
-      height: 100%;
-
-      border-radius: 28px;
-
-      touch-action: none;
-      user-select: none;
-
-      cursor: crosshair;
-    }
-
-    .canvas-instruction {
-      position: absolute;
-      left: 50%;
-      bottom: 13px;
-
-      transform: translateX(-50%);
-
-      width: max-content;
-      max-width: 88%;
-
-      border: 4px solid white;
-      border-radius: 999px;
-      padding: 8px 16px;
-
-      color: var(--purple-dark);
-      background: rgba(255,255,255,.96);
-
-      font-size: 12px;
-      font-weight: 900;
-      text-align: center;
-
-      box-shadow:
-        0 7px 18px rgba(73,58,115,.16);
-
-      pointer-events: none;
-    }
-
-    .drag-tool {
-      position: fixed;
-      z-index: 2000;
-
-      display: none;
-      place-items: center;
-
-      width: 68px;
-      height: 68px;
-
-      transform: translate(-50%,-50%);
-
-      border: 4px solid white;
-      border-radius: 22px;
-
-      background: rgba(255,255,255,.96);
-
-      font-size: 40px;
-
-      box-shadow:
-        0 14px 30px rgba(50,40,90,.3);
-
-      pointer-events: none;
-    }
-
-    .drag-tool.visible {
-      display: grid;
-    }
-
-    .color-section {
-      margin-bottom: 13px;
-    }
-
-    .color-label {
-      margin: 0 0 7px;
-
-      color: var(--purple-dark);
-      font-size: 13px;
-      font-weight: 900;
-      text-align: center;
-    }
-
-    .swatches {
-      display: grid;
-      grid-template-columns:
-        repeat(4,minmax(0,1fr));
-      gap: 8px;
-    }
-
-    .swatch {
-      min-height: 48px;
-
-      border: 4px solid white;
-      border-radius: 15px;
-
-      box-shadow:
-        0 0 0 2px #dad2eb;
-    }
-
-    .swatch.active {
-      box-shadow:
-        0 0 0 5px var(--purple);
-    }
-
-    .progress-card {
-      margin-top: 5px;
-      border: 3px solid #e6e1f5;
-      border-radius: 18px;
-      padding: 13px;
-
-      background: white;
-    }
-
-    .progress-title {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-
-      color: var(--purple-dark);
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .progress-track {
-      height: 12px;
-
-      margin-top: 8px;
-      overflow: hidden;
-
-      border-radius: 999px;
-      background: #e8e4f2;
-    }
-
-    .progress-fill {
-      width: 0;
-      height: 100%;
-
-      border-radius: inherit;
-
-      background:
-        linear-gradient(
-          90deg,
-          var(--pink),
-          var(--purple)
-        );
-
-      transition: width .2s ease;
-    }
-
-    .actions {
-      display: grid;
-      gap: 9px;
-
-      margin-top: auto;
-      padding-top: 14px;
-    }
-
-    .action-button {
-      min-height: 50px;
-
-      border: 0;
-      border-radius: 16px;
-      padding: 11px;
-
-      color: white;
-
-      font-weight: 900;
-    }
-
-    .new-button {
-      background: var(--blue);
-      box-shadow: 0 5px 0 #3499bd;
-    }
-
-    .save-button {
-      background: var(--green);
-      box-shadow: 0 5px 0 #4d9636;
-    }
-
-    .reset-button {
-      background: var(--pink);
-      box-shadow: 0 5px 0 #d6578f;
-    }
-
-    .save-note {
-      margin-top: 9px;
-
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.45;
-      text-align: center;
-    }
-
-    .toast {
-      position: fixed;
-      left: 50%;
-      top: 100px;
-      z-index: 2100;
-
-      max-width: min(90vw,540px);
-
-      transform:
-        translateX(-50%)
-        translateY(-150px);
-
-      border: 4px solid white;
-      border-radius: 999px;
-      padding: 13px 20px;
-
-      color: var(--purple-dark);
-      background: white;
-
-      font-weight: 900;
-      text-align: center;
-
-      box-shadow:
-        0 13px 30px rgba(48,39,90,.25);
-
-      transition:
-        transform .25s ease;
-    }
-
-    .toast.show {
-      transform:
-        translateX(-50%)
-        translateY(0);
-    }
-
-    @media (max-width: 1000px) {
-      .workspace {
-        grid-template-columns:
-          minmax(215px,.72fr)
-          minmax(390px,1.3fr)
-          minmax(215px,.72fr);
-        gap: 9px;
-        padding: 9px;
-      }
-
-      .studio-panel {
-        min-height: 570px;
-      }
-    }
-
-    @media (max-width: 800px) {
-      .header-icon,
-      .title-group p,
-      .player-pill {
-        display: none;
-      }
-
-      .workspace {
-        grid-template-columns: 1fr;
-      }
-
-      .studio-panel {
-        min-height: 600px;
-        order: -1;
-      }
-
-      .tool-grid {
-        grid-template-columns:
-          repeat(3,minmax(0,1fr));
-      }
-
-      .swatches {
-        grid-template-columns:
-          repeat(6,minmax(0,1fr));
-      }
-    }
-
-    @media (max-width: 540px) {
-      .header {
-        min-height: 72px;
-        padding: 9px 10px;
-      }
-
-      .back-button {
-        padding: 10px 13px;
-      }
-
-      .title-group h1 {
-        font-size: 23px;
-      }
-
-      .studio-panel {
-        min-height: 510px;
-      }
-
-      .tool-grid {
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
-      }
-
-      .swatches {
-        grid-template-columns:
-          repeat(4,minmax(0,1fr));
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .toast,
-      .progress-fill {
-        transition: none;
-      }
+    @media(max-width:540px){
+      .tool-grid{grid-template-columns:1fr 1fr}
+      .stage{min-height:520px}
+      .header{min-height:72px;padding:9px 10px}
+      .title-group h1{font-size:23px}
     }
   </style>
 </head>
-
 <body>
-
-  <main class="page">
-
-    <header class="header">
-
-      <div class="header-left">
-
-        <button
-          id="backButton"
-          class="back-button"
-          type="button">
-          ← My World
-        </button>
-
-        <div
-          class="header-icon"
-          aria-hidden="true">
-          💄
-        </div>
-
-        <div class="title-group">
-
-          <h1>
-            Style Studio
-          </h1>
-
-          <p>
-            Pick up a tool and apply the makeover yourself.
-          </p>
-
-        </div>
-
+<main class="page">
+  <header class="header">
+    <div class="header-left">
+      <button id="backButton" class="back-button" type="button">← My World</button>
+      <div class="header-icon">💄</div>
+      <div class="title-group">
+        <h1>Style Studio</h1>
+        <p>Use the permanent ELCraft avatar for interactive makeovers.</p>
       </div>
+    </div>
+    <div id="playerPill" class="player-pill">✨ Player's Studio</div>
+  </header>
 
-      <div
-        id="playerPill"
-        class="player-pill">
-        ✨ Player's Studio
-      </div>
+  <section class="workspace">
+    <aside class="panel tools">
+      <h2 class="panel-title">Salon Tools</h2>
+      <p class="copy">Choose a tool, then tap or drag it across the correct part of the face.</p>
+      <div class="request">“Can I have pink lipstick and sparkly cheeks?”</div>
+      <div id="toolGrid" class="tool-grid"></div>
+    </aside>
 
-    </header>
-
-    <section class="workspace">
-
-      <aside class="panel tools-panel">
-
-        <h2 class="panel-title">
-          Salon Tools
-        </h2>
-
-        <p class="panel-copy">
-          Choose a tool, then drag it across the correct part of the face.
-        </p>
-
-        <div
-          id="requestCard"
-          class="request-card">
-          “Can I have pink lipstick and sparkly cheeks?”
-        </div>
-
-        <div
-          id="toolGrid"
-          class="tool-grid">
-        </div>
-
-      </aside>
-
-      <section class="panel studio-panel">
-
-        <div class="canvas-wrap">
-
-          <canvas
-            id="salonCanvas"
-            width="800"
-            height="1000"
-            aria-label="Interactive salon customer">
-          </canvas>
-
-          <div
-            id="canvasInstruction"
-            class="canvas-instruction">
-            Choose a tool to begin ✨
-          </div>
-
-        </div>
-
-      </section>
-
-      <aside class="panel colors-panel">
-
-        <h2 class="panel-title">
-          Colors & Finish
-        </h2>
-
-        <section class="color-section">
-
-          <h3 class="color-label">
-            Makeup Color
-          </h3>
-
-          <div
-            id="colorSwatches"
-            class="swatches">
-          </div>
-
-        </section>
-
-        <div class="progress-card">
-
-          <div class="progress-title">
-            <span>Customer Happiness</span>
-            <span id="progressText">0%</span>
-          </div>
-
-          <div class="progress-track">
-            <div
-              id="progressFill"
-              class="progress-fill">
-            </div>
-          </div>
-
-        </div>
-
-        <div class="actions">
-
-          <button
-            id="newCustomerButton"
-            class="action-button new-button"
-            type="button">
-            🪄 New Customer
-          </button>
-
-          <button
-            id="saveButton"
-            class="action-button save-button"
-            type="button">
-            📸 Save Finished Look
-          </button>
-
-          <button
-            id="resetButton"
-            class="action-button reset-button"
-            type="button">
-            🧽 Remove All Makeup
-          </button>
-
-        </div>
-
-        <div class="save-note">
-          Saving makes this finished salon look the avatar used in My World.
-        </div>
-
-      </aside>
-
+    <section class="panel stage">
+      <div id="avatarStage"></div>
+      <div id="instruction" class="instruction">Choose a salon tool ✨</div>
     </section>
 
-    <div
-      id="dragTool"
-      class="drag-tool"
-      aria-hidden="true">
-      💄
-    </div>
-
-    <div
-      id="toast"
-      class="toast"
-      role="status"
-      aria-live="polite">
-    </div>
-
-  </main>
-
-  <script>
-    (() => {
-      "use strict";
-
-      const NAME_KEY =
-        "elcraft_child_name";
-
-      const AVATAR_KEY =
-        "elcraft_child_avatar";
-
-      const SAVE_KEY =
-        "elcraft_salon_game_v1";
-
-      const childName =
-        (
-          localStorage.getItem(NAME_KEY) ||
-          "Player"
-        )
-          .trim()
-          .slice(0,24) ||
-        "Player";
-
-      const canvas =
-        document.getElementById(
-          "salonCanvas"
-        );
-
-      const context =
-        canvas.getContext(
-          "2d"
-        );
-
-      const toolGrid =
-        document.getElementById(
-          "toolGrid"
-        );
-
-      const colorSwatches =
-        document.getElementById(
-          "colorSwatches"
-        );
-
-      const dragTool =
-        document.getElementById(
-          "dragTool"
-        );
-
-      const instruction =
-        document.getElementById(
-          "canvasInstruction"
-        );
-
-      const requestCard =
-        document.getElementById(
-          "requestCard"
-        );
-
-      const progressFill =
-        document.getElementById(
-          "progressFill"
-        );
-
-      const progressText =
-        document.getElementById(
-          "progressText"
-        );
-
-      const playerPill =
-        document.getElementById(
-          "playerPill"
-        );
-
-      const toast =
-        document.getElementById(
-          "toast"
-        );
-
-      const TOOLS = [
-        {
-          id: "lipstick",
-          name: "Lipstick",
-          icon: "💄",
-          instruction: "Drag across the lips"
-        },
-        {
-          id: "mascara",
-          name: "Mascara",
-          icon: "👁️",
-          instruction: "Brush gently over the eyelashes"
-        },
-        {
-          id: "blush",
-          name: "Blush Brush",
-          icon: "🖌️",
-          instruction: "Brush color onto the cheeks"
-        },
-        {
-          id: "facepaint",
-          name: "Face Paint",
-          icon: "🎨",
-          instruction: "Paint stars and dots on the cheeks"
-        },
-        {
-          id: "glitter",
-          name: "Glitter",
-          icon: "✨",
-          instruction: "Add sparkle around the cheeks"
-        },
-        {
-          id: "remover",
-          name: "Makeup Remover",
-          icon: "🧽",
-          instruction: "Rub over makeup to remove it"
-        }
-      ];
-
-      const COLORS = [
-        "#ff4f87",
-        "#d84666",
-        "#a64cce",
-        "#4f70d9",
-        "#3fa7b9",
-        "#ff8f45",
-        "#f2c84b",
-        "#7c4b36"
-      ];
-
-      const REQUESTS = [
-        {
-          text: "Can I have pink lipstick and sparkly cheeks?",
-          preferredTool: "lipstick",
-          preferredColor: "#ff4f87"
-        },
-        {
-          text: "Can you add purple face paint and a little glitter?",
-          preferredTool: "facepaint",
-          preferredColor: "#a64cce"
-        },
-        {
-          text: "I would love blue face paint and soft blush!",
-          preferredTool: "facepaint",
-          preferredColor: "#4f70d9"
-        },
-        {
-          text: "Can you give me red lipstick and pretty eyelashes?",
-          preferredTool: "lipstick",
-          preferredColor: "#d84666"
-        }
-      ];
-
-      const state = {
-        tool: null,
-        color: COLORS[0],
-        requestIndex: 0,
-        isDrawing: false,
-        lastPoint: null,
-        makeupLayer: null,
-        completedTools: new Set()
-      };
-
-      const face = {
-        centerX: 400,
-        centerY: 410,
-        radiusX: 205,
-        radiusY: 250,
-
-        leftEye: {
-          x: 325,
-          y: 390,
-          rx: 62,
-          ry: 42
-        },
-
-        rightEye: {
-          x: 475,
-          y: 390,
-          rx: 62,
-          ry: 42
-        },
-
-        lips: {
-          x: 400,
-          y: 545,
-          rx: 82,
-          ry: 36
-        },
-
-        leftCheek: {
-          x: 270,
-          y: 505,
-          rx: 72,
-          ry: 55
-        },
-
-        rightCheek: {
-          x: 530,
-          y: 505,
-          rx: 72,
-          ry: 55
-        }
-      };
-
-      let toastTimer = null;
-
-      function possessive(name) {
-        return name.endsWith("s")
-          ? `${name}' Studio`
-          : `${name}'s Studio`;
-      }
-
-      function showToast(message) {
-        toast.textContent =
-          message;
-
-        toast.classList.add(
-          "show"
-        );
-
-        window.clearTimeout(
-          toastTimer
-        );
-
-        toastTimer =
-          window.setTimeout(
-            () => {
-              toast.classList.remove(
-                "show"
-              );
-            },
-            2200
-          );
-      }
-
-      function drawRoundedRect(
-        ctx,
-        x,
-        y,
-        width,
-        height,
-        radius
-      ) {
-        const r =
-          Math.min(
-            radius,
-            width / 2,
-            height / 2
-          );
-
-        ctx.beginPath();
-        ctx.moveTo(x + r, y);
-        ctx.arcTo(
-          x + width,
-          y,
-          x + width,
-          y + height,
-          r
-        );
-        ctx.arcTo(
-          x + width,
-          y + height,
-          x,
-          y + height,
-          r
-        );
-        ctx.arcTo(
-          x,
-          y + height,
-          x,
-          y,
-          r
-        );
-        ctx.arcTo(
-          x,
-          y,
-          x + width,
-          y,
-          r
-        );
-        ctx.closePath();
-      }
-
-      function drawBaseCustomer() {
-        context.clearRect(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        const background =
-          context.createLinearGradient(
-            0,
-            0,
-            0,
-            canvas.height
-          );
-
-        background.addColorStop(
-          0,
-          "#f8fcff"
-        );
-
-        background.addColorStop(
-          1,
-          "#d9eef8"
-        );
-
-        context.fillStyle =
-          background;
-
-        context.fillRect(
-          0,
-          0,
-          canvas.width,
-          canvas.height
-        );
-
-        context.fillStyle =
-          "rgba(255,255,255,.5)";
-
-        for (
-          let i = 0;
-          i < 22;
-          i += 1
-        ) {
-          context.beginPath();
-          context.arc(
-            45 + (i * 91) % 730,
-            50 + (i * 67) % 850,
-            5 + (i % 4),
-            0,
-            Math.PI * 2
-          );
-          context.fill();
-        }
-
-        context.save();
-        context.shadowColor =
-          "rgba(54,55,96,.18)";
-        context.shadowBlur =
-          28;
-        context.shadowOffsetY =
-          18;
-
-        context.fillStyle =
-          "#6f55d9";
-
-        drawRoundedRect(
-          context,
-          165,
-          735,
-          470,
-          250,
-          90
-        );
-
-        context.fill();
-        context.restore();
-
-        context.fillStyle =
-          "#c98962";
-
-        drawRoundedRect(
-          context,
-          340,
-          650,
-          120,
-          160,
-          45
-        );
-
-        context.fill();
-
-        context.save();
-        context.fillStyle =
-          "#4a2c24";
-
-        context.beginPath();
-        context.ellipse(
-          400,
-          360,
-          252,
-          312,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        context.restore();
-
-        const skinGradient =
-          context.createRadialGradient(
-            340,
-            305,
-            45,
-            400,
-            410,
-            285
-          );
-
-        skinGradient.addColorStop(
-          0,
-          "#dfa57d"
-        );
-
-        skinGradient.addColorStop(
-          1,
-          "#bd7652"
-        );
-
-        context.fillStyle =
-          skinGradient;
-
-        context.beginPath();
-        context.ellipse(
-          face.centerX,
-          face.centerY,
-          face.radiusX,
-          face.radiusY,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        context.fillStyle =
-          "#c98962";
-
-        context.beginPath();
-        context.ellipse(
-          190,
-          420,
-          42,
-          62,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.ellipse(
-          610,
-          420,
-          42,
-          62,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        context.fillStyle =
-          "#4a2c24";
-
-        context.beginPath();
-        context.moveTo(
-          205,
-          355
-        );
-
-        context.bezierCurveTo(
-          210,
-          165,
-          320,
-          105,
-          400,
-          115
-        );
-
-        context.bezierCurveTo(
-          525,
-          90,
-          600,
-          190,
-          595,
-          355
-        );
-
-        context.bezierCurveTo(
-          545,
-          270,
-          505,
-          235,
-          455,
-          218
-        );
-
-        context.bezierCurveTo(
-          370,
-          200,
-          285,
-          230,
-          205,
-          355
-        );
-
-        context.closePath();
-        context.fill();
-
-        drawEye(
-          face.leftEye
-        );
-
-        drawEye(
-          face.rightEye
-        );
-
-        context.strokeStyle =
-          "#4d342d";
-
-        context.lineWidth =
-          16;
-
-        context.lineCap =
-          "round";
-
-        context.beginPath();
-        context.moveTo(
-          270,
-          330
-        );
-
-        context.quadraticCurveTo(
-          325,
-          302,
-          375,
-          329
-        );
-
-        context.stroke();
-
-        context.beginPath();
-        context.moveTo(
-          425,
-          329
-        );
-
-        context.quadraticCurveTo(
-          475,
-          302,
-          530,
-          330
-        );
-
-        context.stroke();
-
-        context.strokeStyle =
-          "rgba(93,50,39,.22)";
-
-        context.lineWidth =
-          8;
-
-        context.beginPath();
-        context.moveTo(
-          400,
-          408
-        );
-
-        context.quadraticCurveTo(
-          385,
-          477,
-          405,
-          483
-        );
-
-        context.stroke();
-
-        context.fillStyle =
-          "#c95675";
-
-        context.beginPath();
-        context.moveTo(
-          320,
-          545
-        );
-
-        context.quadraticCurveTo(
-          400,
-          620,
-          480,
-          545
-        );
-
-        context.quadraticCurveTo(
-          400,
-          600,
-          320,
-          545
-        );
-
-        context.fill();
-
-        context.strokeStyle =
-          "rgba(255,255,255,.48)";
-
-        context.lineWidth =
-          6;
-
-        context.beginPath();
-        context.moveTo(
-          345,
-          551
-        );
-
-        context.quadraticCurveTo(
-          400,
-          578,
-          455,
-          551
-        );
-
-        context.stroke();
-
-        context.fillStyle =
-          "rgba(255,120,145,.16)";
-
-        context.beginPath();
-        context.ellipse(
-          face.leftCheek.x,
-          face.leftCheek.y,
-          face.leftCheek.rx,
-          face.leftCheek.ry,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.ellipse(
-          face.rightCheek.x,
-          face.rightCheek.y,
-          face.rightCheek.rx,
-          face.rightCheek.ry,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        if (
-          state.makeupLayer
-        ) {
-          context.drawImage(
-            state.makeupLayer,
-            0,
-            0
-          );
-        }
-
-        context.fillStyle =
-          "rgba(255,255,255,.95)";
-
-        drawRoundedRect(
-          context,
-          230,
-          870,
-          340,
-          66,
-          33
-        );
-
-        context.fill();
-
-        context.fillStyle =
-          "#4e3aa9";
-
-        context.font =
-          "900 30px Arial";
-
-        context.textAlign =
-          "center";
-
-        context.fillText(
-          "Salon Customer",
-          400,
-          913
-        );
-      }
-
-      function drawEye(eye) {
-        context.fillStyle =
-          "#ffffff";
-
-        context.beginPath();
-        context.ellipse(
-          eye.x,
-          eye.y,
-          eye.rx,
-          eye.ry,
-          0,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        const iris =
-          context.createRadialGradient(
-            eye.x - 7,
-            eye.y - 7,
-            4,
-            eye.x,
-            eye.y,
-            28
-          );
-
-        iris.addColorStop(
-          0,
-          "#9a6b47"
-        );
-
-        iris.addColorStop(
-          1,
-          "#3e2d29"
-        );
-
-        context.fillStyle =
-          iris;
-
-        context.beginPath();
-        context.arc(
-          eye.x,
-          eye.y + 2,
-          26,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        context.fillStyle =
-          "#1f2027";
-
-        context.beginPath();
-        context.arc(
-          eye.x,
-          eye.y + 3,
-          12,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-
-        context.fillStyle =
-          "#ffffff";
-
-        context.beginPath();
-        context.arc(
-          eye.x - 8,
-          eye.y - 8,
-          7,
-          0,
-          Math.PI * 2
-        );
-
-        context.fill();
-      }
-
-      function makeMakeupLayer() {
-        const layer =
-          document.createElement(
-            "canvas"
-          );
-
-        layer.width =
-          canvas.width;
-
-        layer.height =
-          canvas.height;
-
-        return layer;
-      }
-
-      function renderTools() {
-        toolGrid.replaceChildren();
-
-        TOOLS.forEach(tool => {
-          const button =
-            document.createElement(
-              "button"
-            );
-
-          button.type =
-            "button";
-
-          button.className =
-            `tool-button${
-              state.tool === tool.id
-                ? " active"
-                : ""
-            }`;
-
-          button.innerHTML =
-            `<span class="tool-icon">${tool.icon}</span>${tool.name}`;
-
-          button.addEventListener(
-            "click",
-            () => {
-              state.tool =
-                tool.id;
-
-              renderTools();
-
-              instruction.textContent =
-                tool.instruction;
-
-              dragTool.textContent =
-                tool.icon;
-            }
-          );
-
-          toolGrid.appendChild(
-            button
-          );
-        });
-      }
-
-      function renderColors() {
-        colorSwatches.replaceChildren();
-
-        COLORS.forEach(color => {
-          const button =
-            document.createElement(
-              "button"
-            );
-
-          button.type =
-            "button";
-
-          button.className =
-            `swatch${
-              state.color === color
-                ? " active"
-                : ""
-            }`;
-
-          button.style.background =
-            color;
-
-          button.setAttribute(
-            "aria-label",
-            "Choose makeup color"
-          );
-
-          button.addEventListener(
-            "click",
-            () => {
-              state.color =
-                color;
-
-              renderColors();
-            }
-          );
-
-          colorSwatches.appendChild(
-            button
-          );
-        });
-      }
-
-      function canvasPoint(event) {
-        const rect =
-          canvas.getBoundingClientRect();
-
-        return {
-          x:
-            (
-              event.clientX -
-              rect.left
-            ) *
-            (
-              canvas.width /
-              rect.width
-            ),
-
-          y:
-            (
-              event.clientY -
-              rect.top
-            ) *
-            (
-              canvas.height /
-              rect.height
-            )
-        };
-      }
-
-      function insideEllipse(
-        point,
-        ellipse
-      ) {
-        const dx =
-          (
-            point.x -
-            ellipse.x
-          ) /
-          ellipse.rx;
-
-        const dy =
-          (
-            point.y -
-            ellipse.y
-          ) /
-          ellipse.ry;
-
-        return (
-          dx * dx +
-          dy * dy <=
-          1
-        );
-      }
-
-      function activeMakeupContext() {
-        return state.makeupLayer
-          .getContext(
-            "2d"
-          );
-      }
-
-      function applyToolAt(point) {
-        if (!state.tool) {
-          return;
-        }
-
-        const makeup =
-          activeMakeupContext();
-
-        if (
-          state.tool === "remover"
-        ) {
-          makeup.save();
-          makeup.globalCompositeOperation =
-            "destination-out";
-          makeup.beginPath();
-          makeup.arc(
-            point.x,
-            point.y,
-            45,
-            0,
-            Math.PI * 2
-          );
-          makeup.fill();
-          makeup.restore();
-
-          drawBaseCustomer();
-          return;
-        }
-
-        if (
-          state.tool === "lipstick" &&
-          insideEllipse(
-            point,
-            face.lips
-          )
-        ) {
-          makeup.globalAlpha =
-            .18;
-
-          makeup.fillStyle =
-            state.color;
-
-          makeup.beginPath();
-          makeup.arc(
-            point.x,
-            point.y,
-            18,
-            0,
-            Math.PI * 2
-          );
-
-          makeup.fill();
-
-          makeup.globalAlpha =
-            1;
-
-          state.completedTools.add(
-            "lipstick"
-          );
-        }
-
-        if (
-          state.tool === "blush" &&
-          (
-            insideEllipse(
-              point,
-              face.leftCheek
-            ) ||
-            insideEllipse(
-              point,
-              face.rightCheek
-            )
-          )
-        ) {
-          makeup.globalAlpha =
-            .08;
-
-          makeup.fillStyle =
-            state.color;
-
-          makeup.beginPath();
-          makeup.arc(
-            point.x,
-            point.y,
-            34,
-            0,
-            Math.PI * 2
-          );
-
-          makeup.fill();
-
-          makeup.globalAlpha =
-            1;
-
-          state.completedTools.add(
-            "blush"
-          );
-        }
-
-        if (
-          state.tool === "mascara" &&
-          (
-            insideEllipse(
-              point,
-              face.leftEye
-            ) ||
-            insideEllipse(
-              point,
-              face.rightEye
-            )
-          )
-        ) {
-          makeup.strokeStyle =
-            "#26232c";
-
-          makeup.lineWidth =
-            6;
-
-          makeup.lineCap =
-            "round";
-
-          makeup.beginPath();
-
-          makeup.moveTo(
-            point.x,
-            point.y - 15
-          );
-
-          makeup.lineTo(
-            point.x + 2,
-            point.y - 31
-          );
-
-          makeup.stroke();
-
-          state.completedTools.add(
-            "mascara"
-          );
-        }
-
-        if (
-          state.tool === "facepaint" &&
-          (
-            insideEllipse(
-              point,
-              face.leftCheek
-            ) ||
-            insideEllipse(
-              point,
-              face.rightCheek
-            )
-          )
-        ) {
-          makeup.fillStyle =
-            state.color;
-
-          drawStar(
-            makeup,
-            point.x,
-            point.y,
-            5,
-            17,
-            8
-          );
-
-          makeup.fill();
-
-          state.completedTools.add(
-            "facepaint"
-          );
-        }
-
-        if (
-          state.tool === "glitter" &&
-          (
-            insideEllipse(
-              point,
-              {
-                x:
-                  face.centerX,
-                y:
-                  face.centerY,
-                rx:
-                  face.radiusX,
-                ry:
-                  face.radiusY
-              }
-            )
-          )
-        ) {
-          makeup.fillStyle =
-            "#ffe66d";
-
-          for (
-            let i = 0;
-            i < 5;
-            i += 1
-          ) {
-            makeup.beginPath();
-
-            makeup.arc(
-              point.x +
-                (
-                  Math.random() -
-                  .5
-                ) *
-                38,
-
-              point.y +
-                (
-                  Math.random() -
-                  .5
-                ) *
-                38,
-
-              2 +
-                Math.random() *
-                4,
-
-              0,
-              Math.PI * 2
-            );
-
-            makeup.fill();
-          }
-
-          state.completedTools.add(
-            "glitter"
-          );
-        }
-
-        updateProgress();
-        drawBaseCustomer();
-      }
-
-      function drawStar(
-        ctx,
-        cx,
-        cy,
-        spikes,
-        outerRadius,
-        innerRadius
-      ) {
-        let rotation =
-          Math.PI / 2 * 3;
-
-        const step =
-          Math.PI / spikes;
-
-        ctx.beginPath();
-        ctx.moveTo(
-          cx,
-          cy - outerRadius
-        );
-
-        for (
-          let i = 0;
-          i < spikes;
-          i += 1
-        ) {
-          ctx.lineTo(
-            cx +
-              Math.cos(
-                rotation
-              ) *
-              outerRadius,
-
-            cy +
-              Math.sin(
-                rotation
-              ) *
-              outerRadius
-          );
-
-          rotation +=
-            step;
-
-          ctx.lineTo(
-            cx +
-              Math.cos(
-                rotation
-              ) *
-              innerRadius,
-
-            cy +
-              Math.sin(
-                rotation
-              ) *
-              innerRadius
-          );
-
-          rotation +=
-            step;
-        }
-
-        ctx.lineTo(
-          cx,
-          cy - outerRadius
-        );
-
-        ctx.closePath();
-      }
-
-      function updateProgress() {
-        const completed =
-          state.completedTools.size;
-
-        const percent =
-          Math.min(
-            100,
-            Math.round(
-              completed /
-              5 *
-              100
-            )
-          );
-
-        progressFill.style.width =
-          `${percent}%`;
-
-        progressText.textContent =
-          `${percent}%`;
-
-        if (percent === 100) {
-          showToast(
-            "The customer loves the makeover! 🌟"
-          );
-        }
-      }
-
-      function pointerDown(event) {
-        if (!state.tool) {
-          showToast(
-            "Choose a salon tool first."
-          );
-
-          return;
-        }
-
-        state.isDrawing =
-          true;
-
-        state.lastPoint =
-          canvasPoint(
-            event
-          );
-
-        dragTool.classList.add(
-          "visible"
-        );
-
-        dragTool.style.left =
-          `${event.clientX}px`;
-
-        dragTool.style.top =
-          `${event.clientY}px`;
-
-        canvas.setPointerCapture(
-          event.pointerId
-        );
-
-        applyToolAt(
-          state.lastPoint
-        );
-      }
-
-      function pointerMove(event) {
-        if (!state.isDrawing) {
-          return;
-        }
-
-        dragTool.style.left =
-          `${event.clientX}px`;
-
-        dragTool.style.top =
-          `${event.clientY}px`;
-
-        const point =
-          canvasPoint(
-            event
-          );
-
-        const previous =
-          state.lastPoint ||
-          point;
-
-        const distance =
-          Math.hypot(
-            point.x -
-            previous.x,
-
-            point.y -
-            previous.y
-          );
-
-        const steps =
-          Math.max(
-            1,
-            Math.ceil(
-              distance / 10
-            )
-          );
-
-        for (
-          let index = 1;
-          index <= steps;
-          index += 1
-        ) {
-          applyToolAt({
-            x:
-              previous.x +
-              (
-                point.x -
-                previous.x
-              ) *
-              (
-                index /
-                steps
-              ),
-
-            y:
-              previous.y +
-              (
-                point.y -
-                previous.y
-              ) *
-              (
-                index /
-                steps
-              )
-          });
-        }
-
-        state.lastPoint =
-          point;
-      }
-
-      function pointerUp(event) {
-        state.isDrawing =
-          false;
-
-        state.lastPoint =
-          null;
-
-        dragTool.classList.remove(
-          "visible"
-        );
-
-        if (
-          canvas.hasPointerCapture(
-            event.pointerId
-          )
-        ) {
-          canvas.releasePointerCapture(
-            event.pointerId
-          );
-        }
-      }
-
-      function resetMakeup() {
-        state.makeupLayer =
-          makeMakeupLayer();
-
-        state.completedTools.clear();
-
-        updateProgress();
-        drawBaseCustomer();
-
-        showToast(
-          "All makeup removed."
-        );
-      }
-
-      function newCustomer() {
-        state.requestIndex =
-          (
-            state.requestIndex +
-            1
-          ) %
-          REQUESTS.length;
-
-        const request =
-          REQUESTS[
-            state.requestIndex
-          ];
-
-        requestCard.textContent =
-          `“${request.text}”`;
-
-        state.color =
-          request.preferredColor;
-
-        state.tool =
-          request.preferredTool;
-
-        renderColors();
+    <aside class="panel finish">
+      <h2 class="panel-title">Colors & Finish</h2>
+      <p class="copy">Choose a makeup color and complete the makeover.</p>
+
+      <div id="colorSwatches" class="swatches"></div>
+
+      <div class="progress-card">
+        <div class="progress-title">
+          <span>Customer Happiness</span>
+          <span id="progressText">0%</span>
+        </div>
+        <div class="progress-track">
+          <div id="progressFill" class="progress-fill"></div>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button id="avatarButton" class="action avatar" type="button">🧒 Edit Permanent Avatar</button>
+        <button id="saveButton" class="action save" type="button">📸 Save Finished Look</button>
+        <button id="resetButton" class="action reset" type="button">🧽 Remove Makeup</button>
+      </div>
+
+      <div class="note">Saving keeps the makeover and updates the character shown in My World.</div>
+    </aside>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</main>
+
+<script type="module">
+  import {
+    loadAvatarStyle,
+    saveAvatarStyle,
+    saveAvatarImage,
+    renderAvatar
+  } from "./avatar-engine.js";
+
+  const childName=(localStorage.getItem("elcraft_child_name")||"Player").trim().slice(0,24)||"Player";
+  const state=loadAvatarStyle();
+  const completed=new Set();
+  let selectedTool=null;
+  let selectedColor="#ff4f87";
+  let drawing=false;
+  let toastTimer=null;
+
+  const tools=[
+    {id:"lipstick",label:"Lipstick",icon:"💄",instruction:"Drag over the mouth"},
+    {id:"mascara",label:"Mascara",icon:"👁️",instruction:"Tap near the eyes"},
+    {id:"blush",label:"Blush",icon:"🖌️",instruction:"Drag over the cheeks"},
+    {id:"paint",label:"Face Paint",icon:"🎨",instruction:"Tap the cheeks to add dots"},
+    {id:"glitter",label:"Glitter",icon:"✨",instruction:"Tap around the face for sparkle"},
+    {id:"remover",label:"Remover",icon:"🧽",instruction:"Tap makeup to remove it"}
+  ];
+
+  const colors=["#ff4f87","#d84666","#a64cce","#4f70d9","#3fa7b9","#ff8f45","#f2c84b","#7c4b36"];
+  const stage=document.getElementById("avatarStage");
+  const toolGrid=document.getElementById("toolGrid");
+  const swatches=document.getElementById("colorSwatches");
+  const instruction=document.getElementById("instruction");
+  const progressFill=document.getElementById("progressFill");
+  const progressText=document.getElementById("progressText");
+  const toast=document.getElementById("toast");
+
+  function showToast(text){
+    toast.textContent=text;toast.classList.add("show");clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>toast.classList.remove("show"),2200);
+  }
+
+  function render(){
+    renderAvatar(stage,state,{transparent:true});
+  }
+
+  function renderTools(){
+    toolGrid.replaceChildren();
+    tools.forEach(tool=>{
+      const button=document.createElement("button");
+      button.type="button";
+      button.className=`tool${selectedTool===tool.id?" active":""}`;
+      button.innerHTML=`<span class="tool-icon">${tool.icon}</span>${tool.label}`;
+      button.onclick=()=>{
+        selectedTool=tool.id;
+        instruction.textContent=tool.instruction;
         renderTools();
-        resetMakeup();
+      };
+      toolGrid.appendChild(button);
+    });
+  }
 
-        instruction.textContent =
-          TOOLS.find(
-            tool =>
-              tool.id ===
-              state.tool
-          )?.instruction ||
-          "Choose a tool to begin";
+  function renderColors(){
+    swatches.replaceChildren();
+    colors.forEach(color=>{
+      const button=document.createElement("button");
+      button.type="button";
+      button.className=`swatch${selectedColor===color?" active":""}`;
+      button.style.background=color;
+      button.onclick=()=>{selectedColor=color;renderColors()};
+      swatches.appendChild(button);
+    });
+  }
 
-        showToast(
-          "A new customer is ready! ✨"
-        );
-      }
+  function avatarPoint(event){
+    const svg=stage.querySelector("svg");
+    const rect=svg.getBoundingClientRect();
+    return{
+      x:(event.clientX-rect.left)*(420/rect.width),
+      y:(event.clientY-rect.top)*(560/rect.height)
+    };
+  }
 
-      function saveLook() {
-        const button =
-          document.getElementById(
-            "saveButton"
-          );
+  function apply(point){
+    if(!selectedTool)return;
 
-        button.disabled =
-          true;
-
-        button.textContent =
-          "Saving...";
-
-        try {
-          const avatarUrl =
-            canvas.toDataURL(
-              "image/png"
-            );
-
-          localStorage.setItem(
-            AVATAR_KEY,
-            avatarUrl
-          );
-
-          localStorage.setItem(
-            SAVE_KEY,
-            JSON.stringify({
-              savedAt:
-                new Date().toISOString(),
-
-              completedTools:
-                [
-                  ...state.completedTools
-                ],
-
-              requestIndex:
-                state.requestIndex
-            })
-          );
-
-          showToast(
-            "Finished look saved to My World! 📸"
-          );
-
-        } catch (error) {
-          console.error(
-            "Save look error:",
-            error
-          );
-
-          showToast(
-            "Unable to save this look."
-          );
-
-        } finally {
-          button.disabled =
-            false;
-
-          button.textContent =
-            "📸 Save Finished Look";
-        }
-      }
-
-      canvas.addEventListener(
-        "pointerdown",
-        pointerDown
-      );
-
-      canvas.addEventListener(
-        "pointermove",
-        pointerMove
-      );
-
-      canvas.addEventListener(
-        "pointerup",
-        pointerUp
-      );
-
-      canvas.addEventListener(
-        "pointercancel",
-        pointerUp
-      );
-
-      document
-        .getElementById(
-          "backButton"
-        )
-        .addEventListener(
-          "click",
-          () => {
-            window.location.href =
-              "my-city.html";
-          }
-        );
-
-      document
-        .getElementById(
-          "newCustomerButton"
-        )
-        .addEventListener(
-          "click",
-          newCustomer
-        );
-
-      document
-        .getElementById(
-          "resetButton"
-        )
-        .addEventListener(
-          "click",
-          resetMakeup
-        );
-
-      document
-        .getElementById(
-          "saveButton"
-        )
-        .addEventListener(
-          "click",
-          saveLook
-        );
-
-      playerPill.textContent =
-        `✨ ${possessive(childName)}`;
-
-      state.makeupLayer =
-        makeMakeupLayer();
-
-      renderTools();
-      renderColors();
+    if(selectedTool==="remover"){
+      state.facePaint=[];
+      state.glitter=[];
+      state.mascara=false;
+      state.lipstick="#c95675";
+      state.blush="#ef8fa6";
+      completed.clear();
       updateProgress();
-      drawBaseCustomer();
-    })();
-  </script>
+      render();
+      return;
+    }
 
-  <script
-    type="module"
-    src="notification-bell.js">
-  </script>
+    if(selectedTool==="lipstick"&&point.y>215&&point.y<280&&point.x>160&&point.x<260){
+      state.lipstick=selectedColor;
+      completed.add("lipstick");
+    }
 
-  <script
-    type="module"
-    src="parent-gate.js">
-  </script>
+    if(selectedTool==="mascara"&&point.y>135&&point.y<220){
+      state.mascara=true;
+      completed.add("mascara");
+    }
+
+    if(selectedTool==="blush"&&point.y>185&&point.y<255){
+      state.blush=selectedColor;
+      completed.add("blush");
+    }
+
+    if(selectedTool==="paint"&&point.y>180&&point.y<260){
+      state.facePaint=[
+        ...(state.facePaint||[]),
+        {x:point.x,y:point.y,size:5,color:selectedColor}
+      ].slice(-24);
+      completed.add("paint");
+    }
+
+    if(selectedTool==="glitter"&&point.y>100&&point.y<290){
+      const marks=Array.from({length:4},()=>({
+        x:point.x+(Math.random()-.5)*30,
+        y:point.y+(Math.random()-.5)*30,
+        size:2+Math.random()*2
+      }));
+      state.glitter=[...(state.glitter||[]),...marks].slice(-50);
+      completed.add("glitter");
+    }
+
+    updateProgress();
+    render();
+  }
+
+  function updateProgress(){
+    const percent=Math.min(100,completed.size*20);
+    progressFill.style.width=`${percent}%`;
+    progressText.textContent=`${percent}%`;
+    if(percent===100)showToast("The makeover is complete! 🌟");
+  }
+
+  stage.onpointerdown=event=>{
+    if(!selectedTool){showToast("Choose a salon tool first.");return}
+    drawing=true;
+    stage.setPointerCapture(event.pointerId);
+    apply(avatarPoint(event));
+  };
+  stage.onpointermove=event=>{if(drawing)apply(avatarPoint(event))};
+  stage.onpointerup=event=>{
+    drawing=false;
+    if(stage.hasPointerCapture(event.pointerId))stage.releasePointerCapture(event.pointerId)
+  };
+  stage.onpointercancel=()=>drawing=false;
+
+  document.getElementById("backButton").onclick=()=>location.href="my-city.html";
+  document.getElementById("avatarButton").onclick=()=>location.href="avatar-studio.html";
+
+  document.getElementById("resetButton").onclick=()=>{
+    state.facePaint=[];
+    state.glitter=[];
+    state.mascara=false;
+    state.lipstick="#c95675";
+    state.blush="#ef8fa6";
+    completed.clear();
+    updateProgress();
+    render();
+    showToast("Makeup removed.");
+  };
+
+  document.getElementById("saveButton").onclick=()=>{
+    saveAvatarStyle(state);
+    saveAvatarImage(state);
+    showToast("Finished look saved to My World! 📸");
+  };
+
+  document.getElementById("playerPill").textContent=`✨ ${childName.endsWith("s")?`${childName}' Studio`:`${childName}'s Studio`}`;
+
+  renderTools();
+  renderColors();
+  updateProgress();
+  render();
+</script>
+
+<script type="module" src="notification-bell.js"></script>
+<script type="module" src="parent-gate.js"></script>
 </body>
 </html>
