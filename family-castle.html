@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#6d8ef7">
+
+  <title>Family Castle | ELCraft</title>
+
+  <style>
+    :root {
+      --purple: #6557d9;
+      --dark-purple: #443a9a;
+      --gold: #ffd66b;
+      --cream: #fffaf0;
+      --ink: #34385f;
+      --muted: #73799a;
+      --card: rgba(255, 255, 255, 0.95);
+      --shadow: 0 22px 55px rgba(31, 33, 88, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      overflow-x: hidden;
+
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 18% 15%,
+          rgba(255, 255, 255, 0.6),
+          transparent 22%
+        ),
+        linear-gradient(
+          180deg,
+          #7dcfff 0%,
+          #a6ddff 42%,
+          #80c884 42%,
+          #4f9e61 100%
+        );
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .page {
+      position: relative;
+      z-index: 2;
+
+      width: min(1280px, 100%);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 18px;
+    }
+
+    .cloud {
+      position: fixed;
+      z-index: 0;
+
+      width: 180px;
+      height: 55px;
+      border-radius: 999px;
+
+      background: rgba(255, 255, 255, 0.78);
+
+      animation: cloudMove 26s linear infinite;
+      pointer-events: none;
+    }
+
+    .cloud::before,
+    .cloud::after {
+      content: "";
+      position: absolute;
+
+      border-radius: 50%;
+      background: inherit;
+    }
+
+    .cloud::before {
+      width: 80px;
+      height: 80px;
+      left: 28px;
+      top: -35px;
+    }
+
+    .cloud::after {
+      width: 95px;
+      height: 95px;
+      right: 25px;
+      top: -48px;
+    }
+
+    .cloud-one {
+      top: 90px;
+      left: -220px;
+    }
+
+    .cloud-two {
+      top: 220px;
+      left: -320px;
+      transform: scale(0.72);
+      animation-delay: -13s;
+    }
+
+    @keyframes cloudMove {
+      from {
+        transform: translateX(0);
+      }
+
+      to {
+        transform: translateX(calc(100vw + 500px));
+      }
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+
+      width: 100%;
+      margin-bottom: 18px;
+      border: 3px solid rgba(255, 255, 255, 0.72);
+      border-radius: 22px;
+      padding: 13px 16px;
+
+      background: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 12px 28px rgba(46, 48, 105, 0.2);
+      backdrop-filter: blur(10px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 38px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      color: var(--purple);
+      font-size: clamp(24px, 5vw, 36px);
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .topbar-button {
+      border: 0;
+      border-radius: 13px;
+      padding: 10px 13px;
+
+      color: var(--dark-purple);
+      background: #ebe9ff;
+
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .topbar-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 18px;
+
+      margin-bottom: 18px;
+      border: 4px solid rgba(255, 255, 255, 0.82);
+      border-radius: 28px;
+      padding: clamp(20px, 4vw, 34px);
+
+      background:
+        linear-gradient(
+          135deg,
+          rgba(255, 255, 255, 0.96),
+          rgba(246, 241, 255, 0.94)
+        );
+
+      box-shadow: var(--shadow);
+    }
+
+    .hero h2 {
+      margin: 0;
+
+      color: var(--purple);
+      font-size: clamp(31px, 6vw, 54px);
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 9px 0 0;
+
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .family-summary {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 10px;
+    }
+
+    .summary-pill {
+      min-width: 104px;
+      border: 2px solid #e5e1fa;
+      border-radius: 17px;
+      padding: 12px;
+
+      background: white;
+      text-align: center;
+    }
+
+    .summary-number {
+      color: var(--purple);
+      font-size: 24px;
+      font-weight: 900;
+    }
+
+    .summary-label {
+      margin-top: 3px;
+
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .castle-stage {
+      position: relative;
+
+      min-height: 660px;
+      border: 5px solid rgba(255, 
