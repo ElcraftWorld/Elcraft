@@ -11,7 +11,7 @@ export const SUPABASE_URL =
     .replace("ItI", "ltl");
 
 export const SUPABASE_ANON_KEY =
-  "PASTE_YOUR_PUBLIC_SUPABASE_ANON_KEY_HERE";
+  "sb_publishable_rxMz0MPjI16b1cXND8uQug_4A7wJMk1";
 
 export const APP_URL =
   "https://elcraft.vercel.app";
