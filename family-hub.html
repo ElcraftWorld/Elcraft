@@ -1,0 +1,1813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#6ec6ff">
+
+  <title>Family Hub | ELCraft</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px;
+
+      color: #30365d;
+      font-family: Arial, Helvetica, sans-serif;
+
+      background:
+        radial-gradient(
+          circle at 15% 15%,
+          rgba(255, 255, 255, 0.72),
+          transparent 24%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(176, 115, 255, 0.42),
+          transparent 28%
+        ),
+        linear-gradient(
+          145deg,
+          #72d5ff 0%,
+          #72b9ff 46%,
+          #a889ff 100%
+        );
+    }
+
+    button {
+      font: inherit;
+    }
+
+    .page {
+      width: min(1160px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      color: white;
+      text-shadow: 0 3px 8px rgba(39, 46, 111, 0.3);
+    }
+
+    .brand-icon {
+      font-size: 42px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 42px);
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .topbar-button {
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      padding: 11px 16px;
+
+      color: #554dbd;
+      background: rgba(255, 255, 255, 0.94);
+
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .main-card {
+      border: 4px solid rgba(255, 255, 255, 0.85);
+      border-radius: 32px;
+      padding: clamp(22px, 5vw, 42px);
+
+      background: rgba(255, 255, 255, 0.97);
+
+      box-shadow:
+        0 24px 65px rgba(42, 48, 120, 0.28);
+    }
+
+    .heading {
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .heading h2 {
+      margin: 0;
+
+      color: #554ecb;
+      font-size: clamp(30px, 6vw, 48px);
+    }
+
+    .heading p {
+      margin: 10px 0 0;
+
+      color: #697198;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .account-email {
+      margin-top: 8px;
+
+      color: #8a8fab;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      min-height: 260px;
+
+      color: #5b54c9;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+      gap: 14px;
+
+      margin-bottom: 24px;
+    }
+
+    .summary-card {
+      border: 2px solid #e4e1f8;
+      border-radius: 20px;
+      padding: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #ffffff,
+          #f5f2ff
+        );
+
+      text-align: center;
+    }
+
+    .summary-icon {
+      font-size: 30px;
+    }
+
+    .summary-number {
+      margin-top: 5px;
+
+      color: #5149c1;
+      font-size: 31px;
+      font-weight: 900;
+    }
+
+    .summary-label {
+      margin-top: 3px;
+
+      color: #757b9b;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.4fr)
+        minmax(300px, 0.8fr);
+      gap: 20px;
+    }
+
+    .panel {
+      border: 3px solid #e4e1f8;
+      border-radius: 25px;
+      padding: 22px;
+
+      background:
+        linear-gradient(
+          150deg,
+          #ffffff,
+          #f8f6ff
+        );
+
+      box-shadow:
+        0 9px 20px rgba(73, 65, 157, 0.1);
+    }
+
+    .panel + .panel {
+      margin-top: 20px;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      margin-bottom: 17px;
+    }
+
+    .panel-heading h3 {
+      margin: 0;
+
+      color: #4d47ba;
+      font-size: 25px;
+    }
+
+    .panel-heading p {
+      margin: 5px 0 0;
+
+      color: #787e9e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .primary-button {
+      flex: 0 0 auto;
+
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 14px;
+
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #6559f4,
+          #9168ff
+        );
+
+      box-shadow: 0 4px 0 #4942bc;
+
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .members-list,
+    .invitations-list,
+    .activity-list,
+    .challenges-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .member-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+
+      border: 2px solid #e3e0f7;
+      border-radius: 19px;
+      padding: 15px;
+
+      background: white;
+    }
+
+    .member-avatar {
+      width: 58px;
+      height: 58px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #dff4ff,
+          #ded5ff
+        );
+
+      box-shadow:
+        0 6px 15px rgba(68, 65, 145, 0.15);
+
+      font-size: 31px;
+    }
+
+    .member-copy {
+      min-width: 0;
+    }
+
+    .member-name {
+      margin: 0;
+
+      color: #4d47ba;
+      font-size: 19px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .member-details {
+      margin-top: 4px;
+
+      color: #747a9b;
+      font-size: 13px;
+      font-weight: 800;
+      overflow-wrap: anywhere;
+    }
+
+    .member-badge {
+      display: inline-block;
+
+      margin-top: 7px;
+      border-radius: 999px;
+      padding: 6px 9px;
+
+      color: #765016;
+      background: #fff0cb;
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .status-badge {
+      flex: 0 0 auto;
+
+      border-radius: 999px;
+      padding: 7px 9px;
+
+      color: #287342;
+      background: #e4f7ea;
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .owner-status {
+      color: #5745b8;
+      background: #ece8ff;
+    }
+
+    .invitation-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 13px;
+
+      border: 2px solid #eadfc8;
+      border-radius: 18px;
+      padding: 14px;
+
+      background: #fffdf7;
+    }
+
+    .invitation-icon {
+      width: 48px;
+      height: 48px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #fff0d4;
+      font-size: 26px;
+    }
+
+    .invitation-copy {
+      min-width: 0;
+    }
+
+    .invitation-copy strong {
+      display: block;
+
+      color: #5a4f86;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .invitation-copy small {
+      display: block;
+      margin-top: 3px;
+
+      color: #7e829c;
+      overflow-wrap: anywhere;
+    }
+
+    .pending-status {
+      border-radius: 999px;
+      padding: 7px 9px;
+
+      color: #8a5d19;
+      background: #fff1d7;
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+
+      border: 2px solid #e3e0f7;
+      border-radius: 17px;
+      padding: 13px;
+
+      background: white;
+    }
+
+    .activity-icon {
+      flex: 0 0 auto;
+
+      width: 42px;
+      height: 42px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #eeeaff;
+      font-size: 22px;
+    }
+
+    .activity-copy {
+      min-width: 0;
+    }
+
+    .activity-copy strong {
+      color: #4d47ba;
+    }
+
+    .activity-copy p {
+      margin: 0;
+
+      color: #626887;
+      font-size: 14px;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .activity-copy small {
+      display: block;
+      margin-top: 4px;
+
+      color: #9599ae;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    .challenge-card {
+      border: 2px solid #e3e0f7;
+      border-radius: 18px;
+      padding: 15px;
+
+      background: white;
+    }
+
+    .challenge-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .challenge-title {
+      margin: 0;
+
+      color: #4d47ba;
+      font-size: 16px;
+    }
+
+    .challenge-percent {
+      color: #6f66d3;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .progress-track {
+      width: 100%;
+      height: 12px;
+
+      margin-top: 12px;
+      border-radius: 999px;
+
+      background: #ebe9f5;
+      overflow: hidden;
+    }
+
+    .progress-fill {
+      height: 100%;
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          #6ed0ff,
+          #9270f7
+        );
+    }
+
+    .challenge-description {
+      margin: 8px 0 0;
+
+      color: #8085a1;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .empty-state {
+      border: 2px dashed #d7d3f2;
+      border-radius: 17px;
+      padding: 20px;
+
+      color: #777d9c;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .message {
+      display: none;
+
+      margin: 20px 0 0;
+      padding: 13px 16px;
+
+      border-radius: 14px;
+
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .message.error {
+      display: block;
+
+      border: 1px solid #eeaab2;
+
+      color: #a52d40;
+      background: #ffe8ec;
+    }
+
+    @media (max-width: 900px) {
+      .summary-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .topbar-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .topbar-button {
+        padding: 9px 12px;
+      }
+
+      .brand-icon {
+        font-size: 34px;
+      }
+
+      .main-card {
+        border-radius: 25px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .panel-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .primary-button {
+        width: 100%;
+      }
+
+      .member-card,
+      .invitation-card {
+        grid-template-columns: auto 1fr;
+      }
+
+      .status-badge,
+      .pending-status {
+        grid-column: 1 / -1;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="topbar">
+
+      <div class="brand">
+        <div class="brand-icon">🏰</div>
+        <h1>ELCraft</h1>
+      </div>
+
+      <div class="topbar-actions">
+
+        <button
+          id="dashboardButton"
+          class="topbar-button"
+          type="button">
+          Parent Dashboard
+        </button>
+
+        <button
+          id="logoutButton"
+          class="topbar-button"
+          type="button">
+          Log Out
+        </button>
+
+      </div>
+
+    </header>
+
+    <section class="main-card">
+
+      <div class="heading">
+
+        <h2 id="familyTitle">
+          Family Hub
+        </h2>
+
+        <p>
+          Your family's shared learning journey.
+        </p>
+
+        <div
+          id="accountEmail"
+          class="account-email">
+        </div>
+
+      </div>
+
+      <div
+        id="loading"
+        class="loading">
+        Loading your family...
+      </div>
+
+      <div
+        id="hubContent"
+        hidden>
+
+        <section class="summary-grid">
+
+          <article class="summary-card">
+            <div class="summary-icon">👧</div>
+
+            <div
+              id="childrenCount"
+              class="summary-number">
+              0
+            </div>
+
+            <div class="summary-label">
+              Children
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-icon">👨‍👩‍👧</div>
+
+            <div
+              id="adultsCount"
+              class="summary-number">
+              0
+            </div>
+
+            <div class="summary-label">
+              Adults
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-icon">✉️</div>
+
+            <div
+              id="pendingCount"
+              class="summary-number">
+              0
+            </div>
+
+            <div class="summary-label">
+              Pending Invites
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-icon">⭐</div>
+
+            <div
+              id="familyPoints"
+              class="summary-number">
+              0
+            </div>
+
+            <div class="summary-label">
+              Family Points
+            </div>
+          </article>
+
+        </section>
+
+        <section class="dashboard-grid">
+
+          <div>
+
+            <section class="panel">
+
+              <div class="panel-heading">
+
+                <div>
+                  <h3>👨‍👩‍👧 Family Members</h3>
+
+                  <p>
+                    Everyone connected to your ELCraft family.
+                  </p>
+                </div>
+
+                <button
+                  id="manageFamilyButton"
+                  class="primary-button"
+                  type="button">
+                  Manage Family
+                </button>
+
+              </div>
+
+              <div
+                id="membersList"
+                class="members-list">
+              </div>
+
+            </section>
+
+            <section class="panel">
+
+              <div class="panel-heading">
+
+                <div>
+                  <h3>✉️ Pending Invitations</h3>
+
+                  <p>
+                    Invitations waiting to be accepted.
+                  </p>
+                </div>
+
+                <button
+                  id="inviteFamilyButton"
+                  class="primary-button"
+                  type="button">
+                  Invite Family
+                </button>
+
+              </div>
+
+              <div
+                id="invitationsList"
+                class="invitations-list">
+              </div>
+
+            </section>
+
+          </div>
+
+          <div>
+
+            <section class="panel">
+
+              <div class="panel-heading">
+                <div>
+                  <h3>💜 Recent Activity</h3>
+
+                  <p>
+                    Recent family and child activity.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                id="activityList"
+                class="activity-list">
+              </div>
+
+            </section>
+
+            <section class="panel">
+
+              <div class="panel-heading">
+                <div>
+                  <h3>🏆 Family Challenges</h3>
+
+                  <p>
+                    Shared goals for the whole family.
+                  </p>
+                </div>
+              </div>
+
+              <div
+                id="challengesList"
+                class="challenges-list">
+              </div>
+
+            </section>
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <div
+        id="pageMessage"
+        class="message"
+        role="status"
+        aria-live="polite">
+      </div>
+
+    </section>
+
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
+
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const loading =
+      document.getElementById("loading");
+
+    const hubContent =
+      document.getElementById("hubContent");
+
+    const familyTitle =
+      document.getElementById("familyTitle");
+
+    const accountEmail =
+      document.getElementById("accountEmail");
+
+    const childrenCount =
+      document.getElementById("childrenCount");
+
+    const adultsCount =
+      document.getElementById("adultsCount");
+
+    const pendingCount =
+      document.getElementById("pendingCount");
+
+    const familyPoints =
+      document.getElementById("familyPoints");
+
+    const membersList =
+      document.getElementById("membersList");
+
+    const invitationsList =
+      document.getElementById("invitationsList");
+
+    const activityList =
+      document.getElementById("activityList");
+
+    const challengesList =
+      document.getElementById("challengesList");
+
+    const pageMessage =
+      document.getElementById("pageMessage");
+
+    const dashboardButton =
+      document.getElementById("dashboardButton");
+
+    const manageFamilyButton =
+      document.getElementById("manageFamilyButton");
+
+    const inviteFamilyButton =
+      document.getElementById("inviteFamilyButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    let currentUser = null;
+    let currentFamilyId = null;
+
+    function showError(text) {
+      pageMessage.textContent = text;
+      pageMessage.className = "message error";
+    }
+
+    function getFirstName(user) {
+      const metadataName =
+        user?.user_metadata?.display_name ||
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.name;
+
+      if (metadataName) {
+        return String(metadataName)
+          .trim()
+          .split(/\s+/)[0]
+          .slice(0, 30);
+      }
+
+      const emailName =
+        String(user?.email || "")
+          .split("@")[0]
+          .replace(/[._-]+/g, " ")
+          .trim()
+          .split(/\s+/)[0];
+
+      if (!emailName) {
+        return "Family";
+      }
+
+      return (
+        emailName.charAt(0).toUpperCase() +
+        emailName.slice(1)
+      );
+    }
+
+    function relationshipLabel(value) {
+      const labels = {
+        parent: "Parent / Stepparent",
+        grandparent: "Grandparent",
+        older_sibling: "Older sibling",
+        aunt_uncle: "Aunt / Uncle",
+        guardian: "Guardian",
+        family_member: "Family member"
+      };
+
+      return labels[value] || "Family member";
+    }
+
+    function relationshipEmoji(value) {
+      const emojis = {
+        parent: "👨‍👩‍👧",
+        grandparent: "👵",
+        older_sibling: "🧑",
+        aunt_uncle: "💜",
+        guardian: "🛡️",
+        family_member: "⭐"
+      };
+
+      return emojis[value] || "⭐";
+    }
+
+    function adultBadge(member) {
+      if (member.member_role === "owner") {
+        return "🏅 Learning Guide";
+      }
+
+      const badges = {
+        parent: "🏆 Homework Hero",
+        grandparent: "📚 Story Reader",
+        older_sibling: "🌟 Learning Buddy",
+        aunt_uncle: "❤️ Encourager",
+        guardian: "🛡️ Family Guide",
+        family_member: "💜 Family Supporter"
+      };
+
+      return (
+        badges[member.relationship] ||
+        "💜 Family Supporter"
+      );
+    }
+
+    function formatDate(value) {
+      if (!value) {
+        return "";
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
+
+      return date.toLocaleDateString(
+        undefined,
+        {
+          month: "short",
+          day: "numeric",
+          year: "numeric"
+        }
+      );
+    }
+
+    function formatRelativeDate(value) {
+      if (!value) {
+        return "";
+      }
+
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
+
+      const difference =
+        Date.now() - date.getTime();
+
+      const days =
+        Math.floor(
+          difference / 86400000
+        );
+
+      if (days <= 0) {
+        return "Today";
+      }
+
+      if (days === 1) {
+        return "Yesterday";
+      }
+
+      if (days < 7) {
+        return `${days} days ago`;
+      }
+
+      return formatDate(value);
+    }
+
+    function renderMembers(members) {
+      membersList.replaceChildren();
+
+      adultsCount.textContent =
+        String(members.length);
+
+      if (!members.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "No family members are connected yet.";
+
+        membersList.appendChild(empty);
+        return;
+      }
+
+      members.forEach(member => {
+        const card =
+          document.createElement("article");
+
+        card.className = "member-card";
+
+        const avatar =
+          document.createElement("div");
+
+        avatar.className = "member-avatar";
+
+        avatar.textContent =
+          member.member_role === "owner"
+            ? "👑"
+            : relationshipEmoji(
+                member.relationship
+              );
+
+        const copy =
+          document.createElement("div");
+
+        copy.className = "member-copy";
+
+        const name =
+          document.createElement("h4");
+
+        name.className = "member-name";
+
+        name.textContent =
+          member.display_name ||
+          (
+            member.member_role === "owner"
+              ? getFirstName(currentUser)
+              : "Family Member"
+          );
+
+        const details =
+          document.createElement("div");
+
+        details.className =
+          "member-details";
+
+        const roleText =
+          member.member_role === "owner"
+            ? "Owner"
+            : relationshipLabel(
+                member.relationship
+              );
+
+        const emailText =
+          member.email
+            ? ` · ${member.email}`
+            : "";
+
+        details.textContent =
+          `${roleText}${emailText}`;
+
+        const badge =
+          document.createElement("span");
+
+        badge.className =
+          "member-badge";
+
+        badge.textContent =
+          adultBadge(member);
+
+        copy.append(
+          name,
+          details,
+          badge
+        );
+
+        const status =
+          document.createElement("span");
+
+        status.className =
+          member.member_role === "owner"
+            ? "status-badge owner-status"
+            : "status-badge";
+
+        status.textContent =
+          member.member_role === "owner"
+            ? "Owner"
+            : "Connected";
+
+        card.append(
+          avatar,
+          copy,
+          status
+        );
+
+        membersList.appendChild(card);
+      });
+    }
+
+    function renderInvitations(invitations) {
+      invitationsList.replaceChildren();
+
+      pendingCount.textContent =
+        String(invitations.length);
+
+      if (!invitations.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "There are no pending invitations.";
+
+        invitationsList.appendChild(empty);
+        return;
+      }
+
+      invitations.forEach(invitation => {
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "invitation-card";
+
+        const icon =
+          document.createElement("div");
+
+        icon.className =
+          "invitation-icon";
+
+        icon.textContent = "✉️";
+
+        const copy =
+          document.createElement("div");
+
+        copy.className =
+          "invitation-copy";
+
+        const name =
+          document.createElement("strong");
+
+        name.textContent =
+          invitation.display_name ||
+          invitation.email ||
+          "Invited family member";
+
+        const details =
+          document.createElement("small");
+
+        const relationship =
+          relationshipLabel(
+            invitation.relationship
+          );
+
+        const sentDate =
+          formatRelativeDate(
+            invitation.created_at
+          );
+
+        details.textContent =
+          invitation.email
+            ? `${relationship} · ${invitation.email} · Sent ${sentDate}`
+            : `${relationship} · Sent ${sentDate}`;
+
+        copy.append(
+          name,
+          details
+        );
+
+        const status =
+          document.createElement("span");
+
+        status.className =
+          "pending-status";
+
+        status.textContent =
+          "Pending";
+
+        card.append(
+          icon,
+          copy,
+          status
+        );
+
+        invitationsList.appendChild(card);
+      });
+    }
+
+    function createActivityItem({
+      icon,
+      message,
+      date
+    }) {
+      const item =
+        document.createElement("article");
+
+      item.className = "activity-item";
+
+      const iconBox =
+        document.createElement("div");
+
+      iconBox.className =
+        "activity-icon";
+
+      iconBox.textContent = icon;
+
+      const copy =
+        document.createElement("div");
+
+      copy.className =
+        "activity-copy";
+
+      const paragraph =
+        document.createElement("p");
+
+      paragraph.textContent = message;
+
+      const time =
+        document.createElement("small");
+
+      time.textContent =
+        formatRelativeDate(date);
+
+      copy.append(
+        paragraph,
+        time
+      );
+
+      item.append(
+        iconBox,
+        copy
+      );
+
+      return item;
+    }
+
+    function renderActivity(
+      members,
+      invitations,
+      children
+    ) {
+      activityList.replaceChildren();
+
+      const events = [];
+
+      children.forEach(child => {
+        events.push({
+          icon: child.avatar || "🌟",
+          message:
+            `${child.display_name || "A child"} joined ELCraft.`,
+          date: child.created_at
+        });
+      });
+
+      members.forEach(member => {
+        if (
+          member.member_role !== "owner"
+        ) {
+          events.push({
+            icon:
+              relationshipEmoji(
+                member.relationship
+              ),
+            message:
+              `${member.display_name || "A family member"} joined the family.`,
+            date: member.created_at
+          });
+        }
+      });
+
+      invitations.forEach(invitation => {
+        events.push({
+          icon: "✉️",
+          message:
+            `An invitation was sent to ${
+              invitation.display_name ||
+              invitation.email ||
+              "a family member"
+            }.`,
+          date: invitation.created_at
+        });
+      });
+
+      events.sort(
+        (first, second) => {
+          return (
+            new Date(
+              second.date || 0
+            ).getTime() -
+            new Date(
+              first.date || 0
+            ).getTime()
+          );
+        }
+      );
+
+      const visibleEvents =
+        events.slice(0, 6);
+
+      if (!visibleEvents.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "Family activity will appear here.";
+
+        activityList.appendChild(empty);
+        return;
+      }
+
+      visibleEvents.forEach(event => {
+        activityList.appendChild(
+          createActivityItem(event)
+        );
+      });
+    }
+
+    function renderChallenges(children) {
+      challengesList.replaceChildren();
+
+      const totalStars =
+        children.reduce(
+          (sum, child) =>
+            sum +
+            Number(child.stars || 0),
+          0
+        );
+
+      const totalLevels =
+        children.reduce(
+          (sum, child) =>
+            sum +
+            Number(child.level || 1),
+          0
+        );
+
+      const challenges = [
+        {
+          title: "Earn 500 Family Stars",
+          current: Math.min(
+            totalStars,
+            500
+          ),
+          goal: 500,
+          description:
+            `${totalStars} of 500 child stars earned`
+        },
+        {
+          title: "Reach 25 Combined Levels",
+          current: Math.min(
+            totalLevels,
+            25
+          ),
+          goal: 25,
+          description:
+            `${totalLevels} of 25 combined levels`
+        },
+        {
+          title: "Grow the Family",
+          current: Math.min(
+            Number(adultsCount.textContent || 0),
+            5
+          ),
+          goal: 5,
+          description:
+            `${adultsCount.textContent} of 5 adults connected`
+        }
+      ];
+
+      challenges.forEach(challenge => {
+        const percent =
+          Math.min(
+            100,
+            Math.round(
+              (
+                challenge.current /
+                challenge.goal
+              ) * 100
+            )
+          );
+
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "challenge-card";
+
+        const top =
+          document.createElement("div");
+
+        top.className =
+          "challenge-top";
+
+        const title =
+          document.createElement("h4");
+
+        title.className =
+          "challenge-title";
+
+        title.textContent =
+          challenge.title;
+
+        const percentText =
+          document.createElement("span");
+
+        percentText.className =
+          "challenge-percent";
+
+        percentText.textContent =
+          `${percent}%`;
+
+        top.append(
+          title,
+          percentText
+        );
+
+        const track =
+          document.createElement("div");
+
+        track.className =
+          "progress-track";
+
+        const fill =
+          document.createElement("div");
+
+        fill.className =
+          "progress-fill";
+
+        fill.style.width =
+          `${percent}%`;
+
+        track.appendChild(fill);
+
+        const description =
+          document.createElement("p");
+
+        description.className =
+          "challenge-description";
+
+        description.textContent =
+          challenge.description;
+
+        card.append(
+          top,
+          track,
+          description
+        );
+
+        challengesList.appendChild(card);
+      });
+
+      familyPoints.textContent =
+        String(totalStars);
+    }
+
+    async function loadFamilyHub() {
+      const {
+        data: userData,
+        error: userError
+      } = await supabase.auth.getUser();
+
+      if (
+        userError ||
+        !userData.user
+      ) {
+        window.location.replace(
+          "auth.html"
+        );
+
+        return;
+      }
+
+      currentUser =
+        userData.user;
+
+      accountEmail.textContent =
+        currentUser.email || "";
+
+      const firstName =
+        getFirstName(currentUser);
+
+      familyTitle.textContent =
+        `${firstName}'s Family Hub`;
+
+      const {
+        data: memberships,
+        error: membershipError
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, family_id, display_name, email, relationship, member_role, status, created_at"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .eq(
+          "status",
+          "active"
+        );
+
+      if (membershipError) {
+        throw membershipError;
+      }
+
+      const ownerMembership =
+        (memberships || []).find(
+          membership =>
+            membership.member_role ===
+            "owner"
+        );
+
+      if (!ownerMembership) {
+        window.location.replace(
+          "profiles.html"
+        );
+
+        return;
+      }
+
+      currentFamilyId =
+        ownerMembership.family_id;
+
+      const [
+        membersResult,
+        invitationsResult,
+        childrenResult
+      ] = await Promise.all([
+
+        supabase
+          .from("family_members")
+          .select(
+            "id, family_id, display_name, email, relationship, member_role, status, created_at"
+          )
+          .eq(
+            "family_id",
+            currentFamilyId
+          )
+          .eq(
+            "status",
+            "active"
+          )
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          ),
+
+        supabase
+          .from("family_invitations")
+          .select(
+            "id, family_id, display_name, email, relationship, status, created_at, expires_at"
+          )
+          .eq(
+            "family_id",
+            currentFamilyId
+          )
+          .eq(
+            "status",
+            "pending"
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          ),
+
+        supabase
+          .from("child_profiles")
+          .select(
+            "id, display_name, avatar, level, stars, experience, created_at"
+          )
+          .eq(
+            "parent_id",
+            currentUser.id
+          )
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          )
+
+      ]);
+
+      if (membersResult.error) {
+        throw membersResult.error;
+      }
+
+      if (invitationsResult.error) {
+        throw invitationsResult.error;
+      }
+
+      if (childrenResult.error) {
+        throw childrenResult.error;
+      }
+
+      const members =
+        membersResult.data || [];
+
+      const invitations =
+        invitationsResult.data || [];
+
+      const children =
+        childrenResult.data || [];
+
+      childrenCount.textContent =
+        String(children.length);
+
+      renderMembers(members);
+
+      renderInvitations(
+        invitations
+      );
+
+      renderActivity(
+        members,
+        invitations,
+        children
+      );
+
+      renderChallenges(children);
+
+      loading.hidden = true;
+      hubContent.hidden = false;
+    }
+
+    dashboardButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "parent-dashboard.html";
+      }
+    );
+
+    manageFamilyButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "family-portal.html";
+      }
+    );
+
+    inviteFamilyButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "family-portal.html?invite=true";
+      }
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+        logoutButton.disabled = true;
+        logoutButton.textContent =
+          "Logging out...";
+
+        localStorage.removeItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_NAME_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_AVATAR_KEY
+        );
+
+        const {
+          error
+        } = await supabase.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          logoutButton.disabled = false;
+          logoutButton.textContent =
+            "Log Out";
+
+          showError(
+            error.message ||
+            "Unable to log out."
+          );
+
+          return;
+        }
+
+        window.location.replace(
+          "auth.html"
+        );
+      }
+    );
+
+    loadFamilyHub().catch(error => {
+      console.error(
+        "Family Hub loading error:",
+        error
+      );
+
+      loading.hidden = true;
+      hubContent.hidden = false;
+
+      showError(
+        error?.message ||
+        "Unable to load the Family Hub."
+      );
+    });
+  </script>
+</body>
+</html>
