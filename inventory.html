@@ -1,242 +1,1300 @@
-create extension if not exists pgcrypto;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
 
-create table if not exists public.inventory_items (
-    id uuid primary key default gen_random_uuid(),
-    child_id uuid not null,
-    item_key text not null,
-    item_name text not null,
-    item_type text not null default 'general',
-    item_icon text not null default '🎒',
-    description text,
-    quantity integer not null default 1 check (quantity >= 0),
-    rarity text not null default 'common'
-        check (rarity in ('common','uncommon','rare','epic','legendary')),
-    is_equipped boolean not null default false,
-    is_favorite boolean not null default false,
-    metadata jsonb not null default '{}'::jsonb,
-    created_at timestamptz not null default now(),
-    updated_at timestamptz not null default now(),
-    unique (child_id, item_key)
-);
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
 
-create index if not exists inventory_items_child_id_idx
-on public.inventory_items(child_id);
+  <meta name="theme-color" content="#745ee8">
 
-create index if not exists inventory_items_type_idx
-on public.inventory_items(item_type);
+  <title>My Backpack | ELCraft</title>
 
-create or replace function public.set_inventory_updated_at()
-returns trigger
-language plpgsql
-as $$
-begin
-    new.updated_at = now();
-    return new;
-end;
-$$;
+  <style>
+    * {
+      box-sizing: border-box;
+    }
 
-drop trigger if exists inventory_items_updated_at
-on public.inventory_items;
+    :root {
+      --purple: #745ee8;
+      --purple-dark: #4f3db4;
+      --purple-light: #eeeaff;
+      --sky: #81d5ff;
+      --gold: #ffd45d;
+      --ink: #34385d;
+      --muted: #7f84a2;
+      --white: #ffffff;
+    }
 
-create trigger inventory_items_updated_at
-before update on public.inventory_items
-for each row
-execute function public.set_inventory_updated_at();
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
 
-alter table public.inventory_items enable row level security;
+    body {
+      min-height: 100vh;
 
-drop policy if exists "Parents can view child inventory"
-on public.inventory_items;
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
 
-create policy "Parents can view child inventory"
-on public.inventory_items
-for select
-to authenticated
-using (
-    exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = inventory_items.child_id
-        and cp.parent_id = auth.uid()
-    )
-);
+      background:
+        radial-gradient(
+          circle at top left,
+          rgba(255, 255, 255, 0.9),
+          transparent 34%
+        ),
+        linear-gradient(
+          145deg,
+          #a9e4ff,
+          #d6c8ff 48%,
+          #ffe6a5
+        );
+    }
 
-drop policy if exists "Parents can add child inventory"
-on public.inventory_items;
+    button,
+    input {
+      font: inherit;
+    }
 
-create policy "Parents can add child inventory"
-on public.inventory_items
-for insert
-to authenticated
-with check (
-    exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = inventory_items.child_id
-        and cp.parent_id = auth.uid()
-    )
-);
+    button {
+      cursor: pointer;
+    }
 
-drop policy if exists "Parents can update child inventory"
-on public.inventory_items;
+    .page {
+      width: min(1200px, calc(100% - 28px));
+      margin: 0 auto;
+      padding: 18px 0 34px;
+    }
 
-create policy "Parents can update child inventory"
-on public.inventory_items
-for update
-to authenticated
-using (
-    exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = inventory_items.child_id
-        and cp.parent_id = auth.uid()
-    )
-)
-with check (
-    exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = inventory_items.child_id
-        and cp.parent_id = auth.uid()
-    )
-);
+    .topbar {
+      position: sticky;
+      top: 12px;
+      z-index: 20;
 
-drop policy if exists "Parents can delete child inventory"
-on public.inventory_items;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
 
-create policy "Parents can delete child inventory"
-on public.inventory_items
-for delete
-to authenticated
-using (
-    exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = inventory_items.child_id
-        and cp.parent_id = auth.uid()
-    )
-);
+      border: 3px solid rgba(255, 255, 255, 0.8);
+      border-radius: 22px;
+      padding: 12px 14px;
 
-create or replace function public.elcraft_add_inventory_item(
-    p_child_id uuid,
-    p_item_key text,
-    p_item_name text,
-    p_item_type text,
-    p_item_icon text,
-    p_description text default null,
-    p_quantity integer default 1,
-    p_rarity text default 'common',
-    p_metadata jsonb default '{}'::jsonb
-)
-returns public.inventory_items
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-    result public.inventory_items;
-begin
-    if not exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = p_child_id
-        and cp.parent_id = auth.uid()
-    ) then
-        raise exception 'You do not have permission to update this inventory.';
-    end if;
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(14px);
 
-    insert into public.inventory_items (
-        child_id,
-        item_key,
-        item_name,
-        item_type,
-        item_icon,
-        description,
+      box-shadow:
+        0 12px 30px rgba(59, 61, 116, 0.18);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 34px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: clamp(20px, 4vw, 30px);
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+    }
+
+    .top-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .top-button {
+      border: 0;
+      border-radius: 13px;
+      padding: 10px 13px;
+
+      color: var(--purple-dark);
+      background: var(--purple-light);
+
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .top-button.primary {
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #9477ff
+        );
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 18px;
+
+      margin-top: 22px;
+    }
+
+    .hero-card,
+    .stats-card {
+      border: 4px solid rgba(255, 255, 255, 0.8);
+      border-radius: 28px;
+      padding: 23px;
+
+      background: rgba(255, 255, 255, 0.91);
+
+      box-shadow:
+        0 18px 40px rgba(60, 65, 118, 0.2);
+    }
+
+    .hero-card {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+    }
+
+    .backpack {
+      flex: 0 0 auto;
+
+      font-size: clamp(70px, 12vw, 115px);
+
+      filter:
+        drop-shadow(
+          0 10px 8px rgba(61, 54, 113, 0.18)
+        );
+    }
+
+    .hero h2 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: clamp(25px, 5vw, 42px);
+    }
+
+    .hero-copy {
+      margin: 8px 0 0;
+
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.5;
+    }
+
+    .stats-card {
+      display: grid;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .stat {
+      border: 2px solid #ebe7fb;
+      border-radius: 17px;
+      padding: 14px;
+
+      background: white;
+
+      text-align: center;
+    }
+
+    .stat-value {
+      color: var(--purple);
+      font-size: 25px;
+      font-weight: 900;
+    }
+
+    .stat-label {
+      margin-top: 3px;
+
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns:
+        minmax(220px, 1fr)
+        auto;
+      gap: 12px;
+
+      margin-top: 18px;
+    }
+
+    .search {
+      width: 100%;
+
+      border: 3px solid rgba(255, 255, 255, 0.85);
+      border-radius: 16px;
+      padding: 13px 15px;
+
+      outline: none;
+
+      color: var(--ink);
+      background: rgba(255, 255, 255, 0.92);
+
+      box-shadow:
+        0 8px 20px rgba(70, 74, 128, 0.13);
+
+      font-weight: 800;
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .filter {
+      border: 2px solid rgba(255, 255, 255, 0.8);
+      border-radius: 14px;
+      padding: 10px 12px;
+
+      color: var(--purple-dark);
+      background: rgba(255, 255, 255, 0.86);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .filter.active {
+      color: white;
+      background: var(--purple);
+    }
+
+    .inventory-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(auto-fill, minmax(205px, 1fr));
+      gap: 14px;
+
+      margin-top: 18px;
+    }
+
+    .item-card {
+      position: relative;
+
+      border: 4px solid rgba(255, 255, 255, 0.85);
+      border-radius: 23px;
+      padding: 16px;
+
+      background: rgba(255, 255, 255, 0.94);
+
+      box-shadow:
+        0 12px 26px rgba(62, 66, 117, 0.17);
+
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease;
+    }
+
+    .item-card:hover {
+      transform: translateY(-5px);
+
+      box-shadow:
+        0 18px 32px rgba(62, 66, 117, 0.22);
+    }
+
+    .item-card.equipped {
+      outline: 4px solid var(--gold);
+    }
+
+    .item-icon {
+      min-height: 84px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f7f5ff,
+          #fff9dc
+        );
+
+      font-size: 58px;
+    }
+
+    .favorite-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+
+      width: 36px;
+      height: 36px;
+
+      border: 0;
+      border-radius: 50%;
+
+      background: rgba(255, 255, 255, 0.92);
+
+      font-size: 20px;
+    }
+
+    .quantity {
+      position: absolute;
+      top: 70px;
+      right: 12px;
+
+      min-width: 33px;
+
+      border: 3px solid white;
+      border-radius: 999px;
+      padding: 5px 7px;
+
+      color: white;
+      background: var(--purple);
+
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .rarity {
+      display: inline-flex;
+
+      margin-top: 12px;
+      border-radius: 999px;
+      padding: 5px 9px;
+
+      font-size: 9px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    .rarity.common {
+      color: #54606b;
+      background: #e7edf2;
+    }
+
+    .rarity.uncommon {
+      color: #267240;
+      background: #d9f6e2;
+    }
+
+    .rarity.rare {
+      color: #205aa6;
+      background: #dcecff;
+    }
+
+    .rarity.epic {
+      color: #6b2ba7;
+      background: #efddff;
+    }
+
+    .rarity.legendary {
+      color: #a15d00;
+      background: #fff0bf;
+    }
+
+    .item-name {
+      margin: 9px 0 0;
+
+      color: var(--purple-dark);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    .item-type {
+      margin-top: 3px;
+
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      text-transform: capitalize;
+    }
+
+    .item-description {
+      min-height: 38px;
+      margin: 8px 0 0;
+
+      color: #707694;
+      font-size: 11px;
+      font-weight: 700;
+      line-height: 1.45;
+    }
+
+    .item-actions {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+
+      margin-top: 12px;
+    }
+
+    .item-button {
+      border: 0;
+      border-radius: 11px;
+      padding: 9px;
+
+      color: var(--purple-dark);
+      background: var(--purple-light);
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .item-button.primary {
+      color: white;
+      background: var(--purple);
+    }
+
+    .empty,
+    .loading {
+      grid-column: 1 / -1;
+
+      border: 4px dashed rgba(255, 255, 255, 0.85);
+      border-radius: 24px;
+      padding: 40px 20px;
+
+      color: var(--purple-dark);
+      background: rgba(255, 255, 255, 0.75);
+
+      font-size: 14px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .toast {
+      position: fixed;
+      right: 20px;
+      bottom: 20px;
+      z-index: 1000;
+
+      display: none;
+      max-width: 350px;
+
+      border: 3px solid white;
+      border-radius: 16px;
+      padding: 13px 15px;
+
+      color: white;
+      background: var(--purple-dark);
+
+      box-shadow:
+        0 13px 30px rgba(37, 34, 85, 0.28);
+
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .toast.visible {
+      display: block;
+    }
+
+    @media (max-width: 780px) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .top-actions {
+        flex-direction: column;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hero-card {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .stats-card {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .inventory-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 9px;
+      }
+
+      .item-card {
+        padding: 10px;
+      }
+
+      .item-icon {
+        min-height: 68px;
+        font-size: 45px;
+      }
+
+      .item-actions {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+
+    <header class="topbar">
+
+      <div class="brand">
+
+        <div class="brand-icon">
+          🎒
+        </div>
+
+        <div>
+          <h1>My Backpack</h1>
+
+          <p id="childName">
+            Loading adventurer...
+          </p>
+        </div>
+
+      </div>
+
+      <div class="top-actions">
+
+        <button
+          id="mapButton"
+          class="top-button"
+          type="button">
+          World Map
+        </button>
+
+        <button
+          id="gameButton"
+          class="top-button primary"
+          type="button">
+          Return to Game
+        </button>
+
+      </div>
+
+    </header>
+
+    <section class="hero">
+
+      <article class="hero-card">
+
+        <div class="backpack">
+          🎒
+        </div>
+
+        <div>
+          <h2>
+            Adventure Inventory
+          </h2>
+
+          <p class="hero-copy">
+            Keep books, food, keys, rewards, pet supplies,
+            decorations, and special treasures collected
+            throughout ELCraft.
+          </p>
+        </div>
+
+      </article>
+
+      <article class="stats-card">
+
+        <div class="stat">
+
+          <div
+            id="totalItems"
+            class="stat-value">
+            0
+          </div>
+
+          <div class="stat-label">
+            Unique Items
+          </div>
+
+        </div>
+
+        <div class="stat">
+
+          <div
+            id="totalQuantity"
+            class="stat-value">
+            0
+          </div>
+
+          <div class="stat-label">
+            Total Pieces
+          </div>
+
+        </div>
+
+        <div class="stat">
+
+          <div
+            id="favoriteCount"
+            class="stat-value">
+            0
+          </div>
+
+          <div class="stat-label">
+            Favorites
+          </div>
+
+        </div>
+
+        <div class="stat">
+
+          <div
+            id="rareCount"
+            class="stat-value">
+            0
+          </div>
+
+          <div class="stat-label">
+            Rare Treasures
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
+    <section class="toolbar">
+
+      <input
+        id="searchInput"
+        class="search"
+        type="search"
+        placeholder="Search your backpack..."
+        autocomplete="off">
+
+      <div
+        id="filters"
+        class="filters">
+
+        <button
+          class="filter active"
+          type="button"
+          data-type="all">
+          All
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="book">
+          📚 Books
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="food">
+          🍎 Food
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="pet">
+          🐶 Pets
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="key">
+          🗝️ Keys
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="reward">
+          🎁 Rewards
+        </button>
+
+        <button
+          class="filter"
+          type="button"
+          data-type="decoration">
+          🪴 Decor
+        </button>
+
+      </div>
+
+    </section>
+
+    <section
+      id="inventoryGrid"
+      class="inventory-grid">
+
+      <div class="loading">
+        Opening your backpack...
+      </div>
+
+    </section>
+
+  </main>
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
+  <script type="module">
+    import {
+      getSelectedChildId,
+      loadInventory,
+      useInventoryItem,
+      toggleFavorite,
+      toggleEquipped
+    } from "./inventory.js";
+
+    import { supabase } from "./supabase-client.js";
+
+    const childId =
+      getSelectedChildId();
+
+    const childName =
+      document.getElementById("childName");
+
+    const inventoryGrid =
+      document.getElementById("inventoryGrid");
+
+    const searchInput =
+      document.getElementById("searchInput");
+
+    const filters =
+      document.getElementById("filters");
+
+    const totalItems =
+      document.getElementById("totalItems");
+
+    const totalQuantity =
+      document.getElementById("totalQuantity");
+
+    const favoriteCount =
+      document.getElementById("favoriteCount");
+
+    const rareCount =
+      document.getElementById("rareCount");
+
+    const toast =
+      document.getElementById("toast");
+
+    let inventory = [];
+    let activeType = "all";
+    let searchTerm = "";
+
+    function showToast(message) {
+      toast.textContent = message;
+      toast.classList.add("visible");
+
+      window.setTimeout(
+        () => {
+          toast.classList.remove("visible");
+        },
+        2800
+      );
+    }
+
+    function updateStats() {
+      totalItems.textContent =
+        String(inventory.length);
+
+      totalQuantity.textContent =
+        String(
+          inventory.reduce(
+            (total, item) => {
+              return (
+                total +
+                Number(item.quantity || 0)
+              );
+            },
+            0
+          )
+        );
+
+      favoriteCount.textContent =
+        String(
+          inventory.filter(
+            item => item.is_favorite
+          ).length
+        );
+
+      rareCount.textContent =
+        String(
+          inventory.filter(
+            item =>
+              item.rarity === "rare" ||
+              item.rarity === "epic" ||
+              item.rarity === "legendary"
+          ).length
+        );
+    }
+
+    function filteredInventory() {
+      return inventory.filter(item => {
+        const matchesType =
+          activeType === "all" ||
+          item.item_type === activeType;
+
+        const haystack =
+          [
+            item.item_name,
+            item.item_type,
+            item.description,
+            item.rarity
+          ]
+            .filter(Boolean)
+            .join(" ")
+            .toLowerCase();
+
+        const matchesSearch =
+          !searchTerm ||
+          haystack.includes(
+            searchTerm.toLowerCase()
+          );
+
+        return (
+          matchesType &&
+          matchesSearch
+        );
+      });
+    }
+
+    function renderInventory() {
+      inventoryGrid.replaceChildren();
+
+      const visibleItems =
+        filteredInventory();
+
+      if (!visibleItems.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty";
+
+        empty.textContent =
+          inventory.length
+            ? "No items match this filter."
+            : "Your backpack is empty. Explore ELCraft to discover your first treasure!";
+
+        inventoryGrid.appendChild(empty);
+
+        updateStats();
+
+        return;
+      }
+
+      visibleItems.forEach(item => {
+        inventoryGrid.appendChild(
+          createItemCard(item)
+        );
+      });
+
+      updateStats();
+    }
+
+    function createItemCard(item) {
+      const card =
+        document.createElement("article");
+
+      card.className =
+        `item-card${
+          item.is_equipped
+            ? " equipped"
+            : ""
+        }`;
+
+      const icon =
+        document.createElement("div");
+
+      icon.className =
+        "item-icon";
+
+      icon.textContent =
+        item.item_icon || "🎒";
+
+      const favorite =
+        document.createElement("button");
+
+      favorite.className =
+        "favorite-button";
+
+      favorite.type =
+        "button";
+
+      favorite.title =
+        item.is_favorite
+          ? "Remove from favorites"
+          : "Add to favorites";
+
+      favorite.textContent =
+        item.is_favorite
+          ? "⭐"
+          : "☆";
+
+      favorite.addEventListener(
+        "click",
+        async () => {
+          favorite.disabled = true;
+
+          try {
+            const updated =
+              await toggleFavorite(
+                item.id,
+                !item.is_favorite
+              );
+
+            inventory =
+              inventory.map(existing =>
+                existing.id === item.id
+                  ? updated
+                  : existing
+              );
+
+            renderInventory();
+
+            showToast(
+              updated.is_favorite
+                ? "Added to favorites!"
+                : "Removed from favorites."
+            );
+          } catch (error) {
+            favorite.disabled = false;
+
+            showToast(
+              error.message ||
+              "Unable to update favorite."
+            );
+          }
+        }
+      );
+
+      const quantity =
+        document.createElement("div");
+
+      quantity.className =
+        "quantity";
+
+      quantity.textContent =
+        `×${Number(item.quantity || 0)}`;
+
+      const rarity =
+        document.createElement("div");
+
+      rarity.className =
+        `rarity ${item.rarity || "common"}`;
+
+      rarity.textContent =
+        item.rarity || "common";
+
+      const name =
+        document.createElement("h3");
+
+      name.className =
+        "item-name";
+
+      name.textContent =
+        item.item_name;
+
+      const type =
+        document.createElement("div");
+
+      type.className =
+        "item-type";
+
+      type.textContent =
+        item.item_type || "general";
+
+      const description =
+        document.createElement("p");
+
+      description.className =
+        "item-description";
+
+      description.textContent =
+        item.description ||
+        "A special ELCraft item.";
+
+      const actions =
+        document.createElement("div");
+
+      actions.className =
+        "item-actions";
+
+      const equipButton =
+        document.createElement("button");
+
+      equipButton.className =
+        "item-button";
+
+      equipButton.type =
+        "button";
+
+      equipButton.textContent =
+        item.is_equipped
+          ? "Unequip"
+          : "Equip";
+
+      equipButton.addEventListener(
+        "click",
+        async () => {
+          equipButton.disabled = true;
+
+          try {
+            const updated =
+              await toggleEquipped(
+                item.id,
+                !item.is_equipped
+              );
+
+            inventory =
+              inventory.map(existing =>
+                existing.id === item.id
+                  ? updated
+                  : existing
+              );
+
+            renderInventory();
+
+            showToast(
+              updated.is_equipped
+                ? `${updated.item_name} equipped!`
+                : `${updated.item_name} unequipped.`
+            );
+          } catch (error) {
+            equipButton.disabled = false;
+
+            showToast(
+              error.message ||
+              "Unable to update item."
+            );
+          }
+        }
+      );
+
+      const useButton =
+        document.createElement("button");
+
+      useButton.className =
+        "item-button primary";
+
+      useButton.type =
+        "button";
+
+      useButton.textContent =
+        "Use One";
+
+      useButton.addEventListener(
+        "click",
+        async () => {
+          useButton.disabled = true;
+
+          try {
+            const updated =
+              await useInventoryItem(
+                item.id,
+                1
+              );
+
+            inventory =
+              inventory
+                .map(existing =>
+                  existing.id === item.id
+                    ? updated
+                    : existing
+                )
+                .filter(
+                  existing =>
+                    Number(
+                      existing.quantity || 0
+                    ) > 0
+                );
+
+            renderInventory();
+
+            showToast(
+              `Used one ${item.item_name}.`
+            );
+          } catch (error) {
+            useButton.disabled = false;
+
+            showToast(
+              error.message ||
+              "Unable to use item."
+            );
+          }
+        }
+      );
+
+      actions.append(
+        equipButton,
+        useButton
+      );
+
+      card.append(
+        icon,
+        favorite,
         quantity,
         rarity,
-        metadata
-    )
-    values (
-        p_child_id,
-        p_item_key,
-        p_item_name,
-        p_item_type,
-        coalesce(nullif(p_item_icon, ''), '🎒'),
-        p_description,
-        greatest(p_quantity, 0),
-        p_rarity,
-        coalesce(p_metadata, '{}'::jsonb)
-    )
-    on conflict (child_id, item_key)
-    do update set
-        quantity = inventory_items.quantity + excluded.quantity,
-        item_name = excluded.item_name,
-        item_type = excluded.item_type,
-        item_icon = excluded.item_icon,
-        description = coalesce(excluded.description, inventory_items.description),
-        rarity = excluded.rarity,
-        metadata = inventory_items.metadata || excluded.metadata,
-        updated_at = now()
-    returning * into result;
+        name,
+        type,
+        description,
+        actions
+      );
 
-    return result;
-end;
-$$;
+      return card;
+    }
 
-grant execute on function public.elcraft_add_inventory_item(
-    uuid,
-    text,
-    text,
-    text,
-    text,
-    text,
-    integer,
-    text,
-    jsonb
-) to authenticated;
+    async function loadChildName() {
+      if (!childId) {
+        childName.textContent =
+          "No child selected";
 
-create or replace function public.elcraft_use_inventory_item(
-    p_inventory_id uuid,
-    p_quantity integer default 1
-)
-returns public.inventory_items
-language plpgsql
-security definer
-set search_path = public
-as $$
-declare
-    result public.inventory_items;
-begin
-    if p_quantity <= 0 then
-        raise exception 'Quantity must be greater than zero.';
-    end if;
+        return;
+      }
 
-    update public.inventory_items item
-    set
-        quantity = greatest(item.quantity - p_quantity, 0),
-        is_equipped = case
-            when greatest(item.quantity - p_quantity, 0) = 0 then false
-            else item.is_equipped
-        end,
-        updated_at = now()
-    where item.id = p_inventory_id
-    and exists (
-        select 1
-        from public.child_profiles cp
-        where cp.id = item.child_id
-        and cp.parent_id = auth.uid()
-    )
-    returning * into result;
+      const {
+        data,
+        error
+      } = await supabase
+        .from("child_profiles")
+        .select("display_name")
+        .eq("id", childId)
+        .single();
 
-    if result.id is null then
-        raise exception 'Inventory item was not found or access was denied.';
-    end if;
+      if (!error && data) {
+        childName.textContent =
+          `${data.display_name || "Adventurer"}'s Backpack`;
+      }
+    }
 
-    return result;
-end;
-$$;
+    async function initialize() {
+      if (!childId) {
+        inventoryGrid.innerHTML =
+          '<div class="empty">Choose a child profile before opening the backpack.</div>';
 
-grant execute on function public.elcraft_use_inventory_item(
-    uuid,
-    integer
-) to authenticated;
+        childName.textContent =
+          "No child selected";
+
+        return;
+      }
+
+      await loadChildName();
+
+      const {
+        data,
+        error
+      } = await loadInventory(
+        childId
+      );
+
+      if (error) {
+        inventoryGrid.innerHTML =
+          `<div class="empty">${
+            error.message ||
+            "Unable to load the backpack."
+          }</div>`;
+
+        return;
+      }
+
+      inventory = data;
+
+      renderInventory();
+    }
+
+    searchInput.addEventListener(
+      "input",
+      event => {
+        searchTerm =
+          event.target.value.trim();
+
+        renderInventory();
+      }
+    );
+
+    filters.addEventListener(
+      "click",
+      event => {
+        const button =
+          event.target.closest(
+            "[data-type]"
+          );
+
+        if (!button) {
+          return;
+        }
+
+        activeType =
+          button.dataset.type;
+
+        filters
+          .querySelectorAll(
+            "[data-type]"
+          )
+          .forEach(filter => {
+            filter.classList.toggle(
+              "active",
+              filter === button
+            );
+          });
+
+        renderInventory();
+      }
+    );
+
+    document
+      .getElementById("mapButton")
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "world-map.html";
+        }
+      );
+
+    document
+      .getElementById("gameButton")
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "index.html";
+        }
+      );
+
+    initialize();
+  </script>
+
+  <script
+    type="module"
+    src="notification-bell.js">
+  </script>
+
+  <script
+    type="module"
+    src="parent-gate.js">
+  </script>
+</body>
+</html>
