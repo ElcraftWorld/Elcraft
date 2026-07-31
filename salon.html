@@ -1070,6 +1070,7 @@
     }
 
     .hair {
+      display: none !important;
       position: absolute;
       left: 50%;
       top: -7px;
@@ -1271,6 +1272,87 @@
 
     .customer:not(.accessory-on) .hair-bow {
       display: none;
+    }
+
+
+    /* =======================================================
+       ACCESSORIES — NO HAIR LAYER
+       ======================================================= */
+
+    .customer-accessory {
+      position: absolute;
+      right: 4px;
+      top: 18px;
+
+      z-index: 12;
+
+      display: none;
+
+      width: 78px;
+      height: 78px;
+
+      align-items: center;
+      justify-content: center;
+
+      font-size: 62px;
+      line-height: 1;
+
+      filter:
+        drop-shadow(
+          0 7px 5px
+          rgba(63, 25, 83, .22)
+        );
+
+      transform:
+        rotate(8deg);
+
+      pointer-events: none;
+    }
+
+    .customer.accessory-on .customer-accessory {
+      display: flex;
+    }
+
+    .customer.hair-style-1 .customer-accessory::before {
+      content: "🎀";
+    }
+
+    .customer.hair-style-2 .customer-accessory::before {
+      content: "👑";
+    }
+
+    .customer.hair-style-3 .customer-accessory::before {
+      content: "🌸";
+    }
+
+    .customer.brushed .customer-head {
+      filter:
+        drop-shadow(
+          0 0 14px
+          rgba(255, 229, 91, .85)
+        );
+    }
+
+    .customer.washed .customer-head::after {
+      content: "🫧  🫧";
+
+      position: absolute;
+      left: 50%;
+      top: -24px;
+
+      width: 130%;
+
+      transform: translateX(-50%);
+
+      font-size: 30px;
+      text-align: center;
+
+      animation:
+        bubbleFloat
+        1.5s ease-in-out
+        infinite;
+
+      pointer-events: none;
     }
 
     .photo-flash {
@@ -2051,7 +2133,7 @@
         </h1>
 
         <p class="panel-copy">
-          Select tools to complete the customer’s request.
+          Use fur-care, makeup, sparkles, and accessories to complete the request.
         </p>
 
         <div
@@ -2130,15 +2212,9 @@
             <div class="customer-blush left"></div>
             <div class="customer-blush right"></div>
 
-            <div class="hair">
-
-              <div class="hair-main"></div>
-              <div class="hair-bang"></div>
-
-              <div class="hair-bow">
-                <div class="hair-bow-center"></div>
-              </div>
-
+            <div
+              class="customer-accessory"
+              aria-hidden="true">
             </div>
 
           </div>
@@ -2352,17 +2428,17 @@
           "hair",
 
         label:
-          "Hair Style",
+          "Accessory Style",
 
         icon:
-          "💇"
+          "🎀"
       },
       {
         id:
           "wash",
 
         label:
-          "Wash Hair",
+          "Wash Fur",
 
         icon:
           "🛁"
@@ -2372,7 +2448,7 @@
           "brush",
 
         label:
-          "Brush Hair",
+          "Brush Fur",
 
         icon:
           "🪮"
@@ -2453,7 +2529,7 @@
           "#6c38bd",
 
         request:
-          "Please brush my hair, add pink lipstick, and finish with sparkles!",
+          "Please brush my fur, add pink lipstick, and finish with sparkles!",
 
         tasks: [
           {
@@ -2461,7 +2537,7 @@
               "brush",
 
             label:
-              "Brush the hair",
+              "Brush the fur",
 
             icon:
               "🪮"
@@ -2569,7 +2645,7 @@
           "#a84bc2",
 
         request:
-          "Give me a new hairstyle, rosy blush, and take my salon photo!",
+          "Choose a cute accessory, add rosy blush, and take my salon photo!",
 
         tasks: [
           {
@@ -2577,7 +2653,7 @@
               "hair",
 
             label:
-              "Choose a hairstyle",
+              "Choose an accessory style",
 
             icon:
               "💇"
@@ -2627,7 +2703,7 @@
           "#7340bf",
 
         request:
-          "Please wash my hair, add lipstick, and make me sparkle!",
+          "Please wash my fur, add lipstick, and make me sparkle!",
 
         tasks: [
           {
@@ -2635,7 +2711,7 @@
               "wash",
 
             label:
-              "Wash the hair",
+              "Wash the fur",
 
             icon:
               "🛁"
@@ -2685,7 +2761,7 @@
           "#5e32aa",
 
         request:
-          "Brush my hair, add blush, and give me a special accessory!",
+          "Brush my fur, add blush, and give me a special accessory!",
 
         tasks: [
           {
@@ -2693,7 +2769,7 @@
               "brush",
 
             label:
-              "Brush the hair",
+              "Brush the fur",
 
             icon:
               "🪮"
@@ -2743,7 +2819,7 @@
           "#7d4fd3",
 
         request:
-          "Choose a magical hairstyle, add sparkles, and take a photo!",
+          "Choose a magical accessory, add sparkles, and take a photo!",
 
         tasks: [
           {
@@ -2751,7 +2827,7 @@
               "hair",
 
             label:
-              "Choose a hairstyle",
+              "Choose an accessory style",
 
             icon:
               "💇"
@@ -2801,7 +2877,7 @@
           "#7040bd",
 
         request:
-          "Wash and brush my hair, then add a cute accessory!",
+          "Wash and brush my fur, then add a cute accessory!",
 
         tasks: [
           {
@@ -2809,7 +2885,7 @@
               "wash",
 
             label:
-              "Wash the hair",
+              "Wash the fur",
 
             icon:
               "🛁"
@@ -2819,7 +2895,7 @@
               "brush",
 
             label:
-              "Brush the hair",
+              "Brush the fur",
 
             icon:
               "🪮"
@@ -2859,7 +2935,7 @@
           "#6e3cb9",
 
         request:
-          "Give me a bold hairstyle, bright lipstick, and magical sparkles!",
+          "Choose a bold accessory, add bright lipstick, and magical sparkles!",
 
         tasks: [
           {
@@ -2867,7 +2943,7 @@
               "hair",
 
             label:
-              "Choose a hairstyle",
+              "Choose an accessory style",
 
             icon:
               "💇"
@@ -3437,7 +3513,7 @@
         );
 
         ELCraftUI.showToast(
-          "The hair is smooth and shiny! 🪮"
+          "The fur is smooth and shiny! 🪮"
         );
       }
 
@@ -3540,6 +3616,10 @@
         toolId ===
         "hair"
       ) {
+        customer.classList.add(
+          "accessory-on"
+        );
+
         nextHairStyle();
 
         markComplete(
@@ -3547,7 +3627,7 @@
         );
 
         ELCraftUI.showToast(
-          "New hairstyle selected! 💇"
+          "New accessory style selected! 🎀"
         );
       }
 
@@ -3816,6 +3896,10 @@
       .addEventListener(
         "click",
         () => {
+          customer.classList.add(
+            "accessory-on"
+          );
+
           nextHairStyle();
 
           state.completed.add(
@@ -3833,6 +3917,10 @@
       .addEventListener(
         "click",
         () => {
+          customer.classList.add(
+            "accessory-on"
+          );
+
           previousHairStyle();
 
           state.completed.add(
