@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta name="theme-color" content="#f7efff">
+
+  <title>ELCraft Design System</title>
+
+  <link
+    rel="stylesheet"
+    href="elcraft-design-system.css">
+</head>
+
+<body>
+
+  <main class="el-page">
+
+    <header class="el-header">
+
+      <div class="el-header-left">
+
+        <button
+          class="el-button el-button--small"
+          type="button"
+          onclick="history.back()">
+          ← Back
+        </button>
+
+        <div
+          class="el-header-icon"
+          aria-hidden="true">
+          ✨
+        </div>
+
+        <div class="el-title-group">
+
+          <h1 class="el-title">
+            ELCraft Design System
+          </h1>
+
+          <p class="el-subtitle">
+            The visual foundation for every ELCraft world.
+          </p>
+
+        </div>
+
+      </div>
+
+      <div class="el-header-right">
+
+        <button
+          class="el-button el-button--icon"
+          type="button"
+          aria-label="Toggle sound"
+          onclick="ELCraftUI.toggleSound()">
+          🔊
+        </button>
+
+        <div
+          class="el-player-pill">
+          ✨
+          <span data-player-world>
+            Player's World
+          </span>
+        </div>
+
+      </div>
+
+    </header>
+
+    <section class="el-page-body">
+
+      <section
+        class="el-panel"
+        style="
+          display:grid;
+          grid-template-columns:minmax(260px,.8fr) minmax(300px,1.2fr);
+          align-items:center;
+          gap:24px;
+          margin-bottom:20px;
+        ">
+
+        <div
+          id="mascotSpot"
+          style="
+            display:grid;
+            place-items:center;
+          ">
+        </div>
+
+        <div>
+
+          <div class="el-speech">
+
+            Hi,
+            <span data-player-name>
+              Player
+            </span>!
+
+            I’m Milo, your ELCraft crafting companion.
+            I’ll help you explore, learn, build, and celebrate.
+          </div>
+
+          <div
+            style="
+              display:flex;
+              gap:10px;
+              flex-wrap:wrap;
+              margin-top:22px;
+            ">
+
+            <button
+              class="el-button el-button--primary"
+              type="button"
+              onclick="ELCraftUI.celebrate()">
+              🌟 Celebrate
+            </button>
+
+            <button
+              class="el-button el-button--pink"
+              type="button"
+              onclick="ELCraftUI.showToast('Welcome to ELCraft! ✨')">
+              💬 Show Message
+            </button>
+
+          </div>
+
+        </div>
+
+      </section>
+
+      <section
+        class="el-panel"
+        style="margin-bottom:20px;">
+
+        <h2 class="el-section-title">
+          Destination Cards
+        </h2>
+
+        <p class="el-section-copy">
+          Use these for My World, School, Farm, Library,
+          Style Studio, and every future location.
+        </p>
+
+        <div
+          class="el-grid el-grid--4"
+          style="margin-top:16px;">
+
+          <article
+            class="el-destination"
+            role="button"
+            tabindex="0"
+            data-elcraft-page="library.html"
+            style="
+              --destination-start:#7559db;
+              --destination-end:#a17cf4;
+            ">
+
+            <div class="el-destination-icon">
+              📚
+            </div>
+
+            <h3 class="el-destination-name">
+              Library
+            </h3>
+
+            <p class="el-destination-copy">
+              Read, listen, and grow your imagination.
+            </p>
+
+          </article>
+
+          <article
+            class="el-destination"
+            role="button"
+            tabindex="0"
+            data-elcraft-page="farm.html"
+            style="
+              --destination-start:#57b95f;
+              --destination-end:#94d774;
+            ">
+
+            <div class="el-destination-icon">
+              🌾
+            </div>
+
+            <h3 class="el-destination-name">
+              Farm
+            </h3>
+
+            <p class="el-destination-copy">
+              Plant, water, harvest, and care for animals.
+            </p>
+
+          </article>
+
+          <article
+            class="el-destination"
+            role="button"
+            tabindex="0"
+            data-elcraft-page="salon.html"
+            style="
+              --destination-start:#ff79ae;
+              --destination-end:#ffa3c9;
+            ">
+
+            <div class="el-destination-icon">
+              💄
+            </div>
+
+            <h3 class="el-destination-name">
+              Style Studio
+            </h3>
+
+            <p class="el-destination-copy">
+              Create, style, decorate, and express yourself.
+            </p>
+
+          </article>
+
+          <article
+            class="el-destination"
+            role="button"
+            tabindex="0"
+            data-elcraft-page="school.html"
+            style="
+              --destination-start:#63c8f2;
+              --destination-end:#90dcf6;
+            ">
+
+            <div class="el-destination-icon">
+              🏫
+            </div>
+
+            <h3 class="el-destination-name">
+              School
+            </h3>
+
+            <p class="el-destination-copy">
+              Learn through games, stories, and discovery.
+            </p>
+
+          </article>
+
+        </div>
+
+      </section>
+
+      <section
+        class="el-grid el-grid--2">
+
+        <article class="el-panel">
+
+          <h2 class="el-section-title">
+            Progress
+          </h2>
+
+          <p class="el-section-copy">
+            Progress should always look positive, playful, and easy to understand.
+          </p>
+
+          <div
+            class="el-progress"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="65"
+            style="
+              --progress:65%;
+              margin-top:18px;
+            ">
+
+            <div class="el-progress-fill"></div>
+          </div>
+
+          <div
+            class="el-grid el-grid--3"
+            style="margin-top:16px;">
+
+            <div class="el-stat">
+              <div class="el-stat-value">
+                12
+              </div>
+
+              <div class="el-stat-label">
+                Stars
+              </div>
+            </div>
+
+            <div class="el-stat">
+              <div class="el-stat-value">
+                5
+              </div>
+
+              <div class="el-stat-label">
+                Quests
+              </div>
+            </div>
+
+            <div class="el-stat">
+              <div class="el-stat-value">
+                3
+              </div>
+
+              <div class="el-stat-label">
+                Badges
+              </div>
+            </div>
+
+          </div>
+
+        </article>
+
+        <article class="el-panel">
+
+          <h2 class="el-section-title">
+            Buttons and Badges
+          </h2>
+
+          <p class="el-section-copy">
+            Every button is large, rounded, readable, and touch-friendly.
+          </p>
+
+          <div
+            style="
+              display:flex;
+              gap:10px;
+              flex-wrap:wrap;
+              margin-top:18px;
+            ">
+
+            <button
+              class="el-button el-button--primary"
+              type="button">
+              Continue
+            </button>
+
+            <button
+              class="el-button el-button--green"
+              type="button">
+              Save
+            </button>
+
+            <button
+              class="el-button el-button--blue"
+              type="button">
+              Explore
+            </button>
+
+            <button
+              class="el-button el-button--pink"
+              type="button">
+              Create
+            </button>
+
+          </div>
+
+          <div
+            style="
+              display:flex;
+              gap:8px;
+              flex-wrap:wrap;
+              margin-top:18px;
+            ">
+
+            <span class="el-badge">
+              ✨ New
+            </span>
+
+            <span class="el-badge el-badge--gold">
+              ⭐ Reward
+            </span>
+
+            <span class="el-badge el-badge--green">
+              ✓ Complete
+            </span>
+
+          </div>
+
+        </article>
+
+      </section>
+
+    </section>
+
+  </main>
+
+  <script
+    type="module"
+    src="elcraft-ui.js">
+  </script>
+
+  <script type="module">
+    import {
+      ELCraftUI
+    } from "./elcraft-ui.js";
+
+    ELCraftUI.installMascot(
+      "#mascotSpot",
+      {
+        name: "Milo",
+        tool: "🛠️"
+      }
+    );
+  </script>
+</body>
+</html>
