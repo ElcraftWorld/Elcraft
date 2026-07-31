@@ -5,944 +5,568 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#fff7fb">
+  <meta name="theme-color" content="#f7efff">
 
-  <title>ELCraft — Style Studio</title>
+  <title>ELCraft — Avatar Studio</title>
 
   <style>
-    :root {
-      --purple: #6848ad;
-      --purple-dark: #4f348b;
-      --pink: #ff78ae;
-      --pink-dark: #d94f8a;
-      --blue: #62c9ed;
-      --blue-dark: #2789bb;
-      --green: #7acb55;
-      --yellow: #ffd761;
-      --ink: #32456e;
-      --panel: rgba(255, 255, 255, 0.96);
-      --header-height: 84px;
-    }
-
     * {
       box-sizing: border-box;
     }
 
+    :root {
+      --purple: #6f55d9;
+      --purple-dark: #4e3aa9;
+      --purple-light: #eee9ff;
+      --pink: #ff83b8;
+      --blue: #65c9ef;
+      --green: #75c95c;
+      --gold: #ffd45e;
+      --ink: #35405f;
+      --muted: #747c98;
+      --panel: rgba(255, 255, 255, 0.96);
+    }
+
     html,
     body {
-      width: 100%;
       min-height: 100%;
       margin: 0;
-      overflow: hidden;
-      overscroll-behavior: none;
-      -webkit-text-size-adjust: 100%;
-      text-size-adjust: 100%;
     }
 
     body {
-      display: flex;
-      flex-direction: column;
+      min-height: 100vh;
       min-height: 100dvh;
-      padding-top: env(safe-area-inset-top);
-      padding-right: env(safe-area-inset-right);
-      padding-bottom: env(safe-area-inset-bottom);
-      padding-left: env(safe-area-inset-left);
-      background: #f9d8ec;
+
       color: var(--ink);
       font-family: Arial, Helvetica, sans-serif;
-      touch-action: manipulation;
+
+      background:
+        radial-gradient(
+          circle at 12% 12%,
+          rgba(255,255,255,.9),
+          transparent 25%
+        ),
+        linear-gradient(
+          145deg,
+          #ffe2f1,
+          #e7ddff 48%,
+          #dff5ff
+        );
     }
 
     button {
       font: inherit;
+      cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-      touch-action: manipulation;
     }
 
-    .game-header {
-      position: relative;
+    button:disabled {
+      cursor: wait;
+      opacity: .65;
+    }
+
+    .page {
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      display: flex;
+      flex-direction: column;
+    }
+
+    .header {
+      position: sticky;
+      top: 0;
       z-index: 100;
-      flex: 0 0 auto;
-      min-height: var(--header-height);
+
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
-      padding: 11px 18px;
-      border-bottom: 4px solid rgba(227, 113, 167, 0.22);
-      background: rgba(255, 252, 254, 0.97);
-      box-shadow: 0 5px 18px rgba(77, 47, 101, 0.14);
+
+      min-height: 86px;
+      padding: 12px 18px;
+
+      border-bottom: 4px solid rgba(111,85,217,.12);
+
+      background: rgba(255,255,255,.95);
+      backdrop-filter: blur(14px);
+
+      box-shadow:
+        0 7px 22px rgba(63,52,115,.12);
     }
 
     .header-left {
       min-width: 0;
+
       display: flex;
       align-items: center;
       gap: 13px;
     }
 
-    .home-button,
-    .header-button {
-      min-height: 48px;
+    .back-button {
+      flex: 0 0 auto;
+
       border: 0;
       border-radius: 999px;
-      padding: 9px 16px;
-      color: var(--purple);
-      background: #f0e5ff;
-      box-shadow: 0 5px 0 rgba(91, 61, 148, 0.14);
-      font-weight: 900;
-      cursor: pointer;
-    }
+      padding: 11px 17px;
 
-    .home-button:active,
-    .header-button:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 rgba(91, 61, 148, 0.14);
+      color: var(--purple-dark);
+      background: var(--purple-light);
+
+      font-weight: 900;
+
+      box-shadow:
+        0 5px 0 rgba(79,58,169,.13);
     }
 
     .header-icon {
-      font-size: clamp(32px, 3.3vw, 50px);
-      line-height: 1;
+      font-size: 42px;
     }
 
-    .header-title h1 {
+    .title-group {
+      min-width: 0;
+    }
+
+    .title-group h1 {
       margin: 0;
-      color: var(--purple);
-      font-size: clamp(25px, 2.7vw, 42px);
+
+      color: var(--purple-dark);
+      font-size: clamp(27px,3vw,43px);
       line-height: 1;
-      font-weight: 900;
-      white-space: nowrap;
     }
 
-    .header-title p {
-      margin: 4px 0 0;
-      color: #6b6f9b;
-      font-size: clamp(12px, 1.05vw, 16px);
+    .title-group p {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+      font-size: 13px;
       font-weight: 800;
     }
 
-    .player-badge {
+    .player-pill {
+      flex: 0 0 auto;
+
       max-width: 250px;
+
       overflow: hidden;
-      padding: 9px 15px;
+
       border-radius: 999px;
-      color: var(--purple);
-      background: #f7eafa;
+      padding: 11px 16px;
+
+      color: var(--purple-dark);
+      background: #f6ecff;
+
       font-weight: 900;
-      white-space: nowrap;
       text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .studio {
-      position: relative;
+    .workspace {
       flex: 1 1 auto;
-      min-height: 0;
-      overflow: hidden;
-      background:
-        radial-gradient(circle at 18% 18%, rgba(255,255,255,.9) 0 4%, transparent 14%),
-        radial-gradient(circle at 82% 17%, rgba(255,255,255,.8) 0 3%, transparent 12%),
-        linear-gradient(145deg, #ffdff0 0%, #dff4ff 48%, #fff2cb 100%);
-    }
 
-    .studio::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle, rgba(255,255,255,.55) 0 3px, transparent 4px)
-        0 0 / 68px 68px;
-      opacity: .55;
-    }
-
-    .layout {
-      position: absolute;
-      inset: 16px;
       display: grid;
-      grid-template-columns: minmax(220px, 0.8fr) minmax(380px, 1.45fr) minmax(230px, 0.85fr);
-      gap: 14px;
-      z-index: 5;
+      grid-template-columns:
+        minmax(250px,.85fr)
+        minmax(420px,1.25fr)
+        minmax(250px,.85fr);
+      gap: 16px;
+
+      padding: 16px;
     }
 
     .panel {
       min-width: 0;
-      min-height: 0;
+
       border: 4px solid rgba(255,255,255,.9);
       border-radius: 28px;
+
       background: var(--panel);
+
       box-shadow:
-        0 10px 0 rgba(166, 93, 133, .14),
-        0 18px 30px rgba(79, 55, 100, .16);
-      overflow: hidden;
+        0 12px 0 rgba(97,70,144,.08),
+        0 22px 42px rgba(75,61,120,.15);
     }
 
-    .tool-panel,
-    .style-panel {
+    .tools-panel,
+    .colors-panel {
       display: flex;
       flex-direction: column;
-      padding: 14px;
+
+      padding: 16px;
     }
 
     .panel-title {
-      margin: 0 0 10px;
-      color: var(--purple);
-      font-size: clamp(20px, 1.9vw, 30px);
-      font-weight: 900;
+      margin: 0 0 11px;
+
+      color: var(--purple-dark);
+      font-size: 24px;
       text-align: center;
     }
 
     .tabs {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 7px;
-      margin-bottom: 10px;
+      gap: 8px;
+
+      margin-bottom: 12px;
     }
 
     .tab-button {
       min-height: 44px;
+
       border: 0;
-      border-radius: 15px;
-      padding: 7px;
-      color: #694e96;
-      background: #f0e7fb;
-      font-size: 14px;
+      border-radius: 14px;
+      padding: 9px;
+
+      color: #685a8b;
+      background: #f0ecf8;
+
+      font-size: 12px;
       font-weight: 900;
-      cursor: pointer;
     }
 
     .tab-button.active {
-      color: #fff;
-      background: var(--purple);
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #9579f7
+        );
     }
 
     .options {
-      flex: 1 1 auto;
-      min-height: 0;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
       align-content: start;
-      gap: 8px;
+      gap: 9px;
+
+      min-height: 0;
       overflow-y: auto;
-      padding: 2px;
     }
 
     .option-button {
-      min-height: 76px;
-      border: 3px solid #eee6f7;
+      min-height: 78px;
+
+      border: 3px solid #eeeaf7;
       border-radius: 18px;
-      padding: 8px 5px;
-      color: #4d4771;
-      background: #fff;
-      box-shadow: 0 4px 0 rgba(90, 72, 120, .1);
-      font-size: 13px;
+      padding: 9px 6px;
+
+      color: #4e4b70;
+      background: white;
+
+      font-size: 11px;
       font-weight: 900;
-      cursor: pointer;
+
+      box-shadow:
+        0 4px 0 rgba(80,65,120,.09);
     }
 
-    .option-button .emoji {
+    .option-button.active {
+      border-color: var(--pink);
+      background: #fff2f8;
+    }
+
+    .option-icon {
       display: block;
-      margin-bottom: 4px;
+
+      margin-bottom: 5px;
+
       font-size: 30px;
       line-height: 1;
     }
 
-    .option-button.active {
-      border-color: #ff78ae;
-      background: #fff0f7;
-      box-shadow: 0 4px 0 rgba(217, 79, 138, .18);
+    .preview-panel {
+      position: relative;
+      overflow: hidden;
+
+      display: grid;
+      place-items: center;
+
+      min-height: 650px;
+
+      padding: 20px;
+
+      background:
+        radial-gradient(
+          circle at 50% 18%,
+          rgba(255,255,255,.94),
+          transparent 28%
+        ),
+        repeating-linear-gradient(
+          135deg,
+          #fff7fb 0 28px,
+          #eef8ff 28px 56px
+        );
     }
 
-    .color-grid {
-      flex: 1 1 auto;
-      min-height: 0;
+    .preview-panel::before {
+      content: "";
+
+      position: absolute;
+      inset: 28px;
+
+      border: 8px solid #f2b7d5;
+      border-radius: 48% 48% 28% 28% / 30% 30% 20% 20%;
+
+      box-shadow:
+        inset 0 0 0 7px white,
+        0 14px 0 #d98fb5,
+        0 26px 35px rgba(83,55,104,.17);
+
+      background:
+        radial-gradient(
+          circle at 50% 22%,
+          rgba(255,255,255,.95),
+          rgba(221,243,252,.9) 58%,
+          #d7eaf4
+        );
+    }
+
+    .avatar-stage {
+      position: relative;
+      z-index: 2;
+
+      width: min(100%,520px);
+      height: 580px;
+
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      align-content: start;
+      place-items: center;
+    }
+
+    #avatarSvg {
+      width: 100%;
+      height: 100%;
+
+      overflow: visible;
+
+      filter:
+        drop-shadow(
+          0 18px 12px
+          rgba(58,62,104,.18)
+        );
+    }
+
+    .avatar-name {
+      position: absolute;
+      left: 50%;
+      bottom: 20px;
+
+      transform: translateX(-50%);
+
+      max-width: 240px;
+
+      overflow: hidden;
+
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 8px 18px;
+
+      color: var(--purple-dark);
+      background: rgba(255,255,255,.96);
+
+      font-size: 18px;
+      font-weight: 900;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+
+      box-shadow:
+        0 7px 18px rgba(73,58,115,.16);
+    }
+
+    .color-section {
+      margin-bottom: 14px;
+    }
+
+    .color-label {
+      margin: 0 0 8px;
+
+      color: var(--purple-dark);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
       gap: 8px;
-      overflow-y: auto;
-      padding: 2px;
     }
 
     .swatch {
-      min-height: 62px;
-      border: 4px solid #fff;
-      border-radius: 18px;
-      box-shadow: 0 0 0 2px #dbd0eb;
-      cursor: pointer;
+      min-height: 48px;
+
+      border: 4px solid white;
+      border-radius: 15px;
+
+      box-shadow:
+        0 0 0 2px #dad2eb;
     }
 
     .swatch.active {
-      box-shadow: 0 0 0 5px var(--purple);
+      box-shadow:
+        0 0 0 5px var(--purple);
     }
 
-    .action-stack {
+    .actions {
       display: grid;
       gap: 9px;
-      margin-top: 10px;
+
+      margin-top: auto;
     }
 
     .action-button {
-      min-height: 48px;
-      border: 0;
-      border-radius: 17px;
-      padding: 10px 12px;
-      color: #fff;
-      font-weight: 900;
-      cursor: pointer;
-    }
+      min-height: 49px;
 
-    .save-button {
-      background: var(--green);
-      box-shadow: 0 5px 0 #4d9431;
+      border: 0;
+      border-radius: 16px;
+      padding: 11px;
+
+      color: white;
+
+      font-weight: 900;
     }
 
     .random-button {
       background: var(--blue);
-      box-shadow: 0 5px 0 var(--blue-dark);
+      box-shadow: 0 5px 0 #3499bd;
+    }
+
+    .save-button {
+      background: var(--green);
+      box-shadow: 0 5px 0 #4d9636;
     }
 
     .reset-button {
       background: var(--pink);
-      box-shadow: 0 5px 0 var(--pink-dark);
-    }
-
-    .action-button:active {
-      transform: translateY(3px);
-      box-shadow: 0 2px 0 rgba(0,0,0,.16);
-    }
-
-    .mirror-panel {
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background:
-        linear-gradient(rgba(255,255,255,.72), rgba(255,255,255,.82)),
-        repeating-linear-gradient(
-          135deg,
-          #ffe7f3 0 25px,
-          #e6f6ff 25px 50px
-        );
-    }
-
-    .mirror {
-      position: relative;
-      width: min(100%, 640px);
-      height: min(100%, 760px);
-      min-height: 430px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 12px solid #f4bad8;
-      border-radius: 48% 48% 24% 24% / 34% 34% 18% 18%;
-      background:
-        radial-gradient(circle at 50% 20%, rgba(255,255,255,.95), rgba(218,241,251,.92) 58%, #d7eaf4 100%);
-      box-shadow:
-        inset 0 0 0 7px #fff,
-        0 14px 0 #d98cb5,
-        0 28px 36px rgba(83, 55, 104, .2);
-      overflow: hidden;
-    }
-
-    .mirror-stars {
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background:
-        radial-gradient(circle at 15% 18%, #fff 0 4px, transparent 5px),
-        radial-gradient(circle at 82% 15%, #fff 0 5px, transparent 6px),
-        radial-gradient(circle at 90% 42%, #fff 0 3px, transparent 4px),
-        radial-gradient(circle at 12% 55%, #fff 0 3px, transparent 4px);
-      opacity: .85;
-    }
-
-    .bust {
-      position: relative;
-      width: 78%;
-      height: 88%;
-      min-width: 320px;
-      min-height: 400px;
-      transform: translateY(3%);
-    }
-
-    .shoulders {
-      position: absolute;
-      left: 50%;
-      bottom: -3%;
-      width: 79%;
-      height: 25%;
-      transform: translateX(-50%);
-      border-radius: 50% 50% 14% 14% / 65% 65% 25% 25%;
-      background: #7d65cf;
-      box-shadow: inset 0 16px 0 rgba(255,255,255,.18);
-    }
-
-    .neck {
-      position: absolute;
-      left: 50%;
-      bottom: 18%;
-      width: 22%;
-      height: 18%;
-      transform: translateX(-50%);
-      border-radius: 0 0 36% 36%;
-      background: var(--skin, #c9855d);
-    }
-
-    .head {
-      position: absolute;
-      left: 50%;
-      top: 21%;
-      width: 45%;
-      height: 48%;
-      transform: translateX(-50%);
-      border-radius: 48% 48% 44% 44% / 42% 42% 56% 56%;
-      background: var(--skin, #c9855d);
-      box-shadow: inset 0 -11px 0 rgba(124, 62, 39, .08);
-      z-index: 5;
-    }
-
-    .ear {
-      position: absolute;
-      top: 47%;
-      width: 12%;
-      height: 22%;
-      border-radius: 50%;
-      background: var(--skin, #c9855d);
-      z-index: 3;
-    }
-
-    .ear.left {
-      left: -7%;
-    }
-
-    .ear.right {
-      right: -7%;
-    }
-
-    .eye {
-      position: absolute;
-      top: 42%;
-      width: 15%;
-      height: 8%;
-      border-radius: 50%;
-      background: #fff;
-      z-index: 7;
-    }
-
-    .eye.left {
-      left: 22%;
-    }
-
-    .eye.right {
-      right: 22%;
-    }
-
-    .eye::after {
-      content: "";
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 42%;
-      aspect-ratio: 1;
-      transform: translate(-50%, -50%);
-      border-radius: 50%;
-      background: #36304b;
-    }
-
-    .eyebrow {
-      position: absolute;
-      top: 34%;
-      width: 18%;
-      height: 5%;
-      border-radius: 999px;
-      background: #5e3a30;
-      z-index: 8;
-    }
-
-    .eyebrow.left {
-      left: 20%;
-      transform: rotate(-5deg);
-    }
-
-    .eyebrow.right {
-      right: 20%;
-      transform: rotate(5deg);
-    }
-
-    .nose {
-      position: absolute;
-      left: 50%;
-      top: 50%;
-      width: 8%;
-      height: 13%;
-      transform: translateX(-50%);
-      border-right: 3px solid rgba(102, 51, 40, .25);
-      border-bottom: 3px solid rgba(102, 51, 40, .18);
-      border-radius: 0 0 50% 0;
-      z-index: 7;
-    }
-
-    .mouth {
-      position: absolute;
-      left: 50%;
-      top: 69%;
-      width: 24%;
-      height: 8%;
-      transform: translateX(-50%);
-      border-radius: 15% 15% 55% 55%;
-      background: var(--lip-color, #dd6b7f);
-      box-shadow: inset 0 -4px 0 rgba(130, 42, 57, .12);
-      z-index: 7;
-    }
-
-    .cheek {
-      position: absolute;
-      top: 59%;
-      width: 17%;
-      height: 8%;
-      border-radius: 50%;
-      background: var(--blush-color, transparent);
-      filter: blur(1px);
-      opacity: .85;
-      z-index: 6;
-    }
-
-    .cheek.left {
-      left: 14%;
-    }
-
-    .cheek.right {
-      right: 14%;
-    }
-
-    .face-art {
-      position: absolute;
-      inset: 0;
-      z-index: 9;
-      pointer-events: none;
-    }
-
-    .face-art::before,
-    .face-art::after {
-      position: absolute;
-      top: 54%;
-      font-size: clamp(18px, 3vw, 34px);
-      line-height: 1;
-    }
-
-    .face-art::before {
-      left: 6%;
-    }
-
-    .face-art::after {
-      right: 6%;
-    }
-
-    .hair-back {
-      position: absolute;
-      left: 50%;
-      top: 10%;
-      width: 61%;
-      height: 65%;
-      transform: translateX(-50%);
-      border-radius: 48% 48% 42% 42% / 35% 35% 58% 58%;
-      background: var(--hair-color, #5b382a);
-      z-index: 2;
-    }
-
-    .hair-front {
-      position: absolute;
-      left: 50%;
-      top: 13%;
-      width: 51%;
-      height: 25%;
-      transform: translateX(-50%);
-      border-radius: 55% 55% 28% 28% / 55% 55% 35% 35%;
-      background: var(--hair-color, #5b382a);
-      z-index: 10;
-    }
-
-    .hair-front::before,
-    .hair-front::after {
-      content: "";
-      position: absolute;
-      top: 45%;
-      width: 23%;
-      height: 160%;
-      border-radius: 999px;
-      background: inherit;
-    }
-
-    .hair-front::before {
-      left: -2%;
-      transform: rotate(13deg);
-    }
-
-    .hair-front::after {
-      right: -2%;
-      transform: rotate(-13deg);
-    }
-
-    .hair-afro .hair-back {
-      top: 4%;
-      width: 66%;
-      height: 54%;
-      border-radius: 50%;
-      box-shadow:
-        -35px 12px 0 var(--hair-color),
-        35px 12px 0 var(--hair-color),
-        -53px 42px 0 var(--hair-color),
-        53px 42px 0 var(--hair-color);
-    }
-
-    .hair-afro .hair-front {
-      top: 6%;
-      width: 58%;
-      height: 27%;
-      border-radius: 50%;
-    }
-
-    .hair-bob .hair-back {
-      top: 12%;
-      width: 57%;
-      height: 50%;
-      border-radius: 48% 48% 28% 28% / 37% 37% 56% 56%;
-    }
-
-    .hair-bob .hair-front::before,
-    .hair-bob .hair-front::after {
-      height: 110%;
-    }
-
-    .hair-braids .hair-back {
-      width: 52%;
-      height: 38%;
-    }
-
-    .hair-braids .bust::before,
-    .hair-braids .bust::after {
-      content: "";
-      position: absolute;
-      top: 37%;
-      width: 9%;
-      height: 42%;
-      border-radius: 999px;
-      background:
-        repeating-linear-gradient(
-          to bottom,
-          var(--hair-color) 0 14px,
-          rgba(255,255,255,.16) 14px 18px
-        );
-      z-index: 3;
-    }
-
-    .hair-braids .bust::before {
-      left: 20%;
-    }
-
-    .hair-braids .bust::after {
-      right: 20%;
-    }
-
-    .hair-buns .hair-back::before,
-    .hair-buns .hair-back::after {
-      content: "";
-      position: absolute;
-      top: -9%;
-      width: 34%;
-      aspect-ratio: 1;
-      border-radius: 50%;
-      background: inherit;
-    }
-
-    .hair-buns .hair-back::before {
-      left: -6%;
-    }
-
-    .hair-buns .hair-back::after {
-      right: -6%;
-    }
-
-    .hair-mohawk .hair-back {
-      top: 4%;
-      width: 17%;
-      height: 38%;
-      border-radius: 55% 55% 15% 15%;
-      transform: translateX(-50%) skewX(-5deg);
-    }
-
-    .hair-mohawk .hair-front {
-      top: 5%;
-      width: 18%;
-      height: 37%;
-      border-radius: 55% 55% 15% 15%;
-    }
-
-    .hair-mohawk .hair-front::before,
-    .hair-mohawk .hair-front::after {
-      display: none;
-    }
-
-    .hair-ponytail .hair-back::after {
-      content: "";
-      position: absolute;
-      right: -29%;
-      top: 29%;
-      width: 31%;
-      height: 55%;
-      border-radius: 50% 50% 70% 30%;
-      background: inherit;
-      transform: rotate(-12deg);
-    }
-
-    .hair-short .hair-back {
-      top: 13%;
-      width: 50%;
-      height: 34%;
-      border-radius: 50% 50% 30% 30%;
-    }
-
-    .hair-short .hair-front::before,
-    .hair-short .hair-front::after {
-      height: 55%;
-    }
-
-    .accessory {
-      position: absolute;
-      left: 50%;
-      top: 11%;
-      z-index: 14;
-      transform: translateX(-50%);
-      font-size: clamp(52px, 7vw, 92px);
-      line-height: 1;
-      pointer-events: none;
-      filter: drop-shadow(0 5px 3px rgba(74, 49, 96, .18));
-    }
-
-    .glasses {
-      position: absolute;
-      left: 50%;
-      top: 38%;
-      z-index: 13;
-      display: none;
-      width: 44%;
-      height: 13%;
-      transform: translateX(-50%);
-      pointer-events: none;
-    }
-
-    .glasses.show {
-      display: block;
-    }
-
-    .glasses::before,
-    .glasses::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      width: 35%;
-      height: 100%;
-      border: 5px solid #5a3d8e;
-      border-radius: 35%;
-      background: rgba(255,255,255,.16);
-    }
-
-    .glasses::before {
-      left: 4%;
-    }
-
-    .glasses::after {
-      right: 4%;
-    }
-
-    .glasses span {
-      position: absolute;
-      left: 50%;
-      top: 38%;
-      width: 18%;
-      height: 5px;
-      transform: translateX(-50%);
-      border-radius: 999px;
-      background: #5a3d8e;
+      box-shadow: 0 5px 0 #d6578f;
     }
 
     .save-note {
-      min-height: 20px;
-      margin-top: 8px;
-      color: #6d6290;
-      font-size: 12px;
+      margin-top: 9px;
+
+      color: var(--muted);
+      font-size: 10px;
       font-weight: 800;
+      line-height: 1.4;
       text-align: center;
     }
 
     .toast {
       position: fixed;
       left: 50%;
-      top: calc(var(--header-height) + 14px + env(safe-area-inset-top));
-      z-index: 1600;
-      max-width: min(90vw, 560px);
-      padding: 12px 20px;
-      transform: translateX(-50%) translateY(-145px);
-      border: 3px solid rgba(255,255,255,.95);
+      top: 100px;
+      z-index: 1000;
+
+      max-width: min(90vw,520px);
+
+      transform:
+        translateX(-50%)
+        translateY(-150px);
+
+      border: 4px solid white;
       border-radius: 999px;
-      color: var(--purple);
-      background: rgba(255,255,255,.98);
-      box-shadow: 0 12px 28px rgba(72, 48, 101, .22);
+      padding: 13px 20px;
+
+      color: var(--purple-dark);
+      background: white;
+
       font-weight: 900;
       text-align: center;
-      pointer-events: none;
-      transition: transform .25s ease;
+
+      box-shadow:
+        0 13px 30px rgba(48,39,90,.25);
+
+      transition:
+        transform .25s ease;
     }
 
     .toast.show {
-      transform: translateX(-50%) translateY(0);
+      transform:
+        translateX(-50%)
+        translateY(0);
     }
 
-    @media (max-width: 1050px) {
-      :root {
-        --header-height: 76px;
-      }
-
-      .game-header {
-        min-height: 76px;
-        padding: 8px 11px;
-      }
-
-      .header-icon,
-      .header-title p {
-        display: none;
-      }
-
-      .player-badge {
-        max-width: 170px;
-      }
-
-      .layout {
-        inset: 10px;
-        grid-template-columns: minmax(180px, .78fr) minmax(350px, 1.35fr) minmax(185px, .78fr);
-        gap: 9px;
-      }
-
-      .panel {
-        border-radius: 23px;
-      }
-
-      .tool-panel,
-      .style-panel {
+    @media (max-width: 1000px) {
+      .workspace {
+        grid-template-columns:
+          minmax(200px,.75fr)
+          minmax(350px,1.3fr)
+          minmax(200px,.75fr);
+        gap: 10px;
         padding: 10px;
       }
 
-      .option-button {
-        min-height: 67px;
+      .preview-panel {
+        min-height: 560px;
       }
 
-      .bust {
-        width: 85%;
+      .avatar-stage {
+        height: 500px;
       }
     }
 
-    @media (max-width: 790px) and (orientation: portrait) {
-      html,
-      body {
-        overflow: auto;
-      }
-
-      .game-header {
-        position: sticky;
-        top: 0;
-      }
-
-      .player-badge {
+    @media (max-width: 800px) {
+      .header-icon,
+      .title-group p,
+      .player-pill {
         display: none;
       }
 
-      .studio {
-        flex: 0 0 auto;
-        min-height: 1420px;
-      }
-
-      .layout {
-        position: relative;
-        inset: auto;
-        width: calc(100% - 18px);
-        min-height: 1380px;
-        margin: 9px auto;
+      .workspace {
         grid-template-columns: 1fr;
-        grid-template-rows: 350px 610px 390px;
       }
 
-      .mirror {
-        width: min(94%, 560px);
-        min-height: 540px;
+      .preview-panel {
+        min-height: 560px;
+        order: -1;
       }
 
       .options {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        grid-template-columns:
+          repeat(3,minmax(0,1fr));
       }
 
-      .color-grid {
-        grid-template-columns: repeat(5, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-height: 690px) and (orientation: landscape) {
-      :root {
-        --header-height: 62px;
-      }
-
-      .game-header {
-        min-height: 62px;
-        padding: 6px 10px;
-      }
-
-      .home-button,
-      .header-button {
-        min-height: 40px;
-        padding: 7px 12px;
-      }
-
-      .header-title h1 {
-        font-size: 27px;
-      }
-
-      .layout {
-        inset: 8px;
-      }
-
-      .panel-title {
-        font-size: 18px;
-        margin-bottom: 7px;
-      }
-
-      .tab-button {
-        min-height: 38px;
-      }
-
-      .option-button {
-        min-height: 58px;
-      }
-
-      .option-button .emoji {
-        font-size: 25px;
-      }
-
-      .action-button {
-        min-height: 41px;
-      }
-
-      .mirror {
-        min-height: 390px;
+      .swatches {
+        grid-template-columns:
+          repeat(6,minmax(0,1fr));
       }
     }
 
-    @media (hover: none) and (pointer: coarse) {
-      button {
-        min-height: 44px;
+    @media (max-width: 520px) {
+      .header {
+        min-height: 72px;
+        padding: 9px 10px;
+      }
+
+      .back-button {
+        padding: 10px 13px;
+      }
+
+      .title-group h1 {
+        font-size: 24px;
+      }
+
+      .preview-panel {
+        min-height: 480px;
+      }
+
+      .avatar-stage {
+        height: 430px;
+      }
+
+      .options {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+      }
+
+      .swatches {
+        grid-template-columns:
+          repeat(4,minmax(0,1fr));
       }
     }
 
@@ -955,525 +579,1737 @@
 </head>
 
 <body>
-  <header class="game-header">
-    <div class="header-left">
-      <button id="homeButton" class="home-button" type="button">← My City</button>
-      <div class="header-icon" aria-hidden="true">💇🏽‍♀️</div>
 
-      <div class="header-title">
-        <h1>Style Studio</h1>
-        <p>Create hair, makeup, face paint, and fun accessories.</p>
+  <main class="page">
+
+    <header class="header">
+
+      <div class="header-left">
+
+        <button
+          id="backButton"
+          class="back-button"
+          type="button">
+          ← My World
+        </button>
+
+        <div
+          class="header-icon"
+          aria-hidden="true">
+          🎨
+        </div>
+
+        <div class="title-group">
+
+          <h1>
+            Avatar Studio
+          </h1>
+
+          <p>
+            Create a character that feels like you.
+          </p>
+
+        </div>
+
       </div>
-    </div>
 
-    <div id="playerBadge" class="player-badge">✨ Player's Salon</div>
-  </header>
+      <div
+        id="playerPill"
+        class="player-pill">
+        ✨ Player's Avatar
+      </div>
 
-  <main class="studio">
-    <div class="layout">
-      <section class="panel tool-panel">
-        <h2 class="panel-title">Choose a Style</h2>
+    </header>
 
-        <div class="tabs">
-          <button class="tab-button active" data-tab="hair" type="button">💇 Hair</button>
-          <button class="tab-button" data-tab="makeup" type="button">💄 Makeup</button>
-          <button class="tab-button" data-tab="paint" type="button">🎨 Face Paint</button>
-          <button class="tab-button" data-tab="accessory" type="button">👑 Extras</button>
+    <section class="workspace">
+
+      <aside class="panel tools-panel">
+
+        <h2 class="panel-title">
+          Choose a Look
+        </h2>
+
+        <nav
+          class="tabs"
+          aria-label="Avatar categories">
+
+          <button
+            class="tab-button active"
+            type="button"
+            data-tab="hair">
+            💇 Hair
+          </button>
+
+          <button
+            class="tab-button"
+            type="button"
+            data-tab="face">
+            🙂 Face
+          </button>
+
+          <button
+            class="tab-button"
+            type="button"
+            data-tab="outfit">
+            👕 Outfit
+          </button>
+
+          <button
+            class="tab-button"
+            type="button"
+            data-tab="extra">
+            ✨ Extras
+          </button>
+
+        </nav>
+
+        <div
+          id="options"
+          class="options">
         </div>
 
-        <div id="options" class="options"></div>
-      </section>
+      </aside>
 
-      <section class="panel mirror-panel">
-        <div id="mirror" class="mirror">
-          <div class="mirror-stars" aria-hidden="true"></div>
+      <section class="panel preview-panel">
 
-          <div id="character" class="bust hair-long">
-            <div class="hair-back"></div>
-            <div class="shoulders"></div>
-            <div class="neck"></div>
+        <div class="avatar-stage">
 
-            <div class="head">
-              <div class="ear left"></div>
-              <div class="ear right"></div>
+          <svg
+            id="avatarSvg"
+            viewBox="0 0 420 560"
+            xmlns="http://www.w3.org/2000/svg"
+            role="img"
+            aria-label="Avatar preview">
 
-              <div class="eyebrow left"></div>
-              <div class="eyebrow right"></div>
+            <defs>
+              <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
+                <feDropShadow dx="0" dy="7" stdDeviation="7" flood-opacity=".16"/>
+              </filter>
+            </defs>
 
-              <div class="eye left"></div>
-              <div class="eye right"></div>
+            <g
+              id="avatarRoot"
+              filter="url(#softShadow)">
 
-              <div class="nose"></div>
-              <div class="mouth"></div>
+              <ellipse
+                cx="210"
+                cy="516"
+                rx="104"
+                ry="20"
+                fill="rgba(70,66,110,.16)">
+              </ellipse>
 
-              <div class="cheek left"></div>
-              <div class="cheek right"></div>
+              <g id="legs">
+                <rect
+                  id="leftLeg"
+                  x="151"
+                  y="397"
+                  width="42"
+                  height="92"
+                  rx="20"
+                  fill="#c98a61">
+                </rect>
 
-              <div id="faceArt" class="face-art"></div>
-              <div id="glasses" class="glasses"><span></span></div>
-            </div>
+                <rect
+                  id="rightLeg"
+                  x="227"
+                  y="397"
+                  width="42"
+                  height="92"
+                  rx="20"
+                  fill="#c98a61">
+                </rect>
 
-            <div class="hair-front"></div>
-            <div id="accessory" class="accessory"></div>
+                <rect
+                  id="leftShoe"
+                  x="132"
+                  y="467"
+                  width="73"
+                  height="32"
+                  rx="16"
+                  fill="#4f5dc4">
+                </rect>
+
+                <rect
+                  id="rightShoe"
+                  x="215"
+                  y="467"
+                  width="73"
+                  height="32"
+                  rx="16"
+                  fill="#4f5dc4">
+                </rect>
+              </g>
+
+              <g id="body">
+                <path
+                  id="shirt"
+                  d="M121 289
+                     Q139 253 177 247
+                     L243 247
+                     Q281 253 299 289
+                     L280 413
+                     Q210 436 140 413
+                     Z"
+                  fill="#7259d6">
+                </path>
+
+                <path
+                  id="shirtAccent"
+                  d="M177 247
+                     Q210 267 243 247
+                     L235 278
+                     Q210 293 185 278
+                     Z"
+                  fill="rgba(255,255,255,.18)">
+                </path>
+
+                <path
+                  id="leftArm"
+                  d="M133 286
+                     Q111 307 104 353
+                     Q101 374 119 379
+                     Q136 382 143 360
+                     L161 307
+                     Z"
+                  fill="#c98a61">
+                </path>
+
+                <path
+                  id="rightArm"
+                  d="M287 286
+                     Q309 307 316 353
+                     Q319 374 301 379
+                     Q284 382 277 360
+                     L259 307
+                     Z"
+                  fill="#c98a61">
+                </path>
+
+                <circle
+                  id="leftHand"
+                  cx="112"
+                  cy="381"
+                  r="18"
+                  fill="#c98a61">
+                </circle>
+
+                <circle
+                  id="rightHand"
+                  cx="308"
+                  cy="381"
+                  r="18"
+                  fill="#c98a61">
+                </circle>
+
+                <path
+                  id="bottom"
+                  d="M140 392
+                     Q210 414 280 392
+                     L273 437
+                     L147 437
+                     Z"
+                  fill="#3f5578">
+                </path>
+              </g>
+
+              <g id="headGroup">
+
+                <ellipse
+                  id="leftEar"
+                  cx="122"
+                  cy="194"
+                  rx="24"
+                  ry="31"
+                  fill="#c98a61">
+                </ellipse>
+
+                <ellipse
+                  id="rightEar"
+                  cx="298"
+                  cy="194"
+                  rx="24"
+                  ry="31"
+                  fill="#c98a61">
+                </ellipse>
+
+                <ellipse
+                  id="head"
+                  cx="210"
+                  cy="181"
+                  rx="100"
+                  ry="113"
+                  fill="#c98a61">
+                </ellipse>
+
+                <g id="hairBack"></g>
+
+                <g id="faceFeatures">
+
+                  <ellipse
+                    id="leftEyeWhite"
+                    cx="170"
+                    cy="183"
+                    rx="20"
+                    ry="23"
+                    fill="#ffffff">
+                  </ellipse>
+
+                  <ellipse
+                    id="rightEyeWhite"
+                    cx="250"
+                    cy="183"
+                    rx="20"
+                    ry="23"
+                    fill="#ffffff">
+                  </ellipse>
+
+                  <circle
+                    id="leftIris"
+                    cx="172"
+                    cy="186"
+                    r="10"
+                    fill="#563d31">
+                  </circle>
+
+                  <circle
+                    id="rightIris"
+                    cx="248"
+                    cy="186"
+                    r="10"
+                    fill="#563d31">
+                  </circle>
+
+                  <circle
+                    cx="175"
+                    cy="182"
+                    r="3.5"
+                    fill="#ffffff">
+                  </circle>
+
+                  <circle
+                    cx="251"
+                    cy="182"
+                    r="3.5"
+                    fill="#ffffff">
+                  </circle>
+
+                  <path
+                    id="leftBrow"
+                    d="M149 153 Q170 142 191 153"
+                    fill="none"
+                    stroke="#4e352c"
+                    stroke-width="8"
+                    stroke-linecap="round">
+                  </path>
+
+                  <path
+                    id="rightBrow"
+                    d="M229 153 Q250 142 271 153"
+                    fill="none"
+                    stroke="#4e352c"
+                    stroke-width="8"
+                    stroke-linecap="round">
+                  </path>
+
+                  <path
+                    d="M207 188
+                       Q200 219 211 221"
+                    fill="none"
+                    stroke="rgba(96,53,42,.25)"
+                    stroke-width="5"
+                    stroke-linecap="round">
+                  </path>
+
+                  <path
+                    id="mouth"
+                    d="M176 236
+                       Q210 266 244 236
+                       Q210 279 176 236"
+                    fill="#c95675">
+                  </path>
+
+                  <path
+                    id="smileLine"
+                    d="M181 238 Q210 257 239 238"
+                    fill="none"
+                    stroke="rgba(255,255,255,.55)"
+                    stroke-width="4"
+                    stroke-linecap="round">
+                  </path>
+
+                  <ellipse
+                    id="leftBlush"
+                    cx="149"
+                    cy="221"
+                    rx="23"
+                    ry="10"
+                    fill="rgba(255,120,145,.20)">
+                  </ellipse>
+
+                  <ellipse
+                    id="rightBlush"
+                    cx="271"
+                    cy="221"
+                    rx="23"
+                    ry="10"
+                    fill="rgba(255,120,145,.20)">
+                  </ellipse>
+
+                </g>
+
+                <g id="hairFront"></g>
+
+                <g id="extraLayer"></g>
+
+              </g>
+
+            </g>
+          </svg>
+
+          <div
+            id="avatarName"
+            class="avatar-name">
+            Player
           </div>
+
         </div>
+
       </section>
 
-      <section class="panel style-panel">
-        <h2 class="panel-title">Colors & Save</h2>
+      <aside class="panel colors-panel">
 
-        <div id="colorGrid" class="color-grid"></div>
+        <h2 class="panel-title">
+          Colors & Save
+        </h2>
 
-        <div class="action-stack">
-          <button id="randomButton" class="action-button random-button" type="button">
-            🎲 Surprise Style
+        <section class="color-section">
+
+          <h3 class="color-label">
+            Skin Tone
+          </h3>
+
+          <div
+            id="skinSwatches"
+            class="swatches">
+          </div>
+
+        </section>
+
+        <section class="color-section">
+
+          <h3 class="color-label">
+            Hair Color
+          </h3>
+
+          <div
+            id="hairSwatches"
+            class="swatches">
+          </div>
+
+        </section>
+
+        <section class="color-section">
+
+          <h3 class="color-label">
+            Outfit Color
+          </h3>
+
+          <div
+            id="outfitSwatches"
+            class="swatches">
+          </div>
+
+        </section>
+
+        <div class="actions">
+
+          <button
+            id="randomButton"
+            class="action-button random-button"
+            type="button">
+            🎲 Surprise Me
           </button>
 
-          <button id="saveButton" class="action-button save-button" type="button">
-            💾 Save My Style
+          <button
+            id="saveButton"
+            class="action-button save-button"
+            type="button">
+            💾 Save My Avatar
           </button>
 
-          <button id="resetButton" class="action-button reset-button" type="button">
+          <button
+            id="resetButton"
+            class="action-button reset-button"
+            type="button">
             ↺ Start Over
           </button>
+
         </div>
 
         <div class="save-note">
-          Saved styles stay on this device.
+          Saving updates the avatar shown in My World on this device.
         </div>
-      </section>
+
+      </aside>
+
+    </section>
+
+    <div
+      id="toast"
+      class="toast"
+      role="status"
+      aria-live="polite">
     </div>
 
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
   </main>
 
   <script>
     (() => {
-      'use strict';
+      "use strict";
 
-      const NAME_KEY = 'elcraft_child_name';
-      const STYLE_KEY = 'elcraft_salon_style';
+      const NAME_KEY =
+        "elcraft_child_name";
 
-      const HAIR_OPTIONS = [
-        { id: 'long', label: 'Long', emoji: '💇🏽‍♀️' },
-        { id: 'bob', label: 'Bob', emoji: '💁🏽‍♀️' },
-        { id: 'afro', label: 'Afro', emoji: '🪮' },
-        { id: 'braids', label: 'Braids', emoji: '🧶' },
-        { id: 'buns', label: 'Space Buns', emoji: '🌙' },
-        { id: 'ponytail', label: 'Ponytail', emoji: '🎀' },
-        { id: 'short', label: 'Short', emoji: '✂️' },
-        { id: 'mohawk', label: 'Mohawk', emoji: '⚡' }
-      ];
+      const AVATAR_KEY =
+        "elcraft_child_avatar";
 
-      const MAKEUP_OPTIONS = [
-        { id: 'none', label: 'No Makeup', emoji: '🙂' },
-        { id: 'pink', label: 'Pink Lips', emoji: '💗' },
-        { id: 'purple', label: 'Purple Lips', emoji: '💜' },
-        { id: 'red', label: 'Red Lips', emoji: '❤️' },
-        { id: 'peach', label: 'Peach Blush', emoji: '🍑' },
-        { id: 'rose', label: 'Rose Blush', emoji: '🌹' },
-        { id: 'sparkle', label: 'Sparkle Blush', emoji: '✨' },
-        { id: 'blue', label: 'Blue Lips', emoji: '💙' }
-      ];
+      const STYLE_KEY =
+        "elcraft_avatar_style_v2";
 
-      const PAINT_OPTIONS = [
-        { id: 'none', label: 'No Paint', emoji: '🙂' },
-        { id: 'stars', label: 'Stars', emoji: '⭐' },
-        { id: 'hearts', label: 'Hearts', emoji: '❤️' },
-        { id: 'flowers', label: 'Flowers', emoji: '🌸' },
-        { id: 'butterfly', label: 'Butterflies', emoji: '🦋' },
-        { id: 'rainbow', label: 'Rainbows', emoji: '🌈' },
-        { id: 'snow', label: 'Snowflakes', emoji: '❄️' },
-        { id: 'tiger', label: 'Tiger', emoji: '🐯' }
-      ];
+      const childName =
+        (
+          localStorage.getItem(NAME_KEY) ||
+          "Player"
+        )
+          .trim()
+          .slice(0,24) ||
+        "Player";
 
-      const ACCESSORY_OPTIONS = [
-        { id: 'none', label: 'No Extra', emoji: '🙂' },
-        { id: 'crown', label: 'Crown', emoji: '👑' },
-        { id: 'bow', label: 'Bow', emoji: '🎀' },
-        { id: 'flower', label: 'Flower', emoji: '🌺' },
-        { id: 'wizard', label: 'Wizard Hat', emoji: '🧙🏽‍♀️' },
-        { id: 'pirate', label: 'Pirate Hat', emoji: '🏴‍☠️' },
-        { id: 'unicorn', label: 'Unicorn', emoji: '🦄' },
-        { id: 'glasses', label: 'Glasses', emoji: '👓' }
+      const DEFAULT_STYLE = {
+        tab:
+          "hair",
+
+        hair:
+          "soft",
+
+        face:
+          "round",
+
+        outfit:
+          "hoodie",
+
+        extra:
+          "none",
+
+        skin:
+          "#c98a61",
+
+        hairColor:
+          "#4a2d25",
+
+        outfitColor:
+          "#7259d6"
+      };
+
+      const state = {
+        ...DEFAULT_STYLE
+      };
+
+      const OPTIONS = {
+        hair: [
+          {
+            id: "soft",
+            label: "Soft Waves",
+            icon: "🌊"
+          },
+          {
+            id: "short",
+            label: "Short",
+            icon: "✂️"
+          },
+          {
+            id: "afro",
+            label: "Afro",
+            icon: "☁️"
+          },
+          {
+            id: "braids",
+            label: "Braids",
+            icon: "🪢"
+          },
+          {
+            id: "buns",
+            label: "Two Buns",
+            icon: "🌟"
+          },
+          {
+            id: "mohawk",
+            label: "Mohawk",
+            icon: "⚡"
+          }
+        ],
+
+        face: [
+          {
+            id: "round",
+            label: "Round",
+            icon: "🙂"
+          },
+          {
+            id: "oval",
+            label: "Oval",
+            icon: "😊"
+          },
+          {
+            id: "wide",
+            label: "Wide Smile",
+            icon: "😁"
+          },
+          {
+            id: "freckles",
+            label: "Freckles",
+            icon: "✨"
+          },
+          {
+            id: "rosy",
+            label: "Rosy Cheeks",
+            icon: "🌸"
+          },
+          {
+            id: "bright",
+            label: "Bright Eyes",
+            icon: "⭐"
+          }
+        ],
+
+        outfit: [
+          {
+            id: "hoodie",
+            label: "Hoodie",
+            icon: "🧥"
+          },
+          {
+            id: "tee",
+            label: "T-Shirt",
+            icon: "👕"
+          },
+          {
+            id: "overalls",
+            label: "Overalls",
+            icon: "🩳"
+          },
+          {
+            id: "dress",
+            label: "Adventure Dress",
+            icon: "👗"
+          },
+          {
+            id: "jacket",
+            label: "Explorer Jacket",
+            icon: "🥾"
+          },
+          {
+            id: "sports",
+            label: "Sporty",
+            icon: "⚽"
+          }
+        ],
+
+        extra: [
+          {
+            id: "none",
+            label: "No Extra",
+            icon: "🙂"
+          },
+          {
+            id: "glasses",
+            label: "Glasses",
+            icon: "👓"
+          },
+          {
+            id: "crown",
+            label: "Crown",
+            icon: "👑"
+          },
+          {
+            id: "cap",
+            label: "Cap",
+            icon: "🧢"
+          },
+          {
+            id: "flower",
+            label: "Flower",
+            icon: "🌺"
+          },
+          {
+            id: "wizard",
+            label: "Wizard Hat",
+            icon: "🧙"
+          }
+        ]
+      };
+
+      const SKIN_COLORS = [
+        "#f5d0b4",
+        "#e8b288",
+        "#d6976c",
+        "#c57e56",
+        "#9d5f42",
+        "#72432f",
+        "#4e2f25",
+        "#efd0b0"
       ];
 
       const HAIR_COLORS = [
-        '#4a2c23',
-        '#11131f',
-        '#8f5a35',
-        '#d6a554',
-        '#b74837',
-        '#f476b4',
-        '#7257d9',
-        '#55bfe7',
-        '#64c96b',
-        '#f4e9df',
-        'linear-gradient(90deg,#ff6f91,#ffd35a,#61d982,#5fc6ef,#7b5cdb)'
+        "#161826",
+        "#4a2d25",
+        "#71442d",
+        "#99623b",
+        "#d09a50",
+        "#b94c3f",
+        "#7754cf",
+        "#e875b2"
       ];
 
-      const SKIN_COLORS = [
-        '#f5d2ba',
-        '#eab58d',
-        '#d89568',
-        '#c57d55',
-        '#9c5c3d',
-        '#71412f'
+      const OUTFIT_COLORS = [
+        "#7259d6",
+        "#4f68cb",
+        "#4cb6da",
+        "#57b95f",
+        "#f0b63e",
+        "#ea6e6b",
+        "#ef78ad",
+        "#384765"
       ];
 
-      const state = {
-        tab: 'hair',
-        hair: 'long',
-        hairColor: '#4a2c23',
-        skinColor: '#c57d55',
-        makeup: 'none',
-        paint: 'none',
-        accessory: 'none'
-      };
+      const options =
+        document.getElementById(
+          "options"
+        );
 
-      const homeButton = document.getElementById('homeButton');
-      const playerBadge = document.getElementById('playerBadge');
-      const character = document.getElementById('character');
-      const options = document.getElementById('options');
-      const colorGrid = document.getElementById('colorGrid');
-      const faceArt = document.getElementById('faceArt');
-      const accessory = document.getElementById('accessory');
-      const glasses = document.getElementById('glasses');
-      const saveButton = document.getElementById('saveButton');
-      const resetButton = document.getElementById('resetButton');
-      const randomButton = document.getElementById('randomButton');
-      const toast = document.getElementById('toast');
+      const skinSwatches =
+        document.getElementById(
+          "skinSwatches"
+        );
 
-      let toastTimer = null;
+      const hairSwatches =
+        document.getElementById(
+          "hairSwatches"
+        );
 
-      function cleanName(value) {
-        return String(value || '').trim().replace(/\s+/g, ' ').slice(0, 20);
+      const outfitSwatches =
+        document.getElementById(
+          "outfitSwatches"
+        );
+
+      const avatarSvg =
+        document.getElementById(
+          "avatarSvg"
+        );
+
+      const avatarName =
+        document.getElementById(
+          "avatarName"
+        );
+
+      const playerPill =
+        document.getElementById(
+          "playerPill"
+        );
+
+      const hairBack =
+        document.getElementById(
+          "hairBack"
+        );
+
+      const hairFront =
+        document.getElementById(
+          "hairFront"
+        );
+
+      const extraLayer =
+        document.getElementById(
+          "extraLayer"
+        );
+
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
+      let toastTimer =
+        null;
+
+      function possessive(name) {
+        return name.endsWith("s")
+          ? `${name}' Avatar`
+          : `${name}'s Avatar`;
       }
 
-      function setPlayerName() {
-        const name = cleanName(localStorage.getItem(NAME_KEY)) || 'Player';
-        playerBadge.textContent = `✨ ${name}'s Salon`;
-      }
+      function showToast(message) {
+        toast.textContent =
+          message;
 
-      function optionListForTab(tab) {
-        if (tab === 'hair') {
-          return HAIR_OPTIONS;
-        }
+        toast.classList.add(
+          "show"
+        );
 
-        if (tab === 'makeup') {
-          return MAKEUP_OPTIONS;
-        }
+        window.clearTimeout(
+          toastTimer
+        );
 
-        if (tab === 'paint') {
-          return PAINT_OPTIONS;
-        }
-
-        return ACCESSORY_OPTIONS;
-      }
-
-      function currentSelectionForTab(tab) {
-        if (tab === 'hair') {
-          return state.hair;
-        }
-
-        if (tab === 'makeup') {
-          return state.makeup;
-        }
-
-        if (tab === 'paint') {
-          return state.paint;
-        }
-
-        return state.accessory;
-      }
-
-      function renderOptions() {
-        const list = optionListForTab(state.tab);
-        const activeId = currentSelectionForTab(state.tab);
-
-        options.replaceChildren();
-
-        list.forEach(item => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = `option-button${item.id === activeId ? ' active' : ''}`;
-          button.innerHTML = `<span class="emoji">${item.emoji}</span>${item.label}`;
-
-          button.addEventListener('click', () => {
-            if (state.tab === 'hair') {
-              state.hair = item.id;
-            } else if (state.tab === 'makeup') {
-              state.makeup = item.id;
-            } else if (state.tab === 'paint') {
-              state.paint = item.id;
-            } else {
-              state.accessory = item.id;
-            }
-
-            renderOptions();
-            applyStyle();
-          });
-
-          options.appendChild(button);
-        });
-      }
-
-      function renderColorGrid() {
-        colorGrid.replaceChildren();
-
-        const skinLabel = document.createElement('div');
-        skinLabel.textContent = 'Skin';
-        skinLabel.style.gridColumn = '1 / -1';
-        skinLabel.style.fontWeight = '900';
-        skinLabel.style.color = '#6848ad';
-        skinLabel.style.textAlign = 'center';
-        colorGrid.appendChild(skinLabel);
-
-        SKIN_COLORS.forEach(color => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = `swatch${state.skinColor === color ? ' active' : ''}`;
-          button.style.background = color;
-          button.setAttribute('aria-label', 'Choose skin tone');
-
-          button.addEventListener('click', () => {
-            state.skinColor = color;
-            renderColorGrid();
-            applyStyle();
-          });
-
-          colorGrid.appendChild(button);
-        });
-
-        const hairLabel = document.createElement('div');
-        hairLabel.textContent = 'Hair';
-        hairLabel.style.gridColumn = '1 / -1';
-        hairLabel.style.marginTop = '4px';
-        hairLabel.style.fontWeight = '900';
-        hairLabel.style.color = '#6848ad';
-        hairLabel.style.textAlign = 'center';
-        colorGrid.appendChild(hairLabel);
-
-        HAIR_COLORS.forEach(color => {
-          const button = document.createElement('button');
-          button.type = 'button';
-          button.className = `swatch${state.hairColor === color ? ' active' : ''}`;
-          button.style.background = color;
-          button.setAttribute('aria-label', 'Choose hair color');
-
-          button.addEventListener('click', () => {
-            state.hairColor = color;
-            renderColorGrid();
-            applyStyle();
-          });
-
-          colorGrid.appendChild(button);
-        });
-      }
-
-      function applyMakeup() {
-        const makeupMap = {
-          none: {
-            lips: '#dd6b7f',
-            blush: 'transparent'
-          },
-          pink: {
-            lips: '#ff5fa2',
-            blush: 'rgba(255,120,174,.28)'
-          },
-          purple: {
-            lips: '#9b5bd6',
-            blush: 'rgba(220,131,218,.25)'
-          },
-          red: {
-            lips: '#d94a57',
-            blush: 'rgba(238,104,119,.2)'
-          },
-          peach: {
-            lips: '#e47c78',
-            blush: 'rgba(255,154,112,.35)'
-          },
-          rose: {
-            lips: '#c94f72',
-            blush: 'rgba(213,80,116,.31)'
-          },
-          sparkle: {
-            lips: '#f27eb1',
-            blush: 'rgba(255,213,93,.35)'
-          },
-          blue: {
-            lips: '#4d9be8',
-            blush: 'rgba(92,191,231,.25)'
-          }
-        };
-
-        const selected = makeupMap[state.makeup] || makeupMap.none;
-
-        character.style.setProperty('--lip-color', selected.lips);
-        character.style.setProperty('--blush-color', selected.blush);
-      }
-
-      function applyFacePaint() {
-        const paintMap = {
-          none: ['', ''],
-          stars: ['⭐', '⭐'],
-          hearts: ['❤️', '❤️'],
-          flowers: ['🌸', '🌸'],
-          butterfly: ['🦋', '🦋'],
-          rainbow: ['🌈', '🌈'],
-          snow: ['❄️', '❄️'],
-          tiger: ['🐯', '🐯']
-        };
-
-        const [left, right] = paintMap[state.paint] || paintMap.none;
-
-        faceArt.style.setProperty('--left-art', `"${left}"`);
-        faceArt.style.setProperty('--right-art', `"${right}"`);
-
-        const styleId = 'face-art-style';
-        let styleElement = document.getElementById(styleId);
-
-        if (!styleElement) {
-          styleElement = document.createElement('style');
-          styleElement.id = styleId;
-          document.head.appendChild(styleElement);
-        }
-
-        styleElement.textContent = `
-          .face-art::before { content: var(--left-art, ""); }
-          .face-art::after { content: var(--right-art, ""); }
-        `;
-      }
-
-      function applyAccessory() {
-        const accessoryMap = {
-          none: '',
-          crown: '👑',
-          bow: '🎀',
-          flower: '🌺',
-          wizard: '🧙🏽‍♀️',
-          pirate: '🏴‍☠️',
-          unicorn: '🦄',
-          glasses: ''
-        };
-
-        accessory.textContent = accessoryMap[state.accessory] || '';
-        glasses.classList.toggle('show', state.accessory === 'glasses');
-      }
-
-      function applyStyle() {
-        character.className = `bust hair-${state.hair}`;
-        character.style.setProperty('--skin', state.skinColor);
-        character.style.setProperty('--hair-color', state.hairColor);
-
-        applyMakeup();
-        applyFacePaint();
-        applyAccessory();
-      }
-
-      function saveStyle() {
-        localStorage.setItem(STYLE_KEY, JSON.stringify(state));
-        showToast('Your salon style was saved! ✨');
+        toastTimer =
+          window.setTimeout(
+            () => {
+              toast.classList.remove(
+                "show"
+              );
+            },
+            2200
+          );
       }
 
       function restoreStyle() {
         try {
-          const saved = JSON.parse(localStorage.getItem(STYLE_KEY) || 'null');
+          const saved =
+            JSON.parse(
+              localStorage.getItem(
+                STYLE_KEY
+              ) || "null"
+            );
 
-          if (!saved) {
-            return;
+          if (saved) {
+            Object.assign(
+              state,
+              saved
+            );
           }
-
-          Object.assign(state, saved);
         } catch {
-          localStorage.removeItem(STYLE_KEY);
+          localStorage.removeItem(
+            STYLE_KEY
+          );
         }
       }
 
-      function resetStyle() {
-        Object.assign(state, {
-          tab: 'hair',
-          hair: 'long',
-          hairColor: '#4a2c23',
-          skinColor: '#c57d55',
-          makeup: 'none',
-          paint: 'none',
-          accessory: 'none'
-        });
+      function renderOptions() {
+        options.replaceChildren();
 
-        document.querySelectorAll('.tab-button').forEach(button => {
-          button.classList.toggle('active', button.dataset.tab === 'hair');
-        });
+        const current =
+          state[state.tab];
 
+        OPTIONS[state.tab]
+          .forEach(item => {
+            const button =
+              document.createElement(
+                "button"
+              );
+
+            button.type =
+              "button";
+
+            button.className =
+              `option-button${
+                current === item.id
+                  ? " active"
+                  : ""
+              }`;
+
+            button.innerHTML =
+              `<span class="option-icon">${item.icon}</span>${item.label}`;
+
+            button.addEventListener(
+              "click",
+              () => {
+                state[state.tab] =
+                  item.id;
+
+                renderOptions();
+                renderAvatar();
+              }
+            );
+
+            options.appendChild(
+              button
+            );
+          });
+      }
+
+      function renderSwatches(
+        container,
+        colors,
+        selected,
+        key
+      ) {
+        container.replaceChildren();
+
+        colors.forEach(color => {
+          const button =
+            document.createElement(
+              "button"
+            );
+
+          button.type =
+            "button";
+
+          button.className =
+            `swatch${
+              color === selected
+                ? " active"
+                : ""
+            }`;
+
+          button.style.background =
+            color;
+
+          button.setAttribute(
+            "aria-label",
+            `Choose ${key} color`
+          );
+
+          button.addEventListener(
+            "click",
+            () => {
+              state[key] =
+                color;
+
+              renderAllSwatches();
+              renderAvatar();
+            }
+          );
+
+          container.appendChild(
+            button
+          );
+        });
+      }
+
+      function renderAllSwatches() {
+        renderSwatches(
+          skinSwatches,
+          SKIN_COLORS,
+          state.skin,
+          "skin"
+        );
+
+        renderSwatches(
+          hairSwatches,
+          HAIR_COLORS,
+          state.hairColor,
+          "hairColor"
+        );
+
+        renderSwatches(
+          outfitSwatches,
+          OUTFIT_COLORS,
+          state.outfitColor,
+          "outfitColor"
+        );
+      }
+
+      function setSkinColor() {
+        [
+          "head",
+          "leftEar",
+          "rightEar",
+          "leftArm",
+          "rightArm",
+          "leftHand",
+          "rightHand",
+          "leftLeg",
+          "rightLeg"
+        ].forEach(id => {
+          const element =
+            document.getElementById(id);
+
+          if (element) {
+            element.setAttribute(
+              "fill",
+              state.skin
+            );
+          }
+        });
+      }
+
+      function renderHair() {
+        hairBack.innerHTML =
+          "";
+
+        hairFront.innerHTML =
+          "";
+
+        const color =
+          state.hairColor;
+
+        if (state.hair === "short") {
+          hairBack.innerHTML = `
+            <path
+              d="M116 158
+                 Q118 65 210 61
+                 Q302 65 304 158
+                 Q286 113 259 98
+                 Q210 74 161 98
+                 Q134 113 116 158"
+              fill="${color}">
+            </path>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M121 135
+                 Q150 67 210 68
+                 Q270 67 299 135
+                 Q268 107 234 104
+                 Q199 82 166 105
+                 Q143 109 121 135"
+              fill="${color}">
+            </path>
+          `;
+        } else if (
+          state.hair === "afro"
+        ) {
+          hairBack.innerHTML = `
+            <g fill="${color}">
+              <circle cx="145" cy="105" r="55"></circle>
+              <circle cx="210" cy="82" r="63"></circle>
+              <circle cx="275" cy="105" r="55"></circle>
+              <circle cx="120" cy="162" r="49"></circle>
+              <circle cx="300" cy="162" r="49"></circle>
+              <circle cx="151" cy="207" r="46"></circle>
+              <circle cx="269" cy="207" r="46"></circle>
+            </g>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M125 139
+                 Q145 74 210 70
+                 Q275 74 295 139
+                 Q246 103 210 106
+                 Q174 103 125 139"
+              fill="${color}">
+            </path>
+          `;
+        } else if (
+          state.hair === "braids"
+        ) {
+          hairBack.innerHTML = `
+            <path
+              d="M117 146
+                 Q120 66 210 62
+                 Q300 66 303 146
+                 L286 188
+                 Q257 126 210 116
+                 Q163 126 134 188
+                 Z"
+              fill="${color}">
+            </path>
+
+            <g
+              fill="${color}"
+              stroke="rgba(255,255,255,.16)"
+              stroke-width="5">
+
+              <rect
+                x="110"
+                y="162"
+                width="28"
+                height="142"
+                rx="14">
+              </rect>
+
+              <rect
+                x="282"
+                y="162"
+                width="28"
+                height="142"
+                rx="14">
+              </rect>
+            </g>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M121 135
+                 Q151 69 210 68
+                 Q269 69 299 135
+                 Q246 111 210 113
+                 Q174 111 121 135"
+              fill="${color}">
+            </path>
+          `;
+        } else if (
+          state.hair === "buns"
+        ) {
+          hairBack.innerHTML = `
+            <g fill="${color}">
+              <circle cx="128" cy="76" r="43"></circle>
+              <circle cx="292" cy="76" r="43"></circle>
+              <path
+                d="M112 151
+                   Q118 64 210 61
+                   Q302 64 308 151
+                   Q280 111 244 100
+                   Q210 83 176 100
+                   Q140 111 112 151"
+                ></path>
+            </g>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M122 135
+                 Q155 70 210 68
+                 Q265 70 298 135
+                 Q249 109 210 110
+                 Q171 109 122 135"
+              fill="${color}">
+            </path>
+          `;
+        } else if (
+          state.hair === "mohawk"
+        ) {
+          hairBack.innerHTML = `
+            <path
+              d="M186 112
+                 L199 29
+                 L211 78
+                 L229 21
+                 L239 112
+                 Z"
+              fill="${color}">
+            </path>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M183 130
+                 Q210 95 237 130
+                 L225 62
+                 L210 92
+                 L195 62
+                 Z"
+              fill="${color}">
+            </path>
+          `;
+        } else {
+          hairBack.innerHTML = `
+            <path
+              d="M108 147
+                 Q111 57 210 53
+                 Q309 57 312 147
+                 L304 262
+                 Q290 292 260 287
+                 L270 209
+                 Q244 127 210 121
+                 Q176 127 150 209
+                 L160 287
+                 Q130 292 116 262
+                 Z"
+              fill="${color}">
+            </path>
+          `;
+
+          hairFront.innerHTML = `
+            <path
+              d="M115 140
+                 Q147 58 210 61
+                 Q273 58 305 140
+                 Q265 108 232 106
+                 Q210 89 188 106
+                 Q155 108 115 140"
+              fill="${color}">
+            </path>
+          `;
+        }
+      }
+
+      function renderFace() {
+        const head =
+          document.getElementById(
+            "head"
+          );
+
+        const mouth =
+          document.getElementById(
+            "mouth"
+          );
+
+        const leftBlush =
+          document.getElementById(
+            "leftBlush"
+          );
+
+        const rightBlush =
+          document.getElementById(
+            "rightBlush"
+          );
+
+        const leftEye =
+          document.getElementById(
+            "leftEyeWhite"
+          );
+
+        const rightEye =
+          document.getElementById(
+            "rightEyeWhite"
+          );
+
+        head.setAttribute(
+          "rx",
+          state.face === "oval"
+            ? "90"
+            : state.face === "wide"
+              ? "107"
+              : "100"
+        );
+
+        mouth.setAttribute(
+          "d",
+          state.face === "wide"
+            ? "M167 232 Q210 274 253 232 Q210 289 167 232"
+            : "M176 236 Q210 266 244 236 Q210 279 176 236"
+        );
+
+        const rosy =
+          state.face === "rosy";
+
+        leftBlush.setAttribute(
+          "fill",
+          rosy
+            ? "rgba(255,102,137,.42)"
+            : "rgba(255,120,145,.20)"
+        );
+
+        rightBlush.setAttribute(
+          "fill",
+          rosy
+            ? "rgba(255,102,137,.42)"
+            : "rgba(255,120,145,.20)"
+        );
+
+        const bright =
+          state.face === "bright";
+
+        leftEye.setAttribute(
+          "rx",
+          bright
+            ? "23"
+            : "20"
+        );
+
+        rightEye.setAttribute(
+          "rx",
+          bright
+            ? "23"
+            : "20"
+        );
+
+        let freckles =
+          document.getElementById(
+            "freckles"
+          );
+
+        if (!freckles) {
+          freckles =
+            document.createElementNS(
+              "http://www.w3.org/2000/svg",
+              "g"
+            );
+
+          freckles.id =
+            "freckles";
+
+          freckles.innerHTML = `
+            <circle cx="174" cy="217" r="3" fill="rgba(105,65,44,.45)"></circle>
+            <circle cx="186" cy="220" r="2.5" fill="rgba(105,65,44,.45)"></circle>
+            <circle cx="234" cy="217" r="3" fill="rgba(105,65,44,.45)"></circle>
+            <circle cx="246" cy="220" r="2.5" fill="rgba(105,65,44,.45)"></circle>
+          `;
+
+          document
+            .getElementById(
+              "faceFeatures"
+            )
+            .appendChild(
+              freckles
+            );
+        }
+
+        freckles.style.display =
+          state.face === "freckles"
+            ? ""
+            : "none";
+      }
+
+      function renderOutfit() {
+        const shirt =
+          document.getElementById(
+            "shirt"
+          );
+
+        const shirtAccent =
+          document.getElementById(
+            "shirtAccent"
+          );
+
+        const bottom =
+          document.getElementById(
+            "bottom"
+          );
+
+        shirt.setAttribute(
+          "fill",
+          state.outfitColor
+        );
+
+        if (
+          state.outfit === "tee"
+        ) {
+          shirt.setAttribute(
+            "d",
+            "M126 291 Q147 255 177 249 L243 249 Q273 255 294 291 L279 405 Q210 427 141 405 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "rgba(255,255,255,.12)"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            "#4b6089"
+          );
+        } else if (
+          state.outfit === "overalls"
+        ) {
+          shirt.setAttribute(
+            "d",
+            "M123 289 Q142 254 177 248 L243 248 Q278 254 297 289 L282 412 Q210 432 138 412 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "#5c78b4"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            "#5c78b4"
+          );
+        } else if (
+          state.outfit === "dress"
+        ) {
+          shirt.setAttribute(
+            "d",
+            "M135 286 Q154 252 182 247 L238 247 Q266 252 285 286 L316 430 Q210 466 104 430 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "rgba(255,255,255,.18)"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            state.outfitColor
+          );
+        } else if (
+          state.outfit === "jacket"
+        ) {
+          shirt.setAttribute(
+            "d",
+            "M121 289 Q139 250 176 246 L244 246 Q281 250 299 289 L282 414 Q210 437 138 414 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "#f2d16b"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            "#3e536f"
+          );
+        } else if (
+          state.outfit === "sports"
+        ) {
+          shirt.setAttribute(
+            "d",
+            "M124 291 Q145 255 177 249 L243 249 Q275 255 296 291 L278 407 Q210 429 142 407 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "rgba(255,255,255,.25)"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            "#374e71"
+          );
+        } else {
+          shirt.setAttribute(
+            "d",
+            "M121 289 Q139 253 177 247 L243 247 Q281 253 299 289 L280 413 Q210 436 140 413 Z"
+          );
+
+          shirtAccent.setAttribute(
+            "fill",
+            "rgba(255,255,255,.18)"
+          );
+
+          bottom.setAttribute(
+            "fill",
+            "#3f5578"
+          );
+        }
+      }
+
+      function renderExtra() {
+        extraLayer.innerHTML =
+          "";
+
+        if (
+          state.extra === "glasses"
+        ) {
+          extraLayer.innerHTML = `
+            <g
+              fill="none"
+              stroke="#604a96"
+              stroke-width="7">
+
+              <rect
+                x="142"
+                y="165"
+                width="58"
+                height="43"
+                rx="17">
+              </rect>
+
+              <rect
+                x="220"
+                y="165"
+                width="58"
+                height="43"
+                rx="17">
+              </rect>
+
+              <path d="M200 181 Q210 173 220 181"></path>
+            </g>
+          `;
+        } else if (
+          state.extra === "crown"
+        ) {
+          extraLayer.innerHTML = `
+            <path
+              d="M164 74
+                 L181 34
+                 L210 67
+                 L239 34
+                 L256 74
+                 Z"
+              fill="#ffd45e"
+              stroke="#d69c25"
+              stroke-width="6">
+            </path>
+          `;
+        } else if (
+          state.extra === "cap"
+        ) {
+          extraLayer.innerHTML = `
+            <path
+              d="M139 91
+                 Q210 42 281 91
+                 L273 123
+                 Q210 98 147 123
+                 Z"
+              fill="#4f68cb">
+            </path>
+
+            <path
+              d="M253 111 Q303 109 319 130 Q276 140 250 127 Z"
+              fill="#4f68cb">
+            </path>
+          `;
+        } else if (
+          state.extra === "flower"
+        ) {
+          extraLayer.innerHTML = `
+            <g transform="translate(280 105)">
+              <circle cx="0" cy="-15" r="13" fill="#ff7eb5"></circle>
+              <circle cx="14" cy="-2" r="13" fill="#ff7eb5"></circle>
+              <circle cx="0" cy="11" r="13" fill="#ff7eb5"></circle>
+              <circle cx="-14" cy="-2" r="13" fill="#ff7eb5"></circle>
+              <circle cx="0" cy="-2" r="9" fill="#ffd45e"></circle>
+            </g>
+          `;
+        } else if (
+          state.extra === "wizard"
+        ) {
+          extraLayer.innerHTML = `
+            <path
+              d="M146 104
+                 L206 -12
+                 L279 104
+                 Z"
+              fill="#6d56c9">
+            </path>
+
+            <ellipse
+              cx="211"
+              cy="106"
+              rx="89"
+              ry="20"
+              fill="#4e3aa9">
+            </ellipse>
+
+            <circle
+              cx="215"
+              cy="39"
+              r="8"
+              fill="#ffd45e">
+            </circle>
+          `;
+        }
+      }
+
+      function renderAvatar() {
+        setSkinColor();
+        renderHair();
+        renderFace();
+        renderOutfit();
+        renderExtra();
+      }
+
+      function renderEverything() {
         renderOptions();
-        renderColorGrid();
-        applyStyle();
-        showToast('Ready for a brand-new look!');
+        renderAllSwatches();
+        renderAvatar();
       }
 
       function randomItem(list) {
-        return list[Math.floor(Math.random() * list.length)];
+        return list[
+          Math.floor(
+            Math.random() *
+            list.length
+          )
+        ];
       }
 
-      function surpriseStyle() {
-        state.hair = randomItem(HAIR_OPTIONS).id;
-        state.hairColor = randomItem(HAIR_COLORS);
-        state.skinColor = randomItem(SKIN_COLORS);
-        state.makeup = randomItem(MAKEUP_OPTIONS).id;
-        state.paint = randomItem(PAINT_OPTIONS).id;
-        state.accessory = randomItem(ACCESSORY_OPTIONS).id;
+      function randomize() {
+        state.hair =
+          randomItem(
+            OPTIONS.hair
+          ).id;
 
-        renderOptions();
-        renderColorGrid();
-        applyStyle();
-        showToast('Surprise makeover! 🎉');
+        state.face =
+          randomItem(
+            OPTIONS.face
+          ).id;
+
+        state.outfit =
+          randomItem(
+            OPTIONS.outfit
+          ).id;
+
+        state.extra =
+          randomItem(
+            OPTIONS.extra
+          ).id;
+
+        state.skin =
+          randomItem(
+            SKIN_COLORS
+          );
+
+        state.hairColor =
+          randomItem(
+            HAIR_COLORS
+          );
+
+        state.outfitColor =
+          randomItem(
+            OUTFIT_COLORS
+          );
+
+        renderEverything();
+
+        showToast(
+          "Surprise avatar created! 🎉"
+        );
       }
 
-      function showToast(message) {
-        toast.textContent = message;
-        toast.classList.add('show');
+      function resetAvatar() {
+        Object.assign(
+          state,
+          DEFAULT_STYLE
+        );
 
-        clearTimeout(toastTimer);
-
-        toastTimer = setTimeout(() => {
-          toast.classList.remove('show');
-        }, 1800);
-      }
-
-      homeButton.addEventListener('click', () => {
-        window.location.href = 'my-city.html';
-      });
-
-      document.querySelectorAll('.tab-button').forEach(button => {
-        button.addEventListener('click', () => {
-          state.tab = button.dataset.tab;
-
-          document.querySelectorAll('.tab-button').forEach(item => {
-            item.classList.toggle('active', item === button);
+        document
+          .querySelectorAll(
+            ".tab-button"
+          )
+          .forEach(button => {
+            button.classList.toggle(
+              "active",
+              button.dataset.tab ===
+                state.tab
+            );
           });
 
-          renderOptions();
+        renderEverything();
+
+        showToast(
+          "Ready for a new look!"
+        );
+      }
+
+      function svgToDataUrl() {
+        const clone =
+          avatarSvg.cloneNode(
+            true
+          );
+
+        clone.setAttribute(
+          "xmlns",
+          "http://www.w3.org/2000/svg"
+        );
+
+        const serialized =
+          new XMLSerializer()
+            .serializeToString(
+              clone
+            );
+
+        return (
+          "data:image/svg+xml;charset=utf-8," +
+          encodeURIComponent(
+            serialized
+          )
+        );
+      }
+
+      function saveAvatar() {
+        const dataUrl =
+          svgToDataUrl();
+
+        localStorage.setItem(
+          STYLE_KEY,
+          JSON.stringify(
+            state
+          )
+        );
+
+        localStorage.setItem(
+          AVATAR_KEY,
+          dataUrl
+        );
+
+        window.dispatchEvent(
+          new StorageEvent(
+            "storage",
+            {
+              key:
+                AVATAR_KEY,
+
+              newValue:
+                dataUrl
+            }
+          )
+        );
+
+        showToast(
+          "Your avatar was saved to My World! ✨"
+        );
+      }
+
+      document
+        .querySelectorAll(
+          ".tab-button"
+        )
+        .forEach(button => {
+          button.addEventListener(
+            "click",
+            () => {
+              state.tab =
+                button.dataset.tab;
+
+              document
+                .querySelectorAll(
+                  ".tab-button"
+                )
+                .forEach(item => {
+                  item.classList.toggle(
+                    "active",
+                    item === button
+                  );
+                });
+
+              renderOptions();
+            }
+          );
         });
-      });
 
-      saveButton.addEventListener('click', saveStyle);
-      resetButton.addEventListener('click', resetStyle);
-      randomButton.addEventListener('click', surpriseStyle);
+      document
+        .getElementById(
+          "backButton"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            window.location.href =
+              "my-city.html";
+          }
+        );
 
-      window.addEventListener('storage', event => {
-        if (event.key === NAME_KEY) {
-          setPlayerName();
-        }
-      });
+      document
+        .getElementById(
+          "randomButton"
+        )
+        .addEventListener(
+          "click",
+          randomize
+        );
 
-      window.addEventListener('pageshow', setPlayerName);
+      document
+        .getElementById(
+          "resetButton"
+        )
+        .addEventListener(
+          "click",
+          resetAvatar
+        );
+
+      document
+        .getElementById(
+          "saveButton"
+        )
+        .addEventListener(
+          "click",
+          saveAvatar
+        );
 
       restoreStyle();
-      setPlayerName();
-      renderOptions();
-      renderColorGrid();
-      applyStyle();
+
+      avatarName.textContent =
+        childName;
+
+      playerPill.textContent =
+        `✨ ${possessive(childName)}`;
+
+      renderEverything();
     })();
+  </script>
+
+  <script
+    type="module"
+    src="notification-bell.js">
+  </script>
+
+  <script
+    type="module"
+    src="parent-gate.js">
   </script>
 </body>
 </html>
