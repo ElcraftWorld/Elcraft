@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ELCraft World Map</title>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+font-family:Arial,sans-serif;
+overflow:hidden;
+background:linear-gradient(#87CEEB,#d8f4ff 55%,#7cc96b);
+}
+#world{
+position:relative;
+width:100vw;
+height:100vh;
+overflow:hidden;
+}
+.location{
+position:absolute;
+width:150px;
+padding:14px;
+text-align:center;
+background:white;
+border:4px solid #6657d9;
+border-radius:18px;
+cursor:pointer;
+font-weight:bold;
+box-shadow:0 10px 18px rgba(0,0,0,.2);
+transition:.2s;
+}
+.location:hover{transform:scale(1.08)}
+.location span{display:block;font-size:42px}
+#castle{left:50%;top:45%;transform:translate(-50%,-50%)}
+#school{left:50%;bottom:70px;transform:translateX(-50%)}
+#library{left:120px;top:40%}
+#pets{right:120px;top:40%}
+#market{right:150px;bottom:140px}
+#farm{left:160px;bottom:120px}
+#mountain{left:50%;top:80px;transform:translateX(-50%)}
+svg{
+position:absolute;
+inset:0;
+width:100%;
+height:100%;
+pointer-events:none;
+}
+line{
+stroke:#d7b67a;
+stroke-width:10;
+stroke-linecap:round;
+stroke-dasharray:18 14;
+}
+#player{
+position:absolute;
+left:50%;
+top:50%;
+width:52px;
+height:52px;
+margin-left:-26px;
+margin-top:-26px;
+font-size:48px;
+transition:left 1.2s linear, top 1.2s linear;
+z-index:100;
+}
+#title{
+position:absolute;
+top:20px;
+left:20px;
+background:rgba(255,255,255,.9);
+padding:14px 18px;
+border-radius:14px;
+font-weight:bold;
+}
+</style>
+</head>
+<body>
+
+<div id="world">
+
+<div id="title">
+🏰 ELCraft World Map
+<br><small>Click anywhere to travel.</small>
+</div>
+
+<svg>
+<line x1="50%" y1="45%" x2="50%" y2="17%"/>
+<line x1="50%" y1="45%" x2="50%" y2="88%"/>
+<line x1="50%" y1="45%" x2="16%" y2="42%"/>
+<line x1="50%" y1="45%" x2="84%" y2="42%"/>
+<line x1="16%" y1="42%" x2="16%" y2="84%"/>
+<line x1="84%" y1="42%" x2="84%" y2="78%"/>
+</svg>
+
+<div id="mountain" class="location" data-page="mountain.html"><span>⛰️</span>Adventure Mountain</div>
+<div id="library" class="location" data-page="library.html"><span>📚</span>Library</div>
+<div id="castle" class="location" data-page="family-castle.html"><span>🏰</span>Family Castle</div>
+<div id="pets" class="location" data-page="pet-shop.html"><span>🐶</span>Pet Village</div>
+<div id="farm" class="location" data-page="farm.html"><span>🌾</span>Farm</div>
+<div id="market" class="location" data-page="market.html"><span>🛒</span>Marketplace</div>
+<div id="school" class="location" data-page="school.html"><span>🎓</span>School</div>
+
+<div id="player">🧒</div>
+
+</div>
+
+<script>
+const player=document.getElementById("player");
+
+document.querySelectorAll(".location").forEach(location=>{
+
+location.addEventListener("click",()=>{
+
+const r=location.getBoundingClientRect();
+
+player.style.left=(r.left+r.width/2)+"px";
+player.style.top=(r.top+r.height/2)+"px";
+
+setTimeout(()=>{
+window.location.href=location.dataset.page;
+},1200);
+
+});
+
+});
+</script>
+
+</body>
+</html>
