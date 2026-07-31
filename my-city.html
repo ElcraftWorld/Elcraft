@@ -391,7 +391,7 @@
 
       <div class="header-title-group">
 
-        <h1 id="cityPageTitle">My City</h1>
+        <h1 id="cityPageTitle">My World</h1>
 
         <p>
           Explore, learn, and grow your magical world.
@@ -404,7 +404,7 @@
     <div
       id="cityOwner"
       class="city-owner">
-      ✨ Player's City
+      ✨ Player's World
     </div>
 
   </header>
@@ -413,9 +413,77 @@
 
   <main
     id="city"
-    aria-label="ELCraft My City">
+    aria-label="ELCraft My World">
 
-    <!-- Sky -->
+    
+    <!--
+      NEW WORLD HOTSPOTS
+      These transparent buttons sit over the actual buildings
+      drawn into my-world-background.png.
+    -->
+    <nav
+      id="worldHotspots"
+      class="world-hotspots"
+      aria-label="Places in My World">
+
+      <button class="world-hotspot hotspot-castle" type="button"
+        data-page="castle.html" data-place="Castle"
+        aria-label="Open Castle"></button>
+
+      <button class="world-hotspot hotspot-library" type="button"
+        data-page="library.html" data-place="Library"
+        aria-label="Open Library"></button>
+
+      <button class="world-hotspot hotspot-school" type="button"
+        data-page="school.html" data-place="School"
+        aria-label="Open School"></button>
+
+      <button class="world-hotspot hotspot-clubhouse" type="button"
+        data-page="clubhouse.html" data-place="Clubhouse"
+        aria-label="Open Clubhouse"></button>
+
+      <button class="world-hotspot hotspot-market" type="button"
+        data-page="market.html" data-place="Market"
+        aria-label="Open Market"></button>
+
+      <button class="world-hotspot hotspot-art-studio" type="button"
+        data-page="salon.html" data-place="Art Studio"
+        aria-label="Open Art Studio"></button>
+
+      <button class="world-hotspot hotspot-farm" type="button"
+        data-page="farm.html" data-place="Farm"
+        aria-label="Open Farm"></button>
+
+      <button class="world-hotspot hotspot-pet-barn" type="button"
+        data-page="pet-shop.html" data-place="Pet Barn"
+        aria-label="Open Pet Barn"></button>
+
+      <button class="world-hotspot hotspot-mailbox" type="button"
+        data-action="mailbox" data-place="Mailbox"
+        aria-label="Open Magical Mailbox"></button>
+
+      <button class="world-hotspot hotspot-adventure" type="button"
+        data-page="mountain.html" data-place="Adventure Mountain"
+        aria-label="Open Adventure Mountain"></button>
+
+      <button class="world-hotspot hotspot-forest future-hotspot" type="button"
+        data-future="Future Forest" aria-label="Future Forest is coming soon"></button>
+
+      <button class="world-hotspot hotspot-train future-hotspot" type="button"
+        data-future="Train Station" aria-label="Train Station is coming soon"></button>
+
+      <button class="world-hotspot hotspot-beach future-hotspot" type="button"
+        data-future="Beach" aria-label="Beach is coming soon"></button>
+
+      <button class="world-hotspot hotspot-science future-hotspot" type="button"
+        data-future="Science Lab" aria-label="Science Lab is coming soon"></button>
+
+      <button class="world-hotspot hotspot-theater future-hotspot" type="button"
+        data-future="Theater" aria-label="Theater is coming soon"></button>
+
+    </nav>
+
+<!-- Sky -->
 
     <div
       id="sky"
@@ -2861,6 +2929,311 @@
   setTimeout(
     () => observer.disconnect(),
     8000
+  );
+})();
+</script>
+
+
+<script>
+(() => {
+  "use strict";
+
+  const city =
+    document.getElementById("city");
+
+  const title =
+    document.getElementById("cityPageTitle");
+
+  const owner =
+    document.getElementById("cityOwner");
+
+  const hero =
+    document.getElementById("hero");
+
+  const heroImage =
+    document.getElementById("heroAvatar");
+
+  const heroName =
+    document.getElementById("heroName");
+
+  const message =
+    document.getElementById("message");
+
+  const childName =
+    (
+      localStorage.getItem("elcraft_child_name") ||
+      localStorage.getItem("elcraft_player_name") ||
+      "Player"
+    )
+      .trim()
+      .slice(0, 24) ||
+    "Player";
+
+  const savedAvatar =
+    (
+      localStorage.getItem("elcraft_child_avatar") ||
+      localStorage.getItem("elcraft_player_avatar") ||
+      ""
+    ).trim();
+
+  function possessive(name) {
+    return name.endsWith("s")
+      ? `${name}' World`
+      : `${name}'s World`;
+  }
+
+  function showWorldMessage(text) {
+    if (!message) {
+      window.alert(text);
+      return;
+    }
+
+    message.textContent =
+      text;
+
+    message.classList.add(
+      "show"
+    );
+
+    window.clearTimeout(
+      showWorldMessage.timer
+    );
+
+    showWorldMessage.timer =
+      window.setTimeout(
+        () => {
+          message.classList.remove(
+            "show"
+          );
+        },
+        2400
+      );
+  }
+
+  function applyIdentity() {
+    const worldName =
+      possessive(childName);
+
+    document.title =
+      `ELCraft — ${worldName}`;
+
+    if (title) {
+      title.textContent =
+        worldName;
+    }
+
+    if (owner) {
+      owner.textContent =
+        `✨ ${worldName}`;
+    }
+
+    if (heroName) {
+      heroName.textContent =
+        childName;
+    }
+
+    if (!hero || !city) {
+      return;
+    }
+
+    /*
+      The old hero lived inside #park, which is hidden because
+      the new PNG already contains the plaza. Move the live avatar
+      directly into #city so it appears on the blank center circle.
+    */
+    if (hero.parentElement !== city) {
+      city.appendChild(hero);
+    }
+
+    let emoji =
+      document.getElementById(
+        "heroEmojiAvatar"
+      );
+
+    if (!emoji) {
+      emoji =
+        document.createElement("div");
+
+      emoji.id =
+        "heroEmojiAvatar";
+
+      emoji.setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+      hero.insertBefore(
+        emoji,
+        heroName || null
+      );
+    }
+
+    const isImage =
+      /^(https?:|data:image|blob:|\/|\.\/|\.\.\/)/i
+        .test(savedAvatar) ||
+      /\.(png|jpe?g|gif|webp|svg)(\?.*)?$/i
+        .test(savedAvatar);
+
+    if (
+      savedAvatar &&
+      isImage &&
+      heroImage
+    ) {
+      heroImage.src =
+        savedAvatar;
+
+      heroImage.hidden =
+        false;
+
+      emoji.hidden =
+        true;
+    } else {
+      if (heroImage) {
+        heroImage.removeAttribute(
+          "src"
+        );
+
+        heroImage.hidden =
+          true;
+      }
+
+      emoji.textContent =
+        savedAvatar ||
+        "🧒";
+
+      emoji.hidden =
+        false;
+    }
+
+    hero.setAttribute(
+      "aria-label",
+      `Open ${childName}'s home`
+    );
+  }
+
+  function openMailbox() {
+    const mailbox =
+      document.getElementById(
+        "cityMailbox"
+      );
+
+    if (mailbox) {
+      mailbox.click();
+      return;
+    }
+
+    const modal =
+      document.getElementById(
+        "magicMailModal"
+      );
+
+    if (modal) {
+      modal.classList.add(
+        "open"
+      );
+
+      return;
+    }
+
+    showWorldMessage(
+      "Magical Mail is getting ready! 📬"
+    );
+  }
+
+  function activateHotspot(button) {
+    const page =
+      button.dataset.page;
+
+    const future =
+      button.dataset.future;
+
+    const action =
+      button.dataset.action;
+
+    if (action === "mailbox") {
+      openMailbox();
+      return;
+    }
+
+    if (future) {
+      showWorldMessage(
+        `${future} is coming soon for ${childName}! ✨`
+      );
+
+      return;
+    }
+
+    if (page) {
+      window.location.href =
+        page;
+    }
+  }
+
+  document
+    .querySelectorAll(
+      ".world-hotspot"
+    )
+    .forEach(button => {
+      button.addEventListener(
+        "click",
+        () => {
+          activateHotspot(
+            button
+          );
+        }
+      );
+    });
+
+  if (hero) {
+    hero.addEventListener(
+      "click",
+      event => {
+        event.stopPropagation();
+
+        window.location.href =
+          "index.html";
+      }
+    );
+
+    hero.addEventListener(
+      "keydown",
+      event => {
+        if (
+          event.key === "Enter" ||
+          event.key === " "
+        ) {
+          event.preventDefault();
+
+          window.location.href =
+            "index.html";
+        }
+      }
+    );
+  }
+
+  const homeButton =
+    document.getElementById(
+      "homeButton"
+    );
+
+  if (homeButton) {
+    homeButton.onclick =
+      () => {
+        window.location.href =
+          "index.html";
+      };
+  }
+
+  applyIdentity();
+
+  window.addEventListener(
+    "pageshow",
+    applyIdentity
+  );
+
+  window.addEventListener(
+    "storage",
+    applyIdentity
   );
 })();
 </script>
