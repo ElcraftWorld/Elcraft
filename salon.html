@@ -7,7 +7,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <meta name="theme-color" content="#f7efff">
+  <meta name="theme-color" content="#f5efff">
 
   <title>ELCraft — Avatar Studio</title>
 
@@ -23,10 +23,8 @@
       --pink: #ff83b8;
       --blue: #65c9ef;
       --green: #75c95c;
-      --gold: #ffd45e;
       --ink: #35405f;
       --muted: #747c98;
-      --panel: rgba(255, 255, 255, 0.96);
     }
 
     html,
@@ -45,13 +43,13 @@
       background:
         radial-gradient(
           circle at 12% 12%,
-          rgba(255,255,255,.9),
-          transparent 25%
+          rgba(255,255,255,.92),
+          transparent 24%
         ),
         linear-gradient(
           145deg,
           #ffe2f1,
-          #e7ddff 48%,
+          #e8ddff 48%,
           #dff5ff
         );
     }
@@ -60,11 +58,6 @@
       font: inherit;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
-    }
-
-    button:disabled {
-      cursor: wait;
-      opacity: .65;
     }
 
     .page {
@@ -80,12 +73,13 @@
       top: 0;
       z-index: 100;
 
+      min-height: 84px;
+
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
 
-      min-height: 86px;
       padding: 12px 18px;
 
       border-bottom: 4px solid rgba(111,85,217,.12);
@@ -125,10 +119,6 @@
       font-size: 42px;
     }
 
-    .title-group {
-      min-width: 0;
-    }
-
     .title-group h1 {
       margin: 0;
 
@@ -146,8 +136,6 @@
     }
 
     .player-pill {
-      flex: 0 0 auto;
-
       max-width: 250px;
 
       overflow: hidden;
@@ -168,9 +156,9 @@
 
       display: grid;
       grid-template-columns:
-        minmax(250px,.85fr)
-        minmax(420px,1.25fr)
-        minmax(250px,.85fr);
+        minmax(265px,.82fr)
+        minmax(430px,1.25fr)
+        minmax(250px,.78fr);
       gap: 16px;
 
       padding: 16px;
@@ -179,104 +167,101 @@
     .panel {
       min-width: 0;
 
-      border: 4px solid rgba(255,255,255,.9);
+      border: 4px solid rgba(255,255,255,.92);
       border-radius: 28px;
 
-      background: var(--panel);
+      background: rgba(255,255,255,.96);
 
       box-shadow:
         0 12px 0 rgba(97,70,144,.08),
         0 22px 42px rgba(75,61,120,.15);
     }
 
-    .tools-panel,
-    .colors-panel {
-      display: flex;
-      flex-direction: column;
-
-      padding: 16px;
+    .choice-panel,
+    .save-panel {
+      padding: 17px;
     }
 
     .panel-title {
-      margin: 0 0 11px;
+      margin: 0 0 6px;
 
       color: var(--purple-dark);
       font-size: 24px;
       text-align: center;
     }
 
-    .tabs {
+    .panel-copy {
+      margin: 0 0 15px;
+
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .avatar-options {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px;
-
-      margin-bottom: 12px;
+      gap: 11px;
     }
 
-    .tab-button {
-      min-height: 44px;
+    .avatar-option {
+      width: 100%;
 
-      border: 0;
-      border-radius: 14px;
-      padding: 9px;
-
-      color: #685a8b;
-      background: #f0ecf8;
-
-      font-size: 12px;
-      font-weight: 900;
-    }
-
-    .tab-button.active {
-      color: white;
-      background:
-        linear-gradient(
-          135deg,
-          var(--purple),
-          #9579f7
-        );
-    }
-
-    .options {
       display: grid;
-      grid-template-columns:
-        repeat(2,minmax(0,1fr));
-      align-content: start;
-      gap: 9px;
+      grid-template-columns: 78px 1fr;
+      align-items: center;
+      gap: 12px;
 
-      min-height: 0;
-      overflow-y: auto;
-    }
-
-    .option-button {
-      min-height: 78px;
-
-      border: 3px solid #eeeaf7;
-      border-radius: 18px;
-      padding: 9px 6px;
+      border: 3px solid #ece7f7;
+      border-radius: 19px;
+      padding: 10px;
 
       color: #4e4b70;
       background: white;
 
-      font-size: 11px;
-      font-weight: 900;
+      text-align: left;
 
       box-shadow:
-        0 4px 0 rgba(80,65,120,.09);
+        0 5px 0 rgba(80,65,120,.08);
     }
 
-    .option-button.active {
+    .avatar-option.active {
       border-color: var(--pink);
       background: #fff2f8;
+      box-shadow:
+        0 5px 0 rgba(217,79,138,.15);
     }
 
-    .option-icon {
-      display: block;
+    .option-picture {
+      width: 78px;
+      height: 88px;
 
-      margin-bottom: 5px;
+      object-fit: contain;
 
-      font-size: 30px;
-      line-height: 1;
+      border-radius: 16px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f6f0ff,
+          #e8f8ff
+        );
+    }
+
+    .option-title {
+      color: var(--purple-dark);
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .option-description {
+      margin-top: 4px;
+
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
     }
 
     .preview-panel {
@@ -286,15 +271,15 @@
       display: grid;
       place-items: center;
 
-      min-height: 650px;
+      min-height: 660px;
 
-      padding: 20px;
+      padding: 24px;
 
       background:
         radial-gradient(
           circle at 50% 18%,
-          rgba(255,255,255,.94),
-          transparent 28%
+          rgba(255,255,255,.96),
+          transparent 27%
         ),
         repeating-linear-gradient(
           135deg,
@@ -307,23 +292,23 @@
       content: "";
 
       position: absolute;
-      inset: 28px;
+      inset: 30px;
 
-      border: 8px solid #f2b7d5;
-      border-radius: 48% 48% 28% 28% / 30% 30% 20% 20%;
+      border: 9px solid #f2b7d5;
+      border-radius: 48% 48% 27% 27% / 30% 30% 20% 20%;
+
+      background:
+        radial-gradient(
+          circle at 50% 22%,
+          rgba(255,255,255,.96),
+          rgba(221,243,252,.9) 58%,
+          #d7eaf4
+        );
 
       box-shadow:
         inset 0 0 0 7px white,
         0 14px 0 #d98fb5,
         0 26px 35px rgba(83,55,104,.17);
-
-      background:
-        radial-gradient(
-          circle at 50% 22%,
-          rgba(255,255,255,.95),
-          rgba(221,243,252,.9) 58%,
-          #d7eaf4
-        );
     }
 
     .avatar-stage {
@@ -331,29 +316,41 @@
       z-index: 2;
 
       width: min(100%,520px);
-      height: 580px;
+      height: 590px;
 
-      display: grid;
-      place-items: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
-    #avatarSvg {
+    #avatarPreview {
+      display: block;
+
       width: 100%;
       height: 100%;
 
-      overflow: visible;
+      object-fit: contain;
 
       filter:
         drop-shadow(
           0 18px 12px
           rgba(58,62,104,.18)
         );
+
+      transition:
+        opacity .18s ease,
+        transform .18s ease;
+    }
+
+    #avatarPreview.changing {
+      opacity: .25;
+      transform: scale(.96);
     }
 
     .avatar-name {
       position: absolute;
       left: 50%;
-      bottom: 20px;
+      bottom: 21px;
 
       transform: translateX(-50%);
 
@@ -366,7 +363,7 @@
       padding: 8px 18px;
 
       color: var(--purple-dark);
-      background: rgba(255,255,255,.96);
+      background: rgba(255,255,255,.97);
 
       font-size: 18px;
       font-weight: 900;
@@ -377,53 +374,46 @@
         0 7px 18px rgba(73,58,115,.16);
     }
 
-    .color-section {
-      margin-bottom: 14px;
+    .feature-card {
+      margin-bottom: 12px;
+
+      border: 2px solid #e9e4f4;
+      border-radius: 18px;
+      padding: 14px;
+
+      background: white;
     }
 
-    .color-label {
-      margin: 0 0 8px;
+    .feature-card strong {
+      display: block;
 
       color: var(--purple-dark);
       font-size: 13px;
-      font-weight: 900;
-      text-align: center;
     }
 
-    .swatches {
-      display: grid;
-      grid-template-columns:
-        repeat(4,minmax(0,1fr));
-      gap: 8px;
-    }
+    .feature-card span {
+      display: block;
 
-    .swatch {
-      min-height: 48px;
+      margin-top: 5px;
 
-      border: 4px solid white;
-      border-radius: 15px;
-
-      box-shadow:
-        0 0 0 2px #dad2eb;
-    }
-
-    .swatch.active {
-      box-shadow:
-        0 0 0 5px var(--purple);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.45;
     }
 
     .actions {
       display: grid;
-      gap: 9px;
+      gap: 10px;
 
-      margin-top: auto;
+      margin-top: 16px;
     }
 
     .action-button {
-      min-height: 49px;
+      min-height: 51px;
 
       border: 0;
-      border-radius: 16px;
+      border-radius: 17px;
       padding: 11px;
 
       color: white;
@@ -447,12 +437,12 @@
     }
 
     .save-note {
-      margin-top: 9px;
+      margin-top: 11px;
 
       color: var(--muted);
       font-size: 10px;
       font-weight: 800;
-      line-height: 1.4;
+      line-height: 1.45;
       text-align: center;
     }
 
@@ -494,9 +484,9 @@
     @media (max-width: 1000px) {
       .workspace {
         grid-template-columns:
-          minmax(200px,.75fr)
-          minmax(350px,1.3fr)
-          minmax(200px,.75fr);
+          minmax(225px,.75fr)
+          minmax(360px,1.25fr)
+          minmax(220px,.72fr);
         gap: 10px;
         padding: 10px;
       }
@@ -522,22 +512,26 @@
       }
 
       .preview-panel {
-        min-height: 560px;
+        min-height: 570px;
         order: -1;
       }
 
-      .options {
+      .avatar-options {
         grid-template-columns:
           repeat(3,minmax(0,1fr));
       }
 
-      .swatches {
-        grid-template-columns:
-          repeat(6,minmax(0,1fr));
+      .avatar-option {
+        grid-template-columns: 1fr;
+        text-align: center;
+      }
+
+      .option-picture {
+        margin: auto;
       }
     }
 
-    @media (max-width: 520px) {
+    @media (max-width: 540px) {
       .header {
         min-height: 72px;
         padding: 9px 10px;
@@ -548,29 +542,29 @@
       }
 
       .title-group h1 {
-        font-size: 24px;
+        font-size: 23px;
       }
 
       .preview-panel {
-        min-height: 480px;
+        min-height: 490px;
       }
 
       .avatar-stage {
         height: 430px;
       }
 
-      .options {
-        grid-template-columns:
-          repeat(2,minmax(0,1fr));
+      .avatar-options {
+        grid-template-columns: 1fr;
       }
 
-      .swatches {
-        grid-template-columns:
-          repeat(4,minmax(0,1fr));
+      .avatar-option {
+        grid-template-columns: 72px 1fr;
+        text-align: left;
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
+      #avatarPreview,
       .toast {
         transition: none;
       }
@@ -596,7 +590,7 @@
         <div
           class="header-icon"
           aria-hidden="true">
-          🎨
+          ✨
         </div>
 
         <div class="title-group">
@@ -606,7 +600,7 @@
           </h1>
 
           <p>
-            Create a character that feels like you.
+            Choose a polished character for your adventures.
           </p>
 
         </div>
@@ -616,56 +610,27 @@
       <div
         id="playerPill"
         class="player-pill">
-        ✨ Player's Avatar
+        ✨ Player's Studio
       </div>
 
     </header>
 
     <section class="workspace">
 
-      <aside class="panel tools-panel">
+      <aside class="panel choice-panel">
 
         <h2 class="panel-title">
-          Choose a Look
+          Choose Your Character
         </h2>
 
-        <nav
-          class="tabs"
-          aria-label="Avatar categories">
-
-          <button
-            class="tab-button active"
-            type="button"
-            data-tab="hair">
-            💇 Hair
-          </button>
-
-          <button
-            class="tab-button"
-            type="button"
-            data-tab="face">
-            🙂 Face
-          </button>
-
-          <button
-            class="tab-button"
-            type="button"
-            data-tab="outfit">
-            👕 Outfit
-          </button>
-
-          <button
-            class="tab-button"
-            type="button"
-            data-tab="extra">
-            ✨ Extras
-          </button>
-
-        </nav>
+        <p class="panel-copy">
+          Pick the style that feels most like you. More characters
+          and outfits can be added later without changing this page.
+        </p>
 
         <div
-          id="options"
-          class="options">
+          id="avatarOptions"
+          class="avatar-options">
         </div>
 
       </aside>
@@ -674,298 +639,10 @@
 
         <div class="avatar-stage">
 
-          <svg
-            id="avatarSvg"
-            viewBox="0 0 420 560"
-            xmlns="http://www.w3.org/2000/svg"
-            role="img"
-            aria-label="Avatar preview">
-
-            <defs>
-              <filter id="softShadow" x="-30%" y="-30%" width="160%" height="160%">
-                <feDropShadow dx="0" dy="7" stdDeviation="7" flood-opacity=".16"/>
-              </filter>
-            </defs>
-
-            <g
-              id="avatarRoot"
-              filter="url(#softShadow)">
-
-              <ellipse
-                cx="210"
-                cy="516"
-                rx="104"
-                ry="20"
-                fill="rgba(70,66,110,.16)">
-              </ellipse>
-
-              <g id="legs">
-                <rect
-                  id="leftLeg"
-                  x="151"
-                  y="397"
-                  width="42"
-                  height="92"
-                  rx="20"
-                  fill="#c98a61">
-                </rect>
-
-                <rect
-                  id="rightLeg"
-                  x="227"
-                  y="397"
-                  width="42"
-                  height="92"
-                  rx="20"
-                  fill="#c98a61">
-                </rect>
-
-                <rect
-                  id="leftShoe"
-                  x="132"
-                  y="467"
-                  width="73"
-                  height="32"
-                  rx="16"
-                  fill="#4f5dc4">
-                </rect>
-
-                <rect
-                  id="rightShoe"
-                  x="215"
-                  y="467"
-                  width="73"
-                  height="32"
-                  rx="16"
-                  fill="#4f5dc4">
-                </rect>
-              </g>
-
-              <g id="body">
-                <path
-                  id="shirt"
-                  d="M121 289
-                     Q139 253 177 247
-                     L243 247
-                     Q281 253 299 289
-                     L280 413
-                     Q210 436 140 413
-                     Z"
-                  fill="#7259d6">
-                </path>
-
-                <path
-                  id="shirtAccent"
-                  d="M177 247
-                     Q210 267 243 247
-                     L235 278
-                     Q210 293 185 278
-                     Z"
-                  fill="rgba(255,255,255,.18)">
-                </path>
-
-                <path
-                  id="leftArm"
-                  d="M133 286
-                     Q111 307 104 353
-                     Q101 374 119 379
-                     Q136 382 143 360
-                     L161 307
-                     Z"
-                  fill="#c98a61">
-                </path>
-
-                <path
-                  id="rightArm"
-                  d="M287 286
-                     Q309 307 316 353
-                     Q319 374 301 379
-                     Q284 382 277 360
-                     L259 307
-                     Z"
-                  fill="#c98a61">
-                </path>
-
-                <circle
-                  id="leftHand"
-                  cx="112"
-                  cy="381"
-                  r="18"
-                  fill="#c98a61">
-                </circle>
-
-                <circle
-                  id="rightHand"
-                  cx="308"
-                  cy="381"
-                  r="18"
-                  fill="#c98a61">
-                </circle>
-
-                <path
-                  id="bottom"
-                  d="M140 392
-                     Q210 414 280 392
-                     L273 437
-                     L147 437
-                     Z"
-                  fill="#3f5578">
-                </path>
-              </g>
-
-              <g id="headGroup">
-
-                <ellipse
-                  id="leftEar"
-                  cx="122"
-                  cy="194"
-                  rx="24"
-                  ry="31"
-                  fill="#c98a61">
-                </ellipse>
-
-                <ellipse
-                  id="rightEar"
-                  cx="298"
-                  cy="194"
-                  rx="24"
-                  ry="31"
-                  fill="#c98a61">
-                </ellipse>
-
-                <ellipse
-                  id="head"
-                  cx="210"
-                  cy="181"
-                  rx="100"
-                  ry="113"
-                  fill="#c98a61">
-                </ellipse>
-
-                <g id="hairBack"></g>
-
-                <g id="faceFeatures">
-
-                  <ellipse
-                    id="leftEyeWhite"
-                    cx="170"
-                    cy="183"
-                    rx="20"
-                    ry="23"
-                    fill="#ffffff">
-                  </ellipse>
-
-                  <ellipse
-                    id="rightEyeWhite"
-                    cx="250"
-                    cy="183"
-                    rx="20"
-                    ry="23"
-                    fill="#ffffff">
-                  </ellipse>
-
-                  <circle
-                    id="leftIris"
-                    cx="172"
-                    cy="186"
-                    r="10"
-                    fill="#563d31">
-                  </circle>
-
-                  <circle
-                    id="rightIris"
-                    cx="248"
-                    cy="186"
-                    r="10"
-                    fill="#563d31">
-                  </circle>
-
-                  <circle
-                    cx="175"
-                    cy="182"
-                    r="3.5"
-                    fill="#ffffff">
-                  </circle>
-
-                  <circle
-                    cx="251"
-                    cy="182"
-                    r="3.5"
-                    fill="#ffffff">
-                  </circle>
-
-                  <path
-                    id="leftBrow"
-                    d="M149 153 Q170 142 191 153"
-                    fill="none"
-                    stroke="#4e352c"
-                    stroke-width="8"
-                    stroke-linecap="round">
-                  </path>
-
-                  <path
-                    id="rightBrow"
-                    d="M229 153 Q250 142 271 153"
-                    fill="none"
-                    stroke="#4e352c"
-                    stroke-width="8"
-                    stroke-linecap="round">
-                  </path>
-
-                  <path
-                    d="M207 188
-                       Q200 219 211 221"
-                    fill="none"
-                    stroke="rgba(96,53,42,.25)"
-                    stroke-width="5"
-                    stroke-linecap="round">
-                  </path>
-
-                  <path
-                    id="mouth"
-                    d="M176 236
-                       Q210 266 244 236
-                       Q210 279 176 236"
-                    fill="#c95675">
-                  </path>
-
-                  <path
-                    id="smileLine"
-                    d="M181 238 Q210 257 239 238"
-                    fill="none"
-                    stroke="rgba(255,255,255,.55)"
-                    stroke-width="4"
-                    stroke-linecap="round">
-                  </path>
-
-                  <ellipse
-                    id="leftBlush"
-                    cx="149"
-                    cy="221"
-                    rx="23"
-                    ry="10"
-                    fill="rgba(255,120,145,.20)">
-                  </ellipse>
-
-                  <ellipse
-                    id="rightBlush"
-                    cx="271"
-                    cy="221"
-                    rx="23"
-                    ry="10"
-                    fill="rgba(255,120,145,.20)">
-                  </ellipse>
-
-                </g>
-
-                <g id="hairFront"></g>
-
-                <g id="extraLayer"></g>
-
-              </g>
-
-            </g>
-          </svg>
+          <img
+            id="avatarPreview"
+            src="avatar-style-1.png"
+            alt="Selected ELCraft avatar">
 
           <div
             id="avatarName"
@@ -977,50 +654,44 @@
 
       </section>
 
-      <aside class="panel colors-panel">
+      <aside class="panel save-panel">
 
         <h2 class="panel-title">
-          Colors & Save
+          Save Your Look
         </h2>
 
-        <section class="color-section">
+        <div class="feature-card">
+          <strong>
+            🌎 Appears in My World
+          </strong>
 
-          <h3 class="color-label">
-            Skin Tone
-          </h3>
+          <span>
+            Your saved character replaces the neutral avatar in the
+            center plaza.
+          </span>
+        </div>
 
-          <div
-            id="skinSwatches"
-            class="swatches">
-          </div>
+        <div class="feature-card">
+          <strong>
+            👨‍👩‍👧 Connected to the selected child
+          </strong>
 
-        </section>
+          <span>
+            The character is stored with the child currently active
+            on this device.
+          </span>
+        </div>
 
-        <section class="color-section">
+        <div class="feature-card">
+          <strong>
+            🎨 Expandable later
+          </strong>
 
-          <h3 class="color-label">
-            Hair Color
-          </h3>
-
-          <div
-            id="hairSwatches"
-            class="swatches">
-          </div>
-
-        </section>
-
-        <section class="color-section">
-
-          <h3 class="color-label">
-            Outfit Color
-          </h3>
-
-          <div
-            id="outfitSwatches"
-            class="swatches">
-          </div>
-
-        </section>
+          <span>
+            We can add more characters, clothes, hairstyles, and
+            accessories as ELCraft grows.
+          </span>
+        </div>
 
         <div class="actions">
 
@@ -1048,7 +719,7 @@
         </div>
 
         <div class="save-note">
-          Saving updates the avatar shown in My World on this device.
+          Saving updates the character shown in My World on this device.
         </div>
 
       </aside>
@@ -1075,7 +746,7 @@
         "elcraft_child_avatar";
 
       const STYLE_KEY =
-        "elcraft_avatar_style_v2";
+        "elcraft_avatar_preset_v3";
 
       const childName =
         (
@@ -1086,226 +757,56 @@
           .slice(0,24) ||
         "Player";
 
-      const DEFAULT_STYLE = {
-        tab:
-          "hair",
+      const avatarChoices = [
+        {
+          id:
+            "soft-adventurer",
 
-        hair:
-          "soft",
+          name:
+            "Soft Adventurer",
 
-        face:
-          "round",
+          description:
+            "Warm, friendly, and ready to explore.",
 
-        outfit:
-          "hoodie",
+          image:
+            "avatar-style-1.png"
+        },
+        {
+          id:
+            "bright-explorer",
 
-        extra:
-          "none",
+          name:
+            "Bright Explorer",
 
-        skin:
-          "#c98a61",
+          description:
+            "Cheerful, confident, and curious.",
 
-        hairColor:
-          "#4a2d25",
+          image:
+            "avatar-style-2.png"
+        },
+        {
+          id:
+            "storybook-hero",
 
-        outfitColor:
-          "#7259d6"
-      };
+          name:
+            "Storybook Hero",
 
-      const state = {
-        ...DEFAULT_STYLE
-      };
+          description:
+            "A polished animated character for magical worlds.",
 
-      const OPTIONS = {
-        hair: [
-          {
-            id: "soft",
-            label: "Soft Waves",
-            icon: "🌊"
-          },
-          {
-            id: "short",
-            label: "Short",
-            icon: "✂️"
-          },
-          {
-            id: "afro",
-            label: "Afro",
-            icon: "☁️"
-          },
-          {
-            id: "braids",
-            label: "Braids",
-            icon: "🪢"
-          },
-          {
-            id: "buns",
-            label: "Two Buns",
-            icon: "🌟"
-          },
-          {
-            id: "mohawk",
-            label: "Mohawk",
-            icon: "⚡"
-          }
-        ],
-
-        face: [
-          {
-            id: "round",
-            label: "Round",
-            icon: "🙂"
-          },
-          {
-            id: "oval",
-            label: "Oval",
-            icon: "😊"
-          },
-          {
-            id: "wide",
-            label: "Wide Smile",
-            icon: "😁"
-          },
-          {
-            id: "freckles",
-            label: "Freckles",
-            icon: "✨"
-          },
-          {
-            id: "rosy",
-            label: "Rosy Cheeks",
-            icon: "🌸"
-          },
-          {
-            id: "bright",
-            label: "Bright Eyes",
-            icon: "⭐"
-          }
-        ],
-
-        outfit: [
-          {
-            id: "hoodie",
-            label: "Hoodie",
-            icon: "🧥"
-          },
-          {
-            id: "tee",
-            label: "T-Shirt",
-            icon: "👕"
-          },
-          {
-            id: "overalls",
-            label: "Overalls",
-            icon: "🩳"
-          },
-          {
-            id: "dress",
-            label: "Adventure Dress",
-            icon: "👗"
-          },
-          {
-            id: "jacket",
-            label: "Explorer Jacket",
-            icon: "🥾"
-          },
-          {
-            id: "sports",
-            label: "Sporty",
-            icon: "⚽"
-          }
-        ],
-
-        extra: [
-          {
-            id: "none",
-            label: "No Extra",
-            icon: "🙂"
-          },
-          {
-            id: "glasses",
-            label: "Glasses",
-            icon: "👓"
-          },
-          {
-            id: "crown",
-            label: "Crown",
-            icon: "👑"
-          },
-          {
-            id: "cap",
-            label: "Cap",
-            icon: "🧢"
-          },
-          {
-            id: "flower",
-            label: "Flower",
-            icon: "🌺"
-          },
-          {
-            id: "wizard",
-            label: "Wizard Hat",
-            icon: "🧙"
-          }
-        ]
-      };
-
-      const SKIN_COLORS = [
-        "#f5d0b4",
-        "#e8b288",
-        "#d6976c",
-        "#c57e56",
-        "#9d5f42",
-        "#72432f",
-        "#4e2f25",
-        "#efd0b0"
+          image:
+            "avatar-style-3.png"
+        }
       ];
 
-      const HAIR_COLORS = [
-        "#161826",
-        "#4a2d25",
-        "#71442d",
-        "#99623b",
-        "#d09a50",
-        "#b94c3f",
-        "#7754cf",
-        "#e875b2"
-      ];
-
-      const OUTFIT_COLORS = [
-        "#7259d6",
-        "#4f68cb",
-        "#4cb6da",
-        "#57b95f",
-        "#f0b63e",
-        "#ea6e6b",
-        "#ef78ad",
-        "#384765"
-      ];
-
-      const options =
+      const avatarOptions =
         document.getElementById(
-          "options"
+          "avatarOptions"
         );
 
-      const skinSwatches =
+      const avatarPreview =
         document.getElementById(
-          "skinSwatches"
-        );
-
-      const hairSwatches =
-        document.getElementById(
-          "hairSwatches"
-        );
-
-      const outfitSwatches =
-        document.getElementById(
-          "outfitSwatches"
-        );
-
-      const avatarSvg =
-        document.getElementById(
-          "avatarSvg"
+          "avatarPreview"
         );
 
       const avatarName =
@@ -1318,21 +819,6 @@
           "playerPill"
         );
 
-      const hairBack =
-        document.getElementById(
-          "hairBack"
-        );
-
-      const hairFront =
-        document.getElementById(
-          "hairFront"
-        );
-
-      const extraLayer =
-        document.getElementById(
-          "extraLayer"
-        );
-
       const toast =
         document.getElementById(
           "toast"
@@ -1341,10 +827,27 @@
       let toastTimer =
         null;
 
+      let selectedId =
+        localStorage.getItem(
+          STYLE_KEY
+        ) ||
+        avatarChoices[0].id;
+
       function possessive(name) {
         return name.endsWith("s")
-          ? `${name}' Avatar`
-          : `${name}'s Avatar`;
+          ? `${name}' Studio`
+          : `${name}'s Studio`;
+      }
+
+      function selectedChoice() {
+        return (
+          avatarChoices.find(
+            item =>
+              item.id ===
+              selectedId
+          ) ||
+          avatarChoices[0]
+        );
       }
 
       function showToast(message) {
@@ -1370,80 +873,10 @@
           );
       }
 
-      function restoreStyle() {
-        try {
-          const saved =
-            JSON.parse(
-              localStorage.getItem(
-                STYLE_KEY
-              ) || "null"
-            );
-
-          if (saved) {
-            Object.assign(
-              state,
-              saved
-            );
-          }
-        } catch {
-          localStorage.removeItem(
-            STYLE_KEY
-          );
-        }
-      }
-
       function renderOptions() {
-        options.replaceChildren();
+        avatarOptions.replaceChildren();
 
-        const current =
-          state[state.tab];
-
-        OPTIONS[state.tab]
-          .forEach(item => {
-            const button =
-              document.createElement(
-                "button"
-              );
-
-            button.type =
-              "button";
-
-            button.className =
-              `option-button${
-                current === item.id
-                  ? " active"
-                  : ""
-              }`;
-
-            button.innerHTML =
-              `<span class="option-icon">${item.icon}</span>${item.label}`;
-
-            button.addEventListener(
-              "click",
-              () => {
-                state[state.tab] =
-                  item.id;
-
-                renderOptions();
-                renderAvatar();
-              }
-            );
-
-            options.appendChild(
-              button
-            );
-          });
-      }
-
-      function renderSwatches(
-        container,
-        colors,
-        selected,
-        key
-      ) {
-        container.replaceChildren();
-
-        colors.forEach(color => {
+        avatarChoices.forEach(choice => {
           const button =
             document.createElement(
               "button"
@@ -1453,803 +886,218 @@
             "button";
 
           button.className =
-            `swatch${
-              color === selected
+            `avatar-option${
+              choice.id === selectedId
                 ? " active"
                 : ""
             }`;
 
-          button.style.background =
-            color;
+          const picture =
+            document.createElement(
+              "img"
+            );
 
-          button.setAttribute(
-            "aria-label",
-            `Choose ${key} color`
+          picture.className =
+            "option-picture";
+
+          picture.src =
+            choice.image;
+
+          picture.alt =
+            "";
+
+          const copy =
+            document.createElement(
+              "div"
+            );
+
+          copy.innerHTML = `
+            <div class="option-title">
+              ${choice.name}
+            </div>
+
+            <div class="option-description">
+              ${choice.description}
+            </div>
+          `;
+
+          button.append(
+            picture,
+            copy
           );
 
           button.addEventListener(
             "click",
             () => {
-              state[key] =
-                color;
+              selectedId =
+                choice.id;
 
-              renderAllSwatches();
-              renderAvatar();
+              renderOptions();
+              renderPreview();
             }
           );
 
-          container.appendChild(
+          avatarOptions.appendChild(
             button
           );
         });
       }
 
-      function renderAllSwatches() {
-        renderSwatches(
-          skinSwatches,
-          SKIN_COLORS,
-          state.skin,
-          "skin"
+      function renderPreview() {
+        const choice =
+          selectedChoice();
+
+        avatarPreview.classList.add(
+          "changing"
         );
 
-        renderSwatches(
-          hairSwatches,
-          HAIR_COLORS,
-          state.hairColor,
-          "hairColor"
-        );
+        window.setTimeout(
+          () => {
+            avatarPreview.src =
+              choice.image;
 
-        renderSwatches(
-          outfitSwatches,
-          OUTFIT_COLORS,
-          state.outfitColor,
-          "outfitColor"
-        );
-      }
-
-      function setSkinColor() {
-        [
-          "head",
-          "leftEar",
-          "rightEar",
-          "leftArm",
-          "rightArm",
-          "leftHand",
-          "rightHand",
-          "leftLeg",
-          "rightLeg"
-        ].forEach(id => {
-          const element =
-            document.getElementById(id);
-
-          if (element) {
-            element.setAttribute(
-              "fill",
-              state.skin
+            avatarPreview.classList.remove(
+              "changing"
             );
-          }
-        });
-      }
-
-      function renderHair() {
-        hairBack.innerHTML =
-          "";
-
-        hairFront.innerHTML =
-          "";
-
-        const color =
-          state.hairColor;
-
-        if (state.hair === "short") {
-          hairBack.innerHTML = `
-            <path
-              d="M116 158
-                 Q118 65 210 61
-                 Q302 65 304 158
-                 Q286 113 259 98
-                 Q210 74 161 98
-                 Q134 113 116 158"
-              fill="${color}">
-            </path>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M121 135
-                 Q150 67 210 68
-                 Q270 67 299 135
-                 Q268 107 234 104
-                 Q199 82 166 105
-                 Q143 109 121 135"
-              fill="${color}">
-            </path>
-          `;
-        } else if (
-          state.hair === "afro"
-        ) {
-          hairBack.innerHTML = `
-            <g fill="${color}">
-              <circle cx="145" cy="105" r="55"></circle>
-              <circle cx="210" cy="82" r="63"></circle>
-              <circle cx="275" cy="105" r="55"></circle>
-              <circle cx="120" cy="162" r="49"></circle>
-              <circle cx="300" cy="162" r="49"></circle>
-              <circle cx="151" cy="207" r="46"></circle>
-              <circle cx="269" cy="207" r="46"></circle>
-            </g>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M125 139
-                 Q145 74 210 70
-                 Q275 74 295 139
-                 Q246 103 210 106
-                 Q174 103 125 139"
-              fill="${color}">
-            </path>
-          `;
-        } else if (
-          state.hair === "braids"
-        ) {
-          hairBack.innerHTML = `
-            <path
-              d="M117 146
-                 Q120 66 210 62
-                 Q300 66 303 146
-                 L286 188
-                 Q257 126 210 116
-                 Q163 126 134 188
-                 Z"
-              fill="${color}">
-            </path>
-
-            <g
-              fill="${color}"
-              stroke="rgba(255,255,255,.16)"
-              stroke-width="5">
-
-              <rect
-                x="110"
-                y="162"
-                width="28"
-                height="142"
-                rx="14">
-              </rect>
-
-              <rect
-                x="282"
-                y="162"
-                width="28"
-                height="142"
-                rx="14">
-              </rect>
-            </g>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M121 135
-                 Q151 69 210 68
-                 Q269 69 299 135
-                 Q246 111 210 113
-                 Q174 111 121 135"
-              fill="${color}">
-            </path>
-          `;
-        } else if (
-          state.hair === "buns"
-        ) {
-          hairBack.innerHTML = `
-            <g fill="${color}">
-              <circle cx="128" cy="76" r="43"></circle>
-              <circle cx="292" cy="76" r="43"></circle>
-              <path
-                d="M112 151
-                   Q118 64 210 61
-                   Q302 64 308 151
-                   Q280 111 244 100
-                   Q210 83 176 100
-                   Q140 111 112 151"
-                ></path>
-            </g>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M122 135
-                 Q155 70 210 68
-                 Q265 70 298 135
-                 Q249 109 210 110
-                 Q171 109 122 135"
-              fill="${color}">
-            </path>
-          `;
-        } else if (
-          state.hair === "mohawk"
-        ) {
-          hairBack.innerHTML = `
-            <path
-              d="M186 112
-                 L199 29
-                 L211 78
-                 L229 21
-                 L239 112
-                 Z"
-              fill="${color}">
-            </path>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M183 130
-                 Q210 95 237 130
-                 L225 62
-                 L210 92
-                 L195 62
-                 Z"
-              fill="${color}">
-            </path>
-          `;
-        } else {
-          hairBack.innerHTML = `
-            <path
-              d="M108 147
-                 Q111 57 210 53
-                 Q309 57 312 147
-                 L304 262
-                 Q290 292 260 287
-                 L270 209
-                 Q244 127 210 121
-                 Q176 127 150 209
-                 L160 287
-                 Q130 292 116 262
-                 Z"
-              fill="${color}">
-            </path>
-          `;
-
-          hairFront.innerHTML = `
-            <path
-              d="M115 140
-                 Q147 58 210 61
-                 Q273 58 305 140
-                 Q265 108 232 106
-                 Q210 89 188 106
-                 Q155 108 115 140"
-              fill="${color}">
-            </path>
-          `;
-        }
-      }
-
-      function renderFace() {
-        const head =
-          document.getElementById(
-            "head"
-          );
-
-        const mouth =
-          document.getElementById(
-            "mouth"
-          );
-
-        const leftBlush =
-          document.getElementById(
-            "leftBlush"
-          );
-
-        const rightBlush =
-          document.getElementById(
-            "rightBlush"
-          );
-
-        const leftEye =
-          document.getElementById(
-            "leftEyeWhite"
-          );
-
-        const rightEye =
-          document.getElementById(
-            "rightEyeWhite"
-          );
-
-        head.setAttribute(
-          "rx",
-          state.face === "oval"
-            ? "90"
-            : state.face === "wide"
-              ? "107"
-              : "100"
+          },
+          100
         );
-
-        mouth.setAttribute(
-          "d",
-          state.face === "wide"
-            ? "M167 232 Q210 274 253 232 Q210 289 167 232"
-            : "M176 236 Q210 266 244 236 Q210 279 176 236"
-        );
-
-        const rosy =
-          state.face === "rosy";
-
-        leftBlush.setAttribute(
-          "fill",
-          rosy
-            ? "rgba(255,102,137,.42)"
-            : "rgba(255,120,145,.20)"
-        );
-
-        rightBlush.setAttribute(
-          "fill",
-          rosy
-            ? "rgba(255,102,137,.42)"
-            : "rgba(255,120,145,.20)"
-        );
-
-        const bright =
-          state.face === "bright";
-
-        leftEye.setAttribute(
-          "rx",
-          bright
-            ? "23"
-            : "20"
-        );
-
-        rightEye.setAttribute(
-          "rx",
-          bright
-            ? "23"
-            : "20"
-        );
-
-        let freckles =
-          document.getElementById(
-            "freckles"
-          );
-
-        if (!freckles) {
-          freckles =
-            document.createElementNS(
-              "http://www.w3.org/2000/svg",
-              "g"
-            );
-
-          freckles.id =
-            "freckles";
-
-          freckles.innerHTML = `
-            <circle cx="174" cy="217" r="3" fill="rgba(105,65,44,.45)"></circle>
-            <circle cx="186" cy="220" r="2.5" fill="rgba(105,65,44,.45)"></circle>
-            <circle cx="234" cy="217" r="3" fill="rgba(105,65,44,.45)"></circle>
-            <circle cx="246" cy="220" r="2.5" fill="rgba(105,65,44,.45)"></circle>
-          `;
-
-          document
-            .getElementById(
-              "faceFeatures"
-            )
-            .appendChild(
-              freckles
-            );
-        }
-
-        freckles.style.display =
-          state.face === "freckles"
-            ? ""
-            : "none";
-      }
-
-      function renderOutfit() {
-        const shirt =
-          document.getElementById(
-            "shirt"
-          );
-
-        const shirtAccent =
-          document.getElementById(
-            "shirtAccent"
-          );
-
-        const bottom =
-          document.getElementById(
-            "bottom"
-          );
-
-        shirt.setAttribute(
-          "fill",
-          state.outfitColor
-        );
-
-        if (
-          state.outfit === "tee"
-        ) {
-          shirt.setAttribute(
-            "d",
-            "M126 291 Q147 255 177 249 L243 249 Q273 255 294 291 L279 405 Q210 427 141 405 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "rgba(255,255,255,.12)"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            "#4b6089"
-          );
-        } else if (
-          state.outfit === "overalls"
-        ) {
-          shirt.setAttribute(
-            "d",
-            "M123 289 Q142 254 177 248 L243 248 Q278 254 297 289 L282 412 Q210 432 138 412 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "#5c78b4"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            "#5c78b4"
-          );
-        } else if (
-          state.outfit === "dress"
-        ) {
-          shirt.setAttribute(
-            "d",
-            "M135 286 Q154 252 182 247 L238 247 Q266 252 285 286 L316 430 Q210 466 104 430 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "rgba(255,255,255,.18)"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            state.outfitColor
-          );
-        } else if (
-          state.outfit === "jacket"
-        ) {
-          shirt.setAttribute(
-            "d",
-            "M121 289 Q139 250 176 246 L244 246 Q281 250 299 289 L282 414 Q210 437 138 414 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "#f2d16b"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            "#3e536f"
-          );
-        } else if (
-          state.outfit === "sports"
-        ) {
-          shirt.setAttribute(
-            "d",
-            "M124 291 Q145 255 177 249 L243 249 Q275 255 296 291 L278 407 Q210 429 142 407 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "rgba(255,255,255,.25)"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            "#374e71"
-          );
-        } else {
-          shirt.setAttribute(
-            "d",
-            "M121 289 Q139 253 177 247 L243 247 Q281 253 299 289 L280 413 Q210 436 140 413 Z"
-          );
-
-          shirtAccent.setAttribute(
-            "fill",
-            "rgba(255,255,255,.18)"
-          );
-
-          bottom.setAttribute(
-            "fill",
-            "#3f5578"
-          );
-        }
-      }
-
-      function renderExtra() {
-        extraLayer.innerHTML =
-          "";
-
-        if (
-          state.extra === "glasses"
-        ) {
-          extraLayer.innerHTML = `
-            <g
-              fill="none"
-              stroke="#604a96"
-              stroke-width="7">
-
-              <rect
-                x="142"
-                y="165"
-                width="58"
-                height="43"
-                rx="17">
-              </rect>
-
-              <rect
-                x="220"
-                y="165"
-                width="58"
-                height="43"
-                rx="17">
-              </rect>
-
-              <path d="M200 181 Q210 173 220 181"></path>
-            </g>
-          `;
-        } else if (
-          state.extra === "crown"
-        ) {
-          extraLayer.innerHTML = `
-            <path
-              d="M164 74
-                 L181 34
-                 L210 67
-                 L239 34
-                 L256 74
-                 Z"
-              fill="#ffd45e"
-              stroke="#d69c25"
-              stroke-width="6">
-            </path>
-          `;
-        } else if (
-          state.extra === "cap"
-        ) {
-          extraLayer.innerHTML = `
-            <path
-              d="M139 91
-                 Q210 42 281 91
-                 L273 123
-                 Q210 98 147 123
-                 Z"
-              fill="#4f68cb">
-            </path>
-
-            <path
-              d="M253 111 Q303 109 319 130 Q276 140 250 127 Z"
-              fill="#4f68cb">
-            </path>
-          `;
-        } else if (
-          state.extra === "flower"
-        ) {
-          extraLayer.innerHTML = `
-            <g transform="translate(280 105)">
-              <circle cx="0" cy="-15" r="13" fill="#ff7eb5"></circle>
-              <circle cx="14" cy="-2" r="13" fill="#ff7eb5"></circle>
-              <circle cx="0" cy="11" r="13" fill="#ff7eb5"></circle>
-              <circle cx="-14" cy="-2" r="13" fill="#ff7eb5"></circle>
-              <circle cx="0" cy="-2" r="9" fill="#ffd45e"></circle>
-            </g>
-          `;
-        } else if (
-          state.extra === "wizard"
-        ) {
-          extraLayer.innerHTML = `
-            <path
-              d="M146 104
-                 L206 -12
-                 L279 104
-                 Z"
-              fill="#6d56c9">
-            </path>
-
-            <ellipse
-              cx="211"
-              cy="106"
-              rx="89"
-              ry="20"
-              fill="#4e3aa9">
-            </ellipse>
-
-            <circle
-              cx="215"
-              cy="39"
-              r="8"
-              fill="#ffd45e">
-            </circle>
-          `;
-        }
-      }
-
-      function renderAvatar() {
-        setSkinColor();
-        renderHair();
-        renderFace();
-        renderOutfit();
-        renderExtra();
-      }
-
-      function renderEverything() {
-        renderOptions();
-        renderAllSwatches();
-        renderAvatar();
-      }
-
-      function randomItem(list) {
-        return list[
-          Math.floor(
-            Math.random() *
-            list.length
-          )
-        ];
       }
 
       function randomize() {
-        state.hair =
-          randomItem(
-            OPTIONS.hair
-          ).id;
-
-        state.face =
-          randomItem(
-            OPTIONS.face
-          ).id;
-
-        state.outfit =
-          randomItem(
-            OPTIONS.outfit
-          ).id;
-
-        state.extra =
-          randomItem(
-            OPTIONS.extra
-          ).id;
-
-        state.skin =
-          randomItem(
-            SKIN_COLORS
+        const currentIndex =
+          avatarChoices.findIndex(
+            item =>
+              item.id ===
+              selectedId
           );
 
-        state.hairColor =
-          randomItem(
-            HAIR_COLORS
-          );
+        let nextIndex =
+          currentIndex;
 
-        state.outfitColor =
-          randomItem(
-            OUTFIT_COLORS
-          );
-
-        renderEverything();
-
-        showToast(
-          "Surprise avatar created! 🎉"
-        );
-      }
-
-      function resetAvatar() {
-        Object.assign(
-          state,
-          DEFAULT_STYLE
-        );
-
-        document
-          .querySelectorAll(
-            ".tab-button"
-          )
-          .forEach(button => {
-            button.classList.toggle(
-              "active",
-              button.dataset.tab ===
-                state.tab
+        while (
+          avatarChoices.length > 1 &&
+          nextIndex === currentIndex
+        ) {
+          nextIndex =
+            Math.floor(
+              Math.random() *
+              avatarChoices.length
             );
-          });
+        }
 
-        renderEverything();
+        selectedId =
+          avatarChoices[nextIndex].id;
+
+        renderOptions();
+        renderPreview();
 
         showToast(
-          "Ready for a new look!"
+          "Surprise character selected! 🎉"
         );
       }
 
-      function svgToDataUrl() {
-        const clone =
-          avatarSvg.cloneNode(
-            true
+      function resetChoice() {
+        selectedId =
+          avatarChoices[0].id;
+
+        renderOptions();
+        renderPreview();
+
+        showToast(
+          "Back to the first character."
+        );
+      }
+
+      async function imageToDataUrl(path) {
+        const response =
+          await fetch(path);
+
+        if (!response.ok) {
+          throw new Error(
+            `Could not open ${path}`
+          );
+        }
+
+        const blob =
+          await response.blob();
+
+        return await new Promise(
+          (resolve, reject) => {
+            const reader =
+              new FileReader();
+
+            reader.onload =
+              () => resolve(
+                reader.result
+              );
+
+            reader.onerror =
+              () => reject(
+                reader.error
+              );
+
+            reader.readAsDataURL(
+              blob
+            );
+          }
+        );
+      }
+
+      async function saveAvatar() {
+        const button =
+          document.getElementById(
+            "saveButton"
           );
 
-        clone.setAttribute(
-          "xmlns",
-          "http://www.w3.org/2000/svg"
-        );
+        button.disabled =
+          true;
 
-        const serialized =
-          new XMLSerializer()
-            .serializeToString(
-              clone
+        button.textContent =
+          "Saving...";
+
+        try {
+          const choice =
+            selectedChoice();
+
+          const dataUrl =
+            await imageToDataUrl(
+              choice.image
             );
 
-        return (
-          "data:image/svg+xml;charset=utf-8," +
-          encodeURIComponent(
-            serialized
-          )
-        );
-      }
-
-      function saveAvatar() {
-        const dataUrl =
-          svgToDataUrl();
-
-        localStorage.setItem(
-          STYLE_KEY,
-          JSON.stringify(
-            state
-          )
-        );
-
-        localStorage.setItem(
-          AVATAR_KEY,
-          dataUrl
-        );
-
-        window.dispatchEvent(
-          new StorageEvent(
-            "storage",
-            {
-              key:
-                AVATAR_KEY,
-
-              newValue:
-                dataUrl
-            }
-          )
-        );
-
-        showToast(
-          "Your avatar was saved to My World! ✨"
-        );
-      }
-
-      document
-        .querySelectorAll(
-          ".tab-button"
-        )
-        .forEach(button => {
-          button.addEventListener(
-            "click",
-            () => {
-              state.tab =
-                button.dataset.tab;
-
-              document
-                .querySelectorAll(
-                  ".tab-button"
-                )
-                .forEach(item => {
-                  item.classList.toggle(
-                    "active",
-                    item === button
-                  );
-                });
-
-              renderOptions();
-            }
+          localStorage.setItem(
+            STYLE_KEY,
+            choice.id
           );
-        });
+
+          localStorage.setItem(
+            AVATAR_KEY,
+            dataUrl
+          );
+
+          showToast(
+            "Your polished avatar was saved to My World! ✨"
+          );
+
+        } catch (error) {
+          console.error(
+            "Avatar save error:",
+            error
+          );
+
+          showToast(
+            error?.message ||
+            "Unable to save this avatar."
+          );
+
+        } finally {
+          button.disabled =
+            false;
+
+          button.textContent =
+            "💾 Save My Avatar";
+        }
+      }
 
       document
         .getElementById(
@@ -2278,7 +1126,7 @@
         )
         .addEventListener(
           "click",
-          resetAvatar
+          resetChoice
         );
 
       document
@@ -2290,15 +1138,14 @@
           saveAvatar
         );
 
-      restoreStyle();
-
       avatarName.textContent =
         childName;
 
       playerPill.textContent =
         `✨ ${possessive(childName)}`;
 
-      renderEverything();
+      renderOptions();
+      renderPreview();
     })();
   </script>
 
