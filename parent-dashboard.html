@@ -2,12 +2,19 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
   <meta name="theme-color" content="#6ec6ff">
+
   <title>Parent Dashboard | ELCraft</title>
 
   <style>
-    * { box-sizing: border-box; }
+    * {
+      box-sizing: border-box;
+    }
 
     html,
     body {
@@ -19,18 +26,35 @@
       min-height: 100vh;
       min-height: 100dvh;
       padding: 24px;
+
       color: #30365d;
       font-family: Arial, Helvetica, sans-serif;
+
       background:
-        radial-gradient(circle at 15% 15%, rgba(255,255,255,.7), transparent 24%),
-        radial-gradient(circle at 85% 80%, rgba(176,115,255,.42), transparent 28%),
-        linear-gradient(145deg, #72d5ff 0%, #72b9ff 46%, #a889ff 100%);
+        radial-gradient(
+          circle at 15% 15%,
+          rgba(255, 255, 255, 0.7),
+          transparent 24%
+        ),
+        radial-gradient(
+          circle at 85% 80%,
+          rgba(176, 115, 255, 0.42),
+          transparent 28%
+        ),
+        linear-gradient(
+          145deg,
+          #72d5ff 0%,
+          #72b9ff 46%,
+          #a889ff 100%
+        );
     }
 
-    button { font: inherit; }
+    button {
+      font: inherit;
+    }
 
     .page {
-      width: min(1060px, 100%);
+      width: min(1120px, 100%);
       margin: 0 auto;
     }
 
@@ -46,11 +70,14 @@
       display: flex;
       align-items: center;
       gap: 12px;
+
       color: white;
-      text-shadow: 0 3px 8px rgba(39,46,111,.3);
+      text-shadow: 0 3px 8px rgba(39, 46, 111, 0.3);
     }
 
-    .brand-icon { font-size: 42px; }
+    .brand-icon {
+      font-size: 42px;
+    }
 
     .brand h1 {
       margin: 0;
@@ -58,36 +85,43 @@
     }
 
     .logout-button {
-      border: 2px solid rgba(255,255,255,.8);
+      border: 2px solid rgba(255, 255, 255, 0.8);
       border-radius: 14px;
       padding: 11px 16px;
+
       color: #554dbd;
-      background: rgba(255,255,255,.94);
+      background: rgba(255, 255, 255, 0.94);
+
       font-weight: 900;
       cursor: pointer;
     }
 
     .main-card {
-      border: 4px solid rgba(255,255,255,.85);
+      border: 4px solid rgba(255, 255, 255, 0.85);
       border-radius: 32px;
       padding: clamp(22px, 5vw, 42px);
-      background: rgba(255,255,255,.97);
-      box-shadow: 0 24px 65px rgba(42,48,120,.28);
+
+      background: rgba(255, 255, 255, 0.97);
+
+      box-shadow:
+        0 24px 65px rgba(42, 48, 120, 0.28);
     }
 
     .heading {
-      margin-bottom: 30px;
+      margin-bottom: 28px;
       text-align: center;
     }
 
     .heading h2 {
       margin: 0;
+
       color: #554ecb;
       font-size: clamp(30px, 6vw, 48px);
     }
 
     .heading p {
       margin: 10px 0 0;
+
       color: #697198;
       font-size: 17px;
       font-weight: 700;
@@ -95,6 +129,7 @@
 
     .account-email {
       margin-top: 8px;
+
       color: #8a8fab;
       font-size: 13px;
       overflow-wrap: anywhere;
@@ -104,97 +139,356 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      min-height: 220px;
+
+      min-height: 260px;
+
       color: #5b54c9;
       font-size: 18px;
       font-weight: 900;
     }
 
-    .dashboard-grid {
+    .summary-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 18px;
+      grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-bottom: 28px;
     }
 
-    .dashboard-card {
-      min-height: 205px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      border: 3px solid #e0def8;
-      border-radius: 25px;
-      padding: 24px;
-      color: #353b68;
-      background: linear-gradient(150deg, #ffffff, #f4f2ff);
-      box-shadow: 0 9px 20px rgba(73,65,157,.12);
-      cursor: pointer;
-      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
-    }
+    .summary-card {
+      border: 2px solid #e4e1f8;
+      border-radius: 20px;
+      padding: 18px;
 
-    .dashboard-card:hover {
-      transform: translateY(-4px);
-      border-color: #8879ef;
-      box-shadow: 0 14px 26px rgba(73,65,157,.2);
-    }
+      background:
+        linear-gradient(
+          145deg,
+          #ffffff,
+          #f5f2ff
+        );
 
-    .dashboard-card:active { transform: translateY(0); }
-
-    .dashboard-card:disabled {
-      opacity: .65;
-      cursor: default;
-    }
-
-    .dashboard-card:disabled:hover {
-      transform: none;
-      border-color: #e0def8;
-      box-shadow: 0 9px 20px rgba(73,65,157,.12);
-    }
-
-    .card-icon {
-      width: 84px;
-      height: 84px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border: 5px solid white;
-      border-radius: 50%;
-      background: linear-gradient(145deg, #82d8ff, #b28cff);
-      box-shadow: 0 8px 18px rgba(68,65,145,.22);
-      font-size: 44px;
-    }
-
-    .dashboard-card h3 {
-      margin: 16px 0 6px;
-      color: #4d47ba;
-      font-size: 23px;
-    }
-
-    .dashboard-card p {
-      margin: 0;
-      color: #747a9b;
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.4;
       text-align: center;
     }
 
-    .coming-soon {
-      display: inline-block;
-      margin-top: 11px;
+    .summary-icon {
+      font-size: 30px;
+    }
+
+    .summary-number {
+      margin-top: 5px;
+
+      color: #5149c1;
+      font-size: 31px;
+      font-weight: 900;
+    }
+
+    .summary-label {
+      margin-top: 3px;
+
+      color: #757b9b;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .dashboard-layout {
+      display: grid;
+      grid-template-columns:
+        minmax(0, 1.55fr)
+        minmax(280px, 0.85fr);
+      gap: 20px;
+    }
+
+    .panel {
+      border: 3px solid #e4e1f8;
+      border-radius: 25px;
+      padding: 22px;
+
+      background:
+        linear-gradient(
+          150deg,
+          #ffffff,
+          #f8f6ff
+        );
+
+      box-shadow:
+        0 9px 20px rgba(73, 65, 157, 0.1);
+    }
+
+    .panel + .panel {
+      margin-top: 20px;
+    }
+
+    .panel-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+
+      margin-bottom: 17px;
+    }
+
+    .panel-heading h3 {
+      margin: 0;
+
+      color: #4d47ba;
+      font-size: 25px;
+    }
+
+    .panel-heading p {
+      margin: 5px 0 0;
+
+      color: #787e9e;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .panel-button {
+      flex: 0 0 auto;
+
+      border: 0;
+      border-radius: 13px;
+      padding: 10px 13px;
+
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #6559f4,
+          #9168ff
+        );
+
+      box-shadow: 0 4px 0 #4942bc;
+
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .children-list {
+      display: grid;
+      gap: 13px;
+    }
+
+    .child-card {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 14px;
+
+      border: 2px solid #e3e0f7;
+      border-radius: 19px;
+      padding: 15px;
+
+      background: white;
+    }
+
+    .child-avatar {
+      width: 60px;
+      height: 60px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border: 4px solid white;
+      border-radius: 50%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #82d8ff,
+          #b28cff
+        );
+
+      box-shadow: 0 6px 15px rgba(68, 65, 145, 0.2);
+
+      font-size: 33px;
+    }
+
+    .child-details {
+      min-width: 0;
+    }
+
+    .child-name {
+      margin: 0;
+
+      color: #4d47ba;
+      font-size: 20px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .child-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px 12px;
+
+      margin-top: 5px;
+
+      color: #737999;
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .last-played {
+      margin-top: 5px;
+
+      color: #8b90aa;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .play-button {
+      border: 0;
+      border-radius: 13px;
+      padding: 11px 13px;
+
+      color: white;
+      background: #5b54d5;
+
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .empty-state {
+      border: 2px dashed #d7d3f2;
+      border-radius: 17px;
+      padding: 20px;
+
+      color: #777d9c;
+      text-align: center;
+      font-weight: 800;
+    }
+
+    .family-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .family-row {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+
+      border: 2px solid #e4e1f7;
+      border-radius: 16px;
+      padding: 12px;
+
+      background: white;
+    }
+
+    .family-avatar {
+      flex: 0 0 auto;
+
+      width: 43px;
+      height: 43px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 50%;
+
+      background: #ebe7ff;
+      font-size: 23px;
+    }
+
+    .family-copy {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .family-copy strong {
+      display: block;
+
+      color: #4d47ba;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .family-copy small {
+      display: block;
+      margin-top: 2px;
+
+      color: #7d829f;
+      overflow-wrap: anywhere;
+    }
+
+    .status {
+      flex: 0 0 auto;
+
       border-radius: 999px;
-      padding: 6px 9px;
+      padding: 6px 8px;
+
+      color: #287342;
+      background: #e4f7ea;
+
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .status.pending {
+      color: #8a5d19;
+      background: #fff1d7;
+    }
+
+    .quick-actions {
+      display: grid;
+      gap: 11px;
+    }
+
+    .quick-action {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+
+      width: 100%;
+
+      border: 2px solid #e3e0f7;
+      border-radius: 16px;
+      padding: 13px;
+
+      color: #444a75;
+      background: white;
+
+      font-weight: 900;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .quick-action span {
+      font-size: 25px;
+    }
+
+    .coming-soon {
+      margin-left: auto;
+
+      border-radius: 999px;
+      padding: 5px 7px;
+
       color: #795c1b;
       background: #fff1d4;
-      font-size: 11px;
+
+      font-size: 9px;
       font-weight: 900;
+    }
+
+    .quick-action:disabled {
+      opacity: 0.66;
+      cursor: default;
     }
 
     .message {
       display: none;
+
       margin: 20px 0 0;
       padding: 13px 16px;
+
       border-radius: 14px;
+
       font-weight: 800;
       line-height: 1.4;
       text-align: center;
@@ -202,179 +496,977 @@
 
     .message.error {
       display: block;
+
       border: 1px solid #eeaab2;
+
       color: #a52d40;
       background: #ffe8ec;
     }
 
-    @media (max-width: 560px) {
-      body { padding: 14px; }
-      .topbar { align-items: flex-start; }
-      .brand-icon { font-size: 34px; }
-      .main-card { border-radius: 25px; }
-      .dashboard-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .dashboard-card { min-height: 185px; padding: 17px 10px; }
-      .card-icon { width: 72px; height: 72px; font-size: 37px; }
-      .dashboard-card h3 { font-size: 18px; }
-      .dashboard-card p { font-size: 12px; }
+    @media (max-width: 850px) {
+      .dashboard-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .panel + .panel {
+        margin-top: 0;
+      }
+
+      .right-column {
+        display: grid;
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 620px) {
+      body {
+        padding: 14px;
+      }
+
+      .topbar {
+        align-items: flex-start;
+      }
+
+      .brand-icon {
+        font-size: 34px;
+      }
+
+      .main-card {
+        border-radius: 25px;
+      }
+
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .right-column {
+        grid-template-columns: 1fr;
+      }
+
+      .child-card {
+        grid-template-columns: auto 1fr;
+      }
+
+      .play-button {
+        grid-column: 1 / -1;
+        width: 100%;
+      }
+
+      .panel-heading {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .panel-button {
+        width: 100%;
+      }
     }
   </style>
 </head>
 
 <body>
   <main class="page">
+
     <header class="topbar">
       <div class="brand">
         <div class="brand-icon">🏰</div>
         <h1>ELCraft</h1>
       </div>
 
-      <button id="logoutButton" class="logout-button" type="button">
+      <button
+        id="logoutButton"
+        class="logout-button"
+        type="button">
         Log Out
       </button>
     </header>
 
     <section class="main-card">
+
       <div class="heading">
-        <h2>Parent Dashboard</h2>
-        <p>Manage your children, family access and ELCraft account.</p>
-        <div id="accountEmail" class="account-email"></div>
+        <h2 id="welcomeTitle">
+          Parent Dashboard
+        </h2>
+
+        <p>
+          Your ELCraft family at a glance.
+        </p>
+
+        <div
+          id="accountEmail"
+          class="account-email">
+        </div>
       </div>
 
-      <div id="loading" class="loading">Loading dashboard...</div>
-
-      <div id="dashboardGrid" class="dashboard-grid" hidden>
-        <button id="childrenButton" class="dashboard-card" type="button">
-          <div class="card-icon">👧</div>
-          <h3>Children</h3>
-          <p>Create child profiles and choose a player.</p>
-        </button>
-
-        <button id="familyButton" class="dashboard-card" type="button">
-          <div class="card-icon">👨‍👩‍👧</div>
-          <h3>Family</h3>
-          <p>Invite family members and manage child access.</p>
-        </button>
-
-        <button class="dashboard-card" type="button" disabled>
-          <div class="card-icon">📈</div>
-          <h3>Progress</h3>
-          <p>View learning activity and progress reports.</p>
-          <span class="coming-soon">Coming Soon</span>
-        </button>
-
-        <button class="dashboard-card" type="button" disabled>
-          <div class="card-icon">⭐</div>
-          <h3>Rewards</h3>
-          <p>Manage rewards, achievements and encouragement.</p>
-          <span class="coming-soon">Coming Soon</span>
-        </button>
-
-        <button class="dashboard-card" type="button" disabled>
-          <div class="card-icon">⚙️</div>
-          <h3>Settings</h3>
-          <p>Manage account and family preferences.</p>
-          <span class="coming-soon">Coming Soon</span>
-        </button>
+      <div
+        id="loading"
+        class="loading">
+        Loading your dashboard...
       </div>
 
-      <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+      <div
+        id="dashboardContent"
+        hidden>
+
+        <section class="summary-grid">
+          <article class="summary-card">
+            <div class="summary-icon">👧</div>
+            <div
+              id="childrenCount"
+              class="summary-number">
+              0
+            </div>
+            <div class="summary-label">
+              Children
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-icon">👨‍👩‍👧</div>
+            <div
+              id="familyCount"
+              class="summary-number">
+              0
+            </div>
+            <div class="summary-label">
+              Connected Family
+            </div>
+          </article>
+
+          <article class="summary-card">
+            <div class="summary-icon">✉️</div>
+            <div
+              id="pendingCount"
+              class="summary-number">
+              0
+            </div>
+            <div class="summary-label">
+              Pending Invitations
+            </div>
+          </article>
+        </section>
+
+        <section class="dashboard-layout">
+
+          <div class="left-column">
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>👧 Children</h3>
+                  <p>
+                    View each child's current ELCraft progress.
+                  </p>
+                </div>
+
+                <button
+                  id="manageChildrenButton"
+                  class="panel-button"
+                  type="button">
+                  Manage Children
+                </button>
+              </div>
+
+              <div
+                id="childrenList"
+                class="children-list">
+              </div>
+            </section>
+
+          </div>
+
+          <div class="right-column">
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>👨‍👩‍👧 Family</h3>
+                  <p>
+                    Connected members and open invitations.
+                  </p>
+                </div>
+
+                <button
+                  id="manageFamilyButton"
+                  class="panel-button"
+                  type="button">
+                  Manage
+                </button>
+              </div>
+
+              <div
+                id="familyList"
+                class="family-list">
+              </div>
+            </section>
+
+            <section class="panel">
+              <div class="panel-heading">
+                <div>
+                  <h3>Quick Actions</h3>
+                  <p>
+                    Jump directly to a parent tool.
+                  </p>
+                </div>
+              </div>
+
+              <div class="quick-actions">
+
+                <button
+                  id="choosePlayerButton"
+                  class="quick-action"
+                  type="button">
+                  <span>🏰</span>
+                  Choose a Player
+                </button>
+
+                <button
+                  id="inviteFamilyButton"
+                  class="quick-action"
+                  type="button">
+                  <span>✉️</span>
+                  Invite Family
+                </button>
+
+                <button
+                  class="quick-action"
+                  type="button"
+                  disabled>
+                  <span>📈</span>
+                  Progress Reports
+                  <small class="coming-soon">
+                    Coming Soon
+                  </small>
+                </button>
+
+                <button
+                  class="quick-action"
+                  type="button"
+                  disabled>
+                  <span>⭐</span>
+                  Rewards
+                  <small class="coming-soon">
+                    Coming Soon
+                  </small>
+                </button>
+
+                <button
+                  class="quick-action"
+                  type="button"
+                  disabled>
+                  <span>⚙️</span>
+                  Settings
+                  <small class="coming-soon">
+                    Coming Soon
+                  </small>
+                </button>
+
+              </div>
+            </section>
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <div
+        id="pageMessage"
+        class="message"
+        role="status"
+        aria-live="polite">
+      </div>
+
     </section>
+
   </main>
 
   <script type="module">
     import { supabase } from "./supabase-client.js";
 
-    const SELECTED_CHILD_ID_KEY = "elcraft_selected_child_id";
-    const CHILD_NAME_KEY = "elcraft_child_name";
-    const CHILD_AVATAR_KEY = "elcraft_child_avatar";
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
 
-    const loading = document.getElementById("loading");
-    const dashboardGrid = document.getElementById("dashboardGrid");
-    const accountEmail = document.getElementById("accountEmail");
-    const pageMessage = document.getElementById("pageMessage");
-    const childrenButton = document.getElementById("childrenButton");
-    const familyButton = document.getElementById("familyButton");
-    const logoutButton = document.getElementById("logoutButton");
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const loading =
+      document.getElementById("loading");
+
+    const dashboardContent =
+      document.getElementById("dashboardContent");
+
+    const welcomeTitle =
+      document.getElementById("welcomeTitle");
+
+    const accountEmail =
+      document.getElementById("accountEmail");
+
+    const childrenCount =
+      document.getElementById("childrenCount");
+
+    const familyCount =
+      document.getElementById("familyCount");
+
+    const pendingCount =
+      document.getElementById("pendingCount");
+
+    const childrenList =
+      document.getElementById("childrenList");
+
+    const familyList =
+      document.getElementById("familyList");
+
+    const pageMessage =
+      document.getElementById("pageMessage");
+
+    const manageChildrenButton =
+      document.getElementById("manageChildrenButton");
+
+    const manageFamilyButton =
+      document.getElementById("manageFamilyButton");
+
+    const choosePlayerButton =
+      document.getElementById("choosePlayerButton");
+
+    const inviteFamilyButton =
+      document.getElementById("inviteFamilyButton");
+
+    const logoutButton =
+      document.getElementById("logoutButton");
+
+    let currentUser = null;
+    let currentFamilyId = null;
 
     function showError(text) {
       pageMessage.textContent = text;
       pageMessage.className = "message error";
     }
 
-    async function loadDashboard() {
-      const { data: userData, error: userError } =
-        await supabase.auth.getUser();
+    function displayNameFromUser(user) {
+      const metadataName =
+        user?.user_metadata?.display_name ||
+        user?.user_metadata?.full_name ||
+        user?.user_metadata?.name;
 
-      if (userError || !userData.user) {
-        window.location.replace("auth.html");
+      if (metadataName) {
+        return String(metadataName)
+          .trim()
+          .split(/\s+/)[0]
+          .slice(0, 30);
+      }
+
+      const emailName =
+        String(user?.email || "")
+          .split("@")[0]
+          .replace(/[._-]+/g, " ")
+          .trim()
+          .split(/\s+/)[0];
+
+      if (!emailName) {
+        return "Parent";
+      }
+
+      return emailName
+        .charAt(0)
+        .toUpperCase() +
+        emailName.slice(1);
+    }
+
+    function relationshipLabel(value) {
+      const labels = {
+        parent: "Parent / Stepparent",
+        grandparent: "Grandparent",
+        older_sibling: "Older sibling",
+        aunt_uncle: "Aunt / Uncle",
+        guardian: "Guardian",
+        family_member: "Family member"
+      };
+
+      return labels[value] ||
+        "Family member";
+    }
+
+    function relationshipEmoji(value) {
+      const emojis = {
+        parent: "👨‍👩‍👧",
+        grandparent: "👵",
+        older_sibling: "🧑",
+        aunt_uncle: "💜",
+        guardian: "🛡️",
+        family_member: "⭐"
+      };
+
+      return emojis[value] || "⭐";
+    }
+
+    function formatLastPlayed(profile) {
+      const dateValue =
+        profile.last_played_at ||
+        profile.last_active_at ||
+        profile.updated_at ||
+        null;
+
+      if (!dateValue) {
+        return "Last played: Not recorded yet";
+      }
+
+      const date =
+        new Date(dateValue);
+
+      if (Number.isNaN(date.getTime())) {
+        return "Last played: Not recorded yet";
+      }
+
+      const today =
+        new Date();
+
+      const startToday =
+        new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          today.getDate()
+        );
+
+      const startDate =
+        new Date(
+          date.getFullYear(),
+          date.getMonth(),
+          date.getDate()
+        );
+
+      const dayDifference =
+        Math.round(
+          (startToday - startDate) /
+          86400000
+        );
+
+      if (dayDifference === 0) {
+        return "Last played: Today";
+      }
+
+      if (dayDifference === 1) {
+        return "Last played: Yesterday";
+      }
+
+      return `Last played: ${date.toLocaleDateString()}`;
+    }
+
+    function enterChild(profile) {
+      localStorage.setItem(
+        SELECTED_CHILD_ID_KEY,
+        profile.id
+      );
+
+      localStorage.setItem(
+        CHILD_NAME_KEY,
+        profile.display_name || "Player"
+      );
+
+      localStorage.setItem(
+        CHILD_AVATAR_KEY,
+        profile.avatar || "🌟"
+      );
+
+      window.location.href =
+        "index.html";
+    }
+
+    function renderChildren(profiles) {
+      childrenList.replaceChildren();
+
+      childrenCount.textContent =
+        String(profiles.length);
+
+      if (!profiles.length) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "No child profiles yet. Use Manage Children to create one.";
+
+        childrenList.appendChild(empty);
         return;
       }
 
-      const user = userData.user;
-      accountEmail.textContent = user.email || "";
+      profiles.forEach(profile => {
+        const card =
+          document.createElement("article");
 
-      const { data: memberships, error: membershipError } =
-        await supabase
-          .from("family_members")
-          .select("id, family_id, member_role, status")
-          .eq("user_id", user.id)
-          .eq("status", "active");
+        card.className = "child-card";
 
-      if (membershipError) {
-        console.error("Dashboard role error:", membershipError);
-        loading.hidden = true;
-        dashboardGrid.hidden = false;
-        showError(
-          membershipError.message ||
-          "Unable to load the parent dashboard."
+        const avatar =
+          document.createElement("div");
+
+        avatar.className = "child-avatar";
+        avatar.textContent =
+          profile.avatar || "🌟";
+
+        const details =
+          document.createElement("div");
+
+        details.className = "child-details";
+
+        const name =
+          document.createElement("h4");
+
+        name.className = "child-name";
+        name.textContent =
+          profile.display_name || "Player";
+
+        const stats =
+          document.createElement("div");
+
+        stats.className = "child-stats";
+
+        const level =
+          document.createElement("span");
+
+        level.textContent =
+          `Level ${profile.level || 1}`;
+
+        const stars =
+          document.createElement("span");
+
+        stars.textContent =
+          `⭐ ${profile.stars || 0} stars`;
+
+        const experience =
+          document.createElement("span");
+
+        experience.textContent =
+          `✨ ${profile.experience || 0} XP`;
+
+        stats.append(
+          level,
+          stars,
+          experience
+        );
+
+        const lastPlayed =
+          document.createElement("div");
+
+        lastPlayed.className =
+          "last-played";
+
+        lastPlayed.textContent =
+          formatLastPlayed(profile);
+
+        details.append(
+          name,
+          stats,
+          lastPlayed
+        );
+
+        const play =
+          document.createElement("button");
+
+        play.className = "play-button";
+        play.type = "button";
+        play.textContent = "▶ Continue";
+
+        play.addEventListener(
+          "click",
+          () => enterChild(profile)
+        );
+
+        card.append(
+          avatar,
+          details,
+          play
+        );
+
+        childrenList.appendChild(card);
+      });
+    }
+
+    function createFamilyRow({
+      name,
+      email,
+      relationship,
+      pending = false
+    }) {
+      const row =
+        document.createElement("article");
+
+      row.className = "family-row";
+
+      const avatar =
+        document.createElement("div");
+
+      avatar.className = "family-avatar";
+      avatar.textContent =
+        pending
+          ? "✉️"
+          : relationshipEmoji(relationship);
+
+      const copy =
+        document.createElement("div");
+
+      copy.className = "family-copy";
+
+      const strong =
+        document.createElement("strong");
+
+      strong.textContent =
+        name || "Family member";
+
+      const small =
+        document.createElement("small");
+
+      const relationshipText =
+        relationshipLabel(relationship);
+
+      small.textContent =
+        email
+          ? `${relationshipText} · ${email}`
+          : relationshipText;
+
+      copy.append(
+        strong,
+        small
+      );
+
+      const status =
+        document.createElement("span");
+
+      status.className =
+        pending
+          ? "status pending"
+          : "status";
+
+      status.textContent =
+        pending
+          ? "Pending"
+          : "Connected";
+
+      row.append(
+        avatar,
+        copy,
+        status
+      );
+
+      return row;
+    }
+
+    function renderFamily(
+      members,
+      invitations
+    ) {
+      familyList.replaceChildren();
+
+      const connectedMembers =
+        members.filter(
+          member =>
+            member.member_role !== "owner"
+        );
+
+      familyCount.textContent =
+        String(connectedMembers.length);
+
+      pendingCount.textContent =
+        String(invitations.length);
+
+      const visibleMembers =
+        connectedMembers.slice(0, 4);
+
+      const visibleInvitations =
+        invitations.slice(
+          0,
+          Math.max(
+            0,
+            5 - visibleMembers.length
+          )
+        );
+
+      visibleMembers.forEach(member => {
+        familyList.appendChild(
+          createFamilyRow({
+            name:
+              member.display_name,
+            email:
+              member.email,
+            relationship:
+              member.relationship
+          })
+        );
+      });
+
+      visibleInvitations.forEach(invitation => {
+        familyList.appendChild(
+          createFamilyRow({
+            name:
+              invitation.display_name,
+            email:
+              invitation.email,
+            relationship:
+              invitation.relationship,
+            pending: true
+          })
+        );
+      });
+
+      if (
+        !visibleMembers.length &&
+        !visibleInvitations.length
+      ) {
+        const empty =
+          document.createElement("div");
+
+        empty.className = "empty-state";
+        empty.textContent =
+          "No connected family members or pending invitations yet.";
+
+        familyList.appendChild(empty);
+      }
+    }
+
+    async function loadDashboard() {
+      const {
+        data: userData,
+        error: userError
+      } = await supabase.auth.getUser();
+
+      if (
+        userError ||
+        !userData.user
+      ) {
+        window.location.replace(
+          "auth.html"
         );
         return;
       }
 
-      const ownerMembership = (memberships || []).find(
-        membership => membership.member_role === "owner"
-      );
+      currentUser =
+        userData.user;
+
+      accountEmail.textContent =
+        currentUser.email || "";
+
+      welcomeTitle.textContent =
+        `Welcome back, ${displayNameFromUser(currentUser)}!`;
+
+      const {
+        data: memberships,
+        error: membershipError
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, family_id, member_role, status"
+        )
+        .eq(
+          "user_id",
+          currentUser.id
+        )
+        .eq(
+          "status",
+          "active"
+        );
+
+      if (membershipError) {
+        throw membershipError;
+      }
+
+      const ownerMembership =
+        (memberships || []).find(
+          membership =>
+            membership.member_role === "owner"
+        );
 
       if (!ownerMembership) {
-        window.location.replace("profiles.html");
+        window.location.replace(
+          "profiles.html"
+        );
         return;
       }
+
+      currentFamilyId =
+        ownerMembership.family_id;
+
+      const [
+        childrenResult,
+        familyResult,
+        invitationsResult
+      ] = await Promise.all([
+        supabase
+          .from("child_profiles")
+          .select("*")
+          .eq(
+            "parent_id",
+            currentUser.id
+          )
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          ),
+
+        supabase
+          .from("family_members")
+          .select(
+            "id, display_name, email, relationship, member_role, status, created_at"
+          )
+          .eq(
+            "family_id",
+            currentFamilyId
+          )
+          .eq(
+            "status",
+            "active"
+          )
+          .order(
+            "created_at",
+            {
+              ascending: true
+            }
+          ),
+
+        supabase
+          .from("family_invitations")
+          .select(
+            "id, display_name, email, relationship, status, created_at, expires_at"
+          )
+          .eq(
+            "family_id",
+            currentFamilyId
+          )
+          .eq(
+            "status",
+            "pending"
+          )
+          .order(
+            "created_at",
+            {
+              ascending: false
+            }
+          )
+      ]);
+
+      if (childrenResult.error) {
+        throw childrenResult.error;
+      }
+
+      if (familyResult.error) {
+        throw familyResult.error;
+      }
+
+      if (invitationsResult.error) {
+        throw invitationsResult.error;
+      }
+
+      renderChildren(
+        childrenResult.data || []
+      );
+
+      renderFamily(
+        familyResult.data || [],
+        invitationsResult.data || []
+      );
 
       loading.hidden = true;
-      dashboardGrid.hidden = false;
+      dashboardContent.hidden = false;
     }
 
-    childrenButton.addEventListener("click", () => {
-      window.location.href = "profiles.html";
-    });
-
-    familyButton.addEventListener("click", () => {
-      window.location.href = "family-portal.html";
-    });
-
-    logoutButton.addEventListener("click", async () => {
-      logoutButton.disabled = true;
-      logoutButton.textContent = "Logging out...";
-
-      localStorage.removeItem(SELECTED_CHILD_ID_KEY);
-      localStorage.removeItem(CHILD_NAME_KEY);
-      localStorage.removeItem(CHILD_AVATAR_KEY);
-
-      const { error } = await supabase.auth.signOut();
-
-      if (error) {
-        console.error("Logout error:", error);
-        logoutButton.disabled = false;
-        logoutButton.textContent = "Log Out";
-        showError(error.message || "Unable to log out.");
-        return;
+    manageChildrenButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "profiles.html";
       }
+    );
 
-      window.location.replace("auth.html");
+    choosePlayerButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "profiles.html";
+      }
+    );
+
+    manageFamilyButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "family-portal.html";
+      }
+    );
+
+    inviteFamilyButton.addEventListener(
+      "click",
+      () => {
+        window.location.href =
+          "family-portal.html?invite=true";
+      }
+    );
+
+    logoutButton.addEventListener(
+      "click",
+      async () => {
+        logoutButton.disabled = true;
+        logoutButton.textContent =
+          "Logging out...";
+
+        localStorage.removeItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_NAME_KEY
+        );
+
+        localStorage.removeItem(
+          CHILD_AVATAR_KEY
+        );
+
+        const {
+          error
+        } = await supabase.auth.signOut();
+
+        if (error) {
+          console.error(
+            "Logout error:",
+            error
+          );
+
+          logoutButton.disabled = false;
+          logoutButton.textContent =
+            "Log Out";
+
+          showError(
+            error.message ||
+              "Unable to log out."
+          );
+
+          return;
+        }
+
+        window.location.replace(
+          "auth.html"
+        );
+      }
+    );
+
+    loadDashboard().catch(error => {
+      console.error(
+        "Dashboard loading error:",
+        error
+      );
+
+      loading.hidden = true;
+      dashboardContent.hidden = false;
+
+      showError(
+        error?.message ||
+          "Unable to load the parent dashboard."
+      );
     });
-
-    loadDashboard();
   </script>
 </body>
 </html>
