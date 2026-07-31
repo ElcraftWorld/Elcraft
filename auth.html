@@ -2,142 +2,1189 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ELCraft Login</title>
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+  <meta name="theme-color" content="#6ec6ff">
+
+  <title>ELCraft Sign In</title>
 
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --purple: #6f62ff;
+      --purple-dark: #4d52c9;
+      --purple-light: #eeeaff;
+      --blue: #6ec6ff;
+      --ink: #34385d;
+      --muted: #747a99;
+      --danger: #b93d55;
+      --success: #278456;
+      --white: #ffffff;
+    }
+
+    html,
     body {
+      min-height: 100%;
       margin: 0;
-      height: 100vh;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+
       display: flex;
       align-items: center;
       justify-content: center;
+
+      padding: 24px;
+
+      color: var(--ink);
       font-family: Arial, Helvetica, sans-serif;
-      background: #6ec6ff;
+
+      background:
+        radial-gradient(
+          circle at 15% 12%,
+          rgba(255, 255, 255, 0.75),
+          transparent 24%
+        ),
+        radial-gradient(
+          circle at 88% 82%,
+          rgba(165, 126, 255, 0.32),
+          transparent 28%
+        ),
+        linear-gradient(
+          145deg,
+          #6ec6ff,
+          #82d7ff 48%,
+          #a991ff
+        );
     }
 
-    .card {
-      width: 400px;
-      max-width: calc(100% - 28px);
-      border-radius: 20px;
-      padding: 40px;
-      background: white;
-      box-shadow: 0 15px 40px rgba(0,0,0,.25);
-    }
-
-    h1 {
-      color: #4d52c9;
-      text-align: center;
-    }
-
+    button,
     input {
-      width: 100%;
-      box-sizing: border-box;
-      margin-top: 12px;
-      border: 2px solid #ddd;
-      border-radius: 10px;
-      padding: 14px;
-      font-size: 16px;
+      font: inherit;
     }
 
     button {
-      width: 100%;
-      margin-top: 20px;
-      border: none;
-      border-radius: 10px;
-      padding: 15px;
-      color: white;
-      background: #6f62ff;
-      font-size: 18px;
       cursor: pointer;
     }
 
-    button:hover { background: #5a4de5; }
-    button:disabled { opacity: .65; cursor: wait; }
+    button:disabled {
+      cursor: wait;
+      opacity: 0.66;
+    }
 
-    #message {
-      margin-top: 15px;
-      font-weight: bold;
+    .shell {
+      width: min(980px, 100%);
+
+      display: grid;
+      grid-template-columns:
+        minmax(0, 0.9fr)
+        minmax(360px, 1.1fr);
+
+      overflow: hidden;
+
+      border: 4px solid rgba(255, 255, 255, 0.82);
+      border-radius: 32px;
+
+      background: rgba(255, 255, 255, 0.96);
+
+      box-shadow:
+        0 28px 70px rgba(39, 47, 108, 0.28);
+    }
+
+    .castle-side {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 620px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      padding: 44px;
+
+      color: white;
+
+      background:
+        radial-gradient(
+          circle at 72% 18%,
+          rgba(255, 244, 171, 0.9),
+          transparent 16%
+        ),
+        linear-gradient(
+          155deg,
+          #5abcf1 0%,
+          #6d67e7 55%,
+          #8f65dd 100%
+        );
+    }
+
+    .castle-side::before,
+    .castle-side::after {
+      content: "";
+
+      position: absolute;
+      border-radius: 50%;
+
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .castle-side::before {
+      width: 260px;
+      height: 260px;
+      top: -90px;
+      left: -90px;
+    }
+
+    .castle-side::after {
+      width: 220px;
+      height: 220px;
+      right: -80px;
+      bottom: -80px;
+    }
+
+    .castle-content {
+      position: relative;
+      z-index: 2;
+    }
+
+    .castle-icon {
+      margin-bottom: 18px;
+
+      font-size: 92px;
+
+      filter:
+        drop-shadow(
+          0 14px 12px rgba(39, 35, 103, 0.24)
+        );
+    }
+
+    .castle-side h1 {
+      margin: 0;
+
+      font-size: clamp(35px, 5vw, 56px);
+      line-height: 1;
+    }
+
+    .castle-side p {
+      max-width: 390px;
+      margin: 14px 0 0;
+
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.55;
+    }
+
+    .castle-features {
+      display: grid;
+      gap: 11px;
+
+      margin-top: 30px;
+    }
+
+    .castle-feature {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      font-size: 13px;
+      font-weight: 900;
+    }
+
+    .castle-feature span {
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 11px;
+
+      background: rgba(255, 255, 255, 0.18);
+
+      font-size: 18px;
+    }
+
+    .auth-side {
+      padding: 40px;
+      background: white;
+    }
+
+    .logo-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+
+      margin-bottom: 8px;
+    }
+
+    .logo-icon {
+      font-size: 38px;
+    }
+
+    .logo-row h2 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: 37px;
+    }
+
+    .auth-subtitle {
+      margin: 0 0 26px;
+
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
       text-align: center;
+      line-height: 1.5;
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+
+      margin-bottom: 18px;
+
+      border-radius: 15px;
+      padding: 5px;
+
+      background: #f0eef9;
+    }
+
+    .tab-button {
+      border: 0;
+      border-radius: 11px;
+      padding: 11px;
+
+      color: var(--muted);
+      background: transparent;
+
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .tab-button.active {
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #8c72f8
+        );
+
+      box-shadow:
+        0 5px 13px rgba(78, 67, 190, 0.2);
+    }
+
+    .form {
+      display: grid;
+      gap: 12px;
+    }
+
+    .form.hidden {
+      display: none;
+    }
+
+    .field label {
+      display: block;
+
+      margin-bottom: 6px;
+
+      color: #525878;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .field input {
+      width: 100%;
+
+      border: 2px solid #dddbea;
+      border-radius: 13px;
+      padding: 13px 14px;
+
+      outline: none;
+
+      color: var(--ink);
+      background: #f8faff;
+
+      font-size: 15px;
+    }
+
+    .field input:focus {
+      border-color: #9486ee;
+
+      box-shadow:
+        0 0 0 4px rgba(111, 98, 255, 0.1);
+    }
+
+    .primary-button {
+      width: 100%;
+
+      margin-top: 5px;
+      border: 0;
+      border-radius: 13px;
+      padding: 14px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          135deg,
+          var(--purple),
+          #8e70f7
+        );
+
+      box-shadow:
+        0 6px 0 #5549ca;
+
+      font-size: 15px;
+      font-weight: 900;
+    }
+
+    .primary-button:active {
+      transform: translateY(3px);
+      box-shadow:
+        0 3px 0 #5549ca;
+    }
+
+    .secondary-button {
+      width: 100%;
+
+      border: 2px solid #e1ddf5;
+      border-radius: 13px;
+      padding: 12px;
+
+      color: var(--purple-dark);
+      background: var(--purple-light);
+
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .message {
+      min-height: 44px;
+
+      margin-top: 14px;
+      border-radius: 13px;
+      padding: 12px;
+
+      display: none;
+
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .message.visible {
+      display: block;
+    }
+
+    .message.error {
+      color: var(--danger);
+      background: #ffe9ee;
+    }
+
+    .message.success {
+      color: var(--success);
+      background: #e6faef;
+    }
+
+    .message.info {
+      color: var(--purple-dark);
+      background: var(--purple-light);
+    }
+
+    .small-note {
+      margin: 17px 0 0;
+
+      color: #9599ad;
+      font-size: 10px;
+      font-weight: 700;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      color: var(--purple-dark);
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(8px);
+
+      font-size: 17px;
+      font-weight: 900;
+    }
+
+    .loading-overlay.visible {
+      display: flex;
+    }
+
+    @media (max-width: 820px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      .castle-side {
+        min-height: auto;
+        padding: 30px;
+      }
+
+      .castle-icon {
+        font-size: 65px;
+      }
+
+      .castle-features {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 520px) {
+      body {
+        padding: 12px;
+      }
+
+      .auth-side {
+        padding: 26px 20px;
+      }
+
+      .castle-features {
+        grid-template-columns: 1fr;
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="card">
-    <h1>ELCraft</h1>
+  <main class="shell">
 
-    <input id="email" type="email" placeholder="Email">
-    <input id="password" type="password" placeholder="Password">
+    <section class="castle-side">
+      <div class="castle-content">
 
-    <button id="login" type="button">Log In</button>
-    <button id="signup" type="button">Create Account</button>
+        <div class="castle-icon">
+          🏰
+        </div>
 
-    <div id="message"></div>
+        <h1>
+          Welcome to ELCraft
+        </h1>
+
+        <p>
+          Parents and invited family members sign in here to enter
+          the Family Castle, manage child profiles, and continue the
+          learning adventure.
+        </p>
+
+        <div class="castle-features">
+
+          <div class="castle-feature">
+            <span>👨‍👩‍👧</span>
+            Parent and family accounts
+          </div>
+
+          <div class="castle-feature">
+            <span>🏰</span>
+            Family Castle access
+          </div>
+
+          <div class="castle-feature">
+            <span>👧</span>
+            Child profile selection
+          </div>
+
+          <div class="castle-feature">
+            <span>🔒</span>
+            Protected parent controls
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <section class="auth-side">
+
+      <div class="logo-row">
+        <div class="logo-icon">
+          ✨
+        </div>
+
+        <h2>
+          ELCraft
+        </h2>
+      </div>
+
+      <p class="auth-subtitle">
+        Sign in as a parent or invited family member.
+      </p>
+
+      <div class="tabs">
+
+        <button
+          id="loginTab"
+          class="tab-button active"
+          type="button">
+          Sign In
+        </button>
+
+        <button
+          id="signupTab"
+          class="tab-button"
+          type="button">
+          Create Account
+        </button>
+
+      </div>
+
+      <form
+        id="loginForm"
+        class="form">
+
+        <div class="field">
+          <label for="loginEmail">
+            Email
+          </label>
+
+          <input
+            id="loginEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="Parent or family email"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">
+            Password
+          </label>
+
+          <input
+            id="loginPassword"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Password"
+            minlength="6"
+            required>
+        </div>
+
+        <button
+          id="loginButton"
+          class="primary-button"
+          type="submit">
+          Enter ELCraft
+        </button>
+
+        <button
+          id="forgotButton"
+          class="secondary-button"
+          type="button">
+          Forgot Password
+        </button>
+
+      </form>
+
+      <form
+        id="signupForm"
+        class="form hidden">
+
+        <div class="field">
+          <label for="signupName">
+            Parent or Adult Name
+          </label>
+
+          <input
+            id="signupName"
+            type="text"
+            autocomplete="name"
+            maxlength="60"
+            placeholder="Your name"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="signupEmail">
+            Email
+          </label>
+
+          <input
+            id="signupEmail"
+            type="email"
+            autocomplete="email"
+            placeholder="Email address"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="signupPassword">
+            Password
+          </label>
+
+          <input
+            id="signupPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="6"
+            placeholder="At least 6 characters"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="confirmPassword">
+            Confirm Password
+          </label>
+
+          <input
+            id="confirmPassword"
+            type="password"
+            autocomplete="new-password"
+            minlength="6"
+            placeholder="Type the password again"
+            required>
+        </div>
+
+        <button
+          id="signupButton"
+          class="primary-button"
+          type="submit">
+          Create Parent Account
+        </button>
+
+      </form>
+
+      <div
+        id="message"
+        class="message"
+        role="status"
+        aria-live="polite">
+      </div>
+
+      <p class="small-note">
+        Invited grandparents, relatives, and other approved adults
+        should use the email address that received their invitation.
+      </p>
+
+    </section>
+
+  </main>
+
+  <div
+    id="loadingOverlay"
+    class="loading-overlay">
+    Opening ELCraft...
   </div>
 
   <script type="module">
     import { supabase } from "./supabase-client.js";
 
-    const email = document.getElementById("email");
-    const password = document.getElementById("password");
-    const message = document.getElementById("message");
-    const loginButton = document.getElementById("login");
-    const signupButton = document.getElementById("signup");
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
 
-    function showMessage(text, type) {
+    const CHILD_NAME_KEY =
+      "elcraft_child_name";
+
+    const CHILD_AVATAR_KEY =
+      "elcraft_child_avatar";
+
+    const loginTab =
+      document.getElementById("loginTab");
+
+    const signupTab =
+      document.getElementById("signupTab");
+
+    const loginForm =
+      document.getElementById("loginForm");
+
+    const signupForm =
+      document.getElementById("signupForm");
+
+    const loginEmail =
+      document.getElementById("loginEmail");
+
+    const loginPassword =
+      document.getElementById("loginPassword");
+
+    const signupName =
+      document.getElementById("signupName");
+
+    const signupEmail =
+      document.getElementById("signupEmail");
+
+    const signupPassword =
+      document.getElementById("signupPassword");
+
+    const confirmPassword =
+      document.getElementById("confirmPassword");
+
+    const loginButton =
+      document.getElementById("loginButton");
+
+    const signupButton =
+      document.getElementById("signupButton");
+
+    const forgotButton =
+      document.getElementById("forgotButton");
+
+    const message =
+      document.getElementById("message");
+
+    const loadingOverlay =
+      document.getElementById("loadingOverlay");
+
+    function clearSelectedChild() {
+      localStorage.removeItem(
+        SELECTED_CHILD_ID_KEY
+      );
+
+      localStorage.removeItem(
+        CHILD_NAME_KEY
+      );
+
+      localStorage.removeItem(
+        CHILD_AVATAR_KEY
+      );
+    }
+
+    function showMessage(
+      text,
+      type = "info"
+    ) {
       message.textContent = text;
-      message.style.color = type === "success" ? "green" : "red";
+      message.className =
+        `message visible ${type}`;
     }
 
-    async function sendSignedInUserToCorrectPage() {
-      const { data: userData } = await supabase.auth.getUser();
-
-      if (!userData.user) {
-        return;
-      }
-
-      window.location.replace("parent-dashboard.html");
+    function clearMessage() {
+      message.textContent = "";
+      message.className = "message";
     }
 
-    signupButton.addEventListener("click", async () => {
-      signupButton.disabled = true;
-      message.textContent = "";
+    function setLoading(isLoading) {
+      loadingOverlay.classList.toggle(
+        "visible",
+        isLoading
+      );
+    }
 
-      const { error } = await supabase.auth.signUp({
-        email: email.value.trim(),
-        password: password.value
-      });
+    function showLogin() {
+      clearMessage();
 
-      signupButton.disabled = false;
+      loginTab.classList.add("active");
+      signupTab.classList.remove("active");
 
-      if (error) {
-        showMessage(error.message, "error");
+      loginForm.classList.remove("hidden");
+      signupForm.classList.add("hidden");
+
+      loginEmail.focus();
+    }
+
+    function showSignup() {
+      clearMessage();
+
+      signupTab.classList.add("active");
+      loginTab.classList.remove("active");
+
+      signupForm.classList.remove("hidden");
+      loginForm.classList.add("hidden");
+
+      signupName.focus();
+    }
+
+    async function routeSignedInUser(user) {
+      clearSelectedChild();
+
+      const {
+        data: memberships,
+        error: membershipError
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, family_id, member_role, relationship, status"
+        )
+        .eq(
+          "user_id",
+          user.id
+        )
+        .eq(
+          "status",
+          "active"
+        );
+
+      if (membershipError) {
+        console.error(
+          "Account routing error:",
+          membershipError
+        );
+
+        /*
+          Do not block a valid login merely because family routing
+          could not be read. The profile page will perform its own
+          access check and display the proper account state.
+        */
+        window.location.replace(
+          "profiles.html"
+        );
+
         return;
       }
 
-      showMessage("Account created! Check your email.", "success");
-    });
+      const membershipList =
+        memberships || [];
 
-    loginButton.addEventListener("click", async () => {
-      loginButton.disabled = true;
-      message.textContent = "";
+      const ownerMembership =
+        membershipList.find(
+          membership =>
+            membership.member_role === "owner"
+        );
 
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.value.trim(),
-        password: password.value
-      });
+      if (ownerMembership) {
+        window.location.replace(
+          "parent-dashboard.html"
+        );
 
-      if (error) {
-        loginButton.disabled = false;
-        showMessage(error.message, "error");
         return;
       }
 
-      window.location.href = "parent-dashboard.html";
-    });
+      const familyMembership =
+        membershipList[0];
 
-    sendSignedInUserToCorrectPage();
+      if (familyMembership) {
+        window.location.replace(
+          "family-castle.html"
+        );
+
+        return;
+      }
+
+      /*
+        A brand-new parent may not have a family_members row until
+        the project's signup trigger or onboarding process creates it.
+        The profile page is the safest onboarding destination.
+      */
+      window.location.replace(
+        "profiles.html"
+      );
+    }
+
+    async function handleExistingSession() {
+      const {
+        data,
+        error
+      } = await supabase.auth.getSession();
+
+      if (
+        error ||
+        !data.session?.user
+      ) {
+        return;
+      }
+
+      setLoading(true);
+
+      await routeSignedInUser(
+        data.session.user
+      );
+    }
+
+    loginTab.addEventListener(
+      "click",
+      showLogin
+    );
+
+    signupTab.addEventListener(
+      "click",
+      showSignup
+    );
+
+    loginForm.addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+        clearMessage();
+
+        const email =
+          loginEmail.value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          loginPassword.value;
+
+        if (!email || !password) {
+          showMessage(
+            "Enter your email and password.",
+            "error"
+          );
+
+          return;
+        }
+
+        loginButton.disabled = true;
+        loginButton.textContent =
+          "Signing In...";
+
+        try {
+          const {
+            data,
+            error
+          } = await supabase.auth
+            .signInWithPassword({
+              email,
+              password
+            });
+
+          if (error) {
+            throw error;
+          }
+
+          if (!data.user) {
+            throw new Error(
+              "The account could not be opened."
+            );
+          }
+
+          setLoading(true);
+
+          await routeSignedInUser(
+            data.user
+          );
+
+        } catch (error) {
+          console.error(
+            "Login error:",
+            error
+          );
+
+          setLoading(false);
+
+          showMessage(
+            error?.message ||
+              "Unable to sign in.",
+            "error"
+          );
+
+          loginButton.disabled = false;
+          loginButton.textContent =
+            "Enter ELCraft";
+        }
+      }
+    );
+
+    signupForm.addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+        clearMessage();
+
+        const displayName =
+          signupName.value.trim();
+
+        const email =
+          signupEmail.value
+            .trim()
+            .toLowerCase();
+
+        const password =
+          signupPassword.value;
+
+        const confirmation =
+          confirmPassword.value;
+
+        if (
+          !displayName ||
+          !email ||
+          !password
+        ) {
+          showMessage(
+            "Complete every account field.",
+            "error"
+          );
+
+          return;
+        }
+
+        if (password.length < 6) {
+          showMessage(
+            "The password must contain at least 6 characters.",
+            "error"
+          );
+
+          return;
+        }
+
+        if (password !== confirmation) {
+          showMessage(
+            "The passwords do not match.",
+            "error"
+          );
+
+          return;
+        }
+
+        signupButton.disabled = true;
+        signupButton.textContent =
+          "Creating Account...";
+
+        try {
+          const {
+            data,
+            error
+          } = await supabase.auth.signUp({
+            email,
+            password,
+            options: {
+              data: {
+                display_name:
+                  displayName,
+                full_name:
+                  displayName,
+                account_type:
+                  "parent"
+              },
+              emailRedirectTo:
+                new URL(
+                  "auth.html",
+                  window.location.href
+                ).href
+            }
+          });
+
+          if (error) {
+            throw error;
+          }
+
+          if (data.session?.user) {
+            setLoading(true);
+
+            await routeSignedInUser(
+              data.session.user
+            );
+
+            return;
+          }
+
+          showMessage(
+            "Account created. Check your email to confirm it, then return here and sign in.",
+            "success"
+          );
+
+          signupButton.disabled = false;
+          signupButton.textContent =
+            "Create Parent Account";
+
+        } catch (error) {
+          console.error(
+            "Signup error:",
+            error
+          );
+
+          showMessage(
+            error?.message ||
+              "Unable to create the account.",
+            "error"
+          );
+
+          signupButton.disabled = false;
+          signupButton.textContent =
+            "Create Parent Account";
+        }
+      }
+    );
+
+    forgotButton.addEventListener(
+      "click",
+      async () => {
+        clearMessage();
+
+        const email =
+          loginEmail.value
+            .trim()
+            .toLowerCase();
+
+        if (!email) {
+          showMessage(
+            "Enter your email address first.",
+            "error"
+          );
+
+          loginEmail.focus();
+
+          return;
+        }
+
+        forgotButton.disabled = true;
+        forgotButton.textContent =
+          "Sending...";
+
+        try {
+          const redirectUrl =
+            new URL(
+              "auth.html",
+              window.location.href
+            );
+
+          const {
+            error
+          } = await supabase.auth
+            .resetPasswordForEmail(
+              email,
+              {
+                redirectTo:
+                  redirectUrl.href
+              }
+            );
+
+          if (error) {
+            throw error;
+          }
+
+          showMessage(
+            "Password reset email sent.",
+            "success"
+          );
+
+        } catch (error) {
+          showMessage(
+            error?.message ||
+              "Unable to send the reset email.",
+            "error"
+          );
+
+        } finally {
+          forgotButton.disabled = false;
+          forgotButton.textContent =
+            "Forgot Password";
+        }
+      }
+    );
+
+    handleExistingSession().catch(
+      error => {
+        console.error(
+          "Existing session routing error:",
+          error
+        );
+
+        setLoading(false);
+      }
+    );
   </script>
 </body>
 </html>
