@@ -2,311 +2,1352 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1, viewport-fit=cover">
+
   <meta name="theme-color" content="#f8efff">
+
   <title>ELCraft — Style Studio</title>
 
+  <link
+    rel="stylesheet"
+    href="elcraft-design-system.css">
+
   <style>
-    *{box-sizing:border-box}
-    :root{
-      --purple:#7057d8;--purple-dark:#4e3aa9;--purple-light:#efeaff;
-      --pink:#ff79ae;--blue:#65c8ee;--green:#78ca5c;
-      --ink:#35415f;--muted:#747c98
+    .studio-shell {
+      display: grid;
+      grid-template-columns:
+        minmax(250px, .82fr)
+        minmax(430px, 1.35fr)
+        minmax(250px, .82fr);
+      gap: 16px;
     }
-    html,body{min-height:100%;margin:0}
-    body{
-      min-height:100vh;color:var(--ink);font-family:Arial,Helvetica,sans-serif;
-      background:linear-gradient(145deg,#ffe3f1,#eadfff 48%,#dff6ff)
+
+    .studio-panel {
+      min-width: 0;
     }
-    button{font:inherit;cursor:pointer}
-    .page{min-height:100vh;display:flex;flex-direction:column}
-    .header{
-      min-height:82px;display:flex;align-items:center;justify-content:space-between;
-      gap:14px;padding:12px 18px;background:rgba(255,255,255,.96);
-      border-bottom:4px solid rgba(111,85,217,.12)
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin-top: 14px;
     }
-    .header-left{display:flex;align-items:center;gap:13px}
-    .back-button{
-      border:0;border-radius:999px;padding:11px 17px;color:var(--purple-dark);
-      background:var(--purple-light);font-weight:900
+
+    .tool-card {
+      min-height: 92px;
+
+      border: 3px solid var(--el-border);
+      border-radius: 18px;
+      padding: 10px;
+
+      color: var(--el-ink);
+      background: white;
+
+      font-weight: 1000;
+      text-align: center;
+
+      box-shadow:
+        0 5px 0 rgba(76, 60, 112, 0.07);
+
+      transition:
+        transform var(--el-fast) ease,
+        border-color var(--el-fast) ease,
+        background var(--el-fast) ease;
     }
-    .title-group h1{margin:0;color:var(--purple-dark);font-size:clamp(26px,3vw,42px)}
-    .title-group p{margin:4px 0 0;color:var(--muted);font-size:13px;font-weight:800}
-    .workspace{
-      flex:1;display:grid;
-      grid-template-columns:minmax(260px,.8fr) minmax(450px,1.3fr) minmax(250px,.8fr);
-      gap:15px;padding:15px
+
+    .tool-card:hover {
+      transform: translateY(-3px);
     }
-    .panel{
-      border:4px solid rgba(255,255,255,.93);border-radius:28px;
-      background:rgba(255,255,255,.97);
-      box-shadow:0 12px 0 rgba(97,70,144,.08),0 22px 42px rgba(75,61,120,.15)
+
+    .tool-card.active {
+      border-color: var(--el-pink);
+      background: #fff1f7;
     }
-    .tools,.finish{padding:16px;display:flex;flex-direction:column}
-    .panel-title{margin:0 0 8px;color:var(--purple-dark);font-size:23px;text-align:center}
-    .tool-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}
-    .tool{
-      min-height:79px;border:3px solid #ece7f7;border-radius:18px;
-      background:white;color:#4e4b70;font-weight:900
+
+    .tool-icon {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 34px;
+      line-height: 1;
     }
-    .tool.active{border-color:var(--pink);background:#fff2f8}
-    .tool-icon{display:block;font-size:31px;margin-bottom:5px}
-    .stage{
-      position:relative;overflow:hidden;min-height:680px;display:grid;place-items:center;
-      background:repeating-linear-gradient(135deg,#fff8fc 0 28px,#eef8ff 28px 56px)
+
+    .salon-room {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 660px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      border-radius: 24px;
+
+      background:
+        radial-gradient(
+          circle at 50% 16%,
+          rgba(255,255,255,.95),
+          transparent 24%
+        ),
+        linear-gradient(
+          180deg,
+          #fff6fb 0%,
+          #f3edff 62%,
+          #e7d9f2 63%,
+          #d5b7d7 100%
+        );
     }
-    #avatarCanvas{
-      position:relative;z-index:2;width:min(100%,500px);touch-action:none
+
+    .salon-room::before {
+      content: "";
+
+      position: absolute;
+      left: 50%;
+      top: 36px;
+
+      width: 66%;
+      height: 58%;
+
+      transform: translateX(-50%);
+
+      border: 10px solid #f0b7d4;
+      border-radius: 48% 48% 25% 25% / 30% 30% 18% 18%;
+
+      background:
+        radial-gradient(
+          circle at 50% 18%,
+          rgba(255,255,255,.97),
+          rgba(218,240,252,.9) 58%,
+          #d7eaf4
+        );
+
+      box-shadow:
+        inset 0 0 0 7px white,
+        0 14px 0 #d98fb5,
+        0 24px 34px rgba(83,55,104,.16);
     }
-    .missing{
-      position:absolute;z-index:3;left:50%;top:50%;transform:translate(-50%,-50%);
-      width:min(80%,420px);border:4px solid white;border-radius:24px;padding:22px;
-      color:var(--purple-dark);background:white;font-weight:900;line-height:1.5;text-align:center
+
+    .salon-counter {
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+
+      width: 86%;
+      height: 160px;
+
+      transform: translateX(-50%);
+
+      border: 8px solid #bd7daf;
+      border-bottom: 0;
+      border-radius: 34px 34px 0 0;
+
+      background:
+        linear-gradient(
+          180deg,
+          #f6b5d8,
+          #d98eb9
+        );
+
+      box-shadow:
+        inset 0 14px 0 rgba(255,255,255,.2);
     }
-    .swatches{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-    .swatch{min-height:48px;border:4px solid white;border-radius:15px;box-shadow:0 0 0 2px #dad2eb}
-    .swatch.active{box-shadow:0 0 0 5px var(--purple)}
-    .actions{display:grid;gap:9px;margin-top:auto;padding-top:14px}
-    .action{min-height:50px;border:0;border-radius:16px;color:white;font-weight:900}
-    .avatar{background:var(--blue)}
-    .save{background:var(--green)}
-    .reset{background:var(--pink)}
-    @media(max-width:850px){
-      .workspace{grid-template-columns:1fr}
-      .stage{order:-1;min-height:600px}
+
+    .salon-chair {
+      position: absolute;
+      left: 50%;
+      bottom: 92px;
+
+      width: 220px;
+      height: 250px;
+
+      transform: translateX(-50%);
+
+      z-index: 3;
+    }
+
+    .chair-back {
+      position: absolute;
+      left: 50%;
+      top: 0;
+
+      width: 170px;
+      height: 160px;
+
+      transform: translateX(-50%);
+
+      border: 7px solid #714fa3;
+      border-radius: 46px 46px 30px 30px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #9b79ea,
+          #6d53bd
+        );
+
+      box-shadow:
+        inset 0 12px 0 rgba(255,255,255,.18),
+        0 12px 22px rgba(64,49,112,.2);
+    }
+
+    .chair-seat {
+      position: absolute;
+      left: 50%;
+      top: 128px;
+
+      width: 190px;
+      height: 72px;
+
+      transform: translateX(-50%);
+
+      border: 7px solid #714fa3;
+      border-radius: 30px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #a887f1,
+          #7359c7
+        );
+    }
+
+    .chair-base {
+      position: absolute;
+      left: 50%;
+      top: 196px;
+
+      width: 26px;
+      height: 42px;
+
+      transform: translateX(-50%);
+
+      border-radius: 999px;
+      background: #6a6582;
+    }
+
+    .chair-foot {
+      position: absolute;
+      left: 50%;
+      top: 228px;
+
+      width: 132px;
+      height: 20px;
+
+      transform: translateX(-50%);
+
+      border-radius: 999px;
+      background: #6a6582;
+    }
+
+    .customer-card {
+      position: absolute;
+      left: 50%;
+      top: 46%;
+
+      width: min(78%, 390px);
+
+      transform: translate(-50%, -50%);
+
+      z-index: 5;
+
+      border: 5px solid white;
+      border-radius: 26px;
+      padding: 18px;
+
+      color: var(--el-purple-dark);
+      background: rgba(255,255,255,.97);
+
+      font-weight: 1000;
+      text-align: center;
+
+      box-shadow:
+        0 16px 30px rgba(66,49,114,.2);
+    }
+
+    .customer-icon {
+      font-size: 70px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .customer-name {
+      font-size: 24px;
+    }
+
+    .customer-request {
+      margin-top: 7px;
+      color: var(--el-muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .station-lights {
+      position: absolute;
+      inset: 18px 12% auto;
+
+      display: flex;
+      justify-content: space-between;
+
+      z-index: 4;
+
+      pointer-events: none;
+    }
+
+    .station-light {
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border: 4px solid white;
+      border-radius: 50%;
+
+      color: white;
+      background: var(--el-pink);
+
+      font-size: 18px;
+
+      box-shadow:
+        0 5px 14px rgba(217,79,139,.25);
+    }
+
+    .salon-tray {
+      position: absolute;
+      left: 8%;
+      bottom: 96px;
+
+      z-index: 5;
+
+      display: flex;
+      gap: 8px;
+
+      border: 4px solid white;
+      border-radius: 18px;
+      padding: 10px;
+
+      background: rgba(255,255,255,.93);
+
+      box-shadow:
+        0 10px 20px rgba(62,48,103,.15);
+    }
+
+    .salon-item {
+      width: 42px;
+      height: 42px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 13px;
+
+      background: #f4ebff;
+
+      font-size: 24px;
+    }
+
+    .request-box {
+      margin-top: 14px;
+
+      border: 3px solid #ffe397;
+      border-radius: 18px;
+      padding: 12px;
+
+      color: #775c25;
+      background: #fff8d9;
+
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1.45;
+      text-align: center;
+    }
+
+    .color-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+      gap: 9px;
+
+      margin-top: 14px;
+    }
+
+    .color-button {
+      min-height: 48px;
+
+      border: 4px solid white;
+      border-radius: 15px;
+
+      box-shadow:
+        0 0 0 2px #dad2eb;
+    }
+
+    .color-button.active {
+      box-shadow:
+        0 0 0 5px var(--el-purple);
+    }
+
+    .task-list {
+      display: grid;
+      gap: 8px;
+
+      margin-top: 14px;
+    }
+
+    .task-row {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+
+      border: 3px solid #ebe6f5;
+      border-radius: 15px;
+      padding: 10px;
+
+      color: var(--el-muted);
+      background: white;
+
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .task-row.complete {
+      color: #3d7532;
+      border-color: #c9e8bf;
+      background: #eef9e9;
+    }
+
+    .task-check {
+      width: 25px;
+      height: 25px;
+
+      display: grid;
+      place-items: center;
+
+      flex: 0 0 auto;
+
+      border-radius: 50%;
+
+      color: white;
+      background: #c9c4d6;
+    }
+
+    .task-row.complete .task-check {
+      background: var(--el-green);
+    }
+
+    .action-stack {
+      display: grid;
+      gap: 9px;
+
+      margin-top: auto;
+      padding-top: 14px;
+    }
+
+    @media (max-width: 950px) {
+      .studio-shell {
+        grid-template-columns: 1fr;
+      }
+
+      .studio-main {
+        order: -1;
+      }
+
+      .tool-grid {
+        grid-template-columns:
+          repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      .tool-grid {
+        grid-template-columns:
+          repeat(2, minmax(0, 1fr));
+      }
+
+      .salon-room {
+        min-height: 560px;
+      }
+
+      .customer-card {
+        width: 84%;
+      }
     }
   </style>
 </head>
 
 <body>
-<main class="page">
-  <header class="header">
-    <div class="header-left">
-      <button id="backButton" class="back-button" type="button">← My World</button>
-      <div class="title-group">
-        <h1>Style Studio</h1>
-        <p>Interactive makeup using the same layered character.</p>
+
+  <main class="el-page">
+
+    <header class="el-header">
+
+      <div class="el-header-left">
+
+        <button
+          id="backButton"
+          class="el-button el-button--small"
+          type="button">
+          ← My World
+        </button>
+
+        <div
+          class="el-header-icon"
+          aria-hidden="true">
+          💇
+        </div>
+
+        <div class="el-title-group">
+
+          <h1 class="el-title">
+            Style Studio
+          </h1>
+
+          <p class="el-subtitle">
+            Run your own cheerful salon.
+          </p>
+
+        </div>
+
       </div>
-    </div>
-  </header>
 
-  <section class="workspace">
-    <aside class="panel tools">
-      <h2 class="panel-title">Salon Tools</h2>
-      <div id="toolGrid" class="tool-grid"></div>
-    </aside>
+      <div class="el-header-right">
 
-    <section class="panel stage">
-      <canvas id="avatarCanvas" width="600" height="800"></canvas>
+        <div class="el-player-pill">
+          ✨
+          <span data-player-possessive>
+            Player's
+          </span>
+          Studio
+        </div>
 
-      <div id="missingMessage" class="missing" hidden>
-        Add the licensed avatar PNG layers inside <strong>assets/avatar</strong>
-        before using Style Studio.
       </div>
+
+    </header>
+
+    <section class="el-page-body">
+
+      <section class="studio-shell">
+
+        <aside class="el-panel studio-panel">
+
+          <h2 class="el-section-title">
+            Salon Tools
+          </h2>
+
+          <p class="el-section-copy">
+            Select tools to complete the customer’s request.
+          </p>
+
+          <div
+            id="requestBox"
+            class="request-box">
+          </div>
+
+          <div
+            id="toolGrid"
+            class="tool-grid">
+          </div>
+
+        </aside>
+
+        <section class="el-panel studio-panel studio-main">
+
+          <div class="salon-room">
+
+            <div
+              class="station-lights"
+              aria-hidden="true">
+
+              <div class="station-light">
+                ♥
+              </div>
+
+              <div class="station-light">
+                ★
+              </div>
+
+              <div class="station-light">
+                ♥
+              </div>
+
+              <div class="station-light">
+                ★
+              </div>
+
+              <div class="station-light">
+                ♥
+              </div>
+
+            </div>
+
+            <div class="salon-chair">
+
+              <div class="chair-back"></div>
+              <div class="chair-seat"></div>
+              <div class="chair-base"></div>
+              <div class="chair-foot"></div>
+
+            </div>
+
+            <article
+              id="customerCard"
+              class="customer-card el-pop">
+
+              <div
+                id="customerIcon"
+                class="customer-icon">
+                🧸
+              </div>
+
+              <div
+                id="customerName"
+                class="customer-name">
+                Teddy
+              </div>
+
+              <div
+                id="customerRequest"
+                class="customer-request">
+              </div>
+
+            </article>
+
+            <div
+              class="salon-tray"
+              aria-hidden="true">
+
+              <div class="salon-item">
+                💄
+              </div>
+
+              <div class="salon-item">
+                🪮
+              </div>
+
+              <div class="salon-item">
+                ✂️
+              </div>
+
+              <div class="salon-item">
+                🖌️
+              </div>
+
+            </div>
+
+            <div class="salon-counter"></div>
+
+          </div>
+
+        </section>
+
+        <aside class="el-panel studio-panel">
+
+          <h2 class="el-section-title">
+            Colors & Finish
+          </h2>
+
+          <p class="el-section-copy">
+            Choose a color and complete all three salon tasks.
+          </p>
+
+          <div
+            id="colorGrid"
+            class="color-grid">
+          </div>
+
+          <div
+            class="el-progress"
+            role="progressbar"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+            style="margin-top:16px;">
+
+            <div
+              id="progressFill"
+              class="el-progress-fill">
+            </div>
+
+          </div>
+
+          <div
+            id="taskList"
+            class="task-list">
+          </div>
+
+          <div class="action-stack">
+
+            <button
+              id="newCustomerButton"
+              class="el-button el-button--blue"
+              type="button">
+              🪄 New Customer
+            </button>
+
+            <button
+              id="finishButton"
+              class="el-button el-button--green"
+              type="button">
+              🌟 Finish Makeover
+            </button>
+
+            <button
+              id="resetButton"
+              class="el-button el-button--pink"
+              type="button">
+              ↺ Start Over
+            </button>
+
+          </div>
+
+        </aside>
+
+      </section>
+
     </section>
 
-    <aside class="panel finish">
-      <h2 class="panel-title">Colors & Finish</h2>
-      <div id="colorSwatches" class="swatches"></div>
+  </main>
 
-      <div class="actions">
-        <button id="avatarButton" class="action avatar" type="button">🧒 Edit Avatar</button>
-        <button id="saveButton" class="action save" type="button">📸 Save Look</button>
-        <button id="resetButton" class="action reset" type="button">🧽 Remove Makeup</button>
-      </div>
-    </aside>
-  </section>
-</main>
+  <script
+    type="module"
+    src="elcraft-ui.js">
+  </script>
 
-<script type="module">
-  import {
-    AVATAR_MANIFEST,
-    loadAvatarStyle,
-    saveAvatarStyle,
-    renderAvatarToCanvas,
-    saveAvatarImage,
-    resetMakeup
-  } from "./layered-avatar-engine.js";
+  <script type="module">
+    import {
+      ELCraftUI
+    } from "./elcraft-ui.js";
 
-  const state=loadAvatarStyle();
-  const canvas=document.getElementById("avatarCanvas");
-  const toolGrid=document.getElementById("toolGrid");
-  const swatches=document.getElementById("colorSwatches");
-  const missing=document.getElementById("missingMessage");
+    const COLORS = [
+      "#ff4f87",
+      "#d84666",
+      "#a64cce",
+      "#4f70d9",
+      "#3fa7b9",
+      "#ff8f45",
+      "#f2c84b",
+      "#7c4b36"
+    ];
 
-  let tool=null;
-  let color="#ff4f87";
-  let drawing=false;
+    const TOOLS = [
+      {
+        id:
+          "hair",
 
-  const tools=[
-    {id:"lipstick",label:"Lipstick",icon:"💄"},
-    {id:"mascara",label:"Mascara",icon:"👁️"},
-    {id:"blush",label:"Blush",icon:"🖌️"},
-    {id:"paint",label:"Face Paint",icon:"🎨"},
-    {id:"glitter",label:"Glitter",icon:"✨"},
-    {id:"remover",label:"Remover",icon:"🧽"}
-  ];
+        label:
+          "Hair Style",
 
-  const colors=["#ff4f87","#d84666","#a64cce","#4f70d9","#3fa7b9","#ff8f45","#f2c84b","#7c4b36"];
+        icon:
+          "💇"
+      },
+      {
+        id:
+          "wash",
 
-  async function render(){
-    try{
-      missing.hidden=true;
-      await renderAvatarToCanvas(canvas,state);
-    }catch(error){
-      console.error(error);
-      missing.hidden=false;
-    }
-  }
+        label:
+          "Wash Hair",
 
-  function renderTools(){
-    toolGrid.replaceChildren();
+        icon:
+          "🫧"
+      },
+      {
+        id:
+          "brush",
 
-    tools.forEach(item=>{
-      const button=document.createElement("button");
-      button.type="button";
-      button.className=`tool${tool===item.id?" active":""}`;
-      button.innerHTML=`<span class="tool-icon">${item.icon}</span>${item.label}`;
+        label:
+          "Brush Hair",
 
-      button.onclick=()=>{
-        tool=item.id;
-        renderTools();
-      };
+        icon:
+          "🪮"
+      },
+      {
+        id:
+          "lipstick",
 
-      toolGrid.appendChild(button);
-    });
-  }
+        label:
+          "Lipstick",
 
-  function renderColors(){
-    swatches.replaceChildren();
+        icon:
+          "💄"
+      },
+      {
+        id:
+          "blush",
 
-    colors.forEach(item=>{
-      const button=document.createElement("button");
-      button.type="button";
-      button.className=`swatch${color===item?" active":""}`;
-      button.style.background=item;
+        label:
+          "Blush",
 
-      button.onclick=()=>{
-        color=item;
-        renderColors();
-      };
+        icon:
+          "🖌️"
+      },
+      {
+        id:
+          "sparkle",
 
-      swatches.appendChild(button);
-    });
-  }
+        label:
+          "Sparkles",
 
-  function point(event){
-    const rect=canvas.getBoundingClientRect();
+        icon:
+          "✨"
+      },
+      {
+        id:
+          "accessory",
 
-    return{
-      x:(event.clientX-rect.left)*(600/rect.width),
-      y:(event.clientY-rect.top)*(800/rect.height)
+        label:
+          "Accessory",
+
+        icon:
+          "👑"
+      },
+      {
+        id:
+          "photo",
+
+        label:
+          "Photo Booth",
+
+        icon:
+          "📸"
+      }
+    ];
+
+    const CUSTOMERS = [
+      {
+        name:
+          "Teddy",
+
+        icon:
+          "🧸",
+
+        request:
+          "Please brush my hair, add pink lipstick, and finish with sparkles!",
+
+        tasks: [
+          {
+            tool:
+              "brush",
+
+            label:
+              "Brush the hair"
+          },
+          {
+            tool:
+              "lipstick",
+
+            label:
+              "Apply lipstick"
+          },
+          {
+            tool:
+              "sparkle",
+
+            label:
+              "Add sparkles"
+          }
+        ]
+      },
+      {
+        name:
+          "Bella Bunny",
+
+        icon:
+          "🐰",
+
+        request:
+          "Can I have clean hair, rosy cheeks, and a pretty accessory?",
+
+        tasks: [
+          {
+            tool:
+              "wash",
+
+            label:
+              "Wash the hair"
+          },
+          {
+            tool:
+              "blush",
+
+            label:
+              "Add blush"
+          },
+          {
+            tool:
+              "accessory",
+
+            label:
+              "Choose an accessory"
+          }
+        ]
+      },
+      {
+        name:
+          "Sunny Unicorn",
+
+        icon:
+          "🦄",
+
+        request:
+          "I want a new hairstyle, golden sparkles, and a salon photo!",
+
+        tasks: [
+          {
+            tool:
+              "hair",
+
+            label:
+              "Choose a hairstyle"
+          },
+          {
+            tool:
+              "sparkle",
+
+            label:
+              "Add sparkles"
+          },
+          {
+            tool:
+              "photo",
+
+            label:
+              "Take a photo"
+          }
+        ]
+      },
+      {
+        name:
+          "Poppy Puppy",
+
+        icon:
+          "🐶",
+
+        request:
+          "Please wash and brush my fur, then add a fun accessory!",
+
+        tasks: [
+          {
+            tool:
+              "wash",
+
+            label:
+              "Wash the fur"
+          },
+          {
+            tool:
+              "brush",
+
+            label:
+              "Brush the fur"
+          },
+          {
+            tool:
+              "accessory",
+
+            label:
+              "Choose an accessory"
+          }
+        ]
+      }
+    ];
+
+    const state = {
+      customerIndex:
+        0,
+
+      selectedColor:
+        COLORS[0],
+
+      completed:
+        new Set()
     };
-  }
 
-  function inside(point,area){
-    return(
-      point.x>=area.x-area.width/2 &&
-      point.x<=area.x+area.width/2 &&
-      point.y>=area.y-area.height/2 &&
-      point.y<=area.y+area.height/2
-    );
-  }
+    const toolGrid =
+      document.getElementById(
+        "toolGrid"
+      );
 
-  function apply(point){
-    const zones=AVATAR_MANIFEST.makeup;
+    const colorGrid =
+      document.getElementById(
+        "colorGrid"
+      );
 
-    if(!tool)return;
+    const taskList =
+      document.getElementById(
+        "taskList"
+      );
 
-    if(tool==="remover"){
-      resetMakeup(state);
-      render();
-      return;
+    const progressFill =
+      document.getElementById(
+        "progressFill"
+      );
+
+    const customerCard =
+      document.getElementById(
+        "customerCard"
+      );
+
+    function currentCustomer() {
+      return CUSTOMERS[
+        state.customerIndex
+      ];
     }
 
-    if(tool==="lipstick"&&inside(point,zones.lipstick)){
-      state.makeup.lipstick=color;
+    function renderCustomer() {
+      const customer =
+        currentCustomer();
+
+      document
+        .getElementById(
+          "customerIcon"
+        )
+        .textContent =
+          customer.icon;
+
+      document
+        .getElementById(
+          "customerName"
+        )
+        .textContent =
+          customer.name;
+
+      document
+        .getElementById(
+          "customerRequest"
+        )
+        .textContent =
+          customer.request;
+
+      document
+        .getElementById(
+          "requestBox"
+        )
+        .textContent =
+          `“${customer.request}”`;
+
+      customerCard.classList.remove(
+        "el-pop"
+      );
+
+      void customerCard.offsetWidth;
+
+      customerCard.classList.add(
+        "el-pop"
+      );
     }
 
-    if(tool==="mascara"&&(
-      inside(point,zones.leftEye)||
-      inside(point,zones.rightEye)
-    )){
-      state.makeup.mascara=true;
+    function renderTools() {
+      toolGrid.replaceChildren();
+
+      TOOLS.forEach(tool => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.type =
+          "button";
+
+        button.className =
+          `tool-card${
+            state.completed.has(
+              tool.id
+            )
+              ? " active"
+              : ""
+          }`;
+
+        button.innerHTML = `
+          <span class="tool-icon">
+            ${tool.icon}
+          </span>
+
+          ${tool.label}
+        `;
+
+        button.addEventListener(
+          "click",
+          () => {
+            state.completed.add(
+              tool.id
+            );
+
+            ELCraftUI.playTone({
+              frequency:
+                500 +
+                Math.random() *
+                220,
+
+              duration:
+                .08
+            });
+
+            ELCraftUI.showToast(
+              `${tool.label} used with ${state.selectedColor}! ✨`
+            );
+
+            renderEverything();
+          }
+        );
+
+        toolGrid.appendChild(
+          button
+        );
+      });
     }
 
-    if(tool==="blush"&&(
-      inside(point,zones.leftCheek)||
-      inside(point,zones.rightCheek)
-    )){
-      state.makeup.blush=color;
+    function renderColors() {
+      colorGrid.replaceChildren();
+
+      COLORS.forEach(color => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.type =
+          "button";
+
+        button.className =
+          `color-button${
+            state.selectedColor ===
+            color
+              ? " active"
+              : ""
+          }`;
+
+        button.style.background =
+          color;
+
+        button.setAttribute(
+          "aria-label",
+          "Choose salon color"
+        );
+
+        button.addEventListener(
+          "click",
+          () => {
+            state.selectedColor =
+              color;
+
+            renderColors();
+
+            ELCraftUI.playTone({
+              frequency:
+                620,
+
+              duration:
+                .06
+            });
+          }
+        );
+
+        colorGrid.appendChild(
+          button
+        );
+      });
     }
 
-    if(tool==="paint"){
-      state.makeup.facePaint=[
-        ...(state.makeup.facePaint||[]),
-        {x:point.x,y:point.y,size:6,color}
-      ].slice(-30);
+    function renderTasks() {
+      taskList.replaceChildren();
+
+      const customer =
+        currentCustomer();
+
+      customer.tasks.forEach(task => {
+        const complete =
+          state.completed.has(
+            task.tool
+          );
+
+        const row =
+          document.createElement(
+            "div"
+          );
+
+        row.className =
+          `task-row${
+            complete
+              ? " complete"
+              : ""
+          }`;
+
+        row.innerHTML = `
+          <div class="task-check">
+            ${complete ? "✓" : "•"}
+          </div>
+
+          <div>
+            ${task.label}
+          </div>
+        `;
+
+        taskList.appendChild(
+          row
+        );
+      });
     }
 
-    if(tool==="glitter"){
-      const marks=Array.from({length:4},()=>({
-        x:point.x+(Math.random()-.5)*30,
-        y:point.y+(Math.random()-.5)*30,
-        size:2+Math.random()*2
-      }));
+    function updateProgress() {
+      const customer =
+        currentCustomer();
 
-      state.makeup.glitter=[
-        ...(state.makeup.glitter||[]),
-        ...marks
-      ].slice(-60);
+      const completed =
+        customer.tasks.filter(
+          task =>
+            state.completed.has(
+              task.tool
+            )
+        ).length;
+
+      const percent =
+        Math.round(
+          completed /
+          customer.tasks.length *
+          100
+        );
+
+      ELCraftUI.setProgress(
+        progressFill.parentElement,
+        percent
+      );
+
+      progressFill.style.width =
+        `${percent}%`;
+
+      if (
+        percent ===
+        100
+      ) {
+        ELCraftUI.showToast(
+          `${customer.name} loves the makeover! 🌟`
+        );
+      }
     }
 
-    render();
-  }
-
-  canvas.onpointerdown=event=>{
-    if(!tool)return;
-    drawing=true;
-    canvas.setPointerCapture(event.pointerId);
-    apply(point(event));
-  };
-
-  canvas.onpointermove=event=>{
-    if(drawing)apply(point(event));
-  };
-
-  canvas.onpointerup=event=>{
-    drawing=false;
-    if(canvas.hasPointerCapture(event.pointerId)){
-      canvas.releasePointerCapture(event.pointerId);
+    function renderEverything() {
+      renderCustomer();
+      renderTools();
+      renderColors();
+      renderTasks();
+      updateProgress();
     }
-  };
 
-  document.getElementById("backButton").onclick=()=>location.href="my-city.html";
-  document.getElementById("avatarButton").onclick=()=>location.href="avatar-studio.html";
+    document
+      .getElementById(
+        "backButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "my-city.html";
+        }
+      );
 
-  document.getElementById("resetButton").onclick=()=>{
-    resetMakeup(state);
-    render();
-  };
+    document
+      .getElementById(
+        "newCustomerButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          state.customerIndex =
+            (
+              state.customerIndex +
+              1
+            ) %
+            CUSTOMERS.length;
 
-  document.getElementById("saveButton").onclick=async()=>{
-    try{
-      saveAvatarStyle(state);
-      await renderAvatarToCanvas(canvas,state);
-      await saveAvatarImage(canvas);
-    }catch(error){
-      console.error(error);
-    }
-  };
+          state.completed.clear();
 
-  renderTools();
-  renderColors();
-  render();
-</script>
+          renderEverything();
 
-<script type="module" src="notification-bell.js"></script>
-<script type="module" src="parent-gate.js"></script>
+          ELCraftUI.showToast(
+            "A new customer is ready! 🪄"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "resetButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          state.completed.clear();
+
+          renderEverything();
+
+          ELCraftUI.showToast(
+            "The makeover was reset."
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "finishButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          const customer =
+            currentCustomer();
+
+          const complete =
+            customer.tasks.every(
+              task =>
+                state.completed.has(
+                  task.tool
+                )
+            );
+
+          if (!complete) {
+            ELCraftUI.showToast(
+              "Complete all three customer requests first. ✨"
+            );
+
+            return;
+          }
+
+          ELCraftUI.celebrate();
+
+          window.setTimeout(
+            () => {
+              state.customerIndex =
+                (
+                  state.customerIndex +
+                  1
+                ) %
+                CUSTOMERS.length;
+
+              state.completed.clear();
+
+              renderEverything();
+            },
+            1100
+          );
+        }
+      );
+
+    ELCraftUI.personalize();
+
+    renderEverything();
+  </script>
+
+  <script
+    type="module"
+    src="notification-bell.js">
+  </script>
+
+  <script
+    type="module"
+    src="parent-gate.js">
+  </script>
 </body>
 </html>
