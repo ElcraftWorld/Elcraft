@@ -7,7 +7,7 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <meta name="theme-color" content="#f8efff">
+  <meta name="theme-color" content="#5224a5">
 
   <title>ELCraft — Style Studio</title>
 
@@ -16,17 +16,306 @@
     href="elcraft-design-system.css">
 
   <style>
-    .studio-shell {
-      display: grid;
-      grid-template-columns:
-        minmax(250px, .82fr)
-        minmax(430px, 1.35fr)
-        minmax(250px, .82fr);
-      gap: 16px;
+    :root {
+      --salon-purple: #5b2ab9;
+      --salon-purple-dark: #3f168d;
+      --salon-purple-light: #8d5ce5;
+      --salon-pink: #ff4f9d;
+      --salon-pink-dark: #ce2c79;
+      --salon-blue: #3cbcf1;
+      --salon-green: #63ca2e;
+      --salon-gold: #ffd452;
+      --salon-cream: #fffaf5;
+      --salon-ink: #382765;
     }
 
-    .studio-panel {
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      overflow-x: hidden;
+    }
+
+    body {
+      min-height: 100vh;
+
+      background:
+        radial-gradient(
+          circle at 50% 15%,
+          rgba(255,255,255,.38),
+          transparent 30%
+        ),
+        linear-gradient(
+          180deg,
+          #8d5ce5 0,
+          #e9c9f5 20%,
+          #f9eafa 100%
+        );
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .studio-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* =======================================================
+       TOP NAVIGATION
+       ======================================================= */
+
+    .studio-topbar {
+      min-height: 86px;
+
+      display: grid;
+      grid-template-columns:
+        minmax(220px, .9fr)
+        minmax(500px, 1.8fr)
+        minmax(260px, 1fr);
+      align-items: center;
+      gap: 14px;
+
+      padding:
+        10px
+        max(14px, env(safe-area-inset-right))
+        10px
+        max(14px, env(safe-area-inset-left));
+
+      color: white;
+
+      background:
+        linear-gradient(
+          180deg,
+          #5720a4,
+          #42188c
+        );
+
+      box-shadow:
+        0 7px 0 rgba(42, 12, 94, .26),
+        0 13px 28px rgba(47, 18, 93, .28);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
       min-width: 0;
+    }
+
+    .brand-mascot {
+      width: 64px;
+      height: 64px;
+
+      display: grid;
+      place-items: center;
+
+      border: 4px solid rgba(255,255,255,.75);
+      border-radius: 22px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #c27b48,
+          #8b4d32
+        );
+
+      font-size: 42px;
+
+      box-shadow:
+        inset 0 5px 0 rgba(255,255,255,.17),
+        0 8px 17px rgba(24, 8, 57, .26);
+    }
+
+    .brand-name {
+      font-size: clamp(27px, 3.6vw, 51px);
+      font-weight: 1000;
+      line-height: 1;
+      letter-spacing: -2px;
+      text-shadow:
+        0 4px 0 rgba(47, 18, 93, .36);
+      white-space: nowrap;
+    }
+
+    .brand-name span:nth-child(1) { color: #ffd34e; }
+    .brand-name span:nth-child(2) { color: #ff72b8; }
+    .brand-name span:nth-child(3) { color: #62d4ff; }
+    .brand-name span:nth-child(4) { color: #88e168; }
+    .brand-name span:nth-child(5) { color: #ff9e49; }
+    .brand-name span:nth-child(6) { color: white; }
+    .brand-name span:nth-child(7) { color: #ff72b8; }
+
+    .top-links {
+      display: grid;
+      grid-template-columns:
+        repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .top-link {
+      min-height: 54px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+
+      border: 2px solid rgba(255,255,255,.15);
+      border-radius: 16px;
+      padding: 9px 11px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.13),
+          rgba(255,255,255,.05)
+        );
+
+      font-size: 13px;
+      font-weight: 1000;
+
+      box-shadow:
+        inset 0 3px 0 rgba(255,255,255,.08);
+
+      transition:
+        transform .16s ease,
+        background .16s ease;
+    }
+
+    .top-link:hover {
+      transform: translateY(-2px);
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.22),
+          rgba(255,255,255,.1)
+        );
+    }
+
+    .top-status {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 9px;
+    }
+
+    .currency-pill,
+    .top-icon-button {
+      min-height: 52px;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+
+      border: 2px solid rgba(255,255,255,.16);
+      border-radius: 18px;
+      padding: 8px 13px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.15),
+          rgba(255,255,255,.06)
+        );
+
+      font-weight: 1000;
+    }
+
+    .top-icon-button {
+      width: 52px;
+      padding: 0;
+      font-size: 24px;
+    }
+
+    /* =======================================================
+       MAIN LAYOUT
+       ======================================================= */
+
+    .studio-main {
+      flex: 1;
+
+      display: grid;
+      grid-template-columns:
+        minmax(265px, .78fr)
+        minmax(520px, 1.42fr)
+        minmax(285px, .82fr);
+      gap: 14px;
+
+      width: min(1600px, calc(100% - 24px));
+      margin: 14px auto 0;
+    }
+
+    .game-panel {
+      min-width: 0;
+
+      border: 5px solid rgba(255,255,255,.86);
+      border-radius: 30px;
+      padding: 17px;
+
+      color: var(--salon-ink);
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.98),
+          rgba(255,249,255,.96)
+        );
+
+      box-shadow:
+        0 12px 0 rgba(86, 42, 151, .14),
+        0 23px 42px rgba(75, 41, 122, .18);
+    }
+
+    .panel-heading {
+      margin: 0;
+      color: var(--salon-purple-dark);
+      font-size: clamp(24px, 2.4vw, 35px);
+      font-weight: 1000;
+      line-height: 1;
+    }
+
+    .panel-copy {
+      margin: 8px 0 0;
+      color: #645c81;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.48;
+    }
+
+    /* =======================================================
+       LEFT TOOLS
+       ======================================================= */
+
+    .request-card {
+      margin-top: 16px;
+
+      border: 4px solid #ffd56d;
+      border-radius: 19px;
+      padding: 15px 13px;
+
+      color: #704b1c;
+      background:
+        linear-gradient(
+          180deg,
+          #fff7cc,
+          #fff0aa
+        );
+
+      font-size: 12px;
+      font-weight: 1000;
+      line-height: 1.5;
+      text-align: center;
+
+      box-shadow:
+        inset 0 4px 0 rgba(255,255,255,.5);
     }
 
     .tool-grid {
@@ -34,139 +323,286 @@
       grid-template-columns:
         repeat(2, minmax(0, 1fr));
       gap: 10px;
-      margin-top: 14px;
+
+      margin-top: 15px;
     }
 
-    .tool-card {
-      min-height: 92px;
+    .tool-button {
+      position: relative;
 
-      border: 3px solid var(--el-border);
-      border-radius: 18px;
-      padding: 10px;
+      min-height: 112px;
 
-      color: var(--el-ink);
-      background: white;
+      border: 4px solid #e9e4f4;
+      border-radius: 21px;
+      padding: 11px 7px;
 
+      color: #30265b;
+      background:
+        linear-gradient(
+          180deg,
+          #ffffff,
+          #fbf8ff
+        );
+
+      font-size: 12px;
       font-weight: 1000;
-      text-align: center;
 
       box-shadow:
-        0 5px 0 rgba(76, 60, 112, 0.07);
+        0 6px 0 #ddd7e9,
+        0 10px 16px rgba(78, 57, 119, .09);
 
       transition:
-        transform var(--el-fast) ease,
-        border-color var(--el-fast) ease,
-        background var(--el-fast) ease;
+        transform .16s ease,
+        border-color .16s ease,
+        background .16s ease;
     }
 
-    .tool-card:hover {
-      transform: translateY(-3px);
+    .tool-button:hover {
+      transform: translateY(-4px);
     }
 
-    .tool-card.active {
-      border-color: var(--el-pink);
-      background: #fff1f7;
+    .tool-button.active {
+      border-color: var(--salon-pink);
+      background:
+        linear-gradient(
+          180deg,
+          #fff5fa,
+          #ffe6f2
+        );
+
+      box-shadow:
+        0 6px 0 #e74288,
+        0 12px 20px rgba(212, 54, 125, .14);
     }
 
-    .tool-icon {
+    .tool-button.complete::after {
+      content: "✓";
+
+      position: absolute;
+      right: 7px;
+      top: 7px;
+
+      width: 25px;
+      height: 25px;
+
+      display: grid;
+      place-items: center;
+
+      border: 3px solid white;
+      border-radius: 50%;
+
+      color: white;
+      background: var(--salon-green);
+
+      font-size: 12px;
+
+      box-shadow:
+        0 4px 9px rgba(48, 112, 26, .23);
+    }
+
+    .tool-graphic {
       display: block;
-      margin-bottom: 6px;
-      font-size: 34px;
+      margin-bottom: 8px;
+      font-size: 43px;
       line-height: 1;
+      filter:
+        drop-shadow(
+          0 5px 3px
+          rgba(45, 26, 79, .14)
+        );
     }
 
-    .salon-room {
+    /* =======================================================
+       CENTER SALON
+       ======================================================= */
+
+    .salon-stage {
       position: relative;
       overflow: hidden;
 
-      min-height: 660px;
+      min-height: 730px;
+      padding: 0;
+    }
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 24px;
+    .salon-background {
+      position: absolute;
+      inset: 0;
 
       background:
         radial-gradient(
-          circle at 50% 16%,
-          rgba(255,255,255,.95),
-          transparent 24%
+          circle at 50% 30%,
+          rgba(255,255,255,.25),
+          transparent 33%
         ),
         linear-gradient(
           180deg,
-          #fff6fb 0%,
-          #f3edff 62%,
-          #e7d9f2 63%,
-          #d5b7d7 100%
+          #bc6cb9 0%,
+          #9e559d 31%,
+          #734481 66%,
+          #c57ba9 67%,
+          #e7afd0 100%
         );
     }
 
-    .salon-room::before {
+    .salon-background::before,
+    .salon-background::after {
       content: "";
 
       position: absolute;
-      left: 50%;
-      top: 36px;
+      top: 82px;
 
-      width: 66%;
-      height: 58%;
+      width: 120px;
+      height: 320px;
 
-      transform: translateX(-50%);
-
-      border: 10px solid #f0b7d4;
-      border-radius: 48% 48% 25% 25% / 30% 30% 18% 18%;
-
-      background:
-        radial-gradient(
-          circle at 50% 18%,
-          rgba(255,255,255,.97),
-          rgba(218,240,252,.9) 58%,
-          #d7eaf4
-        );
-
-      box-shadow:
-        inset 0 0 0 7px white,
-        0 14px 0 #d98fb5,
-        0 24px 34px rgba(83,55,104,.16);
-    }
-
-    .salon-counter {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-
-      width: 86%;
-      height: 160px;
-
-      transform: translateX(-50%);
-
-      border: 8px solid #bd7daf;
-      border-bottom: 0;
-      border-radius: 34px 34px 0 0;
+      border-radius: 22px;
 
       background:
         linear-gradient(
           180deg,
-          #f6b5d8,
-          #d98eb9
+          rgba(84, 42, 101, .32),
+          rgba(57, 30, 74, .48)
         );
 
       box-shadow:
-        inset 0 14px 0 rgba(255,255,255,.2);
+        inset 0 0 0 5px rgba(255,255,255,.08);
     }
 
-    .salon-chair {
+    .salon-background::before {
+      left: 26px;
+    }
+
+    .salon-background::after {
+      right: 26px;
+    }
+
+    .salon-shelf {
+      position: absolute;
+      top: 164px;
+
+      width: 130px;
+      height: 17px;
+
+      border-radius: 999px;
+
+      background: #71416e;
+      box-shadow:
+        0 8px 0 rgba(67, 31, 65, .26);
+    }
+
+    .salon-shelf.left {
+      left: 18px;
+    }
+
+    .salon-shelf.right {
+      right: 18px;
+    }
+
+    .salon-products {
+      position: absolute;
+      top: 102px;
+
+      display: flex;
+      align-items: flex-end;
+      gap: 7px;
+    }
+
+    .salon-products.left {
+      left: 38px;
+    }
+
+    .salon-products.right {
+      right: 38px;
+    }
+
+    .product {
+      width: 25px;
+      border-radius: 8px 8px 5px 5px;
+      box-shadow:
+        inset 0 4px 0 rgba(255,255,255,.25),
+        0 5px 8px rgba(49, 22, 54, .18);
+    }
+
+    .product.one {
+      height: 56px;
+      background: #ff63ab;
+    }
+
+    .product.two {
+      height: 43px;
+      background: #5ad6e3;
+    }
+
+    .product.three {
+      height: 67px;
+      background: #f3a23c;
+    }
+
+    .mirror {
       position: absolute;
       left: 50%;
-      bottom: 92px;
+      top: 22px;
 
-      width: 220px;
-      height: 250px;
+      width: 76%;
+      height: 66%;
 
       transform: translateX(-50%);
 
-      z-index: 3;
+      border: 13px solid #eea2b6;
+      border-radius:
+        48% 48% 30% 30% /
+        30% 30% 18% 18%;
+
+      background:
+        radial-gradient(
+          circle at 50% 14%,
+          rgba(255,255,255,.92),
+          transparent 26%
+        ),
+        linear-gradient(
+          180deg,
+          #a6d8f1,
+          #d8eff7
+        );
+
+      box-shadow:
+        inset 0 0 0 7px rgba(255,255,255,.8),
+        0 12px 0 #bf688f,
+        0 20px 34px rgba(62, 32, 76, .2);
+    }
+
+    .mirror-light {
+      position: absolute;
+
+      width: 38px;
+      height: 38px;
+
+      border: 4px solid white;
+      border-radius: 50%;
+
+      background: #fff8d2;
+
+      box-shadow:
+        0 0 17px #fff0a0,
+        0 5px 9px rgba(97, 52, 68, .19);
+    }
+
+    .mirror-light.l1 { left: 9%; top: 15%; }
+    .mirror-light.l2 { left: 26%; top: 4%; }
+    .mirror-light.l3 { left: 49%; top: 0; }
+    .mirror-light.l4 { right: 26%; top: 4%; }
+    .mirror-light.l5 { right: 9%; top: 15%; }
+
+    .chair {
+      position: absolute;
+      left: 50%;
+      bottom: 68px;
+
+      width: min(62%, 460px);
+      height: 390px;
+
+      transform: translateX(-50%);
+
+      z-index: 5;
     }
 
     .chair-back {
@@ -174,132 +610,702 @@
       left: 50%;
       top: 0;
 
-      width: 170px;
-      height: 160px;
+      width: 84%;
+      height: 260px;
 
       transform: translateX(-50%);
 
-      border: 7px solid #714fa3;
-      border-radius: 46px 46px 30px 30px;
+      border: 10px solid #54249c;
+      border-radius: 73px 73px 42px 42px;
 
       background:
         linear-gradient(
           145deg,
-          #9b79ea,
-          #6d53bd
+          #d95ab5,
+          #7b38c2
         );
 
       box-shadow:
-        inset 0 12px 0 rgba(255,255,255,.18),
-        0 12px 22px rgba(64,49,112,.2);
+        inset 0 14px 0 rgba(255,255,255,.16),
+        0 17px 27px rgba(49, 24, 82, .27);
     }
 
     .chair-seat {
       position: absolute;
       left: 50%;
-      top: 128px;
+      top: 223px;
 
-      width: 190px;
-      height: 72px;
+      width: 94%;
+      height: 112px;
 
       transform: translateX(-50%);
 
-      border: 7px solid #714fa3;
-      border-radius: 30px;
+      border: 10px solid #54249c;
+      border-radius: 52px;
 
       background:
         linear-gradient(
           145deg,
-          #a887f1,
-          #7359c7
+          #ed70c3,
+          #8d45ce
         );
+
+      box-shadow:
+        inset 0 12px 0 rgba(255,255,255,.14);
+    }
+
+    .chair-arm {
+      position: absolute;
+      top: 170px;
+
+      width: 90px;
+      height: 132px;
+
+      border: 9px solid #54249c;
+      border-radius: 44px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #da5bb4,
+          #7434bb
+        );
+
+      z-index: 2;
+    }
+
+    .chair-arm.left {
+      left: 0;
+    }
+
+    .chair-arm.right {
+      right: 0;
+    }
+
+    .chair-post {
+      position: absolute;
+      left: 50%;
+      top: 326px;
+
+      width: 30px;
+      height: 47px;
+
+      transform: translateX(-50%);
+
+      border-radius: 999px;
+
+      background: #4d4776;
     }
 
     .chair-base {
       position: absolute;
       left: 50%;
-      top: 196px;
+      bottom: 0;
 
-      width: 26px;
+      width: 55%;
+      height: 28px;
+
+      transform: translateX(-50%);
+
+      border-radius: 999px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #6f6890,
+          #3f3b62
+        );
+
+      box-shadow:
+        0 8px 14px rgba(31, 23, 57, .24);
+    }
+
+    /* =======================================================
+       LARGE CUSTOMER
+       ======================================================= */
+
+    .customer {
+      position: absolute;
+      left: 50%;
+      bottom: 116px;
+
+      width: min(58%, 405px);
+      height: 510px;
+
+      transform: translateX(-50%);
+
+      z-index: 10;
+
+      animation:
+        customerIdle
+        3s ease-in-out
+        infinite;
+    }
+
+    .customer-head {
+      position: absolute;
+      left: 50%;
+      top: 18px;
+
+      width: 240px;
+      height: 230px;
+
+      transform: translateX(-50%);
+
+      border: 7px solid var(--fur-outline, #5d3a45);
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 44% 32%,
+          rgba(255,255,255,.56),
+          transparent 19%
+        ),
+        var(--fur-color, #ffffff);
+
+      box-shadow:
+        inset 0 -13px 0 rgba(101, 53, 72, .08),
+        0 13px 23px rgba(55, 27, 70, .19);
+
+      z-index: 4;
+    }
+
+    .customer-ear {
+      position: absolute;
+      top: -59px;
+
+      width: 78px;
+      height: 150px;
+
+      border: 7px solid var(--fur-outline, #5d3a45);
+      border-radius: 50% 50% 45% 45%;
+
+      background: var(--fur-color, #ffffff);
+
+      z-index: -1;
+    }
+
+    .customer-ear::after {
+      content: "";
+
+      position: absolute;
+      inset: 17px 18px 24px;
+
+      border-radius: inherit;
+      background: var(--ear-inner, #f7a3bd);
+    }
+
+    .customer-ear.left {
+      left: 16px;
+      transform: rotate(-12deg);
+    }
+
+    .customer-ear.right {
+      right: 16px;
+      transform: rotate(12deg);
+    }
+
+    .customer-eye {
+      position: absolute;
+      top: 88px;
+
+      width: 54px;
+      height: 68px;
+
+      border: 5px solid #2b1f42;
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 38% 32%,
+          white 0 7px,
+          transparent 8px
+        ),
+        radial-gradient(
+          circle at 50% 57%,
+          #6545af 0 17px,
+          #241d39 18px 28px,
+          #ffffff 29px
+        );
+
+      box-shadow:
+        inset 0 -7px 0 rgba(255,255,255,.22);
+    }
+
+    .customer-eye.left {
+      left: 43px;
+    }
+
+    .customer-eye.right {
+      right: 43px;
+    }
+
+    .customer-brow {
+      position: absolute;
+      top: 68px;
+
+      width: 44px;
+      height: 15px;
+
+      border-top: 8px solid var(--hair-color, #6734b4);
+      border-radius: 50%;
+    }
+
+    .customer-brow.left {
+      left: 47px;
+      transform: rotate(-6deg);
+    }
+
+    .customer-brow.right {
+      right: 47px;
+      transform: rotate(6deg);
+    }
+
+    .customer-nose {
+      position: absolute;
+      left: 50%;
+      top: 146px;
+
+      width: 28px;
+      height: 21px;
+
+      transform: translateX(-50%);
+
+      border-radius: 50%;
+      background: #e06c8b;
+    }
+
+    .customer-mouth {
+      position: absolute;
+      left: 50%;
+      top: 164px;
+
+      width: 62px;
       height: 42px;
 
       transform: translateX(-50%);
 
-      border-radius: 999px;
-      background: #6a6582;
+      border-bottom: 8px solid #4d2c43;
+      border-radius: 0 0 50% 50%;
     }
 
-    .chair-foot {
+    .customer-tooth {
       position: absolute;
       left: 50%;
-      top: 228px;
+      top: 195px;
 
-      width: 132px;
-      height: 20px;
+      width: 35px;
+      height: 27px;
 
       transform: translateX(-50%);
 
-      border-radius: 999px;
-      background: #6a6582;
+      border: 4px solid #d9d9df;
+      border-radius: 0 0 9px 9px;
+
+      background: white;
     }
 
-    .customer-card {
+    .customer-blush {
+      position: absolute;
+      top: 149px;
+
+      width: 58px;
+      height: 28px;
+
+      border-radius: 50%;
+      background: var(--makeup-color, #ff7fac);
+      opacity: 0;
+      filter: blur(1px);
+
+      transition:
+        opacity .25s ease,
+        background .25s ease;
+    }
+
+    .customer-blush.left {
+      left: 13px;
+    }
+
+    .customer-blush.right {
+      right: 13px;
+    }
+
+    .customer.lipstick-on .customer-mouth {
+      border-bottom-color: var(--makeup-color, #ff4f87);
+      border-bottom-width: 13px;
+    }
+
+    .customer.blush-on .customer-blush {
+      opacity: .5;
+    }
+
+    .customer.sparkles-on::after {
+      content: "✨  ✨  ✨";
+
       position: absolute;
       left: 50%;
-      top: 46%;
+      top: 75px;
 
-      width: min(78%, 390px);
+      width: 130%;
+      transform: translateX(-50%);
 
-      transform: translate(-50%, -50%);
-
-      z-index: 5;
-
-      border: 5px solid white;
-      border-radius: 26px;
-      padding: 18px;
-
-      color: var(--el-purple-dark);
-      background: rgba(255,255,255,.97);
-
-      font-weight: 1000;
+      color: #ffe65f;
+      font-size: 30px;
       text-align: center;
+      letter-spacing: 23px;
+
+      animation:
+        sparklePulse
+        1s ease-in-out
+        infinite;
+    }
+
+    .customer-body {
+      position: absolute;
+      left: 50%;
+      top: 220px;
+
+      width: 225px;
+      height: 210px;
+
+      transform: translateX(-50%);
+
+      border: 8px solid #992c74;
+      border-radius: 76px 76px 55px 55px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #ff7eb8,
+          #ec4e9e
+        );
 
       box-shadow:
-        0 16px 30px rgba(66,49,114,.2);
+        inset 0 13px 0 rgba(255,255,255,.17);
     }
 
-    .customer-icon {
-      font-size: 70px;
-      line-height: 1;
-      margin-bottom: 8px;
-    }
+    .customer-body::after {
+      content: "♥";
 
-    .customer-name {
-      font-size: 24px;
-    }
-
-    .customer-request {
-      margin-top: 7px;
-      color: var(--el-muted);
-      font-size: 12px;
-      line-height: 1.45;
-    }
-
-    .station-lights {
       position: absolute;
-      inset: 18px 12% auto;
+      left: 50%;
+      top: 43px;
 
-      display: flex;
-      justify-content: space-between;
+      transform: translateX(-50%);
+
+      color: #ffc2d8;
+      font-size: 66px;
+      line-height: 1;
+      text-shadow:
+        0 5px 0 rgba(153,44,116,.19);
+    }
+
+    .customer-leg {
+      position: absolute;
+      bottom: 18px;
+
+      width: 68px;
+      height: 105px;
+
+      border: 7px solid var(--fur-outline, #5d3a45);
+      border-radius: 38px;
+
+      background: var(--fur-color, #ffffff);
+
+      z-index: 3;
+    }
+
+    .customer-leg.left {
+      left: 104px;
+    }
+
+    .customer-leg.right {
+      right: 104px;
+    }
+
+    .customer-paw {
+      position: absolute;
+      bottom: 0;
+
+      width: 88px;
+      height: 76px;
+
+      border: 7px solid var(--fur-outline, #5d3a45);
+      border-radius: 48%;
+
+      background:
+        radial-gradient(
+          circle at 50% 58%,
+          #f28aa9 0 15px,
+          transparent 16px
+        ),
+        radial-gradient(
+          circle at 26% 26%,
+          #f28aa9 0 7px,
+          transparent 8px
+        ),
+        radial-gradient(
+          circle at 48% 18%,
+          #f28aa9 0 7px,
+          transparent 8px
+        ),
+        radial-gradient(
+          circle at 70% 26%,
+          #f28aa9 0 7px,
+          transparent 8px
+        ),
+        var(--fur-color, #ffffff);
 
       z-index: 4;
+    }
+
+    .customer-paw.left {
+      left: 79px;
+      transform: rotate(-5deg);
+    }
+
+    .customer-paw.right {
+      right: 79px;
+      transform: rotate(5deg);
+    }
+
+    .hair {
+      position: absolute;
+      left: 50%;
+      top: -7px;
+
+      width: 235px;
+      height: 225px;
+
+      transform: translateX(-50%);
+
+      z-index: 7;
 
       pointer-events: none;
     }
 
-    .station-light {
-      width: 34px;
-      height: 34px;
+    .hair-main {
+      position: absolute;
+      left: 50%;
+      top: 0;
+
+      width: 218px;
+      height: 170px;
+
+      transform: translateX(-50%);
+
+      border-radius:
+        50% 50% 38% 38% /
+        45% 45% 58% 58%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #9a66ff,
+          var(--hair-color, #6632b8)
+        );
+
+      box-shadow:
+        inset 0 12px 0 rgba(255,255,255,.18),
+        0 11px 18px rgba(59, 30, 99, .2);
+    }
+
+    .hair-main::before,
+    .hair-main::after {
+      content: "";
+
+      position: absolute;
+      top: 101px;
+
+      width: 78px;
+      height: 121px;
+
+      border-radius: 40px 40px 48px 48px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #8f59ef,
+          var(--hair-color, #6632b8)
+        );
+    }
+
+    .hair-main::before {
+      left: -4px;
+      transform: rotate(13deg);
+    }
+
+    .hair-main::after {
+      right: -4px;
+      transform: rotate(-13deg);
+    }
+
+    .hair-bang {
+      position: absolute;
+      left: 60px;
+      top: 20px;
+
+      width: 104px;
+      height: 86px;
+
+      border-radius: 70% 30% 58% 42%;
+
+      background:
+        linear-gradient(
+          145deg,
+          #a26aff,
+          var(--hair-color, #6632b8)
+        );
+
+      transform: rotate(-13deg);
+    }
+
+    .hair-bow {
+      position: absolute;
+      right: 8px;
+      top: 31px;
+
+      width: 73px;
+      height: 52px;
+
+      z-index: 9;
+    }
+
+    .hair-bow::before,
+    .hair-bow::after {
+      content: "";
+
+      position: absolute;
+      top: 0;
+
+      width: 37px;
+      height: 48px;
+
+      border: 5px solid #c92e79;
+      background: #ff63ad;
+    }
+
+    .hair-bow::before {
+      left: 0;
+      border-radius: 70% 30% 60% 40%;
+      transform: rotate(18deg);
+    }
+
+    .hair-bow::after {
+      right: 0;
+      border-radius: 30% 70% 40% 60%;
+      transform: rotate(-18deg);
+    }
+
+    .hair-bow-center {
+      position: absolute;
+      left: 50%;
+      top: 11px;
+
+      width: 29px;
+      height: 29px;
+
+      transform: translateX(-50%);
+
+      border: 5px solid #c92e79;
+      border-radius: 50%;
+
+      background: #ff83bf;
+
+      z-index: 10;
+    }
+
+    .customer.brushed .hair {
+      filter:
+        drop-shadow(
+          0 0 13px
+          rgba(255,231,99,.85)
+        );
+    }
+
+    .customer.washed .hair::after {
+      content: "🫧  🫧";
+
+      position: absolute;
+      left: 50%;
+      top: 40px;
+
+      width: 130%;
+      transform: translateX(-50%);
+
+      font-size: 30px;
+      text-align: center;
+      animation:
+        bubbleFloat
+        1.5s ease-in-out
+        infinite;
+    }
+
+    .customer.hair-style-2 .hair-main {
+      height: 122px;
+      border-radius: 48% 48% 35% 35%;
+    }
+
+    .customer.hair-style-2 .hair-main::before,
+    .customer.hair-style-2 .hair-main::after {
+      height: 74px;
+      top: 77px;
+    }
+
+    .customer.hair-style-3 .hair-main {
+      border-radius: 42% 58% 35% 65%;
+      transform:
+        translateX(-50%)
+        rotate(2deg);
+    }
+
+    .customer.hair-style-3 .hair-bang {
+      left: 33px;
+      width: 145px;
+      transform: rotate(-4deg);
+    }
+
+    .customer.accessory-on .hair-bow {
+      display: block;
+    }
+
+    .customer:not(.accessory-on) .hair-bow {
+      display: none;
+    }
+
+    .photo-flash {
+      position: absolute;
+      inset: 0;
+
+      background: white;
+      opacity: 0;
+
+      z-index: 30;
+      pointer-events: none;
+    }
+
+    .photo-flash.active {
+      animation:
+        photoFlash
+        .5s ease;
+    }
+
+    .stage-controls {
+      position: absolute;
+      left: 50%;
+      bottom: 12px;
+
+      transform: translateX(-50%);
+
+      display: flex;
+      gap: 9px;
+
+      z-index: 22;
+    }
+
+    .round-control {
+      width: 49px;
+      height: 49px;
 
       display: grid;
       place-items: center;
@@ -308,120 +1314,138 @@
       border-radius: 50%;
 
       color: white;
-      background: var(--el-pink);
-
-      font-size: 18px;
-
-      box-shadow:
-        0 5px 14px rgba(217,79,139,.25);
-    }
-
-    .salon-tray {
-      position: absolute;
-      left: 8%;
-      bottom: 96px;
-
-      z-index: 5;
-
-      display: flex;
-      gap: 8px;
-
-      border: 4px solid white;
-      border-radius: 18px;
-      padding: 10px;
-
-      background: rgba(255,255,255,.93);
-
-      box-shadow:
-        0 10px 20px rgba(62,48,103,.15);
-    }
-
-    .salon-item {
-      width: 42px;
-      height: 42px;
-
-      display: grid;
-      place-items: center;
-
-      border-radius: 13px;
-
-      background: #f4ebff;
+      background: var(--salon-purple);
 
       font-size: 24px;
-    }
-
-    .request-box {
-      margin-top: 14px;
-
-      border: 3px solid #ffe397;
-      border-radius: 18px;
-      padding: 12px;
-
-      color: #775c25;
-      background: #fff8d9;
-
-      font-size: 12px;
       font-weight: 1000;
-      line-height: 1.45;
-      text-align: center;
+
+      box-shadow:
+        0 6px 0 var(--salon-purple-dark);
     }
+
+    /* =======================================================
+       RIGHT PANEL
+       ======================================================= */
 
     .color-grid {
       display: grid;
       grid-template-columns:
         repeat(4, minmax(0, 1fr));
-      gap: 9px;
+      gap: 10px;
 
-      margin-top: 14px;
+      margin-top: 15px;
     }
 
     .color-button {
-      min-height: 48px;
+      min-height: 58px;
 
-      border: 4px solid white;
-      border-radius: 15px;
+      border: 5px solid white;
+      border-radius: 17px;
 
       box-shadow:
-        0 0 0 2px #dad2eb;
+        0 0 0 3px #ddd5ed,
+        0 7px 12px rgba(74, 52, 111, .09);
     }
 
     .color-button.active {
       box-shadow:
-        0 0 0 5px var(--el-purple);
+        0 0 0 6px var(--salon-purple),
+        0 8px 16px rgba(83, 40, 156, .18);
+    }
+
+    .happiness {
+      margin-top: 18px;
+
+      border: 4px solid #e6dff1;
+      border-radius: 19px;
+      padding: 13px;
+
+      background: white;
+    }
+
+    .happiness-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+
+      color: var(--salon-purple-dark);
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .progress-track {
+      height: 16px;
+
+      margin-top: 10px;
+      overflow: hidden;
+
+      border-radius: 999px;
+
+      background: #e9e4ef;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--salon-pink),
+          var(--salon-purple),
+          var(--salon-blue)
+        );
+
+      transition:
+        width .28s ease;
     }
 
     .task-list {
       display: grid;
-      gap: 8px;
+      gap: 10px;
 
-      margin-top: 14px;
+      margin-top: 17px;
     }
 
-    .task-row {
+    .task {
+      min-height: 63px;
+
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 10px;
 
-      border: 3px solid #ebe6f5;
-      border-radius: 15px;
+      border: 4px solid #e7e1ef;
+      border-radius: 18px;
       padding: 10px;
 
-      color: var(--el-muted);
+      color: #625d78;
       background: white;
 
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 1000;
+
+      box-shadow:
+        0 5px 0 rgba(74, 52, 111, .06);
     }
 
-    .task-row.complete {
-      color: #3d7532;
-      border-color: #c9e8bf;
-      background: #eef9e9;
+    .task.complete {
+      color: #357420;
+      border-color: #bfe4aa;
+      background: #edf9e8;
     }
 
-    .task-check {
-      width: 25px;
-      height: 25px;
+    .task.current {
+      color: #c73777;
+      border-color: #f3a9cb;
+      background: #fff0f7;
+    }
+
+    .task-dot {
+      width: 32px;
+      height: 32px;
 
       display: grid;
       place-items: center;
@@ -431,48 +1455,495 @@
       border-radius: 50%;
 
       color: white;
-      background: #c9c4d6;
+      background: #c8c2d5;
+
+      font-weight: 1000;
     }
 
-    .task-row.complete .task-check {
-      background: var(--el-green);
+    .task.complete .task-dot {
+      background: var(--salon-green);
     }
 
-    .action-stack {
+    .task.current .task-dot {
+      background: var(--salon-pink);
+    }
+
+    .right-actions {
       display: grid;
-      gap: 9px;
+      gap: 10px;
 
-      margin-top: auto;
-      padding-top: 14px;
+      margin-top: 17px;
     }
 
-    @media (max-width: 950px) {
-      .studio-shell {
-        grid-template-columns: 1fr;
+    .game-action {
+      min-height: 60px;
+
+      border: 0;
+      border-radius: 18px;
+      padding: 11px;
+
+      color: white;
+
+      font-size: 15px;
+      font-weight: 1000;
+
+      box-shadow:
+        0 7px 0 rgba(52, 31, 85, .24);
+
+      transition:
+        transform .16s ease,
+        filter .16s ease;
+    }
+
+    .game-action:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.04);
+    }
+
+    .game-action.blue {
+      background:
+        linear-gradient(
+          180deg,
+          #59c9f7,
+          #209ee4
+        );
+    }
+
+    .game-action.green {
+      background:
+        linear-gradient(
+          180deg,
+          #79df3e,
+          #54b91f
+        );
+    }
+
+    .game-action.pink {
+      background:
+        linear-gradient(
+          180deg,
+          #ff67ab,
+          #ed2e83
+        );
+    }
+
+    /* =======================================================
+       CUSTOMER SELECTOR
+       ======================================================= */
+
+    .customer-dock {
+      display: grid;
+      grid-template-columns:
+        138px
+        minmax(0, 1fr)
+        minmax(245px, .45fr);
+      gap: 10px;
+
+      width: min(1600px, calc(100% - 24px));
+      margin: 12px auto 18px;
+    }
+
+    .dock-label,
+    .customer-picker,
+    .daily-card {
+      border: 5px solid rgba(255,255,255,.82);
+      border-radius: 24px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #7244ca,
+          #5424a9
+        );
+
+      box-shadow:
+        0 10px 0 rgba(67, 27, 129, .25),
+        0 18px 31px rgba(72, 31, 120, .2);
+    }
+
+    .dock-label {
+      display: grid;
+      place-items: center;
+
+      padding: 13px;
+
+      color: white;
+
+      font-size: 15px;
+      font-weight: 1000;
+      line-height: 1.35;
+      text-align: center;
+    }
+
+    .customer-picker {
+      display: grid;
+      grid-template-columns:
+        repeat(8, minmax(76px, 1fr));
+      gap: 6px;
+
+      padding: 10px;
+      overflow-x: auto;
+    }
+
+    .customer-choice {
+      min-width: 74px;
+
+      border: 0;
+      border-radius: 18px;
+      padding: 7px 5px;
+
+      color: white;
+      background: transparent;
+
+      font-size: 10px;
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    .customer-choice.active {
+      background:
+        linear-gradient(
+          180deg,
+          rgba(255,255,255,.24),
+          rgba(255,255,255,.08)
+        );
+
+      box-shadow:
+        inset 0 0 0 4px #ff82bd;
+    }
+
+    .customer-choice-icon {
+      width: 62px;
+      height: 62px;
+
+      display: grid;
+      place-items: center;
+
+      margin: 0 auto 5px;
+
+      border: 4px solid rgba(255,255,255,.84);
+      border-radius: 50%;
+
+      background: white;
+
+      font-size: 39px;
+
+      box-shadow:
+        0 6px 12px rgba(38, 14, 80, .2);
+    }
+
+    .daily-card {
+      padding: 13px;
+
+      color: white;
+      background:
+        linear-gradient(
+          180deg,
+          #ffffff,
+          #f7efff
+        );
+    }
+
+    .daily-title {
+      color: var(--salon-purple-dark);
+      font-size: 12px;
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    .daily-progress {
+      display: grid;
+      grid-template-columns:
+        52px
+        minmax(0, 1fr)
+        52px;
+      align-items: center;
+      gap: 8px;
+
+      margin-top: 10px;
+    }
+
+    .daily-icon {
+      font-size: 36px;
+      text-align: center;
+    }
+
+    .daily-bar {
+      height: 22px;
+      overflow: hidden;
+
+      border-radius: 999px;
+      background: #dcd4ea;
+    }
+
+    .daily-fill {
+      width: 0;
+      height: 100%;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: inherit;
+
+      color: white;
+      background:
+        linear-gradient(
+          90deg,
+          var(--salon-blue),
+          var(--salon-purple)
+        );
+
+      font-size: 10px;
+      font-weight: 1000;
+
+      transition:
+        width .28s ease;
+    }
+
+    .daily-copy {
+      margin-top: 8px;
+      color: #675d82;
+      font-size: 9px;
+      font-weight: 1000;
+      text-align: center;
+    }
+
+    /* =======================================================
+       ANIMATIONS
+       ======================================================= */
+
+    @keyframes customerIdle {
+      0%,
+      100% {
+        transform:
+          translateX(-50%)
+          translateY(0);
+      }
+
+      50% {
+        transform:
+          translateX(-50%)
+          translateY(-7px);
+      }
+    }
+
+    @keyframes sparklePulse {
+      0%,
+      100% {
+        opacity: .55;
+        transform:
+          translateX(-50%)
+          scale(.94);
+      }
+
+      50% {
+        opacity: 1;
+        transform:
+          translateX(-50%)
+          scale(1.07);
+      }
+    }
+
+    @keyframes bubbleFloat {
+      0%,
+      100% {
+        transform:
+          translateX(-50%)
+          translateY(0);
+      }
+
+      50% {
+        transform:
+          translateX(-50%)
+          translateY(-13px);
+      }
+    }
+
+    @keyframes photoFlash {
+      0% {
+        opacity: 0;
+      }
+
+      20% {
+        opacity: 1;
+      }
+
+      100% {
+        opacity: 0;
+      }
+    }
+
+    @keyframes happyBounce {
+      0%,
+      100% {
+        transform:
+          translateX(-50%)
+          translateY(0)
+          rotate(0);
+      }
+
+      25% {
+        transform:
+          translateX(-50%)
+          translateY(-16px)
+          rotate(-3deg);
+      }
+
+      50% {
+        transform:
+          translateX(-50%)
+          translateY(-2px)
+          rotate(3deg);
+      }
+
+      75% {
+        transform:
+          translateX(-50%)
+          translateY(-13px)
+          rotate(-2deg);
+      }
+    }
+
+    .customer.celebrate {
+      animation:
+        happyBounce
+        .75s ease
+        2;
+    }
+
+    /* =======================================================
+       RESPONSIVE
+       ======================================================= */
+
+    @media (max-width: 1250px) {
+      .studio-topbar {
+        grid-template-columns:
+          minmax(210px, .8fr)
+          minmax(420px, 1.5fr)
+          minmax(225px, .75fr);
+      }
+
+      .top-link {
+        font-size: 11px;
       }
 
       .studio-main {
+        grid-template-columns:
+          minmax(235px, .72fr)
+          minmax(440px, 1.28fr)
+          minmax(250px, .76fr);
+      }
+
+      .salon-stage {
+        min-height: 680px;
+      }
+
+      .customer {
+        width: min(62%, 370px);
+      }
+    }
+
+    @media (max-width: 1000px) {
+      .studio-topbar {
+        grid-template-columns:
+          1fr
+          auto;
+      }
+
+      .top-links {
+        display: none;
+      }
+
+      .studio-main {
+        grid-template-columns: 1fr;
+      }
+
+      .center-panel {
         order: -1;
+      }
+
+      .salon-stage {
+        min-height: 720px;
       }
 
       .tool-grid {
         grid-template-columns:
-          repeat(3, minmax(0, 1fr));
+          repeat(4, minmax(0, 1fr));
+      }
+
+      .customer-dock {
+        grid-template-columns: 1fr;
+      }
+
+      .customer-picker {
+        grid-template-columns:
+          repeat(8, minmax(80px, 1fr));
       }
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 700px) {
+      .studio-topbar {
+        grid-template-columns: 1fr;
+      }
+
+      .top-status {
+        display: none;
+      }
+
+      .brand {
+        justify-content: center;
+      }
+
+      .studio-main,
+      .customer-dock {
+        width: min(100% - 12px, 1600px);
+      }
+
+      .game-panel {
+        border-radius: 22px;
+        padding: 12px;
+      }
+
       .tool-grid {
         grid-template-columns:
           repeat(2, minmax(0, 1fr));
       }
 
-      .salon-room {
-        min-height: 560px;
+      .salon-stage {
+        min-height: 630px;
       }
 
-      .customer-card {
-        width: 84%;
+      .mirror {
+        width: 88%;
+      }
+
+      .customer {
+        width: min(78%, 350px);
+        bottom: 105px;
+      }
+
+      .chair {
+        width: min(78%, 430px);
+      }
+
+      .customer-picker {
+        grid-template-columns:
+          repeat(8, 82px);
+      }
+
+      .brand-mascot {
+        width: 52px;
+        height: 52px;
+        font-size: 34px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .customer,
+      .customer.celebrate,
+      .customer.sparkles-on::after,
+      .customer.washed .hair::after {
+        animation: none;
       }
     }
   </style>
@@ -480,232 +1951,361 @@
 
 <body>
 
-  <main class="el-page">
+  <main class="studio-page">
 
-    <header class="el-header">
+    <header class="studio-topbar">
 
-      <div class="el-header-left">
-
-        <button
-          id="backButton"
-          class="el-button el-button--small"
-          type="button">
-          ← My World
-        </button>
+      <div class="brand">
 
         <div
-          class="el-header-icon"
+          class="brand-mascot"
           aria-hidden="true">
-          💇
+          🦫
         </div>
 
-        <div class="el-title-group">
+        <div
+          class="brand-name"
+          aria-label="ELCraft">
 
-          <h1 class="el-title">
-            Style Studio
-          </h1>
-
-          <p class="el-subtitle">
-            Run your own cheerful salon.
-          </p>
+          <span>E</span><span>L</span><span>C</span><span>r</span><span>a</span><span>f</span><span>t</span>
 
         </div>
 
       </div>
 
-      <div class="el-header-right">
+      <nav
+        class="top-links"
+        aria-label="ELCraft navigation">
 
-        <div class="el-player-pill">
-          ✨
-          <span data-player-possessive>
-            Player's
+        <button
+          class="top-link"
+          type="button"
+          data-page="my-city.html">
+          🏠 My World
+        </button>
+
+        <button
+          class="top-link"
+          type="button"
+          data-page="quests.html">
+          📜 Quests
+        </button>
+
+        <button
+          class="top-link"
+          type="button"
+          data-page="rewards.html">
+          🎁 Rewards
+        </button>
+
+        <button
+          class="top-link"
+          type="button"
+          data-page="family-feed.html">
+          👨‍👩‍👧 Family Feed
+        </button>
+
+      </nav>
+
+      <div class="top-status">
+
+        <div class="currency-pill">
+          ⭐
+          <span id="starCount">
+            0
           </span>
-          Studio
         </div>
+
+        <div class="currency-pill">
+          💎
+          <span id="gemCount">
+            0
+          </span>
+        </div>
+
+        <button
+          class="top-icon-button"
+          type="button"
+          aria-label="Notifications">
+          🔔
+        </button>
+
+        <button
+          id="settingsButton"
+          class="top-icon-button"
+          type="button"
+          aria-label="Settings">
+          ⚙️
+        </button>
 
       </div>
 
     </header>
 
-    <section class="el-page-body">
+    <section class="studio-main">
 
-      <section class="studio-shell">
+      <aside class="game-panel">
 
-        <aside class="el-panel studio-panel">
+        <h1 class="panel-heading">
+          ✨ Salon Tools
+        </h1>
 
-          <h2 class="el-section-title">
-            Salon Tools
-          </h2>
+        <p class="panel-copy">
+          Select tools to complete the customer’s request.
+        </p>
 
-          <p class="el-section-copy">
-            Select tools to complete the customer’s request.
-          </p>
+        <div
+          id="requestCard"
+          class="request-card">
+        </div>
 
-          <div
-            id="requestBox"
-            class="request-box">
-          </div>
+        <div
+          id="toolGrid"
+          class="tool-grid">
+        </div>
 
-          <div
-            id="toolGrid"
-            class="tool-grid">
-          </div>
+      </aside>
 
-        </aside>
+      <section class="game-panel salon-stage center-panel">
 
-        <section class="el-panel studio-panel studio-main">
+        <div class="salon-background"></div>
 
-          <div class="salon-room">
+        <div class="salon-products left">
+          <div class="product one"></div>
+          <div class="product two"></div>
+          <div class="product three"></div>
+        </div>
 
-            <div
-              class="station-lights"
-              aria-hidden="true">
+        <div class="salon-shelf left"></div>
 
-              <div class="station-light">
-                ♥
-              </div>
+        <div class="salon-products right">
+          <div class="product three"></div>
+          <div class="product two"></div>
+          <div class="product one"></div>
+        </div>
 
-              <div class="station-light">
-                ★
-              </div>
+        <div class="salon-shelf right"></div>
 
-              <div class="station-light">
-                ♥
-              </div>
+        <div class="mirror">
 
-              <div class="station-light">
-                ★
-              </div>
+          <div class="mirror-light l1"></div>
+          <div class="mirror-light l2"></div>
+          <div class="mirror-light l3"></div>
+          <div class="mirror-light l4"></div>
+          <div class="mirror-light l5"></div>
 
-              <div class="station-light">
-                ♥
-              </div>
+        </div>
 
-            </div>
+        <div class="chair">
 
-            <div class="salon-chair">
+          <div class="chair-back"></div>
+          <div class="chair-seat"></div>
+          <div class="chair-arm left"></div>
+          <div class="chair-arm right"></div>
+          <div class="chair-post"></div>
+          <div class="chair-base"></div>
 
-              <div class="chair-back"></div>
-              <div class="chair-seat"></div>
-              <div class="chair-base"></div>
-              <div class="chair-foot"></div>
+        </div>
 
-            </div>
+        <div
+          id="customer"
+          class="customer"
+          aria-live="polite">
 
-            <article
-              id="customerCard"
-              class="customer-card el-pop">
+          <div class="customer-head">
 
-              <div
-                id="customerIcon"
-                class="customer-icon">
-                🧸
-              </div>
+            <div class="customer-ear left"></div>
+            <div class="customer-ear right"></div>
 
-              <div
-                id="customerName"
-                class="customer-name">
-                Teddy
-              </div>
+            <div class="customer-brow left"></div>
+            <div class="customer-brow right"></div>
 
-              <div
-                id="customerRequest"
-                class="customer-request">
-              </div>
+            <div class="customer-eye left"></div>
+            <div class="customer-eye right"></div>
 
-            </article>
+            <div class="customer-nose"></div>
+            <div class="customer-mouth"></div>
+            <div class="customer-tooth"></div>
 
-            <div
-              class="salon-tray"
-              aria-hidden="true">
+            <div class="customer-blush left"></div>
+            <div class="customer-blush right"></div>
 
-              <div class="salon-item">
-                💄
-              </div>
+            <div class="hair">
 
-              <div class="salon-item">
-                🪮
-              </div>
+              <div class="hair-main"></div>
+              <div class="hair-bang"></div>
 
-              <div class="salon-item">
-                ✂️
-              </div>
-
-              <div class="salon-item">
-                🖌️
+              <div class="hair-bow">
+                <div class="hair-bow-center"></div>
               </div>
 
             </div>
 
-            <div class="salon-counter"></div>
-
           </div>
 
-        </section>
+          <div class="customer-body"></div>
 
-        <aside class="el-panel studio-panel">
+          <div class="customer-leg left"></div>
+          <div class="customer-leg right"></div>
 
-          <h2 class="el-section-title">
-            Colors & Finish
-          </h2>
+          <div class="customer-paw left"></div>
+          <div class="customer-paw right"></div>
 
-          <p class="el-section-copy">
-            Choose a color and complete all three salon tasks.
-          </p>
+        </div>
 
-          <div
-            id="colorGrid"
-            class="color-grid">
-          </div>
+        <div
+          id="photoFlash"
+          class="photo-flash">
+        </div>
 
-          <div
-            class="el-progress"
-            role="progressbar"
-            aria-valuemin="0"
-            aria-valuemax="100"
-            aria-valuenow="0"
-            style="margin-top:16px;">
+        <div class="stage-controls">
 
-            <div
-              id="progressFill"
-              class="el-progress-fill">
-            </div>
+          <button
+            id="hairPreviousButton"
+            class="round-control"
+            type="button"
+            aria-label="Previous hairstyle">
+            −
+          </button>
 
-          </div>
+          <button
+            id="hairNextButton"
+            class="round-control"
+            type="button"
+            aria-label="Next hairstyle">
+            +
+          </button>
 
-          <div
-            id="taskList"
-            class="task-list">
-          </div>
+          <button
+            id="musicButton"
+            class="round-control"
+            type="button"
+            aria-label="Toggle music">
+            ♪
+          </button>
 
-          <div class="action-stack">
-
-            <button
-              id="newCustomerButton"
-              class="el-button el-button--blue"
-              type="button">
-              🪄 New Customer
-            </button>
-
-            <button
-              id="finishButton"
-              class="el-button el-button--green"
-              type="button">
-              🌟 Finish Makeover
-            </button>
-
-            <button
-              id="resetButton"
-              class="el-button el-button--pink"
-              type="button">
-              ↺ Start Over
-            </button>
-
-          </div>
-
-        </aside>
+        </div>
 
       </section>
+
+      <aside class="game-panel">
+
+        <h2 class="panel-heading">
+          ✨ Colors & Finish
+        </h2>
+
+        <p class="panel-copy">
+          Choose a color and complete all three salon tasks.
+        </p>
+
+        <div
+          id="colorGrid"
+          class="color-grid">
+        </div>
+
+        <div class="happiness">
+
+          <div class="happiness-top">
+
+            <span>
+              Customer Happiness
+            </span>
+
+            <span id="happinessText">
+              0%
+            </span>
+
+          </div>
+
+          <div class="progress-track">
+
+            <div
+              id="happinessFill"
+              class="progress-fill">
+            </div>
+
+          </div>
+
+        </div>
+
+        <div
+          id="taskList"
+          class="task-list">
+        </div>
+
+        <div class="right-actions">
+
+          <button
+            id="newCustomerButton"
+            class="game-action blue"
+            type="button">
+            🐾 New Customer
+          </button>
+
+          <button
+            id="finishButton"
+            class="game-action green"
+            type="button">
+            ⭐ Finish Makeover
+          </button>
+
+          <button
+            id="resetButton"
+            class="game-action pink"
+            type="button">
+            ↺ Start Over
+          </button>
+
+        </div>
+
+      </aside>
+
+    </section>
+
+    <section class="customer-dock">
+
+      <div class="dock-label">
+        Choose a Customer
+      </div>
+
+      <div
+        id="customerPicker"
+        class="customer-picker">
+      </div>
+
+      <aside class="daily-card">
+
+        <div class="daily-title">
+          Makeovers Completed Today
+        </div>
+
+        <div class="daily-progress">
+
+          <div class="daily-icon">
+            ⭐
+          </div>
+
+          <div class="daily-bar">
+
+            <div
+              id="dailyFill"
+              class="daily-fill">
+              0 / 5
+            </div>
+
+          </div>
+
+          <div class="daily-icon">
+            🎁
+          </div>
+
+        </div>
+
+        <div class="daily-copy">
+          Complete 5 makeovers to earn a reward!
+        </div>
+
+      </aside>
 
     </section>
 
@@ -721,15 +2321,29 @@
       ELCraftUI
     } from "./elcraft-ui.js";
 
+    const STORAGE_KEYS = {
+      stars:
+        "elcraft_stars",
+
+      gems:
+        "elcraft_gems",
+
+      salonCompleted:
+        "elcraft_salon_completed_today",
+
+      salonCompletedDate:
+        "elcraft_salon_completed_date"
+    };
+
     const COLORS = [
-      "#ff4f87",
-      "#d84666",
-      "#a64cce",
-      "#4f70d9",
-      "#3fa7b9",
-      "#ff8f45",
-      "#f2c84b",
-      "#7c4b36"
+      "#ff4f9d",
+      "#e83d66",
+      "#a64cd4",
+      "#4f6ed8",
+      "#3da9bd",
+      "#ff8d3d",
+      "#f5c947",
+      "#845038"
     ];
 
     const TOOLS = [
@@ -751,7 +2365,7 @@
           "Wash Hair",
 
         icon:
-          "🫧"
+          "🛁"
       },
       {
         id:
@@ -785,7 +2399,7 @@
       },
       {
         id:
-          "sparkle",
+          "sparkles",
 
         label:
           "Sparkles",
@@ -811,17 +2425,32 @@
           "Photo Booth",
 
         icon:
-          "📸"
+          "📷"
       }
     ];
 
     const CUSTOMERS = [
       {
+        id:
+          "bunny",
+
         name:
-          "Teddy",
+          "Bunny",
 
         icon:
-          "🧸",
+          "🐰",
+
+        fur:
+          "#fff8fb",
+
+        outline:
+          "#85516e",
+
+        ear:
+          "#f5a2bd",
+
+        hair:
+          "#6c38bd",
 
         request:
           "Please brush my hair, add pink lipstick, and finish with sparkles!",
@@ -832,33 +2461,57 @@
               "brush",
 
             label:
-              "Brush the hair"
+              "Brush the hair",
+
+            icon:
+              "🪮"
           },
           {
             tool:
               "lipstick",
 
             label:
-              "Apply lipstick"
+              "Apply pink lipstick",
+
+            icon:
+              "💄"
           },
           {
             tool:
-              "sparkle",
+              "sparkles",
 
             label:
-              "Add sparkles"
+              "Add sparkles",
+
+            icon:
+              "✨"
           }
         ]
       },
       {
+        id:
+          "puppy",
+
         name:
-          "Bella Bunny",
+          "Puppy",
 
         icon:
-          "🐰",
+          "🐶",
+
+        fur:
+          "#f3c37c",
+
+        outline:
+          "#805334",
+
+        ear:
+          "#b97846",
+
+        hair:
+          "#5d3cab",
 
         request:
-          "Can I have clean hair, rosy cheeks, and a pretty accessory?",
+          "Wash my fur, brush it smooth, and add a bright accessory!",
 
         tasks: [
           {
@@ -866,33 +2519,57 @@
               "wash",
 
             label:
-              "Wash the hair"
+              "Wash the fur",
+
+            icon:
+              "🛁"
           },
           {
             tool:
-              "blush",
+              "brush",
 
             label:
-              "Add blush"
+              "Brush the fur",
+
+            icon:
+              "🪮"
           },
           {
             tool:
               "accessory",
 
             label:
-              "Choose an accessory"
+              "Add an accessory",
+
+            icon:
+              "👑"
           }
         ]
       },
       {
+        id:
+          "kitten",
+
         name:
-          "Sunny Unicorn",
+          "Kitten",
 
         icon:
-          "🦄",
+          "🐱",
+
+        fur:
+          "#e8e9ef",
+
+        outline:
+          "#6d6679",
+
+        ear:
+          "#f0a2b0",
+
+        hair:
+          "#a84bc2",
 
         request:
-          "I want a new hairstyle, golden sparkles, and a salon photo!",
+          "Give me a new hairstyle, rosy blush, and take my salon photo!",
 
         tasks: [
           {
@@ -900,33 +2577,57 @@
               "hair",
 
             label:
-              "Choose a hairstyle"
+              "Choose a hairstyle",
+
+            icon:
+              "💇"
           },
           {
             tool:
-              "sparkle",
+              "blush",
 
             label:
-              "Add sparkles"
+              "Add rosy blush",
+
+            icon:
+              "🖌️"
           },
           {
             tool:
               "photo",
 
             label:
-              "Take a photo"
+              "Take a photo",
+
+            icon:
+              "📷"
           }
         ]
       },
       {
+        id:
+          "teddy",
+
         name:
-          "Poppy Puppy",
+          "Teddy",
 
         icon:
-          "🐶",
+          "🧸",
+
+        fur:
+          "#bf7a46",
+
+        outline:
+          "#70452f",
+
+        ear:
+          "#d8a06f",
+
+        hair:
+          "#7340bf",
 
         request:
-          "Please wash and brush my fur, then add a fun accessory!",
+          "Please wash my hair, add lipstick, and make me sparkle!",
 
         tasks: [
           {
@@ -934,21 +2635,262 @@
               "wash",
 
             label:
-              "Wash the fur"
+              "Wash the hair",
+
+            icon:
+              "🛁"
           },
+          {
+            tool:
+              "lipstick",
+
+            label:
+              "Apply lipstick",
+
+            icon:
+              "💄"
+          },
+          {
+            tool:
+              "sparkles",
+
+            label:
+              "Add sparkles",
+
+            icon:
+              "✨"
+          }
+        ]
+      },
+      {
+        id:
+          "fox",
+
+        name:
+          "Fox",
+
+        icon:
+          "🦊",
+
+        fur:
+          "#e87935",
+
+        outline:
+          "#85431f",
+
+        ear:
+          "#8b4527",
+
+        hair:
+          "#5e32aa",
+
+        request:
+          "Brush my hair, add blush, and give me a special accessory!",
+
+        tasks: [
           {
             tool:
               "brush",
 
             label:
-              "Brush the fur"
+              "Brush the hair",
+
+            icon:
+              "🪮"
+          },
+          {
+            tool:
+              "blush",
+
+            label:
+              "Add blush",
+
+            icon:
+              "🖌️"
           },
           {
             tool:
               "accessory",
 
             label:
-              "Choose an accessory"
+              "Add an accessory",
+
+            icon:
+              "👑"
+          }
+        ]
+      },
+      {
+        id:
+          "unicorn",
+
+        name:
+          "Unicorn",
+
+        icon:
+          "🦄",
+
+        fur:
+          "#fffaff",
+
+        outline:
+          "#8c5a94",
+
+        ear:
+          "#f3a5c7",
+
+        hair:
+          "#7d4fd3",
+
+        request:
+          "Choose a magical hairstyle, add sparkles, and take a photo!",
+
+        tasks: [
+          {
+            tool:
+              "hair",
+
+            label:
+              "Choose a hairstyle",
+
+            icon:
+              "💇"
+          },
+          {
+            tool:
+              "sparkles",
+
+            label:
+              "Add sparkles",
+
+            icon:
+              "✨"
+          },
+          {
+            tool:
+              "photo",
+
+            label:
+              "Take a photo",
+
+            icon:
+              "📷"
+          }
+        ]
+      },
+      {
+        id:
+          "panda",
+
+        name:
+          "Panda",
+
+        icon:
+          "🐼",
+
+        fur:
+          "#f8f8f8",
+
+        outline:
+          "#292929",
+
+        ear:
+          "#353535",
+
+        hair:
+          "#7040bd",
+
+        request:
+          "Wash and brush my hair, then add a cute accessory!",
+
+        tasks: [
+          {
+            tool:
+              "wash",
+
+            label:
+              "Wash the hair",
+
+            icon:
+              "🛁"
+          },
+          {
+            tool:
+              "brush",
+
+            label:
+              "Brush the hair",
+
+            icon:
+              "🪮"
+          },
+          {
+            tool:
+              "accessory",
+
+            label:
+              "Add an accessory",
+
+            icon:
+              "👑"
+          }
+        ]
+      },
+      {
+        id:
+          "dragon",
+
+        name:
+          "Dragon",
+
+        icon:
+          "🐲",
+
+        fur:
+          "#70c870",
+
+        outline:
+          "#2f713c",
+
+        ear:
+          "#9ae47d",
+
+        hair:
+          "#6e3cb9",
+
+        request:
+          "Give me a bold hairstyle, bright lipstick, and magical sparkles!",
+
+        tasks: [
+          {
+            tool:
+              "hair",
+
+            label:
+              "Choose a hairstyle",
+
+            icon:
+              "💇"
+          },
+          {
+            tool:
+              "lipstick",
+
+            label:
+              "Apply lipstick",
+
+            icon:
+              "💄"
+          },
+          {
+            tool:
+              "sparkles",
+
+            label:
+              "Add sparkles",
+
+            icon:
+              "✨"
           }
         ]
       }
@@ -962,7 +2904,25 @@
         COLORS[0],
 
       completed:
-        new Set()
+        new Set(),
+
+      activeTool:
+        null,
+
+      hairStyle:
+        1,
+
+      musicOn:
+        true,
+
+      makeoversToday:
+        0,
+
+      stars:
+        0,
+
+      gems:
+        0
     };
 
     const toolGrid =
@@ -980,15 +2940,103 @@
         "taskList"
       );
 
-    const progressFill =
+    const customer =
       document.getElementById(
-        "progressFill"
+        "customer"
       );
 
-    const customerCard =
+    const customerPicker =
       document.getElementById(
-        "customerCard"
+        "customerPicker"
       );
+
+    const photoFlash =
+      document.getElementById(
+        "photoFlash"
+      );
+
+    function todayKey() {
+      return new Date()
+        .toISOString()
+        .slice(0, 10);
+    }
+
+    function loadProgress() {
+      state.stars =
+        Number(
+          localStorage.getItem(
+            STORAGE_KEYS.stars
+          ) ||
+          0
+        );
+
+      state.gems =
+        Number(
+          localStorage.getItem(
+            STORAGE_KEYS.gems
+          ) ||
+          0
+        );
+
+      const savedDate =
+        localStorage.getItem(
+          STORAGE_KEYS.salonCompletedDate
+        );
+
+      if (
+        savedDate ===
+        todayKey()
+      ) {
+        state.makeoversToday =
+          Number(
+            localStorage.getItem(
+              STORAGE_KEYS.salonCompleted
+            ) ||
+            0
+          );
+      } else {
+        state.makeoversToday =
+          0;
+
+        localStorage.setItem(
+          STORAGE_KEYS.salonCompletedDate,
+          todayKey()
+        );
+
+        localStorage.setItem(
+          STORAGE_KEYS.salonCompleted,
+          "0"
+        );
+      }
+    }
+
+    function saveProgress() {
+      localStorage.setItem(
+        STORAGE_KEYS.stars,
+        String(
+          state.stars
+        )
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.gems,
+        String(
+          state.gems
+        )
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.salonCompletedDate,
+        todayKey()
+      );
+
+      localStorage.setItem(
+        STORAGE_KEYS.salonCompleted,
+        String(
+          state.makeoversToday
+        )
+      );
+    }
 
     function currentCustomer() {
       return CUSTOMERS[
@@ -996,47 +3044,68 @@
       ];
     }
 
-    function renderCustomer() {
-      const customer =
+    function resetCustomerVisuals() {
+      customer.className =
+        `customer hair-style-${state.hairStyle}`;
+
+      customer.style.removeProperty(
+        "--makeup-color"
+      );
+    }
+
+    function applyCustomerColors() {
+      const selected =
         currentCustomer();
 
-      document
-        .getElementById(
-          "customerIcon"
-        )
-        .textContent =
-          customer.icon;
-
-      document
-        .getElementById(
-          "customerName"
-        )
-        .textContent =
-          customer.name;
-
-      document
-        .getElementById(
-          "customerRequest"
-        )
-        .textContent =
-          customer.request;
-
-      document
-        .getElementById(
-          "requestBox"
-        )
-        .textContent =
-          `“${customer.request}”`;
-
-      customerCard.classList.remove(
-        "el-pop"
+      customer.style.setProperty(
+        "--fur-color",
+        selected.fur
       );
 
-      void customerCard.offsetWidth;
-
-      customerCard.classList.add(
-        "el-pop"
+      customer.style.setProperty(
+        "--fur-outline",
+        selected.outline
       );
+
+      customer.style.setProperty(
+        "--ear-inner",
+        selected.ear
+      );
+
+      customer.style.setProperty(
+        "--hair-color",
+        selected.hair
+      );
+
+      customer.style.setProperty(
+        "--makeup-color",
+        state.selectedColor
+      );
+    }
+
+    function renderTopStatus() {
+      document
+        .getElementById(
+          "starCount"
+        )
+        .textContent =
+          state.stars.toLocaleString();
+
+      document
+        .getElementById(
+          "gemCount"
+        )
+        .textContent =
+          state.gems.toLocaleString();
+    }
+
+    function renderRequest() {
+      document
+        .getElementById(
+          "requestCard"
+        )
+        .textContent =
+          `“${currentCustomer().request}”`;
     }
 
     function renderTools() {
@@ -1052,16 +3121,25 @@
           "button";
 
         button.className =
-          `tool-card${
+          [
+            "tool-button",
+
+            state.activeTool ===
+            tool.id
+              ? "active"
+              : "",
+
             state.completed.has(
               tool.id
             )
-              ? " active"
+              ? "complete"
               : ""
-          }`;
+          ]
+            .filter(Boolean)
+            .join(" ");
 
         button.innerHTML = `
-          <span class="tool-icon">
+          <span class="tool-graphic">
             ${tool.icon}
           </span>
 
@@ -1071,25 +3149,9 @@
         button.addEventListener(
           "click",
           () => {
-            state.completed.add(
+            useTool(
               tool.id
             );
-
-            ELCraftUI.playTone({
-              frequency:
-                500 +
-                Math.random() *
-                220,
-
-              duration:
-                .08
-            });
-
-            ELCraftUI.showToast(
-              `${tool.label} used with ${state.selectedColor}! ✨`
-            );
-
-            renderEverything();
           }
         );
 
@@ -1113,8 +3175,8 @@
 
         button.className =
           `color-button${
-            state.selectedColor ===
-            color
+            color ===
+            state.selectedColor
               ? " active"
               : ""
           }`;
@@ -1132,6 +3194,11 @@
           () => {
             state.selectedColor =
               color;
+
+            customer.style.setProperty(
+              "--makeup-color",
+              color
+            );
 
             renderColors();
 
@@ -1154,49 +3221,81 @@
     function renderTasks() {
       taskList.replaceChildren();
 
-      const customer =
-        currentCustomer();
+      const tasks =
+        currentCustomer().tasks;
 
-      customer.tasks.forEach(task => {
-        const complete =
-          state.completed.has(
-            task.tool
+      tasks.forEach(
+        (
+          task,
+          index
+        ) => {
+          const complete =
+            state.completed.has(
+              task.tool
+            );
+
+          const previousComplete =
+            tasks
+              .slice(
+                0,
+                index
+              )
+              .every(
+                item =>
+                  state.completed.has(
+                    item.tool
+                  )
+              );
+
+          const current =
+            !complete &&
+            previousComplete;
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+          row.className =
+            [
+              "task",
+              complete
+                ? "complete"
+                : "",
+              current
+                ? "current"
+                : ""
+            ]
+              .filter(Boolean)
+              .join(" ");
+
+          row.innerHTML = `
+            <div class="task-dot">
+              ${complete ? "✓" : current ? "›" : "•"}
+            </div>
+
+            <div style="flex:1;">
+              ${task.label}
+            </div>
+
+            <div style="font-size:23px;">
+              ${task.icon}
+            </div>
+          `;
+
+          taskList.appendChild(
+            row
           );
-
-        const row =
-          document.createElement(
-            "div"
-          );
-
-        row.className =
-          `task-row${
-            complete
-              ? " complete"
-              : ""
-          }`;
-
-        row.innerHTML = `
-          <div class="task-check">
-            ${complete ? "✓" : "•"}
-          </div>
-
-          <div>
-            ${task.label}
-          </div>
-        `;
-
-        taskList.appendChild(
-          row
-        );
-      });
+        }
+      );
     }
 
-    function updateProgress() {
-      const customer =
-        currentCustomer();
+    function updateHappiness() {
+      const tasks =
+        currentCustomer().tasks;
 
       const completed =
-        customer.tasks.filter(
+        tasks.filter(
           task =>
             state.completed.has(
               task.tool
@@ -1206,47 +3305,474 @@
       const percent =
         Math.round(
           completed /
-          customer.tasks.length *
+          tasks.length *
           100
         );
 
-      ELCraftUI.setProgress(
-        progressFill.parentElement,
-        percent
-      );
+      document
+        .getElementById(
+          "happinessText"
+        )
+        .textContent =
+          `${percent}%`;
 
-      progressFill.style.width =
+      document
+        .getElementById(
+          "happinessFill"
+        )
+        .style.width =
+          `${percent}%`;
+    }
+
+    function renderPicker() {
+      customerPicker.replaceChildren();
+
+      CUSTOMERS.forEach(
+        (
+          item,
+          index
+        ) => {
+          const button =
+            document.createElement(
+              "button"
+            );
+
+          button.type =
+            "button";
+
+          button.className =
+            `customer-choice${
+              index ===
+              state.customerIndex
+                ? " active"
+                : ""
+            }`;
+
+          button.innerHTML = `
+            <span class="customer-choice-icon">
+              ${item.icon}
+            </span>
+
+            ${item.name}
+          `;
+
+          button.addEventListener(
+            "click",
+            () => {
+              selectCustomer(
+                index
+              );
+            }
+          );
+
+          customerPicker.appendChild(
+            button
+          );
+        }
+      );
+    }
+
+    function renderDaily() {
+      const count =
+        Math.min(
+          state.makeoversToday,
+          5
+        );
+
+      const percent =
+        count /
+        5 *
+        100;
+
+      const fill =
+        document.getElementById(
+          "dailyFill"
+        );
+
+      fill.style.width =
         `${percent}%`;
 
-      if (
-        percent ===
-        100
-      ) {
-        ELCraftUI.showToast(
-          `${customer.name} loves the makeover! 🌟`
-        );
-      }
+      fill.textContent =
+        `${count} / 5`;
     }
 
     function renderEverything() {
-      renderCustomer();
+      applyCustomerColors();
+      renderTopStatus();
+      renderRequest();
       renderTools();
       renderColors();
       renderTasks();
-      updateProgress();
+      renderPicker();
+      updateHappiness();
+      renderDaily();
+    }
+
+    function markComplete(
+      toolId
+    ) {
+      state.completed.add(
+        toolId
+      );
+
+      renderEverything();
+    }
+
+    function useTool(
+      toolId
+    ) {
+      state.activeTool =
+        toolId;
+
+      if (
+        toolId ===
+        "brush"
+      ) {
+        customer.classList.add(
+          "brushed"
+        );
+
+        markComplete(
+          "brush"
+        );
+
+        ELCraftUI.showToast(
+          "The hair is smooth and shiny! 🪮"
+        );
+      }
+
+      if (
+        toolId ===
+        "wash"
+      ) {
+        customer.classList.add(
+          "washed"
+        );
+
+        markComplete(
+          "wash"
+        );
+
+        ELCraftUI.showToast(
+          "Bubble wash complete! 🫧"
+        );
+      }
+
+      if (
+        toolId ===
+        "lipstick"
+      ) {
+        customer.classList.add(
+          "lipstick-on"
+        );
+
+        customer.style.setProperty(
+          "--makeup-color",
+          state.selectedColor
+        );
+
+        markComplete(
+          "lipstick"
+        );
+
+        ELCraftUI.showToast(
+          "Lipstick applied! 💄"
+        );
+      }
+
+      if (
+        toolId ===
+        "blush"
+      ) {
+        customer.classList.add(
+          "blush-on"
+        );
+
+        customer.style.setProperty(
+          "--makeup-color",
+          state.selectedColor
+        );
+
+        markComplete(
+          "blush"
+        );
+
+        ELCraftUI.showToast(
+          "Rosy cheeks added! 🖌️"
+        );
+      }
+
+      if (
+        toolId ===
+        "sparkles"
+      ) {
+        customer.classList.add(
+          "sparkles-on"
+        );
+
+        markComplete(
+          "sparkles"
+        );
+
+        ELCraftUI.showToast(
+          "Sparkles everywhere! ✨"
+        );
+      }
+
+      if (
+        toolId ===
+        "accessory"
+      ) {
+        customer.classList.add(
+          "accessory-on"
+        );
+
+        markComplete(
+          "accessory"
+        );
+
+        ELCraftUI.showToast(
+          "A cute accessory was added! 👑"
+        );
+      }
+
+      if (
+        toolId ===
+        "hair"
+      ) {
+        nextHairStyle();
+
+        markComplete(
+          "hair"
+        );
+
+        ELCraftUI.showToast(
+          "New hairstyle selected! 💇"
+        );
+      }
+
+      if (
+        toolId ===
+        "photo"
+      ) {
+        takePhoto();
+
+        markComplete(
+          "photo"
+        );
+      }
+
+      ELCraftUI.playTone({
+        frequency:
+          510 +
+          Math.random() *
+          230,
+
+        duration:
+          .08
+      });
+
+      renderTools();
+    }
+
+    function nextHairStyle() {
+      state.hairStyle =
+        state.hairStyle >= 3
+          ? 1
+          : state.hairStyle + 1;
+
+      customer.classList.remove(
+        "hair-style-1",
+        "hair-style-2",
+        "hair-style-3"
+      );
+
+      customer.classList.add(
+        `hair-style-${state.hairStyle}`
+      );
+    }
+
+    function previousHairStyle() {
+      state.hairStyle =
+        state.hairStyle <= 1
+          ? 3
+          : state.hairStyle - 1;
+
+      customer.classList.remove(
+        "hair-style-1",
+        "hair-style-2",
+        "hair-style-3"
+      );
+
+      customer.classList.add(
+        `hair-style-${state.hairStyle}`
+      );
+    }
+
+    function takePhoto() {
+      photoFlash.classList.remove(
+        "active"
+      );
+
+      void photoFlash.offsetWidth;
+
+      photoFlash.classList.add(
+        "active"
+      );
+
+      ELCraftUI.playTone({
+        frequency:
+          860,
+
+        duration:
+          .09
+      });
+
+      ELCraftUI.showToast(
+        "Salon photo taken! 📸"
+      );
+    }
+
+    function selectCustomer(
+      index
+    ) {
+      state.customerIndex =
+        index;
+
+      state.completed.clear();
+
+      state.activeTool =
+        null;
+
+      state.hairStyle =
+        1;
+
+      resetCustomerVisuals();
+
+      renderEverything();
+
+      customer.classList.add(
+        "celebrate"
+      );
+
+      window.setTimeout(
+        () => {
+          customer.classList.remove(
+            "celebrate"
+          );
+        },
+        1500
+      );
+
+      ELCraftUI.showToast(
+        `${currentCustomer().name} is ready! ✨`
+      );
+    }
+
+    function allTasksComplete() {
+      return currentCustomer()
+        .tasks
+        .every(
+          task =>
+            state.completed.has(
+              task.tool
+            )
+        );
+    }
+
+    function finishMakeover() {
+      if (
+        !allTasksComplete()
+      ) {
+        ELCraftUI.showToast(
+          "Complete all three requested tasks first. ✨"
+        );
+
+        return;
+      }
+
+      state.stars +=
+        10;
+
+      state.makeoversToday +=
+        1;
+
+      if (
+        state.makeoversToday ===
+        5
+      ) {
+        state.gems +=
+          5;
+
+        ELCraftUI.showToast(
+          "Daily salon reward earned: 5 gems! 💎"
+        );
+      }
+
+      saveProgress();
+
+      customer.classList.add(
+        "celebrate"
+      );
+
+      ELCraftUI.celebrate();
+
+      renderEverything();
+
+      window.setTimeout(
+        () => {
+          customer.classList.remove(
+            "celebrate"
+          );
+
+          const nextIndex =
+            (
+              state.customerIndex +
+              1
+            ) %
+            CUSTOMERS.length;
+
+          selectCustomer(
+            nextIndex
+          );
+        },
+        1600
+      );
+    }
+
+    function resetMakeover() {
+      state.completed.clear();
+
+      state.activeTool =
+        null;
+
+      state.hairStyle =
+        1;
+
+      resetCustomerVisuals();
+
+      applyCustomerColors();
+
+      renderEverything();
+
+      ELCraftUI.showToast(
+        "The makeover was reset."
+      );
     }
 
     document
-      .getElementById(
-        "backButton"
+      .querySelectorAll(
+        "[data-page]"
       )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "my-city.html";
-        }
-      );
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            window.location.href =
+              button.dataset.page;
+          }
+        );
+      });
 
     document
       .getElementById(
@@ -1255,36 +3781,12 @@
       .addEventListener(
         "click",
         () => {
-          state.customerIndex =
+          selectCustomer(
             (
               state.customerIndex +
               1
             ) %
-            CUSTOMERS.length;
-
-          state.completed.clear();
-
-          renderEverything();
-
-          ELCraftUI.showToast(
-            "A new customer is ready! 🪄"
-          );
-        }
-      );
-
-    document
-      .getElementById(
-        "resetButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          state.completed.clear();
-
-          renderEverything();
-
-          ELCraftUI.showToast(
-            "The makeover was reset."
+            CUSTOMERS.length
           );
         }
       );
@@ -1295,47 +3797,85 @@
       )
       .addEventListener(
         "click",
+        finishMakeover
+      );
+
+    document
+      .getElementById(
+        "resetButton"
+      )
+      .addEventListener(
+        "click",
+        resetMakeover
+      );
+
+    document
+      .getElementById(
+        "hairNextButton"
+      )
+      .addEventListener(
+        "click",
         () => {
-          const customer =
-            currentCustomer();
+          nextHairStyle();
 
-          const complete =
-            customer.tasks.every(
-              task =>
-                state.completed.has(
-                  task.tool
-                )
-            );
+          state.completed.add(
+            "hair"
+          );
 
-          if (!complete) {
-            ELCraftUI.showToast(
-              "Complete all three customer requests first. ✨"
-            );
+          renderEverything();
+        }
+      );
 
-            return;
-          }
+    document
+      .getElementById(
+        "hairPreviousButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          previousHairStyle();
 
-          ELCraftUI.celebrate();
+          state.completed.add(
+            "hair"
+          );
 
-          window.setTimeout(
-            () => {
-              state.customerIndex =
-                (
-                  state.customerIndex +
-                  1
-                ) %
-                CUSTOMERS.length;
+          renderEverything();
+        }
+      );
 
-              state.completed.clear();
+    document
+      .getElementById(
+        "musicButton"
+      )
+      .addEventListener(
+        "click",
+        event => {
+          state.musicOn =
+            ELCraftUI.toggleSound();
 
-              renderEverything();
-            },
-            1100
+          event.currentTarget.textContent =
+            state.musicOn
+              ? "♪"
+              : "×";
+        }
+      );
+
+    document
+      .getElementById(
+        "settingsButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          ELCraftUI.showToast(
+            "Parent settings are protected by the Parent Gate. ⚙️"
           );
         }
       );
 
-    ELCraftUI.personalize();
+    loadProgress();
+
+    resetCustomerVisuals();
 
     renderEverything();
   </script>
