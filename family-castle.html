@@ -2,1563 +2,347 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-
-  <meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#6ec6ff">
-
   <title>Family Castle | ELCraft</title>
 
   <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    :root {
-      --purple: #6457da;
-      --dark-purple: #443a9f;
-      --light-purple: #eeeaff;
-      --blue: #68c8ff;
-      --gold: #ffd96a;
-      --ink: #35395f;
-      --muted: #747b9b;
-      --white: #ffffff;
-    }
-
-    html,
-    body {
-      min-height: 100%;
-      margin: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      overflow-x: hidden;
-
-      color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
-
-      background:
-        linear-gradient(
-          180deg,
-          #63c8ff 0%,
-          #9bddff 42%,
-          #dff6ff 67%,
-          #6aba76 68%,
-          #4b9b5c 100%
-        );
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .page {
-      min-height: 100vh;
-      min-height: 100dvh;
-    }
-
-    .topbar {
-      position: relative;
-      z-index: 20;
-
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-
-      width: min(1280px, calc(100% - 28px));
-      margin: 14px auto 0;
-      border: 3px solid rgba(255, 255, 255, 0.8);
-      border-radius: 22px;
-      padding: 13px 16px;
-
-      background: rgba(255, 255, 255, 0.88);
-      backdrop-filter: blur(14px);
-
-      box-shadow:
-        0 12px 30px rgba(48, 56, 110, 0.18);
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .brand-icon {
-      font-size: 35px;
-    }
-
-    .brand-copy h1 {
-      margin: 0;
-
-      color: var(--purple);
-      font-size: clamp(21px, 4vw, 31px);
-    }
-
-    .brand-copy p {
-      margin: 2px 0 0;
-
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .topbar-actions {
-      display: flex;
-      gap: 9px;
-    }
-
-    .topbar-button {
-      border: 0;
-      border-radius: 13px;
-      padding: 10px 13px;
-
-      color: var(--dark-purple);
-      background: var(--light-purple);
-
-      font-size: 12px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .topbar-button.primary {
-      color: white;
-      background:
-        linear-gradient(
-          135deg,
-          var(--purple),
-          #8b66f5
-        );
-    }
-
-    .loading-screen {
-      position: fixed;
-      inset: 0;
-      z-index: 100;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      color: var(--dark-purple);
-      background:
-        linear-gradient(
-          145deg,
-          #82d8ff,
-          #c8b8ff
-        );
-
-      font-size: 20px;
-      font-weight: 900;
-    }
-
-    .loading-screen.hidden {
-      display: none;
-    }
-
-    .scene {
-      position: relative;
-
-      width: min(1400px, 100%);
-      min-height: 830px;
-      margin: 0 auto;
-      overflow: hidden;
-    }
-
-    .sun {
-      position: absolute;
-      top: 64px;
-      right: 9%;
-
-      width: 100px;
-      height: 100px;
-
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          #fffdd2 0%,
-          #ffe46c 56%,
-          rgba(255, 227, 91, 0.4) 70%,
-          transparent 72%
-        );
-
-      animation: pulseSun 4s ease-in-out infinite;
-    }
-
-    @keyframes pulseSun {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.05);
-      }
-    }
-
-    .cloud {
-      position: absolute;
-      z-index: 1;
-
-      color: rgba(255, 255, 255, 0.88);
-      font-size: 80px;
-
-      filter:
-        drop-shadow(
-          0 5px 7px rgba(70, 112, 160, 0.13)
-        );
-
-      animation: drift 18s linear infinite;
-    }
-
-    .cloud-one {
-      top: 100px;
-      left: -120px;
-    }
-
-    .cloud-two {
-      top: 190px;
-      left: 64%;
-      animation-duration: 24s;
-      animation-delay: -12s;
-    }
-
-    @keyframes drift {
-      from {
-        transform: translateX(0);
-      }
-
-      to {
-        transform: translateX(1550px);
-      }
-    }
-
-    .scene-title {
-      position: relative;
-      z-index: 4;
-
-      max-width: 760px;
-      margin: 38px auto 0;
-      padding: 0 18px;
-
-      color: white;
-      text-align: center;
-      text-shadow:
-        0 4px 8px rgba(43, 61, 112, 0.3);
-    }
-
-    .scene-title h2 {
-      margin: 0;
-      font-size: clamp(32px, 7vw, 58px);
-    }
-
-    .scene-title p {
-      margin: 9px 0 0;
-
-      font-size: clamp(14px, 3vw, 19px);
-      font-weight: 900;
-    }
-
-    .family-summary {
-      position: relative;
-      z-index: 7;
-
-      display: grid;
-      grid-template-columns:
-        repeat(4, minmax(0, 1fr));
-      gap: 10px;
-
-      width: min(760px, calc(100% - 30px));
-      margin: 19px auto 0;
-    }
-
-    .summary-card {
-      border: 2px solid rgba(255, 255, 255, 0.82);
-      border-radius: 17px;
-      padding: 12px;
-
-      background: rgba(255, 255, 255, 0.87);
-      backdrop-filter: blur(10px);
-
-      text-align: center;
-
-      box-shadow:
-        0 8px 18px rgba(47, 59, 111, 0.13);
-    }
-
-    .summary-value {
-      color: var(--purple);
-      font-size: 23px;
-      font-weight: 900;
-    }
-
-    .summary-label {
-      margin-top: 3px;
-
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 900;
-    }
-
-    .castle-wrap {
-      position: relative;
-      z-index: 6;
-
-      width: min(1080px, 95%);
-      height: 510px;
-      margin: 5px auto 0;
-    }
-
-    .castle {
-      position: absolute;
-      left: 50%;
-      bottom: 18px;
-
-      width: 710px;
-      height: 395px;
-
-      transform: translateX(-50%);
-    }
-
-    .castle-center {
-      position: absolute;
-      left: 190px;
-      bottom: 0;
-
-      width: 330px;
-      height: 285px;
-
-      border: 6px solid #6d65b6;
-      border-bottom: 0;
-      border-radius: 18px 18px 0 0;
-
-      background:
-        linear-gradient(
-          90deg,
-          #d9d5ff,
-          #f4f2ff 50%,
-          #cfc9fa
-        );
-
-      box-shadow:
-        inset 0 0 0 8px rgba(255, 255, 255, 0.35),
-        0 15px 30px rgba(56, 58, 112, 0.25);
-    }
-
-    .castle-center::before {
-      content: "";
-
-      position: absolute;
-      top: -44px;
-      left: -6px;
-
-      width: 330px;
-      height: 55px;
-
-      border: 6px solid #6d65b6;
-
-      background:
-        repeating-linear-gradient(
-          90deg,
-          #d9d5ff 0,
-          #d9d5ff 34px,
-          transparent 34px,
-          transparent 48px
-        );
-
-      clip-path:
-        polygon(
-          0 35%,
-          0 100%,
-          100% 100%,
-          100% 35%,
-          90% 35%,
-          90% 0,
-          78% 0,
-          78% 35%,
-          62% 35%,
-          62% 0,
-          50% 0,
-          50% 35%,
-          34% 35%,
-          34% 0,
-          22% 0,
-          22% 35%,
-          10% 35%,
-          10% 0,
-          0 0
-        );
-    }
-
-    .tower {
-      position: absolute;
-      bottom: 0;
-
-      width: 180px;
-      height: 320px;
-
-      border: 6px solid #6d65b6;
-      border-bottom: 0;
-      border-radius: 16px 16px 0 0;
-
-      background:
-        linear-gradient(
-          90deg,
-          #c9c4f4,
-          #ebe8ff,
-          #c5bef1
-        );
-
-      box-shadow:
-        inset 0 0 0 7px rgba(255, 255, 255, 0.28),
-        0 15px 30px rgba(56, 58, 112, 0.22);
-    }
-
-    .tower-left {
-      left: 18px;
-    }
-
-    .tower-right {
-      right: 18px;
-    }
-
-    .tower::before {
-      content: "";
-
-      position: absolute;
-      top: -54px;
-      left: -6px;
-
-      width: 180px;
-      height: 64px;
-
-      border: 6px solid #6d65b6;
-
-      background:
-        repeating-linear-gradient(
-          90deg,
-          #c9c4f4 0,
-          #c9c4f4 30px,
-          transparent 30px,
-          transparent 43px
-        );
-
-      clip-path:
-        polygon(
-          0 35%,
-          0 100%,
-          100% 100%,
-          100% 35%,
-          84% 35%,
-          84% 0,
-          68% 0,
-          68% 35%,
-          50% 35%,
-          50% 0,
-          33% 0,
-          33% 35%,
-          16% 35%,
-          16% 0,
-          0 0
-        );
-    }
-
-    .flag {
-      position: absolute;
-      z-index: 4;
-
-      width: 4px;
-      height: 80px;
-
-      background: #6851b8;
-    }
-
-    .flag::after {
-      content: "";
-
-      position: absolute;
-      top: 0;
-      left: 4px;
-
-      width: 53px;
-      height: 32px;
-
-      border-radius: 0 7px 7px 0;
-
-      background:
-        linear-gradient(
-          135deg,
-          #ffcf47,
-          #ff8a65
-        );
-
-      clip-path:
-        polygon(
-          0 0,
-          100% 14%,
-          75% 50%,
-          100% 87%,
-          0 100%
-        );
-
-      animation: waveFlag 1.8s ease-in-out infinite;
-      transform-origin: left center;
-    }
-
-    @keyframes waveFlag {
-      0%,
-      100% {
-        transform: skewY(0deg);
-      }
-
-      50% {
-        transform: skewY(7deg);
-      }
-    }
-
-    .flag-left {
-      left: 104px;
-      top: -125px;
-    }
-
-    .flag-center {
-      left: 353px;
-      top: -116px;
-    }
-
-    .flag-right {
-      right: 102px;
-      top: -125px;
-    }
-
-    .castle-door {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-
-      width: 92px;
-      height: 130px;
-
-      border: 6px solid #6e5592;
-      border-bottom: 0;
-      border-radius: 50px 50px 0 0;
-
-      background:
-        repeating-linear-gradient(
-          90deg,
-          #8d623c 0,
-          #8d623c 14px,
-          #a8784a 14px,
-          #a8784a 28px
-        );
-
-      transform: translateX(-50%);
-    }
-
-    .castle-door::after {
-      content: "";
-
-      position: absolute;
-      top: 67px;
-      right: 12px;
-
-      width: 10px;
-      height: 10px;
-
-      border-radius: 50%;
-      background: #ffdc63;
-    }
-
-    .window {
-      position: absolute;
-
-      width: 48px;
-      height: 68px;
-
-      border: 5px solid #6761aa;
-      border-radius: 30px 30px 8px 8px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #fff5a9,
-          #ffc94f
-        );
-
-      box-shadow:
-        inset 0 0 15px rgba(255, 255, 255, 0.8),
-        0 0 14px rgba(255, 216, 88, 0.65);
-    }
-
-    .window::before {
-      content: "";
-
-      position: absolute;
-      top: 29px;
-      left: 0;
-
-      width: 100%;
-      height: 4px;
-
-      background: #6761aa;
-    }
-
-    .window::after {
-      content: "";
-
-      position: absolute;
-      top: 0;
-      left: 20px;
-
-      width: 4px;
-      height: 100%;
-
-      background: #6761aa;
-    }
-
-    .tower-left .window {
-      top: 85px;
-      left: 60px;
-    }
-
-    .tower-right .window {
-      top: 85px;
-      left: 60px;
-    }
-
-    .center-window-left {
-      top: 65px;
-      left: 62px;
-    }
-
-    .center-window-right {
-      top: 65px;
-      right: 62px;
-    }
-
-    .room-button {
-      position: absolute;
-      z-index: 9;
-
-      min-width: 124px;
-
-      border: 3px solid rgba(255, 255, 255, 0.88);
-      border-radius: 18px;
-      padding: 11px 12px;
-
-      color: var(--dark-purple);
-      background: rgba(255, 255, 255, 0.94);
-
-      box-shadow:
-        0 7px 0 rgba(68, 58, 159, 0.33),
-        0 12px 20px rgba(45, 52, 104, 0.18);
-
-      font-size: 12px;
-      font-weight: 900;
-      text-align: center;
-      cursor: pointer;
-
-      transition:
-        transform 0.18s ease,
-        box-shadow 0.18s ease;
-    }
-
-    .room-button:hover {
-      transform: translateY(-4px);
-      box-shadow:
-        0 10px 0 rgba(68, 58, 159, 0.29),
-        0 17px 23px rgba(45, 52, 104, 0.21);
-    }
-
-    .room-button span {
-      display: block;
-      margin-bottom: 4px;
-      font-size: 25px;
-    }
-
-    .room-family {
-      left: 50%;
-      top: 173px;
-      transform: translateX(-50%);
-    }
-
-    .room-family:hover {
-      transform: translateX(-50%) translateY(-4px);
-    }
-
-    .room-library {
-      left: 4px;
-      top: 220px;
-    }
-
-    .room-mail {
-      right: 4px;
-      top: 220px;
-    }
-
-    .room-trophy {
-      left: 85px;
-      bottom: 8px;
-    }
-
-    .room-pets {
-      right: 85px;
-      bottom: 8px;
-    }
-
-    .room-feed {
-      left: 50%;
-      bottom: 6px;
-      transform: translateX(-50%);
-    }
-
-    .room-feed:hover {
-      transform: translateX(-50%) translateY(-4px);
-    }
-
-    .ground {
-      position: absolute;
-      left: 0;
-      right: 0;
-      bottom: 0;
-
-      height: 210px;
-
-      background:
-        radial-gradient(
-          ellipse at 50% 0%,
-          rgba(133, 214, 139, 0.9),
-          transparent 65%
-        );
-    }
-
-    .path {
-      position: absolute;
-      left: 50%;
-      bottom: -20px;
-      z-index: 5;
-
-      width: 210px;
-      height: 260px;
-
-      background:
-        linear-gradient(
-          180deg,
-          #e6c58f,
-          #c79c67
-        );
-
-      clip-path:
-        polygon(
-          37% 0,
-          63% 0,
-          100% 100%,
-          0 100%
-        );
-
-      transform: translateX(-50%);
-    }
-
-    .tree {
-      position: absolute;
-      z-index: 4;
-      bottom: 24px;
-
-      font-size: 104px;
-
-      filter:
-        drop-shadow(
-          0 10px 8px rgba(38, 92, 45, 0.28)
-        );
-    }
-
-    .tree-left {
-      left: 2%;
-    }
-
-    .tree-right {
-      right: 2%;
-    }
-
-    .characters {
-      position: absolute;
-      z-index: 10;
-      left: 50%;
-      bottom: 50px;
-
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      gap: 10px;
-
-      transform: translateX(-50%);
-    }
-
-    .character {
-      position: relative;
-
-      min-width: 82px;
-      border: 3px solid white;
-      border-radius: 18px;
-      padding: 9px 9px 8px;
-
-      background: rgba(255, 255, 255, 0.92);
-
-      box-shadow:
-        0 8px 18px rgba(39, 50, 92, 0.2);
-
-      text-align: center;
-    }
-
-    .character-avatar {
-      font-size: 32px;
-    }
-
-    .character-name {
-      margin-top: 2px;
-
-      color: var(--dark-purple);
-      font-size: 10px;
-      font-weight: 900;
-    }
-
-    .pet {
-      position: absolute;
-      z-index: 8;
-      right: 22%;
-      bottom: 40px;
-
-      font-size: 45px;
-
-      animation: petBounce 2.4s ease-in-out infinite;
-    }
-
-    @keyframes petBounce {
-      0%,
-      100% {
-        transform: translateY(0) rotate(-3deg);
-      }
-
-      50% {
-        transform: translateY(-9px) rotate(3deg);
-      }
-    }
-
-    .mail-indicator {
-      position: absolute;
-      top: -8px;
-      right: -7px;
-
-      min-width: 25px;
-      height: 25px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border: 3px solid white;
-      border-radius: 999px;
-
-      color: white;
-      background: #f15b72;
-
-      font-size: 10px;
-      font-weight: 900;
-    }
-
-    .bottom-panel {
-      position: relative;
-      z-index: 12;
-
-      width: min(1120px, calc(100% - 28px));
-      margin: -10px auto 26px;
-      border: 4px solid rgba(255, 255, 255, 0.83);
-      border-radius: 27px;
-      padding: 20px;
-
-      background: rgba(255, 255, 255, 0.95);
-
-      box-shadow:
-        0 18px 40px rgba(39, 55, 90, 0.27);
-    }
-
-    .bottom-grid {
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      gap: 18px;
-    }
-
-    .panel {
-      border: 2px solid #e2def8;
-      border-radius: 20px;
-      padding: 17px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #ffffff,
-          #f7f5ff
-        );
-    }
-
-    .panel h3 {
-      margin: 0;
-
-      color: var(--purple);
-      font-size: 20px;
-    }
-
-    .panel-subtitle {
-      margin: 4px 0 14px;
-
-      color: var(--muted);
-      font-size: 11px;
-      font-weight: 800;
-    }
-
-    .activity-list {
-      display: grid;
-      gap: 9px;
-    }
-
-    .activity-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-
-      border: 2px solid #e8e5f8;
-      border-radius: 14px;
-      padding: 10px;
-
-      background: white;
-    }
-
-    .activity-icon {
-      flex: 0 0 auto;
-
-      width: 39px;
-      height: 39px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-      background: #eeeaff;
-
-      font-size: 20px;
-    }
-
-    .activity-copy {
-      min-width: 0;
-    }
-
-    .activity-message {
-      color: #555b7f;
-      font-size: 12px;
-      font-weight: 800;
-      line-height: 1.4;
-    }
-
-    .activity-date {
-      margin-top: 2px;
-
-      color: #969aad;
-      font-size: 9px;
-      font-weight: 800;
-    }
-
-    .empty-state {
-      border: 2px dashed #d7d3f2;
-      border-radius: 15px;
-      padding: 17px;
-
-      color: #7a809e;
-      font-size: 12px;
-      font-weight: 800;
-      text-align: center;
-    }
-
-    .challenge-card {
-      border: 2px solid #e7e3f7;
-      border-radius: 16px;
-      padding: 13px;
-
-      background: white;
-    }
-
-    .challenge-title-row {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .challenge-title {
-      color: var(--dark-purple);
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .challenge-percent {
-      color: var(--purple);
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .progress-track {
-      height: 11px;
-
-      margin-top: 10px;
-      border-radius: 999px;
-
-      background: #e9e6f6;
-      overflow: hidden;
-    }
-
-    .progress-fill {
-      height: 100%;
-      border-radius: inherit;
-
-      background:
-        linear-gradient(
-          90deg,
-          #5fcfff,
-          #8a6cf4
-        );
-    }
-
-    .challenge-description {
-      margin-top: 7px;
-
-      color: #8287a3;
-      font-size: 10px;
-      font-weight: 800;
-    }
-
-    .quick-actions {
-      display: grid;
-      grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-      gap: 9px;
-
-      margin-top: 11px;
-    }
-
-    .quick-button {
-      min-height: 50px;
-
-      border: 0;
-      border-radius: 13px;
-      padding: 8px;
-
-      color: var(--dark-purple);
-      background: var(--light-purple);
-
-      font-size: 10px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .message {
-      position: fixed;
-      z-index: 200;
-      right: 20px;
-      bottom: 20px;
-
-      display: none;
-      max-width: 360px;
-
-      border: 2px solid #ed9daa;
-      border-radius: 15px;
-      padding: 13px 15px;
-
-      color: #a52d40;
-      background: #ffe8ec;
-
-      box-shadow:
-        0 12px 30px rgba(80, 25, 38, 0.18);
-
-      font-size: 12px;
-      font-weight: 800;
-    }
-
-    .message.visible {
-      display: block;
-    }
-
-    @media (max-width: 850px) {
-      .family-summary {
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-      }
-
-      .castle-wrap {
-        height: 520px;
-        transform: scale(0.87);
-        transform-origin: top center;
-        margin-bottom: -60px;
-      }
-
-      .bottom-grid {
-        grid-template-columns: 1fr;
-      }
-    }
-
-    @media (max-width: 650px) {
-      .topbar {
-        align-items: flex-start;
-      }
-
-      .topbar-actions {
-        flex-direction: column;
-      }
-
-      .castle-wrap {
-        width: 710px;
-        height: 500px;
-        left: 50%;
-        margin-left: -355px;
-
-        transform: scale(0.67);
-        transform-origin: top center;
-        margin-bottom: -155px;
-      }
-
-      .tree {
-        display: none;
-      }
-
-      .scene {
-        min-height: 710px;
-      }
-
-      .characters {
-        bottom: 14px;
-      }
-
-      .pet {
-        right: 8%;
-        bottom: 24px;
-      }
-
-      .bottom-panel {
-        margin-top: -15px;
-      }
-
-      .quick-actions {
-        grid-template-columns: 1fr;
-      }
+    *{box-sizing:border-box}
+    :root{
+      --purple:#6457da;
+      --dark:#443a9f;
+      --light:#eeeaff;
+      --ink:#35395f;
+      --muted:#747b9b;
+    }
+    html,body{min-height:100%;margin:0}
+    body{
+      min-height:100vh;
+      overflow-x:hidden;
+      color:var(--ink);
+      font-family:Arial,Helvetica,sans-serif;
+      background:linear-gradient(180deg,#63c8ff 0%,#9bddff 42%,#dff6ff 67%,#6aba76 68%,#4b9b5c 100%);
+    }
+    button{font:inherit;cursor:pointer}
+    .hidden{display:none!important}
+    .loading{
+      position:fixed;inset:0;z-index:999;
+      display:flex;align-items:center;justify-content:center;
+      color:var(--dark);
+      background:linear-gradient(145deg,#82d8ff,#c8b8ff);
+      font-size:20px;font-weight:900;
+    }
+    .topbar{
+      position:relative;z-index:20;
+      width:min(1280px,calc(100% - 28px));
+      margin:14px auto 0;padding:13px 16px;
+      display:flex;align-items:center;justify-content:space-between;gap:16px;
+      border:3px solid rgba(255,255,255,.8);border-radius:22px;
+      background:rgba(255,255,255,.88);backdrop-filter:blur(14px);
+      box-shadow:0 12px 30px rgba(48,56,110,.18);
+    }
+    .brand{display:flex;align-items:center;gap:10px}
+    .brand-icon{font-size:35px}
+    .brand h1{margin:0;color:var(--purple);font-size:clamp(21px,4vw,31px)}
+    .brand p{margin:2px 0 0;color:var(--muted);font-size:11px;font-weight:800}
+    .top-actions{display:flex;gap:9px}
+    .top-button{
+      border:0;border-radius:13px;padding:10px 13px;
+      color:var(--dark);background:var(--light);
+      font-size:12px;font-weight:900;
+    }
+    .top-button.primary{color:#fff;background:linear-gradient(135deg,var(--purple),#8b66f5)}
+    .scene{
+      position:relative;width:min(1400px,100%);min-height:830px;margin:0 auto;overflow:hidden;
+    }
+    .sun{
+      position:absolute;top:64px;right:9%;width:100px;height:100px;border-radius:50%;
+      background:radial-gradient(circle,#fffdd2 0%,#ffe46c 56%,rgba(255,227,91,.4) 70%,transparent 72%);
+      animation:pulse 4s ease-in-out infinite;
+    }
+    @keyframes pulse{50%{transform:scale(1.05)}}
+    .cloud{
+      position:absolute;z-index:1;color:rgba(255,255,255,.88);font-size:80px;
+      filter:drop-shadow(0 5px 7px rgba(70,112,160,.13));
+      animation:drift 18s linear infinite;
+    }
+    .cloud.one{top:100px;left:-120px}
+    .cloud.two{top:190px;left:64%;animation-duration:24s;animation-delay:-12s}
+    @keyframes drift{to{transform:translateX(1550px)}}
+    .scene-title{
+      position:relative;z-index:4;max-width:760px;margin:38px auto 0;padding:0 18px;
+      color:#fff;text-align:center;text-shadow:0 4px 8px rgba(43,61,112,.3);
+    }
+    .scene-title h2{margin:0;font-size:clamp(32px,7vw,58px)}
+    .scene-title p{margin:9px 0 0;font-size:clamp(14px,3vw,19px);font-weight:900}
+    .summary{
+      position:relative;z-index:7;
+      width:min(760px,calc(100% - 30px));margin:19px auto 0;
+      display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;
+    }
+    .summary-card{
+      border:2px solid rgba(255,255,255,.82);border-radius:17px;padding:12px;
+      background:rgba(255,255,255,.87);backdrop-filter:blur(10px);
+      text-align:center;box-shadow:0 8px 18px rgba(47,59,111,.13);
+    }
+    .summary-value{color:var(--purple);font-size:23px;font-weight:900}
+    .summary-label{margin-top:3px;color:var(--muted);font-size:10px;font-weight:900}
+    .castle-wrap{position:relative;z-index:6;width:min(1080px,95%);height:510px;margin:5px auto 0}
+    .castle{
+      position:absolute;left:50%;bottom:18px;width:710px;height:395px;transform:translateX(-50%);
+    }
+    .center,.tower{
+      position:absolute;bottom:0;border:6px solid #6d65b6;border-bottom:0;
+      border-radius:18px 18px 0 0;
+      box-shadow:inset 0 0 0 8px rgba(255,255,255,.3),0 15px 30px rgba(56,58,112,.24);
+    }
+    .center{
+      left:190px;width:330px;height:285px;
+      background:linear-gradient(90deg,#d9d5ff,#f4f2ff 50%,#cfc9fa);
+    }
+    .tower{
+      width:180px;height:320px;
+      background:linear-gradient(90deg,#c9c4f4,#ebe8ff,#c5bef1);
+    }
+    .tower.left{left:18px}.tower.right{right:18px}
+    .center:before,.tower:before{
+      content:"";position:absolute;left:-6px;border:6px solid #6d65b6;
+      background:repeating-linear-gradient(90deg,#d9d5ff 0,#d9d5ff 30px,transparent 30px,transparent 43px);
+    }
+    .center:before{
+      top:-44px;width:330px;height:55px;
+      clip-path:polygon(0 35%,0 100%,100% 100%,100% 35%,90% 35%,90% 0,78% 0,78% 35%,62% 35%,62% 0,50% 0,50% 35%,34% 35%,34% 0,22% 0,22% 35%,10% 35%,10% 0,0 0);
+    }
+    .tower:before{
+      top:-54px;width:180px;height:64px;
+      clip-path:polygon(0 35%,0 100%,100% 100%,100% 35%,84% 35%,84% 0,68% 0,68% 35%,50% 35%,50% 0,33% 0,33% 35%,16% 35%,16% 0,0 0);
+    }
+    .flag{position:absolute;z-index:4;width:4px;height:80px;background:#6851b8}
+    .flag:after{
+      content:"";position:absolute;top:0;left:4px;width:53px;height:32px;
+      border-radius:0 7px 7px 0;background:linear-gradient(135deg,#ffcf47,#ff8a65);
+      clip-path:polygon(0 0,100% 14%,75% 50%,100% 87%,0 100%);
+      animation:wave 1.8s ease-in-out infinite;transform-origin:left center;
+    }
+    @keyframes wave{50%{transform:skewY(7deg)}}
+    .flag.left{left:104px;top:-125px}.flag.middle{left:353px;top:-116px}.flag.right{right:102px;top:-125px}
+    .door{
+      position:absolute;left:50%;bottom:0;width:92px;height:130px;
+      border:6px solid #6e5592;border-bottom:0;border-radius:50px 50px 0 0;
+      background:repeating-linear-gradient(90deg,#8d623c 0,#8d623c 14px,#a8784a 14px,#a8784a 28px);
+      transform:translateX(-50%);
+    }
+    .door:after{content:"";position:absolute;top:67px;right:12px;width:10px;height:10px;border-radius:50%;background:#ffdc63}
+    .window{
+      position:absolute;width:48px;height:68px;border:5px solid #6761aa;border-radius:30px 30px 8px 8px;
+      background:linear-gradient(145deg,#fff5a9,#ffc94f);
+      box-shadow:inset 0 0 15px rgba(255,255,255,.8),0 0 14px rgba(255,216,88,.65);
+    }
+    .window:before{content:"";position:absolute;top:29px;left:0;width:100%;height:4px;background:#6761aa}
+    .window:after{content:"";position:absolute;top:0;left:20px;width:4px;height:100%;background:#6761aa}
+    .tower .window{top:85px;left:60px}.center .window.left{top:65px;left:62px}.center .window.right{top:65px;right:62px}
+    .room{
+      position:absolute;z-index:9;min-width:124px;
+      border:3px solid rgba(255,255,255,.88);border-radius:18px;padding:11px 12px;
+      color:var(--dark);background:rgba(255,255,255,.94);
+      box-shadow:0 7px 0 rgba(68,58,159,.33),0 12px 20px rgba(45,52,104,.18);
+      font-size:12px;font-weight:900;text-align:center;
+      transition:transform .18s ease,box-shadow .18s ease;
+    }
+    .room:hover{transform:translateY(-4px);box-shadow:0 10px 0 rgba(68,58,159,.29),0 17px 23px rgba(45,52,104,.21)}
+    .room span{display:block;margin-bottom:4px;font-size:25px}
+    .room.family{left:50%;top:173px;transform:translateX(-50%)}.room.family:hover{transform:translateX(-50%) translateY(-4px)}
+    .room.library{left:4px;top:220px}.room.mail{right:4px;top:220px}
+    .room.trophy{left:85px;bottom:8px}.room.pets{right:85px;bottom:8px}
+    .room.feed{left:50%;bottom:6px;transform:translateX(-50%)}.room.feed:hover{transform:translateX(-50%) translateY(-4px)}
+    .mail-count{
+      position:absolute;top:-8px;right:-7px;min-width:25px;height:25px;
+      display:flex;align-items:center;justify-content:center;
+      border:3px solid #fff;border-radius:999px;color:#fff;background:#f15b72;
+      font-size:10px;font-weight:900;
+    }
+    .ground{position:absolute;left:0;right:0;bottom:0;height:210px;background:radial-gradient(ellipse at 50% 0%,rgba(133,214,139,.9),transparent 65%)}
+    .path{
+      position:absolute;left:50%;bottom:-20px;z-index:5;width:210px;height:260px;
+      background:linear-gradient(180deg,#e6c58f,#c79c67);
+      clip-path:polygon(37% 0,63% 0,100% 100%,0 100%);
+      transform:translateX(-50%);
+    }
+    .tree{position:absolute;z-index:4;bottom:24px;font-size:104px;filter:drop-shadow(0 10px 8px rgba(38,92,45,.28))}
+    .tree.left{left:2%}.tree.right{right:2%}
+    .characters{
+      position:absolute;z-index:10;left:50%;bottom:50px;
+      display:flex;align-items:flex-end;justify-content:center;gap:10px;
+      transform:translateX(-50%);
+    }
+    .character{
+      min-width:82px;border:3px solid #fff;border-radius:18px;padding:9px;
+      background:rgba(255,255,255,.92);box-shadow:0 8px 18px rgba(39,50,92,.2);text-align:center;
+    }
+    .character-avatar{font-size:32px}.character-name{margin-top:2px;color:var(--dark);font-size:10px;font-weight:900}
+    .pet{
+      position:absolute;z-index:8;right:22%;bottom:40px;font-size:45px;
+      animation:pet 2.4s ease-in-out infinite;
+    }
+    @keyframes pet{50%{transform:translateY(-9px) rotate(3deg)}}
+    .bottom-panel{
+      position:relative;z-index:12;width:min(1120px,calc(100% - 28px));margin:-10px auto 26px;
+      border:4px solid rgba(255,255,255,.83);border-radius:27px;padding:20px;
+      background:rgba(255,255,255,.95);box-shadow:0 18px 40px rgba(39,55,90,.27);
+    }
+    .bottom-grid{display:grid;grid-template-columns:1.1fr .9fr;gap:18px}
+    .panel{border:2px solid #e2def8;border-radius:20px;padding:17px;background:linear-gradient(145deg,#fff,#f7f5ff)}
+    .panel h3{margin:0;color:var(--purple);font-size:20px}
+    .panel-subtitle{margin:4px 0 14px;color:var(--muted);font-size:11px;font-weight:800}
+    .activity-list{display:grid;gap:9px}
+    .activity-item{display:flex;align-items:center;gap:10px;border:2px solid #e8e5f8;border-radius:14px;padding:10px;background:#fff}
+    .activity-icon{width:39px;height:39px;display:flex;align-items:center;justify-content:center;border-radius:50%;background:var(--light);font-size:20px}
+    .activity-message{color:#555b7f;font-size:12px;font-weight:800;line-height:1.4}
+    .activity-date{margin-top:2px;color:#969aad;font-size:9px;font-weight:800}
+    .empty{border:2px dashed #d7d3f2;border-radius:15px;padding:17px;color:#7a809e;font-size:12px;font-weight:800;text-align:center}
+    .challenge{border:2px solid #e7e3f7;border-radius:16px;padding:13px;background:#fff}
+    .challenge-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+    .challenge-title{color:var(--dark);font-size:13px;font-weight:900}
+    .challenge-percent{color:var(--purple);font-size:11px;font-weight:900}
+    .track{height:11px;margin-top:10px;border-radius:999px;background:#e9e6f6;overflow:hidden}
+    .fill{height:100%;border-radius:inherit;background:linear-gradient(90deg,#5fcfff,#8a6cf4)}
+    .challenge-copy{margin-top:7px;color:#8287a3;font-size:10px;font-weight:800}
+    .quick-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:11px}
+    .quick-button{min-height:50px;border:0;border-radius:13px;padding:8px;color:var(--dark);background:var(--light);font-size:10px;font-weight:900}
+    .message{
+      position:fixed;z-index:200;right:20px;bottom:20px;display:none;max-width:360px;
+      border:2px solid #ed9daa;border-radius:15px;padding:13px 15px;
+      color:#a52d40;background:#ffe8ec;box-shadow:0 12px 30px rgba(80,25,38,.18);
+      font-size:12px;font-weight:800;
+    }
+    .message.visible{display:block}
+    @media(max-width:850px){
+      .summary{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .castle-wrap{height:520px;transform:scale(.87);transform-origin:top center;margin-bottom:-60px}
+      .bottom-grid{grid-template-columns:1fr}
+    }
+    @media(max-width:650px){
+      .topbar{align-items:flex-start}.top-actions{flex-direction:column}
+      .castle-wrap{width:710px;height:500px;left:50%;margin-left:-355px;transform:scale(.67);transform-origin:top center;margin-bottom:-155px}
+      .tree{display:none}.scene{min-height:710px}.characters{bottom:14px}.pet{right:8%;bottom:24px}
+      .bottom-panel{margin-top:-15px}.quick-actions{grid-template-columns:1fr}
     }
   </style>
 </head>
 
 <body>
-  <div
-    id="loadingScreen"
-    class="loading-screen">
-    Building your family castle...
-  </div>
+  <div id="loadingScreen" class="loading">Building your family castle...</div>
 
-  <main class="page">
-
-    <header class="topbar">
-
-      <div class="brand">
-
-        <div class="brand-icon">
-          🏰
-        </div>
-
-        <div class="brand-copy">
-          <h1>ELCraft Family Castle</h1>
-
-          <p>
-            Your family's learning home
-          </p>
-        </div>
-
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon">🏰</div>
+      <div>
+        <h1>ELCraft Family Castle</h1>
+        <p>Your family's learning home</p>
       </div>
+    </div>
 
-      <div class="topbar-actions">
+    <div class="top-actions">
+      <button id="dashboardButton" class="top-button" type="button">Dashboard</button>
+      <button id="playButton" class="top-button primary" type="button">Return to Game</button>
+      <button id="logoutButton" class="top-button" type="button">Log Out</button>
+    </div>
+  </header>
 
-        <button
-          id="dashboardButton"
-          class="topbar-button"
-          type="button">
-          Dashboard
-        </button>
-
-        <button
-          id="playButton"
-          class="topbar-button primary"
-          type="button">
-          Return to Game
-        </button>
-
-        <button
-          id="logoutButton"
-          class="topbar-button"
-          type="button">
-          Log Out
-        </button>
-
-      </div>
-
-    </header>
-
+  <main>
     <section class="scene">
-
       <div class="sun"></div>
-
-      <div class="cloud cloud-one">
-        ☁️
-      </div>
-
-      <div class="cloud cloud-two">
-        ☁️
-      </div>
+      <div class="cloud one">☁️</div>
+      <div class="cloud two">☁️</div>
 
       <div class="scene-title">
-
-        <h2 id="castleTitle">
-          The Family Castle
-        </h2>
-
-        <p>
-          Explore your family's learning kingdom.
-        </p>
-
+        <h2 id="castleTitle">The Family Castle</h2>
+        <p>Explore your family's learning kingdom.</p>
       </div>
 
-      <section class="family-summary">
-
-        <article class="summary-card">
-          <div
-            id="childrenCount"
-            class="summary-value">
-            0
-          </div>
-
-          <div class="summary-label">
-            Children
-          </div>
-        </article>
-
-        <article class="summary-card">
-          <div
-            id="adultsCount"
-            class="summary-value">
-            0
-          </div>
-
-          <div class="summary-label">
-            Adults
-          </div>
-        </article>
-
-        <article class="summary-card">
-          <div
-            id="starsCount"
-            class="summary-value">
-            0
-          </div>
-
-          <div class="summary-label">
-            Family Stars
-          </div>
-        </article>
-
-        <article class="summary-card">
-          <div
-            id="invitesCount"
-            class="summary-value">
-            0
-          </div>
-
-          <div class="summary-label">
-            Pending Invites
-          </div>
-        </article>
-
+      <section class="summary">
+        <article class="summary-card"><div id="childrenCount" class="summary-value">0</div><div class="summary-label">Children</div></article>
+        <article class="summary-card"><div id="adultsCount" class="summary-value">0</div><div class="summary-label">Adults</div></article>
+        <article class="summary-card"><div id="starsCount" class="summary-value">0</div><div class="summary-label">Family Stars</div></article>
+        <article class="summary-card"><div id="invitesCount" class="summary-value">0</div><div class="summary-label">Pending Invites</div></article>
       </section>
 
       <div class="castle-wrap">
-
         <div class="castle">
-
-          <div class="tower tower-left">
-            <div class="window"></div>
+          <div class="tower left"><div class="window"></div></div>
+          <div class="center">
+            <div class="window left"></div>
+            <div class="window right"></div>
+            <div class="door"></div>
           </div>
+          <div class="tower right"><div class="window"></div></div>
 
-          <div class="castle-center">
+          <div class="flag left"></div>
+          <div class="flag middle"></div>
+          <div class="flag right"></div>
 
-            <div class="window center-window-left"></div>
-            <div class="window center-window-right"></div>
-
-            <div class="castle-door"></div>
-
-          </div>
-
-          <div class="tower tower-right">
-            <div class="window"></div>
-          </div>
-
-          <div class="flag flag-left"></div>
-          <div class="flag flag-center"></div>
-          <div class="flag flag-right"></div>
-
-          <button
-            id="familyHallButton"
-            class="room-button room-family"
-            type="button">
-
-            <span>👨‍👩‍👧</span>
-            Family Hall
-
-          </button>
-
-          <button
-            id="libraryButton"
-            class="room-button room-library"
-            type="button">
-
-            <span>📚</span>
-            Library
-
-          </button>
-
-          <button
-            id="mailButton"
-            class="room-button room-mail"
-            type="button">
-
-            <span>📬</span>
-            Family Mail
-
-            <div
-              id="mailIndicator"
-              class="mail-indicator">
-              0
-            </div>
-
-          </button>
-
-          <button
-            id="trophyButton"
-            class="room-button room-trophy"
-            type="button">
-
-            <span>🏆</span>
-            Trophy Room
-
-          </button>
-
-          <button
-            id="petsButton"
-            class="room-button room-pets"
-            type="button">
-
-            <span>🐶</span>
-            Pet Stable
-
-          </button>
-
-          <button
-            id="feedButton"
-            class="room-button room-feed"
-            type="button">
-
-            <span>💜</span>
-            Family Feed
-
-          </button>
-
+          <button id="familyHallButton" class="room family" type="button"><span>👨‍👩‍👧</span>Family Hall</button>
+          <button id="libraryButton" class="room library" type="button"><span>📚</span>Library</button>
+          <button id="mailButton" class="room mail" type="button"><span>📬</span>Family Mail<div id="mailIndicator" class="mail-count">0</div></button>
+          <button id="trophyButton" class="room trophy" type="button"><span>🏆</span>Trophy Room</button>
+          <button id="petsButton" class="room pets" type="button"><span>🐶</span>Pet Stable</button>
+          <button id="feedButton" class="room feed" type="button"><span>💜</span>Family Feed</button>
         </div>
-
       </div>
 
       <div class="ground"></div>
       <div class="path"></div>
-
-      <div class="tree tree-left">
-        🌳
-      </div>
-
-      <div class="tree tree-right">
-        🌳
-      </div>
-
-      <div
-        id="characters"
-        class="characters">
-      </div>
-
-      <div class="pet">
-        🐕
-      </div>
-
+      <div class="tree left">🌳</div>
+      <div class="tree right">🌳</div>
+      <div id="characters" class="characters"></div>
+      <div class="pet">🐕</div>
     </section>
 
     <section class="bottom-panel">
-
       <div class="bottom-grid">
-
         <article class="panel">
-
           <h3>💜 Family Feed</h3>
-
-          <p class="panel-subtitle">
-            Recent family activity
-          </p>
-
-          <div
-            id="activityList"
-            class="activity-list">
-          </div>
-
+          <p class="panel-subtitle">Recent family activity</p>
+          <div id="activityList" class="activity-list"></div>
         </article>
 
         <article class="panel">
-
           <h3>🏆 Castle Challenge</h3>
-
-          <p class="panel-subtitle">
-            Work together to grow your castle
-          </p>
-
-          <div
-            id="challengeCard"
-            class="challenge-card">
-          </div>
+          <p class="panel-subtitle">Work together to grow your castle</p>
+          <div id="challengeCard" class="challenge"></div>
 
           <div class="quick-actions">
-
-            <button
-              id="manageFamilyButton"
-              class="quick-button"
-              type="button">
-              👨‍👩‍👧 Manage Family
-            </button>
-
-            <button
-              id="inviteButton"
-              class="quick-button"
-              type="button">
-              ✉️ Invite Family
-            </button>
-
-            <button
-              id="profilesButton"
-              class="quick-button"
-              type="button">
-              👧 Children
-            </button>
-
+            <button id="manageFamilyButton" class="quick-button" type="button">👨‍👩‍👧 Manage Family</button>
+            <button id="inviteButton" class="quick-button" type="button">✉️ Invite Family</button>
+            <button id="profilesButton" class="quick-button" type="button">👧 Children</button>
           </div>
-
         </article>
-
       </div>
-
     </section>
-
   </main>
 
-  <div
-    id="pageMessage"
-    class="message"
-    role="status"
-    aria-live="polite">
-  </div>
+  <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
 
   <script type="module">
     import { supabase } from "./supabase-client.js";
 
-    const SELECTED_CHILD_ID_KEY =
-      "elcraft_selected_child_id";
+    const SELECTED_CHILD_ID_KEY = "elcraft_selected_child_id";
+    const CHILD_NAME_KEY = "elcraft_child_name";
+    const CHILD_AVATAR_KEY = "elcraft_child_avatar";
 
-    const CHILD_NAME_KEY =
-      "elcraft_child_name";
+    const el = id => document.getElementById(id);
 
-    const CHILD_AVATAR_KEY =
-      "elcraft_child_avatar";
-
-    const loadingScreen =
-      document.getElementById("loadingScreen");
-
-    const castleTitle =
-      document.getElementById("castleTitle");
-
-    const childrenCount =
-      document.getElementById("childrenCount");
-
-    const adultsCount =
-      document.getElementById("adultsCount");
-
-    const starsCount =
-      document.getElementById("starsCount");
-
-    const invitesCount =
-      document.getElementById("invitesCount");
-
-    const mailIndicator =
-      document.getElementById("mailIndicator");
-
-    const characters =
-      document.getElementById("characters");
-
-    const activityList =
-      document.getElementById("activityList");
-
-    const challengeCard =
-      document.getElementById("challengeCard");
-
-    const pageMessage =
-      document.getElementById("pageMessage");
-
-    const dashboardButton =
-      document.getElementById("dashboardButton");
-
-    const playButton =
-      document.getElementById("playButton");
-
-    const logoutButton =
-      document.getElementById("logoutButton");
-
-    const familyHallButton =
-      document.getElementById("familyHallButton");
-
-    const libraryButton =
-      document.getElementById("libraryButton");
-
-    const mailButton =
-      document.getElementById("mailButton");
-
-    const trophyButton =
-      document.getElementById("trophyButton");
-
-    const petsButton =
-      document.getElementById("petsButton");
-
-    const feedButton =
-      document.getElementById("feedButton");
-
-    const manageFamilyButton =
-      document.getElementById("manageFamilyButton");
-
-    const inviteButton =
-      document.getElementById("inviteButton");
-
-    const profilesButton =
-      document.getElementById("profilesButton");
+    const loadingScreen = el("loadingScreen");
+    const castleTitle = el("castleTitle");
+    const childrenCount = el("childrenCount");
+    const adultsCount = el("adultsCount");
+    const starsCount = el("starsCount");
+    const invitesCount = el("invitesCount");
+    const mailIndicator = el("mailIndicator");
+    const characters = el("characters");
+    const activityList = el("activityList");
+    const challengeCard = el("challengeCard");
+    const pageMessage = el("pageMessage");
 
     let currentUser = null;
     let currentFamilyId = null;
@@ -1569,905 +353,354 @@
     function showError(message) {
       pageMessage.textContent = message;
       pageMessage.classList.add("visible");
-
-      window.setTimeout(
-        () => {
-          pageMessage.classList.remove("visible");
-        },
-        5000
-      );
+      setTimeout(() => pageMessage.classList.remove("visible"), 5000);
     }
 
-    function getFirstName(user) {
+    function firstNameFromUser(user) {
       const metadataName =
         user?.user_metadata?.display_name ||
         user?.user_metadata?.full_name ||
         user?.user_metadata?.name;
 
-      if (metadataName) {
-        return String(metadataName)
-          .trim()
-          .split(/\s+/)[0]
-          .slice(0, 30);
-      }
+      if (metadataName) return String(metadataName).trim().split(/\s+/)[0].slice(0,30);
 
-      const emailName =
-        String(user?.email || "")
-          .split("@")[0]
-          .replace(/[._-]+/g, " ")
-          .trim()
-          .split(/\s+/)[0];
+      const emailName = String(user?.email || "")
+        .split("@")[0]
+        .replace(/[._-]+/g," ")
+        .trim()
+        .split(/\s+/)[0];
 
-      if (!emailName) {
-        return "Family";
-      }
-
-      return (
-        emailName.charAt(0).toUpperCase() +
-        emailName.slice(1)
-      );
+      return emailName
+        ? emailName.charAt(0).toUpperCase() + emailName.slice(1)
+        : "Family";
     }
 
     function relationshipEmoji(value) {
-      const emojis = {
-        parent: "👨",
-        grandparent: "👵",
-        older_sibling: "🧑",
-        aunt_uncle: "💜",
-        guardian: "🛡️",
-        family_member: "⭐"
-      };
-
-      return emojis[value] || "⭐";
+      return {
+        parent:"👨",
+        grandparent:"👵",
+        older_sibling:"🧑",
+        aunt_uncle:"💜",
+        guardian:"🛡️",
+        family_member:"⭐"
+      }[value] || "⭐";
     }
 
-    function formatRelativeDate(value) {
-      if (!value) {
-        return "";
-      }
-
+    function relativeDate(value) {
+      if (!value) return "";
       const date = new Date(value);
+      if (Number.isNaN(date.getTime())) return "";
 
-      if (Number.isNaN(date.getTime())) {
-        return "";
-      }
+      const days = Math.floor((Date.now() - date.getTime()) / 86400000);
+      if (days <= 0) return "Today";
+      if (days === 1) return "Yesterday";
+      if (days < 7) return `${days} days ago`;
 
-      const milliseconds =
-        Date.now() - date.getTime();
-
-      const days =
-        Math.floor(
-          milliseconds / 86400000
-        );
-
-      if (days <= 0) {
-        return "Today";
-      }
-
-      if (days === 1) {
-        return "Yesterday";
-      }
-
-      if (days < 7) {
-        return `${days} days ago`;
-      }
-
-      return date.toLocaleDateString(
-        undefined,
-        {
-          month: "short",
-          day: "numeric"
-        }
-      );
+      return date.toLocaleDateString(undefined,{month:"short",day:"numeric"});
     }
 
     function renderCharacters() {
       characters.replaceChildren();
 
-      const visibleMembers =
-        members.slice(0, 3);
+      members.slice(0,3).forEach(member => {
+        const card = document.createElement("div");
+        card.className = "character";
+        card.style.cursor = "pointer";
 
-      visibleMembers.forEach(member => {
-        const character =
-          document.createElement("div");
+        const avatar = document.createElement("div");
+        avatar.className = "character-avatar";
+        avatar.textContent = member.member_role === "owner" ? "👑" : relationshipEmoji(member.relationship);
 
-        character.className =
-          "character";
+        const name = document.createElement("div");
+        name.className = "character-name";
+        name.textContent = member.display_name || (member.member_role === "owner" ? firstNameFromUser(currentUser) : "Family");
 
-        const avatar =
-          document.createElement("div");
-
-        avatar.className =
-          "character-avatar";
-
-        avatar.textContent =
-          member.member_role === "owner"
-            ? "👑"
-            : relationshipEmoji(
-                member.relationship
-              );
-
-        const name =
-          document.createElement("div");
-
-        name.className =
-          "character-name";
-
-        name.textContent =
-          member.display_name ||
-          (
-            member.member_role === "owner"
-              ? getFirstName(currentUser)
-              : "Family"
-          );
-
-        character.append(
-          avatar,
-          name
-        );
-
-        character.addEventListener(
-          "click",
-          () => {
-            window.location.href =
-              `family-member.html?member=${
-                encodeURIComponent(member.id)
-              }`;
-          }
-        );
-
-        character.style.cursor =
-          "pointer";
-
-        characters.appendChild(character);
+        card.append(avatar,name);
+        card.addEventListener("click",() => {
+          window.location.href = `family-member.html?member=${encodeURIComponent(member.id)}`;
+        });
+        characters.appendChild(card);
       });
 
-      children.slice(0, 3).forEach(child => {
-        const character =
-          document.createElement("div");
+      children.slice(0,3).forEach(child => {
+        const card = document.createElement("div");
+        card.className = "character";
+        card.style.cursor = "pointer";
 
-        character.className =
-          "character";
+        const avatar = document.createElement("div");
+        avatar.className = "character-avatar";
+        avatar.textContent = child.avatar || "👧";
 
-        const avatar =
-          document.createElement("div");
+        const name = document.createElement("div");
+        name.className = "character-name";
+        name.textContent = child.display_name || "Child";
 
-        avatar.className =
-          "character-avatar";
-
-        avatar.textContent =
-          child.avatar || "👧";
-
-        const name =
-          document.createElement("div");
-
-        name.className =
-          "character-name";
-
-        name.textContent =
-          child.display_name || "Child";
-
-        character.append(
-          avatar,
-          name
-        );
-
-        character.style.cursor =
-          "pointer";
-
-        character.addEventListener(
-          "click",
-          () => {
-            localStorage.setItem(
-              SELECTED_CHILD_ID_KEY,
-              child.id
-            );
-
-            localStorage.setItem(
-              CHILD_NAME_KEY,
-              child.display_name || ""
-            );
-
-            localStorage.setItem(
-              CHILD_AVATAR_KEY,
-              child.avatar || ""
-            );
-
-            window.location.href =
-              "index.html";
-          }
-        );
-
-        characters.appendChild(character);
+        card.append(avatar,name);
+        card.addEventListener("click",() => {
+          saveSelectedChild(child);
+          window.location.href = "index.html";
+        });
+        characters.appendChild(card);
       });
     }
 
-    function createActivityItem(
-      icon,
-      message,
-      date
-    ) {
-      const item =
-        document.createElement("article");
+    function activityItem(icon,message,date) {
+      const item = document.createElement("article");
+      item.className = "activity-item";
 
-      item.className =
-        "activity-item";
+      const iconBox = document.createElement("div");
+      iconBox.className = "activity-icon";
+      iconBox.textContent = icon;
 
-      const iconElement =
-        document.createElement("div");
+      const copy = document.createElement("div");
 
-      iconElement.className =
-        "activity-icon";
+      const messageBox = document.createElement("div");
+      messageBox.className = "activity-message";
+      messageBox.textContent = message;
 
-      iconElement.textContent =
-        icon;
+      const dateBox = document.createElement("div");
+      dateBox.className = "activity-date";
+      dateBox.textContent = relativeDate(date);
 
-      const copy =
-        document.createElement("div");
-
-      copy.className =
-        "activity-copy";
-
-      const messageElement =
-        document.createElement("div");
-
-      messageElement.className =
-        "activity-message";
-
-      messageElement.textContent =
-        message;
-
-      const dateElement =
-        document.createElement("div");
-
-      dateElement.className =
-        "activity-date";
-
-      dateElement.textContent =
-        formatRelativeDate(date);
-
-      copy.append(
-        messageElement,
-        dateElement
-      );
-
-      item.append(
-        iconElement,
-        copy
-      );
-
+      copy.append(messageBox,dateBox);
+      item.append(iconBox,copy);
       return item;
     }
 
     function renderActivity() {
       activityList.replaceChildren();
-
       const events = [];
 
       children.forEach(child => {
         events.push({
-          icon: child.avatar || "🌟",
-          message:
-            `${child.display_name || "A child"} joined the learning kingdom.`,
-          date: child.created_at
+          icon:child.avatar || "🌟",
+          message:`${child.display_name || "A child"} joined the learning kingdom.`,
+          date:child.created_at
         });
 
-        if (
-          Number(child.level || 1) > 1
-        ) {
+        if (Number(child.level || 1) > 1) {
           events.push({
-            icon: "🏆",
-            message:
-              `${child.display_name || "A child"} reached Level ${
-                Number(child.level || 1)
-              }.`,
-            date: child.updated_at || child.created_at
+            icon:"🏆",
+            message:`${child.display_name || "A child"} reached Level ${Number(child.level || 1)}.`,
+            date:child.updated_at || child.created_at
           });
         }
 
-        if (
-          Number(child.stars || 0) > 0
-        ) {
+        if (Number(child.stars || 0) > 0) {
           events.push({
-            icon: "⭐",
-            message:
-              `${child.display_name || "A child"} has earned ${
-                Number(child.stars || 0)
-              } stars.`,
-            date: child.updated_at || child.created_at
+            icon:"⭐",
+            message:`${child.display_name || "A child"} has earned ${Number(child.stars || 0)} stars.`,
+            date:child.updated_at || child.created_at
           });
         }
       });
 
       members.forEach(member => {
-        if (
-          member.member_role !== "owner"
-        ) {
+        if (member.member_role !== "owner") {
           events.push({
-            icon:
-              relationshipEmoji(
-                member.relationship
-              ),
-            message:
-              `${member.display_name || "A family member"} joined the castle.`,
-            date: member.created_at
+            icon:relationshipEmoji(member.relationship),
+            message:`${member.display_name || "A family member"} joined the castle.`,
+            date:member.created_at
           });
         }
       });
 
       invitations.forEach(invitation => {
         events.push({
-          icon: "✉️",
-          message:
-            `An invitation was sent to ${
-              invitation.display_name ||
-              invitation.email ||
-              "a family member"
-            }.`,
-          date: invitation.created_at
+          icon:"✉️",
+          message:`An invitation was sent to ${invitation.display_name || invitation.email || "a family member"}.`,
+          date:invitation.created_at
         });
       });
 
-      events.sort(
-        (first, second) => {
-          return (
-            new Date(
-              second.date || 0
-            ).getTime() -
-            new Date(
-              first.date || 0
-            ).getTime()
-          );
-        }
-      );
+      events.sort((a,b) => new Date(b.date || 0) - new Date(a.date || 0));
 
-      const visibleEvents =
-        events.slice(0, 6);
-
-      if (!visibleEvents.length) {
-        const empty =
-          document.createElement("div");
-
-        empty.className =
-          "empty-state";
-
-        empty.textContent =
-          "Family achievements and celebrations will appear here.";
-
+      if (!events.length) {
+        const empty = document.createElement("div");
+        empty.className = "empty";
+        empty.textContent = "Family achievements and celebrations will appear here.";
         activityList.appendChild(empty);
         return;
       }
 
-      visibleEvents.forEach(event => {
-        activityList.appendChild(
-          createActivityItem(
-            event.icon,
-            event.message,
-            event.date
-          )
-        );
+      events.slice(0,6).forEach(event => {
+        activityList.appendChild(activityItem(event.icon,event.message,event.date));
       });
     }
 
     function renderChallenge() {
       challengeCard.replaceChildren();
 
-      const totalStars =
-        children.reduce(
-          (total, child) => {
-            return (
-              total +
-              Number(child.stars || 0)
-            );
-          },
-          0
-        );
-
+      const totalStars = children.reduce((total,child) => total + Number(child.stars || 0),0);
       const goal = 500;
+      const percentage = Math.min(100,Math.round((Math.min(totalStars,goal) / goal) * 100));
 
-      const progress =
-        Math.min(
-          totalStars,
-          goal
-        );
+      const row = document.createElement("div");
+      row.className = "challenge-row";
 
-      const percentage =
-        Math.min(
-          100,
-          Math.round(
-            (
-              progress /
-              goal
-            ) * 100
-          )
-        );
+      const title = document.createElement("div");
+      title.className = "challenge-title";
+      title.textContent = "⭐ Earn 500 Family Stars";
 
-      const titleRow =
-        document.createElement("div");
+      const percent = document.createElement("div");
+      percent.className = "challenge-percent";
+      percent.textContent = `${percentage}%`;
 
-      titleRow.className =
-        "challenge-title-row";
+      const track = document.createElement("div");
+      track.className = "track";
 
-      const title =
-        document.createElement("div");
-
-      title.className =
-        "challenge-title";
-
-      title.textContent =
-        "⭐ Earn 500 Family Stars";
-
-      const percent =
-        document.createElement("div");
-
-      percent.className =
-        "challenge-percent";
-
-      percent.textContent =
-        `${percentage}%`;
-
-      titleRow.append(
-        title,
-        percent
-      );
-
-      const track =
-        document.createElement("div");
-
-      track.className =
-        "progress-track";
-
-      const fill =
-        document.createElement("div");
-
-      fill.className =
-        "progress-fill";
-
-      fill.style.width =
-        `${percentage}%`;
-
+      const fill = document.createElement("div");
+      fill.className = "fill";
+      fill.style.width = `${percentage}%`;
       track.appendChild(fill);
 
-      const description =
-        document.createElement("div");
+      const copy = document.createElement("div");
+      copy.className = "challenge-copy";
+      copy.textContent = `${totalStars} of ${goal} stars earned`;
 
-      description.className =
-        "challenge-description";
-
-      description.textContent =
-        `${totalStars} of ${goal} stars earned`;
-
-      challengeCard.append(
-        titleRow,
-        track,
-        description
-      );
+      row.append(title,percent);
+      challengeCard.append(row,track,copy);
     }
 
-    function selectFirstChildAndPlay() {
-      if (!children.length) {
-        window.location.href =
-          "profiles.html";
+    function saveSelectedChild(child) {
+      localStorage.setItem(SELECTED_CHILD_ID_KEY,child.id);
+      localStorage.setItem(CHILD_NAME_KEY,child.display_name || "");
+      localStorage.setItem(CHILD_AVATAR_KEY,child.avatar || "");
+    }
 
+    function playGame() {
+      if (!children.length) {
+        window.location.href = "profiles.html";
         return;
       }
 
-      const selectedId =
-        localStorage.getItem(
-          SELECTED_CHILD_ID_KEY
-        );
-
-      const selectedChild =
-        children.find(
-          child =>
-            child.id === selectedId
-        ) ||
-        children[0];
-
-      localStorage.setItem(
-        SELECTED_CHILD_ID_KEY,
-        selectedChild.id
-      );
-
-      localStorage.setItem(
-        CHILD_NAME_KEY,
-        selectedChild.display_name || ""
-      );
-
-      localStorage.setItem(
-        CHILD_AVATAR_KEY,
-        selectedChild.avatar || ""
-      );
-
-      window.location.href =
-        "index.html";
+      const selectedId = localStorage.getItem(SELECTED_CHILD_ID_KEY);
+      const selectedChild = children.find(child => child.id === selectedId) || children[0];
+      saveSelectedChild(selectedChild);
+      window.location.href = "index.html";
     }
 
     async function loadCastle() {
-      const {
-        data: userData,
-        error: userError
-      } = await supabase.auth.getUser();
+      const { data:userData, error:userError } = await supabase.auth.getUser();
 
-      if (
-        userError ||
-        !userData.user
-      ) {
-        window.location.replace(
-          "auth.html"
-        );
-
+      if (userError || !userData.user) {
+        window.location.replace("auth.html");
         return;
       }
 
-      currentUser =
-        userData.user;
+      currentUser = userData.user;
 
-      const {
-        data: memberships,
-        error: membershipError
-      } = await supabase
+      const { data:membershipRows, error:membershipError } = await supabase
         .from("family_members")
-        .select(
-          "id, user_id, family_id, display_name, email, relationship, member_role, status, created_at"
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .eq(
-          "status",
-          "active"
-        );
+        .select("id,user_id,family_id,display_name,email,relationship,member_role,status,created_at")
+        .eq("user_id",currentUser.id)
+        .eq("status","active");
 
-      if (membershipError) {
-        throw membershipError;
-      }
+      if (membershipError) throw membershipError;
 
-      const membershipList =
-        memberships || [];
-
-      const ownerMembership =
-        membershipList.find(
-          membership =>
-            membership.member_role ===
-            "owner"
-        );
-
+      const membershipList = membershipRows || [];
       const activeMembership =
-        ownerMembership ||
+        membershipList.find(item => item.member_role === "owner") ||
         membershipList[0];
 
       if (!activeMembership) {
-        throw new Error(
-          "This account is not connected to a family."
-        );
+        throw new Error("This account is not connected to a family.");
       }
 
-      currentFamilyId =
-        activeMembership.family_id;
+      currentFamilyId = activeMembership.family_id;
 
-      const [
-        membersResult,
-        invitationsResult,
-        childrenResult
-      ] = await Promise.all([
-
+      const [membersResult,invitationsResult] = await Promise.all([
         supabase
           .from("family_members")
-          .select(
-            "id, user_id, family_id, display_name, email, relationship, member_role, status, created_at"
-          )
-          .eq(
-            "family_id",
-            currentFamilyId
-          )
-          .eq(
-            "status",
-            "active"
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          ),
+          .select("id,user_id,family_id,display_name,email,relationship,member_role,status,created_at")
+          .eq("family_id",currentFamilyId)
+          .eq("status","active")
+          .order("created_at",{ascending:true}),
 
         supabase
           .from("family_invitations")
-          .select(
-            "id, family_id, display_name, email, relationship, status, created_at"
-          )
-          .eq(
-            "family_id",
-            currentFamilyId
-          )
-          .eq(
-            "status",
-            "pending"
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          ),
-
-        supabase
-          .from("child_profiles")
-          .select(
-            "id, display_name, avatar, level, stars, experience, created_at, updated_at"
-          )
-          .eq(
-            "parent_id",
-            activeMembership.member_role === "owner"
-              ? currentUser.id
-              : activeMembership.owner_user_id || currentUser.id
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          )
-
+          .select("id,family_id,display_name,email,relationship,status,created_at")
+          .eq("family_id",currentFamilyId)
+          .eq("status","pending")
+          .order("created_at",{ascending:false})
       ]);
 
-      if (membersResult.error) {
-        throw membersResult.error;
-      }
+      if (membersResult.error) throw membersResult.error;
+      if (invitationsResult.error) throw invitationsResult.error;
 
-      if (invitationsResult.error) {
-        throw invitationsResult.error;
-      }
+      members = membersResult.data || [];
+      invitations = invitationsResult.data || [];
 
-      /*
-        Some family_members tables do not contain owner_user_id.
-        If an invited member cannot load child profiles,
-        the fallback below attempts to use the family owner's user_id.
-      */
+      const owner = members.find(member => member.member_role === "owner");
+      const ownerUserId = owner?.user_id || currentUser.id;
 
-      members =
-        membersResult.data || [];
+      const { data:childRows, error:childrenError } = await supabase
+        .from("child_profiles")
+        .select("id,display_name,avatar,level,stars,experience,created_at,updated_at")
+        .eq("parent_id",ownerUserId)
+        .order("created_at",{ascending:true});
 
-      invitations =
-        invitationsResult.data || [];
+      if (childrenError) throw childrenError;
+      children = childRows || [];
 
-      if (childrenResult.error) {
-        const owner =
-          members.find(
-            member =>
-              member.member_role ===
-              "owner"
-          );
+      const familyName = owner?.display_name
+        ? String(owner.display_name).trim().split(/\s+/)[0]
+        : firstNameFromUser(currentUser);
 
-        if (!owner?.user_id) {
-          throw childrenResult.error;
-        }
+      castleTitle.textContent = `${familyName}'s Family Castle`;
 
-        const {
-          data: fallbackChildren,
-          error: fallbackError
-        } = await supabase
-          .from("child_profiles")
-          .select(
-            "id, display_name, avatar, level, stars, experience, created_at, updated_at"
-          )
-          .eq(
-            "parent_id",
-            owner.user_id
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          );
+      const totalStars = children.reduce((total,child) => total + Number(child.stars || 0),0);
 
-        if (fallbackError) {
-          throw fallbackError;
-        }
-
-        children =
-          fallbackChildren || [];
-      } else {
-        children =
-          childrenResult.data || [];
-      }
-
-      const familyName =
-        getFirstName(
-          members.find(
-            member =>
-              member.member_role ===
-              "owner"
-          )?.user_id === currentUser.id
-            ? currentUser
-            : currentUser
-        );
-
-      castleTitle.textContent =
-        `${familyName}'s Family Castle`;
-
-      const totalStars =
-        children.reduce(
-          (total, child) =>
-            total +
-            Number(child.stars || 0),
-          0
-        );
-
-      childrenCount.textContent =
-        String(children.length);
-
-      adultsCount.textContent =
-        String(members.length);
-
-      starsCount.textContent =
-        String(totalStars);
-
-      invitesCount.textContent =
-        String(invitations.length);
-
-      mailIndicator.textContent =
-        String(invitations.length);
-
-      mailIndicator.hidden =
-        invitations.length === 0;
+      childrenCount.textContent = String(children.length);
+      adultsCount.textContent = String(members.length);
+      starsCount.textContent = String(totalStars);
+      invitesCount.textContent = String(invitations.length);
+      mailIndicator.textContent = String(invitations.length);
+      mailIndicator.hidden = invitations.length === 0;
 
       renderCharacters();
       renderActivity();
       renderChallenge();
-
-      loadingScreen.classList.add(
-        "hidden"
-      );
+      loadingScreen.classList.add("hidden");
     }
 
-    dashboardButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "parent-dashboard.html";
+    el("dashboardButton").addEventListener("click",() => window.location.href = "parent-dashboard.html");
+    el("playButton").addEventListener("click",playGame);
+    el("familyHallButton").addEventListener("click",() => window.location.href = "family-hub.html");
+    el("libraryButton").addEventListener("click",() => window.location.href = "progress.html");
+    el("mailButton").addEventListener("click",() => window.location.href = "family-portal.html");
+    el("trophyButton").addEventListener("click",() => window.location.href = "rewards.html");
+    el("petsButton").addEventListener("click",playGame);
+    el("feedButton").addEventListener("click",() => window.location.href = "family-feed.html");
+    el("manageFamilyButton").addEventListener("click",() => window.location.href = "family-portal.html");
+    el("inviteButton").addEventListener("click",() => window.location.href = "family-portal.html?invite=true");
+    el("profilesButton").addEventListener("click",() => window.location.href = "profiles.html");
+
+    el("logoutButton").addEventListener("click",async() => {
+      const button = el("logoutButton");
+      button.disabled = true;
+      button.textContent = "Logging out...";
+
+      localStorage.removeItem(SELECTED_CHILD_ID_KEY);
+      localStorage.removeItem(CHILD_NAME_KEY);
+      localStorage.removeItem(CHILD_AVATAR_KEY);
+
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        button.disabled = false;
+        button.textContent = "Log Out";
+        showError(error.message || "Unable to log out.");
+        return;
       }
-    );
 
-    playButton.addEventListener(
-      "click",
-      selectFirstChildAndPlay
-    );
-
-    familyHallButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-hub.html";
-      }
-    );
-
-    libraryButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "progress.html";
-      }
-    );
-
-    mailButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-portal.html";
-      }
-    );
-
-    trophyButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "rewards.html";
-      }
-    );
-
-    petsButton.addEventListener(
-      "click",
-      () => {
-        selectFirstChildAndPlay();
-      }
-    );
-
-    feedButton.addEventListener(
-      "click",
-      () => {
-        document
-          .querySelector(".bottom-panel")
-          .scrollIntoView({
-            behavior: "smooth",
-            block: "start"
-          });
-      }
-    );
-
-    manageFamilyButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-portal.html";
-      }
-    );
-
-    inviteButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-portal.html?invite=true";
-      }
-    );
-
-    profilesButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "profiles.html";
-      }
-    );
-
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-        logoutButton.disabled = true;
-        logoutButton.textContent =
-          "Logging out...";
-
-        localStorage.removeItem(
-          SELECTED_CHILD_ID_KEY
-        );
-
-        localStorage.removeItem(
-          CHILD_NAME_KEY
-        );
-
-        localStorage.removeItem(
-          CHILD_AVATAR_KEY
-        );
-
-        const {
-          error
-        } = await supabase.auth.signOut();
-
-        if (error) {
-          logoutButton.disabled = false;
-          logoutButton.textContent =
-            "Log Out";
-
-          showError(
-            error.message ||
-            "Unable to log out."
-          );
-
-          return;
-        }
-
-        window.location.replace(
-          "auth.html"
-        );
-      }
-    );
+      window.location.replace("auth.html");
+    });
 
     loadCastle().catch(error => {
-      console.error(
-        "Family Castle error:",
-        error
-      );
-
-      loadingScreen.classList.add(
-        "hidden"
-      );
-
-      showError(
-        error?.message ||
-        "Unable to load the Family Castle."
-      );
+      console.error("Family Castle error:",error);
+      loadingScreen.classList.add("hidden");
+      showError(error?.message || "Unable to load the Family Castle.");
     });
   </script>
 </body>
