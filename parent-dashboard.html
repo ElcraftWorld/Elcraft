@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#6ec6ff">
+  <title>Parent Dashboard | ELCraft</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding: 24px;
+      color: #30365d;
+      font-family: Arial, Helvetica, sans-serif;
+      background:
+        radial-gradient(circle at 15% 15%, rgba(255,255,255,.7), transparent 24%),
+        radial-gradient(circle at 85% 80%, rgba(176,115,255,.42), transparent 28%),
+        linear-gradient(145deg, #72d5ff 0%, #72b9ff 46%, #a889ff 100%);
+    }
+
+    button { font: inherit; }
+
+    .page {
+      width: min(1060px, 100%);
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      text-shadow: 0 3px 8px rgba(39,46,111,.3);
+    }
+
+    .brand-icon { font-size: 42px; }
+
+    .brand h1 {
+      margin: 0;
+      font-size: clamp(28px, 5vw, 42px);
+    }
+
+    .logout-button {
+      border: 2px solid rgba(255,255,255,.8);
+      border-radius: 14px;
+      padding: 11px 16px;
+      color: #554dbd;
+      background: rgba(255,255,255,.94);
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .main-card {
+      border: 4px solid rgba(255,255,255,.85);
+      border-radius: 32px;
+      padding: clamp(22px, 5vw, 42px);
+      background: rgba(255,255,255,.97);
+      box-shadow: 0 24px 65px rgba(42,48,120,.28);
+    }
+
+    .heading {
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    .heading h2 {
+      margin: 0;
+      color: #554ecb;
+      font-size: clamp(30px, 6vw, 48px);
+    }
+
+    .heading p {
+      margin: 10px 0 0;
+      color: #697198;
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .account-email {
+      margin-top: 8px;
+      color: #8a8fab;
+      font-size: 13px;
+      overflow-wrap: anywhere;
+    }
+
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 220px;
+      color: #5b54c9;
+      font-size: 18px;
+      font-weight: 900;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .dashboard-card {
+      min-height: 205px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border: 3px solid #e0def8;
+      border-radius: 25px;
+      padding: 24px;
+      color: #353b68;
+      background: linear-gradient(150deg, #ffffff, #f4f2ff);
+      box-shadow: 0 9px 20px rgba(73,65,157,.12);
+      cursor: pointer;
+      transition: transform .16s ease, box-shadow .16s ease, border-color .16s ease;
+    }
+
+    .dashboard-card:hover {
+      transform: translateY(-4px);
+      border-color: #8879ef;
+      box-shadow: 0 14px 26px rgba(73,65,157,.2);
+    }
+
+    .dashboard-card:active { transform: translateY(0); }
+
+    .dashboard-card:disabled {
+      opacity: .65;
+      cursor: default;
+    }
+
+    .dashboard-card:disabled:hover {
+      transform: none;
+      border-color: #e0def8;
+      box-shadow: 0 9px 20px rgba(73,65,157,.12);
+    }
+
+    .card-icon {
+      width: 84px;
+      height: 84px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 5px solid white;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #82d8ff, #b28cff);
+      box-shadow: 0 8px 18px rgba(68,65,145,.22);
+      font-size: 44px;
+    }
+
+    .dashboard-card h3 {
+      margin: 16px 0 6px;
+      color: #4d47ba;
+      font-size: 23px;
+    }
+
+    .dashboard-card p {
+      margin: 0;
+      color: #747a9b;
+      font-size: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .coming-soon {
+      display: inline-block;
+      margin-top: 11px;
+      border-radius: 999px;
+      padding: 6px 9px;
+      color: #795c1b;
+      background: #fff1d4;
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .message {
+      display: none;
+      margin: 20px 0 0;
+      padding: 13px 16px;
+      border-radius: 14px;
+      font-weight: 800;
+      line-height: 1.4;
+      text-align: center;
+    }
+
+    .message.error {
+      display: block;
+      border: 1px solid #eeaab2;
+      color: #a52d40;
+      background: #ffe8ec;
+    }
+
+    @media (max-width: 560px) {
+      body { padding: 14px; }
+      .topbar { align-items: flex-start; }
+      .brand-icon { font-size: 34px; }
+      .main-card { border-radius: 25px; }
+      .dashboard-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .dashboard-card { min-height: 185px; padding: 17px 10px; }
+      .card-icon { width: 72px; height: 72px; font-size: 37px; }
+      .dashboard-card h3 { font-size: 18px; }
+      .dashboard-card p { font-size: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="page">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon">🏰</div>
+        <h1>ELCraft</h1>
+      </div>
+
+      <button id="logoutButton" class="logout-button" type="button">
+        Log Out
+      </button>
+    </header>
+
+    <section class="main-card">
+      <div class="heading">
+        <h2>Parent Dashboard</h2>
+        <p>Manage your children, family access and ELCraft account.</p>
+        <div id="accountEmail" class="account-email"></div>
+      </div>
+
+      <div id="loading" class="loading">Loading dashboard...</div>
+
+      <div id="dashboardGrid" class="dashboard-grid" hidden>
+        <button id="childrenButton" class="dashboard-card" type="button">
+          <div class="card-icon">👧</div>
+          <h3>Children</h3>
+          <p>Create child profiles and choose a player.</p>
+        </button>
+
+        <button id="familyButton" class="dashboard-card" type="button">
+          <div class="card-icon">👨‍👩‍👧</div>
+          <h3>Family</h3>
+          <p>Invite family members and manage child access.</p>
+        </button>
+
+        <button class="dashboard-card" type="button" disabled>
+          <div class="card-icon">📈</div>
+          <h3>Progress</h3>
+          <p>View learning activity and progress reports.</p>
+          <span class="coming-soon">Coming Soon</span>
+        </button>
+
+        <button class="dashboard-card" type="button" disabled>
+          <div class="card-icon">⭐</div>
+          <h3>Rewards</h3>
+          <p>Manage rewards, achievements and encouragement.</p>
+          <span class="coming-soon">Coming Soon</span>
+        </button>
+
+        <button class="dashboard-card" type="button" disabled>
+          <div class="card-icon">⚙️</div>
+          <h3>Settings</h3>
+          <p>Manage account and family preferences.</p>
+          <span class="coming-soon">Coming Soon</span>
+        </button>
+      </div>
+
+      <div id="pageMessage" class="message" role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY = "elcraft_selected_child_id";
+    const CHILD_NAME_KEY = "elcraft_child_name";
+    const CHILD_AVATAR_KEY = "elcraft_child_avatar";
+
+    const loading = document.getElementById("loading");
+    const dashboardGrid = document.getElementById("dashboardGrid");
+    const accountEmail = document.getElementById("accountEmail");
+    const pageMessage = document.getElementById("pageMessage");
+    const childrenButton = document.getElementById("childrenButton");
+    const familyButton = document.getElementById("familyButton");
+    const logoutButton = document.getElementById("logoutButton");
+
+    function showError(text) {
+      pageMessage.textContent = text;
+      pageMessage.className = "message error";
+    }
+
+    async function loadDashboard() {
+      const { data: userData, error: userError } =
+        await supabase.auth.getUser();
+
+      if (userError || !userData.user) {
+        window.location.replace("auth.html");
+        return;
+      }
+
+      const user = userData.user;
+      accountEmail.textContent = user.email || "";
+
+      const { data: memberships, error: membershipError } =
+        await supabase
+          .from("family_members")
+          .select("id, family_id, member_role, status")
+          .eq("user_id", user.id)
+          .eq("status", "active");
+
+      if (membershipError) {
+        console.error("Dashboard role error:", membershipError);
+        loading.hidden = true;
+        dashboardGrid.hidden = false;
+        showError(
+          membershipError.message ||
+          "Unable to load the parent dashboard."
+        );
+        return;
+      }
+
+      const ownerMembership = (memberships || []).find(
+        membership => membership.member_role === "owner"
+      );
+
+      if (!ownerMembership) {
+        window.location.replace("profiles.html");
+        return;
+      }
+
+      loading.hidden = true;
+      dashboardGrid.hidden = false;
+    }
+
+    childrenButton.addEventListener("click", () => {
+      window.location.href = "profiles.html";
+    });
+
+    familyButton.addEventListener("click", () => {
+      window.location.href = "family-portal.html";
+    });
+
+    logoutButton.addEventListener("click", async () => {
+      logoutButton.disabled = true;
+      logoutButton.textContent = "Logging out...";
+
+      localStorage.removeItem(SELECTED_CHILD_ID_KEY);
+      localStorage.removeItem(CHILD_NAME_KEY);
+      localStorage.removeItem(CHILD_AVATAR_KEY);
+
+      const { error } = await supabase.auth.signOut();
+
+      if (error) {
+        console.error("Logout error:", error);
+        logoutButton.disabled = false;
+        logoutButton.textContent = "Log Out";
+        showError(error.message || "Unable to log out.");
+        return;
+      }
+
+      window.location.replace("auth.html");
+    });
+
+    loadDashboard();
+  </script>
+</body>
+</html>
