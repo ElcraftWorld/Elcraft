@@ -7,9 +7,9 @@
     name="viewport"
     content="width=device-width, initial-scale=1, viewport-fit=cover">
 
-  <meta name="theme-color" content="#f5efff">
+  <meta name="theme-color" content="#f7efff">
 
-  <title>ELCraft — Avatar Studio</title>
+  <title>ELCraft — Style Studio</title>
 
   <style>
     * {
@@ -17,14 +17,17 @@
     }
 
     :root {
-      --purple: #6f55d9;
+      --purple: #7057d8;
       --purple-dark: #4e3aa9;
-      --purple-light: #eee9ff;
-      --pink: #ff83b8;
-      --blue: #65c9ef;
-      --green: #75c95c;
-      --ink: #35405f;
+      --purple-light: #efeaff;
+      --pink: #ff79ae;
+      --pink-dark: #d9508b;
+      --blue: #68c8ef;
+      --green: #79c95d;
+      --gold: #ffd75e;
+      --ink: #35415f;
       --muted: #747c98;
+      --panel: rgba(255,255,255,.97);
     }
 
     html,
@@ -42,14 +45,14 @@
 
       background:
         radial-gradient(
-          circle at 12% 12%,
+          circle at 12% 10%,
           rgba(255,255,255,.92),
           transparent 24%
         ),
         linear-gradient(
           145deg,
-          #ffe2f1,
-          #e8ddff 48%,
+          #ffe3f1,
+          #e9ddff 48%,
           #dff5ff
         );
     }
@@ -58,6 +61,11 @@
       font: inherit;
       cursor: pointer;
       -webkit-tap-highlight-color: transparent;
+    }
+
+    button:disabled {
+      cursor: wait;
+      opacity: .65;
     }
 
     .page {
@@ -119,12 +127,17 @@
       font-size: 42px;
     }
 
+    .title-group {
+      min-width: 0;
+    }
+
     .title-group h1 {
       margin: 0;
 
       color: var(--purple-dark);
       font-size: clamp(27px,3vw,43px);
       line-height: 1;
+      white-space: nowrap;
     }
 
     .title-group p {
@@ -156,12 +169,12 @@
 
       display: grid;
       grid-template-columns:
-        minmax(265px,.82fr)
-        minmax(430px,1.25fr)
-        minmax(250px,.78fr);
-      gap: 16px;
+        minmax(260px,.82fr)
+        minmax(460px,1.38fr)
+        minmax(250px,.8fr);
+      gap: 15px;
 
-      padding: 16px;
+      padding: 15px;
     }
 
     .panel {
@@ -170,16 +183,19 @@
       border: 4px solid rgba(255,255,255,.92);
       border-radius: 28px;
 
-      background: rgba(255,255,255,.96);
+      background: var(--panel);
 
       box-shadow:
         0 12px 0 rgba(97,70,144,.08),
         0 22px 42px rgba(75,61,120,.15);
     }
 
-    .choice-panel,
-    .save-panel {
-      padding: 17px;
+    .tools-panel,
+    .colors-panel {
+      display: flex;
+      flex-direction: column;
+
+      padding: 16px;
     }
 
     .panel-title {
@@ -191,7 +207,7 @@
     }
 
     .panel-copy {
-      margin: 0 0 15px;
+      margin: 0 0 14px;
 
       color: var(--muted);
       font-size: 11px;
@@ -200,108 +216,100 @@
       text-align: center;
     }
 
-    .avatar-options {
-      display: grid;
-      gap: 11px;
+    .request-card {
+      margin-bottom: 13px;
+      border: 3px solid #ffe397;
+      border-radius: 18px;
+      padding: 12px;
+
+      color: #775c25;
+      background: #fff8d9;
+
+      font-size: 11px;
+      font-weight: 900;
+      line-height: 1.45;
+      text-align: center;
     }
 
-    .avatar-option {
-      width: 100%;
-
+    .tool-grid {
       display: grid;
-      grid-template-columns: 78px 1fr;
-      align-items: center;
-      gap: 12px;
+      grid-template-columns:
+        repeat(2,minmax(0,1fr));
+      gap: 9px;
+
+      min-height: 0;
+      overflow-y: auto;
+    }
+
+    .tool-button {
+      min-height: 82px;
 
       border: 3px solid #ece7f7;
-      border-radius: 19px;
-      padding: 10px;
+      border-radius: 18px;
+      padding: 9px 6px;
 
       color: #4e4b70;
       background: white;
 
-      text-align: left;
+      font-size: 11px;
+      font-weight: 900;
 
       box-shadow:
-        0 5px 0 rgba(80,65,120,.08);
+        0 4px 0 rgba(80,65,120,.09);
     }
 
-    .avatar-option.active {
+    .tool-button.active {
       border-color: var(--pink);
       background: #fff2f8;
       box-shadow:
-        0 5px 0 rgba(217,79,138,.15);
+        0 4px 0 rgba(217,79,138,.17);
     }
 
-    .option-picture {
-      width: 78px;
-      height: 88px;
-
-      object-fit: contain;
-
-      border-radius: 16px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #f6f0ff,
-          #e8f8ff
-        );
+    .tool-icon {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 32px;
+      line-height: 1;
     }
 
-    .option-title {
-      color: var(--purple-dark);
-      font-size: 15px;
-      font-weight: 900;
-    }
-
-    .option-description {
-      margin-top: 4px;
-
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.4;
-    }
-
-    .preview-panel {
+    .studio-panel {
       position: relative;
       overflow: hidden;
+
+      min-height: 680px;
 
       display: grid;
       place-items: center;
 
-      min-height: 660px;
-
-      padding: 24px;
+      padding: 20px;
 
       background:
         radial-gradient(
           circle at 50% 18%,
-          rgba(255,255,255,.96),
-          transparent 27%
+          rgba(255,255,255,.95),
+          transparent 28%
         ),
         repeating-linear-gradient(
           135deg,
-          #fff7fb 0 28px,
+          #fff8fc 0 28px,
           #eef8ff 28px 56px
         );
     }
 
-    .preview-panel::before {
+    .studio-panel::before {
       content: "";
 
       position: absolute;
-      inset: 30px;
+      inset: 26px;
 
-      border: 9px solid #f2b7d5;
-      border-radius: 48% 48% 27% 27% / 30% 30% 20% 20%;
+      border: 9px solid #efb2d0;
+      border-radius: 46% 46% 25% 25% / 28% 28% 18% 18%;
 
       background:
         radial-gradient(
-          circle at 50% 22%,
+          circle at 50% 20%,
           rgba(255,255,255,.96),
-          rgba(221,243,252,.9) 58%,
+          rgba(222,243,252,.91) 58%,
           #d7eaf4
         );
 
@@ -311,109 +319,178 @@
         0 26px 35px rgba(83,55,104,.17);
     }
 
-    .avatar-stage {
+    .canvas-wrap {
       position: relative;
       z-index: 2;
 
-      width: min(100%,520px);
-      height: 590px;
+      width: min(100%,580px);
+      aspect-ratio: 4 / 5;
 
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: grid;
+      place-items: center;
     }
 
-    #avatarPreview {
-      display: block;
-
+    #salonCanvas {
       width: 100%;
       height: 100%;
 
-      object-fit: contain;
+      border-radius: 28px;
 
-      filter:
-        drop-shadow(
-          0 18px 12px
-          rgba(58,62,104,.18)
-        );
+      touch-action: none;
+      user-select: none;
 
-      transition:
-        opacity .18s ease,
-        transform .18s ease;
+      cursor: crosshair;
     }
 
-    #avatarPreview.changing {
-      opacity: .25;
-      transform: scale(.96);
-    }
-
-    .avatar-name {
+    .canvas-instruction {
       position: absolute;
       left: 50%;
-      bottom: 21px;
+      bottom: 13px;
 
       transform: translateX(-50%);
 
-      max-width: 240px;
-
-      overflow: hidden;
+      width: max-content;
+      max-width: 88%;
 
       border: 4px solid white;
       border-radius: 999px;
-      padding: 8px 18px;
+      padding: 8px 16px;
 
       color: var(--purple-dark);
-      background: rgba(255,255,255,.97);
+      background: rgba(255,255,255,.96);
 
-      font-size: 18px;
+      font-size: 12px;
       font-weight: 900;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+      text-align: center;
 
       box-shadow:
         0 7px 18px rgba(73,58,115,.16);
+
+      pointer-events: none;
     }
 
-    .feature-card {
-      margin-bottom: 12px;
+    .drag-tool {
+      position: fixed;
+      z-index: 2000;
 
-      border: 2px solid #e9e4f4;
+      display: none;
+      place-items: center;
+
+      width: 68px;
+      height: 68px;
+
+      transform: translate(-50%,-50%);
+
+      border: 4px solid white;
+      border-radius: 22px;
+
+      background: rgba(255,255,255,.96);
+
+      font-size: 40px;
+
+      box-shadow:
+        0 14px 30px rgba(50,40,90,.3);
+
+      pointer-events: none;
+    }
+
+    .drag-tool.visible {
+      display: grid;
+    }
+
+    .color-section {
+      margin-bottom: 13px;
+    }
+
+    .color-label {
+      margin: 0 0 7px;
+
+      color: var(--purple-dark);
+      font-size: 13px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .swatches {
+      display: grid;
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .swatch {
+      min-height: 48px;
+
+      border: 4px solid white;
+      border-radius: 15px;
+
+      box-shadow:
+        0 0 0 2px #dad2eb;
+    }
+
+    .swatch.active {
+      box-shadow:
+        0 0 0 5px var(--purple);
+    }
+
+    .progress-card {
+      margin-top: 5px;
+      border: 3px solid #e6e1f5;
       border-radius: 18px;
-      padding: 14px;
+      padding: 13px;
 
       background: white;
     }
 
-    .feature-card strong {
-      display: block;
+    .progress-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
 
       color: var(--purple-dark);
-      font-size: 13px;
+      font-size: 11px;
+      font-weight: 900;
     }
 
-    .feature-card span {
-      display: block;
+    .progress-track {
+      height: 12px;
 
-      margin-top: 5px;
+      margin-top: 8px;
+      overflow: hidden;
 
-      color: var(--muted);
-      font-size: 10px;
-      font-weight: 800;
-      line-height: 1.45;
+      border-radius: 999px;
+      background: #e8e4f2;
+    }
+
+    .progress-fill {
+      width: 0;
+      height: 100%;
+
+      border-radius: inherit;
+
+      background:
+        linear-gradient(
+          90deg,
+          var(--pink),
+          var(--purple)
+        );
+
+      transition: width .2s ease;
     }
 
     .actions {
       display: grid;
-      gap: 10px;
+      gap: 9px;
 
-      margin-top: 16px;
+      margin-top: auto;
+      padding-top: 14px;
     }
 
     .action-button {
-      min-height: 51px;
+      min-height: 50px;
 
       border: 0;
-      border-radius: 17px;
+      border-radius: 16px;
       padding: 11px;
 
       color: white;
@@ -421,7 +498,7 @@
       font-weight: 900;
     }
 
-    .random-button {
+    .new-button {
       background: var(--blue);
       box-shadow: 0 5px 0 #3499bd;
     }
@@ -437,7 +514,7 @@
     }
 
     .save-note {
-      margin-top: 11px;
+      margin-top: 9px;
 
       color: var(--muted);
       font-size: 10px;
@@ -450,9 +527,9 @@
       position: fixed;
       left: 50%;
       top: 100px;
-      z-index: 1000;
+      z-index: 2100;
 
-      max-width: min(90vw,520px);
+      max-width: min(90vw,540px);
 
       transform:
         translateX(-50%)
@@ -484,19 +561,15 @@
     @media (max-width: 1000px) {
       .workspace {
         grid-template-columns:
-          minmax(225px,.75fr)
-          minmax(360px,1.25fr)
-          minmax(220px,.72fr);
-        gap: 10px;
-        padding: 10px;
+          minmax(215px,.72fr)
+          minmax(390px,1.3fr)
+          minmax(215px,.72fr);
+        gap: 9px;
+        padding: 9px;
       }
 
-      .preview-panel {
-        min-height: 560px;
-      }
-
-      .avatar-stage {
-        height: 500px;
+      .studio-panel {
+        min-height: 570px;
       }
     }
 
@@ -511,23 +584,19 @@
         grid-template-columns: 1fr;
       }
 
-      .preview-panel {
-        min-height: 570px;
+      .studio-panel {
+        min-height: 600px;
         order: -1;
       }
 
-      .avatar-options {
+      .tool-grid {
         grid-template-columns:
           repeat(3,minmax(0,1fr));
       }
 
-      .avatar-option {
-        grid-template-columns: 1fr;
-        text-align: center;
-      }
-
-      .option-picture {
-        margin: auto;
+      .swatches {
+        grid-template-columns:
+          repeat(6,minmax(0,1fr));
       }
     }
 
@@ -545,27 +614,24 @@
         font-size: 23px;
       }
 
-      .preview-panel {
-        min-height: 490px;
+      .studio-panel {
+        min-height: 510px;
       }
 
-      .avatar-stage {
-        height: 430px;
+      .tool-grid {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
       }
 
-      .avatar-options {
-        grid-template-columns: 1fr;
-      }
-
-      .avatar-option {
-        grid-template-columns: 72px 1fr;
-        text-align: left;
+      .swatches {
+        grid-template-columns:
+          repeat(4,minmax(0,1fr));
       }
     }
 
     @media (prefers-reduced-motion: reduce) {
-      #avatarPreview,
-      .toast {
+      .toast,
+      .progress-fill {
         transition: none;
       }
     }
@@ -590,17 +656,17 @@
         <div
           class="header-icon"
           aria-hidden="true">
-          ✨
+          💄
         </div>
 
         <div class="title-group">
 
           <h1>
-            Avatar Studio
+            Style Studio
           </h1>
 
           <p>
-            Choose a polished character for your adventures.
+            Pick up a tool and apply the makeover yourself.
           </p>
 
         </div>
@@ -617,114 +683,124 @@
 
     <section class="workspace">
 
-      <aside class="panel choice-panel">
+      <aside class="panel tools-panel">
 
         <h2 class="panel-title">
-          Choose Your Character
+          Salon Tools
         </h2>
 
         <p class="panel-copy">
-          Pick the style that feels most like you. More characters
-          and outfits can be added later without changing this page.
+          Choose a tool, then drag it across the correct part of the face.
         </p>
 
         <div
-          id="avatarOptions"
-          class="avatar-options">
+          id="requestCard"
+          class="request-card">
+          “Can I have pink lipstick and sparkly cheeks?”
+        </div>
+
+        <div
+          id="toolGrid"
+          class="tool-grid">
         </div>
 
       </aside>
 
-      <section class="panel preview-panel">
+      <section class="panel studio-panel">
 
-        <div class="avatar-stage">
+        <div class="canvas-wrap">
 
-          <img
-            id="avatarPreview"
-            src="avatar-style-1.png"
-            alt="Selected ELCraft avatar">
+          <canvas
+            id="salonCanvas"
+            width="800"
+            height="1000"
+            aria-label="Interactive salon customer">
+          </canvas>
 
           <div
-            id="avatarName"
-            class="avatar-name">
-            Player
+            id="canvasInstruction"
+            class="canvas-instruction">
+            Choose a tool to begin ✨
           </div>
 
         </div>
 
       </section>
 
-      <aside class="panel save-panel">
+      <aside class="panel colors-panel">
 
         <h2 class="panel-title">
-          Save Your Look
+          Colors & Finish
         </h2>
 
-        <div class="feature-card">
-          <strong>
-            🌎 Appears in My World
-          </strong>
+        <section class="color-section">
 
-          <span>
-            Your saved character replaces the neutral avatar in the
-            center plaza.
-          </span>
-        </div>
+          <h3 class="color-label">
+            Makeup Color
+          </h3>
 
-        <div class="feature-card">
-          <strong>
-            👨‍👩‍👧 Connected to the selected child
-          </strong>
+          <div
+            id="colorSwatches"
+            class="swatches">
+          </div>
 
-          <span>
-            The character is stored with the child currently active
-            on this device.
-          </span>
-        </div>
+        </section>
 
-        <div class="feature-card">
-          <strong>
-            🎨 Expandable later
-          </strong>
+        <div class="progress-card">
 
-          <span>
-            We can add more characters, clothes, hairstyles, and
-            accessories as ELCraft grows.
-          </span>
+          <div class="progress-title">
+            <span>Customer Happiness</span>
+            <span id="progressText">0%</span>
+          </div>
+
+          <div class="progress-track">
+            <div
+              id="progressFill"
+              class="progress-fill">
+            </div>
+          </div>
+
         </div>
 
         <div class="actions">
 
           <button
-            id="randomButton"
-            class="action-button random-button"
+            id="newCustomerButton"
+            class="action-button new-button"
             type="button">
-            🎲 Surprise Me
+            🪄 New Customer
           </button>
 
           <button
             id="saveButton"
             class="action-button save-button"
             type="button">
-            💾 Save My Avatar
+            📸 Save Finished Look
           </button>
 
           <button
             id="resetButton"
             class="action-button reset-button"
             type="button">
-            ↺ Start Over
+            🧽 Remove All Makeup
           </button>
 
         </div>
 
         <div class="save-note">
-          Saving updates the character shown in My World on this device.
+          Saving makes this finished salon look the avatar used in My World.
         </div>
 
       </aside>
 
     </section>
+
+    <div
+      id="dragTool"
+      class="drag-tool"
+      aria-hidden="true">
+      💄
+    </div>
 
     <div
       id="toast"
@@ -745,8 +821,8 @@
       const AVATAR_KEY =
         "elcraft_child_avatar";
 
-      const STYLE_KEY =
-        "elcraft_avatar_preset_v3";
+      const SAVE_KEY =
+        "elcraft_salon_game_v1";
 
       const childName =
         (
@@ -757,61 +833,49 @@
           .slice(0,24) ||
         "Player";
 
-      const avatarChoices = [
-        {
-          id:
-            "soft-adventurer",
-
-          name:
-            "Soft Adventurer",
-
-          description:
-            "Warm, friendly, and ready to explore.",
-
-          image:
-            "avatar-style-1.png"
-        },
-        {
-          id:
-            "bright-explorer",
-
-          name:
-            "Bright Explorer",
-
-          description:
-            "Cheerful, confident, and curious.",
-
-          image:
-            "avatar-style-2.png"
-        },
-        {
-          id:
-            "storybook-hero",
-
-          name:
-            "Storybook Hero",
-
-          description:
-            "A polished animated character for magical worlds.",
-
-          image:
-            "avatar-style-3.png"
-        }
-      ];
-
-      const avatarOptions =
+      const canvas =
         document.getElementById(
-          "avatarOptions"
+          "salonCanvas"
         );
 
-      const avatarPreview =
-        document.getElementById(
-          "avatarPreview"
+      const context =
+        canvas.getContext(
+          "2d"
         );
 
-      const avatarName =
+      const toolGrid =
         document.getElementById(
-          "avatarName"
+          "toolGrid"
+        );
+
+      const colorSwatches =
+        document.getElementById(
+          "colorSwatches"
+        );
+
+      const dragTool =
+        document.getElementById(
+          "dragTool"
+        );
+
+      const instruction =
+        document.getElementById(
+          "canvasInstruction"
+        );
+
+      const requestCard =
+        document.getElementById(
+          "requestCard"
+        );
+
+      const progressFill =
+        document.getElementById(
+          "progressFill"
+        );
+
+      const progressText =
+        document.getElementById(
+          "progressText"
         );
 
       const playerPill =
@@ -824,30 +888,137 @@
           "toast"
         );
 
-      let toastTimer =
-        null;
+      const TOOLS = [
+        {
+          id: "lipstick",
+          name: "Lipstick",
+          icon: "💄",
+          instruction: "Drag across the lips"
+        },
+        {
+          id: "mascara",
+          name: "Mascara",
+          icon: "👁️",
+          instruction: "Brush gently over the eyelashes"
+        },
+        {
+          id: "blush",
+          name: "Blush Brush",
+          icon: "🖌️",
+          instruction: "Brush color onto the cheeks"
+        },
+        {
+          id: "facepaint",
+          name: "Face Paint",
+          icon: "🎨",
+          instruction: "Paint stars and dots on the cheeks"
+        },
+        {
+          id: "glitter",
+          name: "Glitter",
+          icon: "✨",
+          instruction: "Add sparkle around the cheeks"
+        },
+        {
+          id: "remover",
+          name: "Makeup Remover",
+          icon: "🧽",
+          instruction: "Rub over makeup to remove it"
+        }
+      ];
 
-      let selectedId =
-        localStorage.getItem(
-          STYLE_KEY
-        ) ||
-        avatarChoices[0].id;
+      const COLORS = [
+        "#ff4f87",
+        "#d84666",
+        "#a64cce",
+        "#4f70d9",
+        "#3fa7b9",
+        "#ff8f45",
+        "#f2c84b",
+        "#7c4b36"
+      ];
+
+      const REQUESTS = [
+        {
+          text: "Can I have pink lipstick and sparkly cheeks?",
+          preferredTool: "lipstick",
+          preferredColor: "#ff4f87"
+        },
+        {
+          text: "Can you add purple face paint and a little glitter?",
+          preferredTool: "facepaint",
+          preferredColor: "#a64cce"
+        },
+        {
+          text: "I would love blue face paint and soft blush!",
+          preferredTool: "facepaint",
+          preferredColor: "#4f70d9"
+        },
+        {
+          text: "Can you give me red lipstick and pretty eyelashes?",
+          preferredTool: "lipstick",
+          preferredColor: "#d84666"
+        }
+      ];
+
+      const state = {
+        tool: null,
+        color: COLORS[0],
+        requestIndex: 0,
+        isDrawing: false,
+        lastPoint: null,
+        makeupLayer: null,
+        completedTools: new Set()
+      };
+
+      const face = {
+        centerX: 400,
+        centerY: 410,
+        radiusX: 205,
+        radiusY: 250,
+
+        leftEye: {
+          x: 325,
+          y: 390,
+          rx: 62,
+          ry: 42
+        },
+
+        rightEye: {
+          x: 475,
+          y: 390,
+          rx: 62,
+          ry: 42
+        },
+
+        lips: {
+          x: 400,
+          y: 545,
+          rx: 82,
+          ry: 36
+        },
+
+        leftCheek: {
+          x: 270,
+          y: 505,
+          rx: 72,
+          ry: 55
+        },
+
+        rightCheek: {
+          x: 530,
+          y: 505,
+          rx: 72,
+          ry: 55
+        }
+      };
+
+      let toastTimer = null;
 
       function possessive(name) {
         return name.endsWith("s")
           ? `${name}' Studio`
           : `${name}'s Studio`;
-      }
-
-      function selectedChoice() {
-        return (
-          avatarChoices.find(
-            item =>
-              item.id ===
-              selectedId
-          ) ||
-          avatarChoices[0]
-        );
       }
 
       function showToast(message) {
@@ -873,10 +1044,554 @@
           );
       }
 
-      function renderOptions() {
-        avatarOptions.replaceChildren();
+      function drawRoundedRect(
+        ctx,
+        x,
+        y,
+        width,
+        height,
+        radius
+      ) {
+        const r =
+          Math.min(
+            radius,
+            width / 2,
+            height / 2
+          );
 
-        avatarChoices.forEach(choice => {
+        ctx.beginPath();
+        ctx.moveTo(x + r, y);
+        ctx.arcTo(
+          x + width,
+          y,
+          x + width,
+          y + height,
+          r
+        );
+        ctx.arcTo(
+          x + width,
+          y + height,
+          x,
+          y + height,
+          r
+        );
+        ctx.arcTo(
+          x,
+          y + height,
+          x,
+          y,
+          r
+        );
+        ctx.arcTo(
+          x,
+          y,
+          x + width,
+          y,
+          r
+        );
+        ctx.closePath();
+      }
+
+      function drawBaseCustomer() {
+        context.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        const background =
+          context.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+          );
+
+        background.addColorStop(
+          0,
+          "#f8fcff"
+        );
+
+        background.addColorStop(
+          1,
+          "#d9eef8"
+        );
+
+        context.fillStyle =
+          background;
+
+        context.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        context.fillStyle =
+          "rgba(255,255,255,.5)";
+
+        for (
+          let i = 0;
+          i < 22;
+          i += 1
+        ) {
+          context.beginPath();
+          context.arc(
+            45 + (i * 91) % 730,
+            50 + (i * 67) % 850,
+            5 + (i % 4),
+            0,
+            Math.PI * 2
+          );
+          context.fill();
+        }
+
+        context.save();
+        context.shadowColor =
+          "rgba(54,55,96,.18)";
+        context.shadowBlur =
+          28;
+        context.shadowOffsetY =
+          18;
+
+        context.fillStyle =
+          "#6f55d9";
+
+        drawRoundedRect(
+          context,
+          165,
+          735,
+          470,
+          250,
+          90
+        );
+
+        context.fill();
+        context.restore();
+
+        context.fillStyle =
+          "#c98962";
+
+        drawRoundedRect(
+          context,
+          340,
+          650,
+          120,
+          160,
+          45
+        );
+
+        context.fill();
+
+        context.save();
+        context.fillStyle =
+          "#4a2c24";
+
+        context.beginPath();
+        context.ellipse(
+          400,
+          360,
+          252,
+          312,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        context.restore();
+
+        const skinGradient =
+          context.createRadialGradient(
+            340,
+            305,
+            45,
+            400,
+            410,
+            285
+          );
+
+        skinGradient.addColorStop(
+          0,
+          "#dfa57d"
+        );
+
+        skinGradient.addColorStop(
+          1,
+          "#bd7652"
+        );
+
+        context.fillStyle =
+          skinGradient;
+
+        context.beginPath();
+        context.ellipse(
+          face.centerX,
+          face.centerY,
+          face.radiusX,
+          face.radiusY,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        context.fillStyle =
+          "#c98962";
+
+        context.beginPath();
+        context.ellipse(
+          190,
+          420,
+          42,
+          62,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.ellipse(
+          610,
+          420,
+          42,
+          62,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        context.fillStyle =
+          "#4a2c24";
+
+        context.beginPath();
+        context.moveTo(
+          205,
+          355
+        );
+
+        context.bezierCurveTo(
+          210,
+          165,
+          320,
+          105,
+          400,
+          115
+        );
+
+        context.bezierCurveTo(
+          525,
+          90,
+          600,
+          190,
+          595,
+          355
+        );
+
+        context.bezierCurveTo(
+          545,
+          270,
+          505,
+          235,
+          455,
+          218
+        );
+
+        context.bezierCurveTo(
+          370,
+          200,
+          285,
+          230,
+          205,
+          355
+        );
+
+        context.closePath();
+        context.fill();
+
+        drawEye(
+          face.leftEye
+        );
+
+        drawEye(
+          face.rightEye
+        );
+
+        context.strokeStyle =
+          "#4d342d";
+
+        context.lineWidth =
+          16;
+
+        context.lineCap =
+          "round";
+
+        context.beginPath();
+        context.moveTo(
+          270,
+          330
+        );
+
+        context.quadraticCurveTo(
+          325,
+          302,
+          375,
+          329
+        );
+
+        context.stroke();
+
+        context.beginPath();
+        context.moveTo(
+          425,
+          329
+        );
+
+        context.quadraticCurveTo(
+          475,
+          302,
+          530,
+          330
+        );
+
+        context.stroke();
+
+        context.strokeStyle =
+          "rgba(93,50,39,.22)";
+
+        context.lineWidth =
+          8;
+
+        context.beginPath();
+        context.moveTo(
+          400,
+          408
+        );
+
+        context.quadraticCurveTo(
+          385,
+          477,
+          405,
+          483
+        );
+
+        context.stroke();
+
+        context.fillStyle =
+          "#c95675";
+
+        context.beginPath();
+        context.moveTo(
+          320,
+          545
+        );
+
+        context.quadraticCurveTo(
+          400,
+          620,
+          480,
+          545
+        );
+
+        context.quadraticCurveTo(
+          400,
+          600,
+          320,
+          545
+        );
+
+        context.fill();
+
+        context.strokeStyle =
+          "rgba(255,255,255,.48)";
+
+        context.lineWidth =
+          6;
+
+        context.beginPath();
+        context.moveTo(
+          345,
+          551
+        );
+
+        context.quadraticCurveTo(
+          400,
+          578,
+          455,
+          551
+        );
+
+        context.stroke();
+
+        context.fillStyle =
+          "rgba(255,120,145,.16)";
+
+        context.beginPath();
+        context.ellipse(
+          face.leftCheek.x,
+          face.leftCheek.y,
+          face.leftCheek.rx,
+          face.leftCheek.ry,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.ellipse(
+          face.rightCheek.x,
+          face.rightCheek.y,
+          face.rightCheek.rx,
+          face.rightCheek.ry,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        if (
+          state.makeupLayer
+        ) {
+          context.drawImage(
+            state.makeupLayer,
+            0,
+            0
+          );
+        }
+
+        context.fillStyle =
+          "rgba(255,255,255,.95)";
+
+        drawRoundedRect(
+          context,
+          230,
+          870,
+          340,
+          66,
+          33
+        );
+
+        context.fill();
+
+        context.fillStyle =
+          "#4e3aa9";
+
+        context.font =
+          "900 30px Arial";
+
+        context.textAlign =
+          "center";
+
+        context.fillText(
+          "Salon Customer",
+          400,
+          913
+        );
+      }
+
+      function drawEye(eye) {
+        context.fillStyle =
+          "#ffffff";
+
+        context.beginPath();
+        context.ellipse(
+          eye.x,
+          eye.y,
+          eye.rx,
+          eye.ry,
+          0,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        const iris =
+          context.createRadialGradient(
+            eye.x - 7,
+            eye.y - 7,
+            4,
+            eye.x,
+            eye.y,
+            28
+          );
+
+        iris.addColorStop(
+          0,
+          "#9a6b47"
+        );
+
+        iris.addColorStop(
+          1,
+          "#3e2d29"
+        );
+
+        context.fillStyle =
+          iris;
+
+        context.beginPath();
+        context.arc(
+          eye.x,
+          eye.y + 2,
+          26,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        context.fillStyle =
+          "#1f2027";
+
+        context.beginPath();
+        context.arc(
+          eye.x,
+          eye.y + 3,
+          12,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+
+        context.fillStyle =
+          "#ffffff";
+
+        context.beginPath();
+        context.arc(
+          eye.x - 8,
+          eye.y - 8,
+          7,
+          0,
+          Math.PI * 2
+        );
+
+        context.fill();
+      }
+
+      function makeMakeupLayer() {
+        const layer =
+          document.createElement(
+            "canvas"
+          );
+
+        layer.width =
+          canvas.width;
+
+        layer.height =
+          canvas.height;
+
+        return layer;
+      }
+
+      function renderTools() {
+        toolGrid.replaceChildren();
+
+        TOOLS.forEach(tool => {
           const button =
             document.createElement(
               "button"
@@ -886,165 +1601,652 @@
             "button";
 
           button.className =
-            `avatar-option${
-              choice.id === selectedId
+            `tool-button${
+              state.tool === tool.id
                 ? " active"
                 : ""
             }`;
 
-          const picture =
-            document.createElement(
-              "img"
-            );
-
-          picture.className =
-            "option-picture";
-
-          picture.src =
-            choice.image;
-
-          picture.alt =
-            "";
-
-          const copy =
-            document.createElement(
-              "div"
-            );
-
-          copy.innerHTML = `
-            <div class="option-title">
-              ${choice.name}
-            </div>
-
-            <div class="option-description">
-              ${choice.description}
-            </div>
-          `;
-
-          button.append(
-            picture,
-            copy
-          );
+          button.innerHTML =
+            `<span class="tool-icon">${tool.icon}</span>${tool.name}`;
 
           button.addEventListener(
             "click",
             () => {
-              selectedId =
-                choice.id;
+              state.tool =
+                tool.id;
 
-              renderOptions();
-              renderPreview();
+              renderTools();
+
+              instruction.textContent =
+                tool.instruction;
+
+              dragTool.textContent =
+                tool.icon;
             }
           );
 
-          avatarOptions.appendChild(
+          toolGrid.appendChild(
             button
           );
         });
       }
 
-      function renderPreview() {
-        const choice =
-          selectedChoice();
+      function renderColors() {
+        colorSwatches.replaceChildren();
 
-        avatarPreview.classList.add(
-          "changing"
-        );
-
-        window.setTimeout(
-          () => {
-            avatarPreview.src =
-              choice.image;
-
-            avatarPreview.classList.remove(
-              "changing"
+        COLORS.forEach(color => {
+          const button =
+            document.createElement(
+              "button"
             );
-          },
-          100
+
+          button.type =
+            "button";
+
+          button.className =
+            `swatch${
+              state.color === color
+                ? " active"
+                : ""
+            }`;
+
+          button.style.background =
+            color;
+
+          button.setAttribute(
+            "aria-label",
+            "Choose makeup color"
+          );
+
+          button.addEventListener(
+            "click",
+            () => {
+              state.color =
+                color;
+
+              renderColors();
+            }
+          );
+
+          colorSwatches.appendChild(
+            button
+          );
+        });
+      }
+
+      function canvasPoint(event) {
+        const rect =
+          canvas.getBoundingClientRect();
+
+        return {
+          x:
+            (
+              event.clientX -
+              rect.left
+            ) *
+            (
+              canvas.width /
+              rect.width
+            ),
+
+          y:
+            (
+              event.clientY -
+              rect.top
+            ) *
+            (
+              canvas.height /
+              rect.height
+            )
+        };
+      }
+
+      function insideEllipse(
+        point,
+        ellipse
+      ) {
+        const dx =
+          (
+            point.x -
+            ellipse.x
+          ) /
+          ellipse.rx;
+
+        const dy =
+          (
+            point.y -
+            ellipse.y
+          ) /
+          ellipse.ry;
+
+        return (
+          dx * dx +
+          dy * dy <=
+          1
         );
       }
 
-      function randomize() {
-        const currentIndex =
-          avatarChoices.findIndex(
-            item =>
-              item.id ===
-              selectedId
+      function activeMakeupContext() {
+        return state.makeupLayer
+          .getContext(
+            "2d"
           );
+      }
 
-        let nextIndex =
-          currentIndex;
+      function applyToolAt(point) {
+        if (!state.tool) {
+          return;
+        }
 
-        while (
-          avatarChoices.length > 1 &&
-          nextIndex === currentIndex
+        const makeup =
+          activeMakeupContext();
+
+        if (
+          state.tool === "remover"
         ) {
-          nextIndex =
-            Math.floor(
-              Math.random() *
-              avatarChoices.length
-            );
+          makeup.save();
+          makeup.globalCompositeOperation =
+            "destination-out";
+          makeup.beginPath();
+          makeup.arc(
+            point.x,
+            point.y,
+            45,
+            0,
+            Math.PI * 2
+          );
+          makeup.fill();
+          makeup.restore();
+
+          drawBaseCustomer();
+          return;
         }
 
-        selectedId =
-          avatarChoices[nextIndex].id;
+        if (
+          state.tool === "lipstick" &&
+          insideEllipse(
+            point,
+            face.lips
+          )
+        ) {
+          makeup.globalAlpha =
+            .18;
 
-        renderOptions();
-        renderPreview();
+          makeup.fillStyle =
+            state.color;
 
-        showToast(
-          "Surprise character selected! 🎉"
-        );
-      }
+          makeup.beginPath();
+          makeup.arc(
+            point.x,
+            point.y,
+            18,
+            0,
+            Math.PI * 2
+          );
 
-      function resetChoice() {
-        selectedId =
-          avatarChoices[0].id;
+          makeup.fill();
 
-        renderOptions();
-        renderPreview();
+          makeup.globalAlpha =
+            1;
 
-        showToast(
-          "Back to the first character."
-        );
-      }
-
-      async function imageToDataUrl(path) {
-        const response =
-          await fetch(path);
-
-        if (!response.ok) {
-          throw new Error(
-            `Could not open ${path}`
+          state.completedTools.add(
+            "lipstick"
           );
         }
 
-        const blob =
-          await response.blob();
+        if (
+          state.tool === "blush" &&
+          (
+            insideEllipse(
+              point,
+              face.leftCheek
+            ) ||
+            insideEllipse(
+              point,
+              face.rightCheek
+            )
+          )
+        ) {
+          makeup.globalAlpha =
+            .08;
 
-        return await new Promise(
-          (resolve, reject) => {
-            const reader =
-              new FileReader();
+          makeup.fillStyle =
+            state.color;
 
-            reader.onload =
-              () => resolve(
-                reader.result
-              );
+          makeup.beginPath();
+          makeup.arc(
+            point.x,
+            point.y,
+            34,
+            0,
+            Math.PI * 2
+          );
 
-            reader.onerror =
-              () => reject(
-                reader.error
-              );
+          makeup.fill();
 
-            reader.readAsDataURL(
-              blob
+          makeup.globalAlpha =
+            1;
+
+          state.completedTools.add(
+            "blush"
+          );
+        }
+
+        if (
+          state.tool === "mascara" &&
+          (
+            insideEllipse(
+              point,
+              face.leftEye
+            ) ||
+            insideEllipse(
+              point,
+              face.rightEye
+            )
+          )
+        ) {
+          makeup.strokeStyle =
+            "#26232c";
+
+          makeup.lineWidth =
+            6;
+
+          makeup.lineCap =
+            "round";
+
+          makeup.beginPath();
+
+          makeup.moveTo(
+            point.x,
+            point.y - 15
+          );
+
+          makeup.lineTo(
+            point.x + 2,
+            point.y - 31
+          );
+
+          makeup.stroke();
+
+          state.completedTools.add(
+            "mascara"
+          );
+        }
+
+        if (
+          state.tool === "facepaint" &&
+          (
+            insideEllipse(
+              point,
+              face.leftCheek
+            ) ||
+            insideEllipse(
+              point,
+              face.rightCheek
+            )
+          )
+        ) {
+          makeup.fillStyle =
+            state.color;
+
+          drawStar(
+            makeup,
+            point.x,
+            point.y,
+            5,
+            17,
+            8
+          );
+
+          makeup.fill();
+
+          state.completedTools.add(
+            "facepaint"
+          );
+        }
+
+        if (
+          state.tool === "glitter" &&
+          (
+            insideEllipse(
+              point,
+              {
+                x:
+                  face.centerX,
+                y:
+                  face.centerY,
+                rx:
+                  face.radiusX,
+                ry:
+                  face.radiusY
+              }
+            )
+          )
+        ) {
+          makeup.fillStyle =
+            "#ffe66d";
+
+          for (
+            let i = 0;
+            i < 5;
+            i += 1
+          ) {
+            makeup.beginPath();
+
+            makeup.arc(
+              point.x +
+                (
+                  Math.random() -
+                  .5
+                ) *
+                38,
+
+              point.y +
+                (
+                  Math.random() -
+                  .5
+                ) *
+                38,
+
+              2 +
+                Math.random() *
+                4,
+
+              0,
+              Math.PI * 2
             );
+
+            makeup.fill();
           }
+
+          state.completedTools.add(
+            "glitter"
+          );
+        }
+
+        updateProgress();
+        drawBaseCustomer();
+      }
+
+      function drawStar(
+        ctx,
+        cx,
+        cy,
+        spikes,
+        outerRadius,
+        innerRadius
+      ) {
+        let rotation =
+          Math.PI / 2 * 3;
+
+        const step =
+          Math.PI / spikes;
+
+        ctx.beginPath();
+        ctx.moveTo(
+          cx,
+          cy - outerRadius
+        );
+
+        for (
+          let i = 0;
+          i < spikes;
+          i += 1
+        ) {
+          ctx.lineTo(
+            cx +
+              Math.cos(
+                rotation
+              ) *
+              outerRadius,
+
+            cy +
+              Math.sin(
+                rotation
+              ) *
+              outerRadius
+          );
+
+          rotation +=
+            step;
+
+          ctx.lineTo(
+            cx +
+              Math.cos(
+                rotation
+              ) *
+              innerRadius,
+
+            cy +
+              Math.sin(
+                rotation
+              ) *
+              innerRadius
+          );
+
+          rotation +=
+            step;
+        }
+
+        ctx.lineTo(
+          cx,
+          cy - outerRadius
+        );
+
+        ctx.closePath();
+      }
+
+      function updateProgress() {
+        const completed =
+          state.completedTools.size;
+
+        const percent =
+          Math.min(
+            100,
+            Math.round(
+              completed /
+              5 *
+              100
+            )
+          );
+
+        progressFill.style.width =
+          `${percent}%`;
+
+        progressText.textContent =
+          `${percent}%`;
+
+        if (percent === 100) {
+          showToast(
+            "The customer loves the makeover! 🌟"
+          );
+        }
+      }
+
+      function pointerDown(event) {
+        if (!state.tool) {
+          showToast(
+            "Choose a salon tool first."
+          );
+
+          return;
+        }
+
+        state.isDrawing =
+          true;
+
+        state.lastPoint =
+          canvasPoint(
+            event
+          );
+
+        dragTool.classList.add(
+          "visible"
+        );
+
+        dragTool.style.left =
+          `${event.clientX}px`;
+
+        dragTool.style.top =
+          `${event.clientY}px`;
+
+        canvas.setPointerCapture(
+          event.pointerId
+        );
+
+        applyToolAt(
+          state.lastPoint
         );
       }
 
-      async function saveAvatar() {
+      function pointerMove(event) {
+        if (!state.isDrawing) {
+          return;
+        }
+
+        dragTool.style.left =
+          `${event.clientX}px`;
+
+        dragTool.style.top =
+          `${event.clientY}px`;
+
+        const point =
+          canvasPoint(
+            event
+          );
+
+        const previous =
+          state.lastPoint ||
+          point;
+
+        const distance =
+          Math.hypot(
+            point.x -
+            previous.x,
+
+            point.y -
+            previous.y
+          );
+
+        const steps =
+          Math.max(
+            1,
+            Math.ceil(
+              distance / 10
+            )
+          );
+
+        for (
+          let index = 1;
+          index <= steps;
+          index += 1
+        ) {
+          applyToolAt({
+            x:
+              previous.x +
+              (
+                point.x -
+                previous.x
+              ) *
+              (
+                index /
+                steps
+              ),
+
+            y:
+              previous.y +
+              (
+                point.y -
+                previous.y
+              ) *
+              (
+                index /
+                steps
+              )
+          });
+        }
+
+        state.lastPoint =
+          point;
+      }
+
+      function pointerUp(event) {
+        state.isDrawing =
+          false;
+
+        state.lastPoint =
+          null;
+
+        dragTool.classList.remove(
+          "visible"
+        );
+
+        if (
+          canvas.hasPointerCapture(
+            event.pointerId
+          )
+        ) {
+          canvas.releasePointerCapture(
+            event.pointerId
+          );
+        }
+      }
+
+      function resetMakeup() {
+        state.makeupLayer =
+          makeMakeupLayer();
+
+        state.completedTools.clear();
+
+        updateProgress();
+        drawBaseCustomer();
+
+        showToast(
+          "All makeup removed."
+        );
+      }
+
+      function newCustomer() {
+        state.requestIndex =
+          (
+            state.requestIndex +
+            1
+          ) %
+          REQUESTS.length;
+
+        const request =
+          REQUESTS[
+            state.requestIndex
+          ];
+
+        requestCard.textContent =
+          `“${request.text}”`;
+
+        state.color =
+          request.preferredColor;
+
+        state.tool =
+          request.preferredTool;
+
+        renderColors();
+        renderTools();
+        resetMakeup();
+
+        instruction.textContent =
+          TOOLS.find(
+            tool =>
+              tool.id ===
+              state.tool
+          )?.instruction ||
+          "Choose a tool to begin";
+
+        showToast(
+          "A new customer is ready! ✨"
+        );
+      }
+
+      function saveLook() {
         const button =
           document.getElementById(
             "saveButton"
@@ -1057,37 +2259,44 @@
           "Saving...";
 
         try {
-          const choice =
-            selectedChoice();
-
-          const dataUrl =
-            await imageToDataUrl(
-              choice.image
+          const avatarUrl =
+            canvas.toDataURL(
+              "image/png"
             );
 
           localStorage.setItem(
-            STYLE_KEY,
-            choice.id
+            AVATAR_KEY,
+            avatarUrl
           );
 
           localStorage.setItem(
-            AVATAR_KEY,
-            dataUrl
+            SAVE_KEY,
+            JSON.stringify({
+              savedAt:
+                new Date().toISOString(),
+
+              completedTools:
+                [
+                  ...state.completedTools
+                ],
+
+              requestIndex:
+                state.requestIndex
+            })
           );
 
           showToast(
-            "Your polished avatar was saved to My World! ✨"
+            "Finished look saved to My World! 📸"
           );
 
         } catch (error) {
           console.error(
-            "Avatar save error:",
+            "Save look error:",
             error
           );
 
           showToast(
-            error?.message ||
-            "Unable to save this avatar."
+            "Unable to save this look."
           );
 
         } finally {
@@ -1095,9 +2304,29 @@
             false;
 
           button.textContent =
-            "💾 Save My Avatar";
+            "📸 Save Finished Look";
         }
       }
+
+      canvas.addEventListener(
+        "pointerdown",
+        pointerDown
+      );
+
+      canvas.addEventListener(
+        "pointermove",
+        pointerMove
+      );
+
+      canvas.addEventListener(
+        "pointerup",
+        pointerUp
+      );
+
+      canvas.addEventListener(
+        "pointercancel",
+        pointerUp
+      );
 
       document
         .getElementById(
@@ -1113,11 +2342,11 @@
 
       document
         .getElementById(
-          "randomButton"
+          "newCustomerButton"
         )
         .addEventListener(
           "click",
-          randomize
+          newCustomer
         );
 
       document
@@ -1126,7 +2355,7 @@
         )
         .addEventListener(
           "click",
-          resetChoice
+          resetMakeup
         );
 
       document
@@ -1135,17 +2364,19 @@
         )
         .addEventListener(
           "click",
-          saveAvatar
+          saveLook
         );
-
-      avatarName.textContent =
-        childName;
 
       playerPill.textContent =
         `✨ ${possessive(childName)}`;
 
-      renderOptions();
-      renderPreview();
+      state.makeupLayer =
+        makeMakeupLayer();
+
+      renderTools();
+      renderColors();
+      updateProgress();
+      drawBaseCustomer();
     })();
   </script>
 
