@@ -881,7 +881,13 @@
             )
           ]);
 
+        const passwordIsSet =
+          currentUser.user_metadata
+            ?.password_set ===
+          true;
+
         if (
+          passwordIsSet &&
           existingProfile
             ?.onboarding_complete &&
           existingMembership
@@ -936,6 +942,19 @@
             "";
 
         hideLoading();
+
+        const passwordIsSet =
+          currentUser.user_metadata
+            ?.password_set ===
+          true;
+
+        if (
+          !passwordIsSet
+        ) {
+          showStatus(
+            "Your invitation was accepted, but your password still needs to be created. Enter and confirm it below before continuing."
+          );
+        }
 
         if (
           !resolvedFamilyId
@@ -1016,19 +1035,27 @@
             )
             .value;
 
-        const password =
+        const passwordField =
           document
             .getElementById(
               "password"
-            )
-            .value;
+            );
 
-        const confirmPassword =
+        const confirmPasswordField =
           document
             .getElementById(
               "confirmPassword"
-            )
-            .value;
+            );
+
+        const password =
+          passwordField
+            .value
+            .trim();
+
+        const confirmPassword =
+          confirmPasswordField
+            .value
+            .trim();
 
         if (
           displayName.length <
@@ -1060,6 +1087,22 @@
         }
 
         if (
+          !password
+        ) {
+          showStatus(
+            "Please create a password before continuing.",
+            {
+              error:
+                true
+            }
+          );
+
+          passwordField.focus();
+
+          return;
+        }
+
+        if (
           password.length <
           8
         ) {
@@ -1070,6 +1113,24 @@
                 true
             }
           );
+
+          passwordField.focus();
+
+          return;
+        }
+
+        if (
+          !confirmPassword
+        ) {
+          showStatus(
+            "Please confirm your password.",
+            {
+              error:
+                true
+            }
+          );
+
+          confirmPasswordField.focus();
 
           return;
         }
@@ -1114,6 +1175,9 @@
                     resolvedFamilyId,
 
                   onboarding_complete:
+                    true,
+
+                  password_set:
                     true
                 }
               });
