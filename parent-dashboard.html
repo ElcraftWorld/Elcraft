@@ -11,6 +11,8 @@
 
   <title>Parent Dashboard | ELCraft</title>
 
+  <!-- ELCraft family access build: shared-family-v3 -->
+
   <style>
     * {
       box-sizing: border-box;
@@ -996,6 +998,8 @@
 
     let currentUser = null;
     let currentFamilyId = null;
+    let currentMembership = null;
+    let familyOwnerUserId = null;
 
     function showError(text) {
       pageMessage.textContent = text;
@@ -1128,7 +1132,7 @@
       );
 
       window.location.href =
-        "index.html";
+        "my-city.html";
     }
 
     function renderChildren(profiles) {
@@ -1611,25 +1615,105 @@
         throw membershipError;
       }
 
-      const ownerMembership =
-        (memberships || []).find(
+      const membershipList =
+        memberships || [];
+
+      currentMembership =
+        membershipList.find(
           membership =>
             membership.member_role === "owner"
+        ) ||
+        membershipList[0] ||
+        null;
+
+      if (!currentMembership) {
+        showError(
+          "This account is not connected to an ELCraft family."
         );
 
-      if (!ownerMembership) {
+        loading.hidden = true;
+        dashboardContent.hidden = false;
+        return;
+      }
+
+      /*
+        Family owners already had passwords before invitations existed.
+        Invited family members must finish the new password setup.
+      */
+      const isFamilyOwner =
+        currentMembership.member_role ===
+        "owner";
+
+      const passwordIsSet =
+        currentUser.user_metadata
+          ?.password_set ===
+        true;
+
+      if (
+        !isFamilyOwner &&
+        !passwordIsSet
+      ) {
         window.location.replace(
-          "profiles.html"
+          "accept-invite.html?v=3"
         );
+
         return;
       }
 
       currentFamilyId =
-        ownerMembership.family_id;
+        currentMembership.family_id;
+
+      const {
+        data: familyMembersForOwner,
+        error: familyOwnerError
+      } = await supabase
+        .from("family_members")
+        .select(
+          "id, user_id, display_name, email, relationship, member_role, status, created_at"
+        )
+        .eq(
+          "family_id",
+          currentFamilyId
+        )
+        .eq(
+          "status",
+          "active"
+        )
+        .order(
+          "created_at",
+          {
+            ascending: true
+          }
+        );
+
+      if (familyOwnerError) {
+        throw familyOwnerError;
+      }
+
+      const ownerRecord =
+        (familyMembersForOwner || [])
+          .find(
+            member =>
+              member.member_role ===
+              "owner"
+          );
+
+      familyOwnerUserId =
+        ownerRecord?.user_id ||
+        (
+          isFamilyOwner
+            ? currentUser.id
+            : null
+        );
+
+      if (!familyOwnerUserId) {
+        throw new Error(
+          "ELCraft could not identify the family owner."
+        );
+      }
 
       const [
         childrenResult,
-        familyResult,
         invitationsResult,
         activityResult
       ] = await Promise.all([
@@ -1638,27 +1722,7 @@
           .select("*")
           .eq(
             "parent_id",
-            currentUser.id
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          ),
-
-        supabase
-          .from("family_members")
-          .select(
-            "id, display_name, email, relationship, member_role, status, created_at"
-          )
-          .eq(
-            "family_id",
-            currentFamilyId
-          )
-          .eq(
-            "status",
-            "active"
+            familyOwnerUserId
           )
           .order(
             "created_at",
@@ -1705,6 +1769,14 @@
           .limit(12)
       ]);
 
+      const familyResult = {
+        data:
+          familyMembersForOwner ||
+          [],
+        error:
+          null
+      };
+
       if (childrenResult.error) {
         throw childrenResult.error;
       }
@@ -1738,6 +1810,24 @@
           ? []
           : activityResult.data || []
       );
+
+      const isFamilyOwner =
+        currentMembership
+          ?.member_role ===
+        "owner";
+
+      [
+        manageChildrenButton,
+        manageFamilyButton,
+        inviteFamilyButton
+      ].forEach(button => {
+        if (!button) {
+          return;
+        }
+
+        button.hidden =
+          !isFamilyOwner;
+      });
 
       loading.hidden = true;
       dashboardContent.hidden = false;
