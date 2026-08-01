@@ -184,7 +184,13 @@ export async function routeAuthenticatedParent({
         )
       ]);
 
+    const passwordIsSet =
+      user.user_metadata
+        ?.password_set ===
+      true;
+
     const needsOnboarding =
+      !passwordIsSet ||
       !profile ||
       profile.onboarding_complete !==
         true ||
