@@ -9,7 +9,7 @@
 
   <meta name="theme-color" content="#7758df">
 
-  <title>ELCraft Library</title>
+  <title>ELCraft Magical Library</title>
 
   <style>
     * {
@@ -21,9 +21,14 @@
       --purple-dark: #4e3ca6;
       --purple-light: #efeaff;
       --gold: #ffd467;
+      --pink: #ff7fb5;
+      --blue: #6ec6ff;
+      --green: #79cf73;
       --ink: #35385d;
       --muted: #747a98;
-      --card: rgba(255, 255, 255, 0.95);
+      --card: rgba(255, 255, 255, 0.96);
+      --wood: #8b5a34;
+      --wood-dark: #5f351f;
     }
 
     html,
@@ -34,7 +39,10 @@
 
     body {
       color: var(--ink);
-      font-family: Arial, Helvetica, sans-serif;
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
 
       background:
         radial-gradient(
@@ -61,30 +69,34 @@
 
     button:disabled {
       cursor: wait;
-      opacity: 0.64;
+      opacity: .64;
     }
 
     .page {
-      width: min(1180px, calc(100% - 28px));
+      width: min(1240px, calc(100% - 24px));
       margin: 0 auto;
-      padding: 18px 0 42px;
+      padding: 16px 0 44px;
     }
+
+    /* ======================================================
+       TOP BAR
+       ====================================================== */
 
     .topbar {
       position: sticky;
-      top: 12px;
-      z-index: 30;
+      top: 10px;
+      z-index: 50;
 
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 14px;
 
-      border: 3px solid rgba(255,255,255,.82);
+      border: 3px solid rgba(255,255,255,.84);
       border-radius: 22px;
       padding: 12px 14px;
 
-      background: rgba(255,255,255,.9);
+      background: rgba(255,255,255,.92);
       backdrop-filter: blur(14px);
 
       box-shadow:
@@ -95,20 +107,23 @@
       display: flex;
       align-items: center;
       gap: 11px;
+      min-width: 0;
     }
 
     .brand-icon {
-      font-size: 37px;
+      font-size: 39px;
     }
 
     .brand h1 {
       margin: 0;
+
       color: var(--purple-dark);
       font-size: clamp(22px,4vw,32px);
     }
 
     .brand p {
       margin: 2px 0 0;
+
       color: var(--muted);
       font-size: 11px;
       font-weight: 900;
@@ -117,6 +132,8 @@
     .top-actions {
       display: flex;
       gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
     .top-button {
@@ -133,6 +150,7 @@
 
     .top-button.primary {
       color: white;
+
       background:
         linear-gradient(
           135deg,
@@ -141,116 +159,397 @@
         );
     }
 
-    .hero {
+    /* ======================================================
+       LIBRARY ENTRANCE
+       ====================================================== */
+
+    .entrance {
+      position: relative;
+      overflow: hidden;
+
       display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 18px;
-
-      margin-top: 22px;
-    }
-
-    .hero-card,
-    .summary-card {
-      border: 4px solid rgba(255,255,255,.82);
-      border-radius: 28px;
-
-      background: var(--card);
-
-      box-shadow:
-        0 18px 40px rgba(60,65,118,.2);
-    }
-
-    .hero-card {
-      display: flex;
-      align-items: center;
+      grid-template-columns:
+        minmax(260px,.75fr)
+        minmax(360px,1.25fr);
       gap: 20px;
 
-      padding: 24px;
+      margin-top: 20px;
+      border: 5px solid rgba(255,255,255,.84);
+      border-radius: 32px;
+      padding: clamp(20px,4vw,34px);
+
+      background:
+        radial-gradient(
+          circle at 74% 25%,
+          rgba(255,255,255,.38),
+          transparent 23%
+        ),
+        linear-gradient(
+          145deg,
+          #6d4ab6,
+          #9871d9 48%,
+          #c693db
+        );
+
+      box-shadow:
+        0 20px 45px rgba(54,40,111,.24);
     }
 
-    .hero-icon {
-      font-size: clamp(78px,12vw,120px);
-      filter:
-        drop-shadow(
-          0 10px 8px rgba(61,54,113,.18)
+    .entrance::before,
+    .entrance::after {
+      content: "";
+
+      position: absolute;
+      bottom: 0;
+
+      width: 180px;
+      height: 250px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #704626,
+          #4f2d19
+        );
+
+      opacity: .28;
+    }
+
+    .entrance::before {
+      left: 0;
+      clip-path:
+        polygon(
+          0 0,
+          100% 18%,
+          84% 100%,
+          0 100%
         );
     }
 
-    .hero-card h2 {
-      margin: 0;
-      color: var(--purple-dark);
-      font-size: clamp(28px,5vw,44px);
+    .entrance::after {
+      right: 0;
+      clip-path:
+        polygon(
+          0 18%,
+          100% 0,
+          100% 100%,
+          16% 100%
+        );
     }
 
-    .hero-card p {
-      margin: 8px 0 0;
-      color: var(--muted);
-      font-size: 14px;
-      font-weight: 800;
-      line-height: 1.5;
-    }
+    .nova-zone {
+      position: relative;
+      z-index: 2;
 
-    .summary-card {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      place-items: center;
+      align-content: center;
+    }
 
-      padding: 16px;
+    .nova {
+      width: 230px;
+      height: 230px;
+
+      display: grid;
+      place-items: center;
+
+      border: 7px solid rgba(255,255,255,.84);
+      border-radius: 50%;
+
+      background:
+        radial-gradient(
+          circle at 50% 34%,
+          #f9e5b2 0 28%,
+          #b77b48 29% 52%,
+          #7b4f31 53%
+        );
+
+      box-shadow:
+        0 16px 35px rgba(50,27,77,.27);
+
+      font-size: 135px;
+
+      animation:
+        novaFloat
+        3s ease-in-out
+        infinite;
+    }
+
+    .nova-name {
+      margin-top: 12px;
+
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 8px 16px;
+
+      color: var(--purple-dark);
+      background: white;
+
+      font-size: 13px;
+      font-weight: 1000;
+    }
+
+    .welcome-panel {
+      position: relative;
+      z-index: 2;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+
+      color: white;
+    }
+
+    .welcome-panel h2 {
+      margin: 0;
+
+      font-size: clamp(32px,5vw,58px);
+      line-height: 1;
+      letter-spacing: -.03em;
+    }
+
+    .welcome-panel p {
+      margin: 15px 0 0;
+
+      max-width: 650px;
+
+      font-size: 15px;
+      font-weight: 800;
+      line-height: 1.6;
+
+      opacity: .94;
+    }
+
+    .speech {
+      position: relative;
+
+      margin-top: 20px;
+      border: 4px solid white;
+      border-radius: 22px;
+      padding: 16px 18px;
+
+      color: var(--purple-dark);
+      background: white;
+
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.5;
+
+      box-shadow:
+        0 11px 24px rgba(54,35,94,.18);
+    }
+
+    /* ======================================================
+       STATS
+       ====================================================== */
+
+    .stats {
+      display: grid;
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+      gap: 11px;
+
+      margin-top: 16px;
     }
 
     .stat {
-      border: 2px solid #ebe7fb;
-      border-radius: 17px;
+      border: 3px solid rgba(255,255,255,.84);
+      border-radius: 19px;
       padding: 14px;
 
-      background: white;
+      background: rgba(255,255,255,.94);
 
       text-align: center;
+
+      box-shadow:
+        0 9px 20px rgba(60,65,118,.12);
     }
 
     .stat-value {
       color: var(--purple);
-      font-size: 25px;
+      font-size: 27px;
       font-weight: 900;
     }
 
     .stat-label {
       margin-top: 3px;
+
       color: var(--muted);
       font-size: 10px;
       font-weight: 900;
     }
 
-    .filters {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
+    /* ======================================================
+       LIBRARY WINGS
+       ====================================================== */
 
-      margin-top: 18px;
-    }
-
-    .filter {
-      border: 2px solid rgba(255,255,255,.82);
-      border-radius: 14px;
-      padding: 10px 13px;
+    .section-title {
+      margin: 24px 0 12px;
 
       color: var(--purple-dark);
-      background: rgba(255,255,255,.9);
+      font-size: clamp(24px,4vw,38px);
+      text-align: center;
+    }
+
+    .section-copy {
+      margin: -3px auto 16px;
+
+      max-width: 720px;
+
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+      line-height: 1.5;
+      text-align: center;
+    }
+
+    .wings {
+      display: grid;
+      grid-template-columns:
+        repeat(5,minmax(0,1fr));
+      gap: 12px;
+    }
+
+    .wing {
+      position: relative;
+      overflow: hidden;
+
+      min-height: 170px;
+
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+
+      border: 4px solid white;
+      border-radius: 24px;
+      padding: 15px;
+
+      color: white;
+
+      background:
+        linear-gradient(
+          145deg,
+          var(--wing-start),
+          var(--wing-end)
+        );
+
+      box-shadow:
+        0 11px 0 rgba(73,47,125,.12),
+        0 18px 28px rgba(62,43,104,.18);
+
+      cursor: pointer;
+
+      transition:
+        transform .18s ease,
+        filter .18s ease;
+    }
+
+    .wing:hover {
+      transform: translateY(-5px);
+      filter: brightness(1.04);
+    }
+
+    .wing.active {
+      outline: 5px solid var(--gold);
+      outline-offset: 2px;
+    }
+
+    .wing-icon {
+      margin-bottom: auto;
+
+      font-size: 56px;
+      line-height: 1;
+
+      animation:
+        wingFloat
+        3s ease-in-out
+        infinite;
+    }
+
+    .wing h3 {
+      margin: 0;
+
+      font-size: 18px;
+      font-weight: 1000;
+    }
+
+    .wing p {
+      margin: 5px 0 0;
+
+      font-size: 10px;
+      font-weight: 800;
+      line-height: 1.4;
+
+      opacity: .93;
+    }
+
+    /* ======================================================
+       BOOK SHELVES
+       ====================================================== */
+
+    .library-room {
+      margin-top: 18px;
+      border: 5px solid rgba(255,255,255,.86);
+      border-radius: 30px;
+      padding: 20px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #f9f2ff,
+          #fff9e9
+        );
+
+      box-shadow:
+        0 18px 40px rgba(60,65,118,.18);
+    }
+
+    .room-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .room-header h2 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: 28px;
+    }
+
+    .room-header p {
+      margin: 5px 0 0;
+
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .room-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .room-button {
+      border: 0;
+      border-radius: 13px;
+      padding: 10px 12px;
+
+      color: var(--purple-dark);
+      background: var(--purple-light);
 
       font-size: 11px;
       font-weight: 900;
     }
 
-    .filter.active {
-      color: white;
-      background: var(--purple);
-    }
-
-    .book-grid {
+    .shelf-grid {
       display: grid;
       grid-template-columns:
-        repeat(auto-fill, minmax(245px,1fr));
-      gap: 15px;
+        repeat(auto-fill,minmax(230px,1fr));
+      gap: 17px;
 
       margin-top: 18px;
     }
@@ -259,14 +558,38 @@
       position: relative;
       overflow: hidden;
 
-      border: 4px solid rgba(255,255,255,.84);
-      border-radius: 23px;
-      padding: 16px;
+      min-height: 355px;
 
-      background: var(--card);
+      display: flex;
+      flex-direction: column;
+
+      border: 4px solid white;
+      border-radius: 23px;
+      padding: 15px;
+
+      background: white;
 
       box-shadow:
-        0 12px 28px rgba(62,66,117,.17);
+        0 10px 0 rgba(94,58,36,.09),
+        0 18px 30px rgba(62,66,117,.14);
+    }
+
+    .book-card::before {
+      content: "";
+
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 0;
+
+      height: 20px;
+
+      background:
+        linear-gradient(
+          180deg,
+          #a76b3b,
+          var(--wood-dark)
+        );
     }
 
     .book-card.completed {
@@ -274,27 +597,58 @@
     }
 
     .book-cover {
-      min-height: 120px;
+      position: relative;
+
+      min-height: 145px;
 
       display: grid;
       place-items: center;
 
-      border-radius: 19px;
+      border: 7px solid rgba(255,255,255,.9);
+      border-radius: 17px;
 
       background:
         linear-gradient(
           145deg,
-          #eeeaff,
-          #fff4c8
+          var(--cover-start,#eeeaff),
+          var(--cover-end,#fff4c8)
         );
 
-      font-size: 73px;
+      font-size: 76px;
+
+      box-shadow:
+        inset 0 0 0 4px rgba(78,60,166,.08),
+        0 8px 16px rgba(61,54,113,.13);
+    }
+
+    .completed-badge {
+      position: absolute;
+      right: 9px;
+      top: 9px;
+
+      display: none;
+
+      border: 3px solid white;
+      border-radius: 999px;
+      padding: 5px 8px;
+
+      color: #7d5c13;
+      background: var(--gold);
+
+      font-size: 9px;
+      font-weight: 1000;
+    }
+
+    .book-card.completed
+    .completed-badge {
+      display: block;
     }
 
     .book-status {
       display: inline-flex;
+      align-self: flex-start;
 
-      margin-top: 12px;
+      margin-top: 11px;
       border-radius: 999px;
       padding: 5px 9px;
 
@@ -308,19 +662,22 @@
 
     .book-title {
       margin: 9px 0 0;
+
       color: var(--purple-dark);
       font-size: 18px;
     }
 
     .book-author {
       margin-top: 3px;
+
       color: #8b90a8;
       font-size: 10px;
       font-weight: 800;
     }
 
     .book-description {
-      min-height: 50px;
+      flex: 1;
+
       margin: 9px 0 0;
 
       color: var(--muted);
@@ -334,7 +691,7 @@
       justify-content: space-between;
       gap: 10px;
 
-      margin-top: 13px;
+      margin-top: 12px;
 
       color: var(--muted);
       font-size: 10px;
@@ -366,31 +723,32 @@
     .rewards {
       display: flex;
       flex-wrap: wrap;
-      gap: 7px;
+      gap: 6px;
 
-      margin-top: 12px;
+      margin-top: 10px;
     }
 
     .reward {
       border-radius: 999px;
-      padding: 6px 9px;
+      padding: 6px 8px;
 
       color: var(--purple-dark);
       background: #f3f0ff;
 
-      font-size: 10px;
+      font-size: 9px;
       font-weight: 900;
     }
 
     .read-button {
       width: 100%;
 
-      margin-top: 13px;
+      margin: 12px 0 12px;
       border: 0;
       border-radius: 13px;
       padding: 11px;
 
       color: white;
+
       background:
         linear-gradient(
           135deg,
@@ -406,22 +764,146 @@
     .loading {
       grid-column: 1 / -1;
 
-      border: 4px dashed rgba(255,255,255,.85);
+      border: 4px dashed #d8cdf5;
       border-radius: 24px;
-      padding: 42px 20px;
+      padding: 38px 18px;
 
       color: var(--purple-dark);
-      background: rgba(255,255,255,.76);
+      background: rgba(255,255,255,.8);
 
       font-size: 14px;
       font-weight: 900;
       text-align: center;
     }
 
+    /* ======================================================
+       PASSPORT & STICKERS
+       ====================================================== */
+
+    .collection-grid {
+      display: grid;
+      grid-template-columns:
+        1fr 1fr;
+      gap: 16px;
+
+      margin-top: 18px;
+    }
+
+    .collection-card {
+      border: 5px solid rgba(255,255,255,.86);
+      border-radius: 27px;
+      padding: 20px;
+
+      background: rgba(255,255,255,.94);
+
+      box-shadow:
+        0 14px 30px rgba(60,65,118,.15);
+    }
+
+    .collection-card h3 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: 23px;
+    }
+
+    .collection-card p {
+      margin: 6px 0 0;
+
+      color: var(--muted);
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .passport-list {
+      display: grid;
+      gap: 9px;
+
+      margin-top: 14px;
+    }
+
+    .passport-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+
+      border: 3px solid #ebe5f6;
+      border-radius: 16px;
+      padding: 10px;
+
+      background: white;
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .passport-row.complete {
+      color: #357420;
+      border-color: #c9e8bf;
+      background: #eef9e9;
+    }
+
+    .passport-icon {
+      width: 34px;
+      height: 34px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 12px;
+
+      background: #f0ebff;
+
+      font-size: 20px;
+    }
+
+    .stickers {
+      display: grid;
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+      gap: 10px;
+
+      margin-top: 14px;
+    }
+
+    .sticker {
+      min-height: 76px;
+
+      display: grid;
+      place-items: center;
+
+      border: 3px solid #ebe5f6;
+      border-radius: 16px;
+
+      background: white;
+
+      font-size: 38px;
+
+      filter: grayscale(1);
+      opacity: .32;
+    }
+
+    .sticker.unlocked {
+      filter: none;
+      opacity: 1;
+
+      border-color: var(--gold);
+      background: #fff9df;
+
+      animation:
+        stickerPop
+        .35s ease-out;
+    }
+
+    /* ======================================================
+       READER MODAL
+       ====================================================== */
+
     .modal {
       position: fixed;
       inset: 0;
-      z-index: 1000;
+      z-index: 2000;
 
       display: none;
       align-items: center;
@@ -429,15 +911,143 @@
 
       padding: 20px;
 
-      background: rgba(38,35,85,.48);
-      backdrop-filter: blur(6px);
+      background: rgba(38,35,85,.58);
+      backdrop-filter: blur(7px);
     }
 
     .modal.visible {
       display: flex;
     }
 
-    .modal-card {
+    .reader {
+      width: min(980px,100%);
+      max-height: min(88vh,820px);
+
+      overflow: auto;
+
+      border: 6px solid white;
+      border-radius: 30px;
+      padding: 20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f7edda,
+          #fffaf0
+        );
+
+      box-shadow:
+        0 30px 70px rgba(35,31,84,.34);
+    }
+
+    .reader-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .reader-top h3 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: 25px;
+    }
+
+    .close-button {
+      width: 42px;
+      height: 42px;
+
+      border: 0;
+      border-radius: 50%;
+
+      color: white;
+      background: var(--purple);
+
+      font-size: 20px;
+      font-weight: 900;
+    }
+
+    .book-spread {
+      display: grid;
+      grid-template-columns:
+        1fr 1fr;
+      gap: 8px;
+
+      margin-top: 16px;
+    }
+
+    .page-sheet {
+      min-height: 390px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      border: 3px solid #d7c8a8;
+      padding: 24px;
+
+      background: #fffdf6;
+
+      box-shadow:
+        inset 0 0 24px rgba(93,61,24,.06);
+    }
+
+    .page-sheet.left {
+      border-radius: 20px 5px 5px 20px;
+    }
+
+    .page-sheet.right {
+      border-radius: 5px 20px 20px 5px;
+    }
+
+    .reader-emoji {
+      font-size: 115px;
+      line-height: 1;
+    }
+
+    .reader-text {
+      margin-top: 20px;
+
+      color: #554b60;
+      font-size: 18px;
+      font-weight: 800;
+      line-height: 1.7;
+      text-align: center;
+    }
+
+    .reader-actions {
+      display: grid;
+      grid-template-columns:
+        repeat(4,minmax(0,1fr));
+      gap: 9px;
+
+      margin-top: 16px;
+    }
+
+    .reader-button {
+      border: 0;
+      border-radius: 14px;
+      padding: 11px;
+
+      color: var(--purple-dark);
+      background: var(--purple-light);
+
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .reader-button.primary {
+      color: white;
+      background: var(--purple);
+    }
+
+    /* ======================================================
+       READING LOG MODAL
+       ====================================================== */
+
+    .log-card {
       width: min(440px,100%);
 
       border: 4px solid white;
@@ -450,19 +1060,20 @@
         0 24px 60px rgba(35,31,84,.28);
     }
 
-    .modal-card h3 {
+    .log-card h3 {
       margin: 0;
+
       color: var(--purple-dark);
     }
 
-    .modal-card p {
+    .log-card p {
       color: var(--muted);
       font-size: 12px;
       font-weight: 700;
       line-height: 1.5;
     }
 
-    .modal-card input {
+    .log-card input {
       width: 100%;
 
       border: 2px solid #dddbea;
@@ -497,11 +1108,15 @@
       background: var(--purple);
     }
 
+    /* ======================================================
+       TOAST
+       ====================================================== */
+
     .toast {
       position: fixed;
       right: 20px;
-      bottom: 20px;
-      z-index: 1200;
+      bottom: 95px;
+      z-index: 2400;
 
       display: none;
       max-width: 360px;
@@ -524,11 +1139,85 @@
       display: block;
     }
 
-    @media (max-width: 780px) {
-      .hero {
+    @keyframes novaFloat {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-8px);
+      }
+    }
+
+    @keyframes wingFloat {
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    @keyframes stickerPop {
+      0% {
+        transform: scale(.5);
+      }
+
+      75% {
+        transform: scale(1.12);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @media (max-width: 1050px) {
+      .wings {
+        grid-template-columns:
+          repeat(3,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 820px) {
+      .entrance {
         grid-template-columns: 1fr;
       }
 
+      .nova {
+        width: 180px;
+        height: 180px;
+        font-size: 102px;
+      }
+
+      .stats {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+      }
+
+      .collection-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .book-spread {
+        grid-template-columns: 1fr;
+      }
+
+      .page-sheet.left,
+      .page-sheet.right {
+        border-radius: 18px;
+      }
+
+      .reader-actions {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 620px) {
       .topbar {
         align-items: flex-start;
       }
@@ -536,16 +1225,33 @@
       .top-actions {
         flex-direction: column;
       }
-    }
 
-    @media (max-width: 520px) {
-      .hero-card {
-        align-items: flex-start;
-        flex-direction: column;
+      .wings {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
       }
 
-      .book-grid {
+      .stickers {
+        grid-template-columns:
+          repeat(3,minmax(0,1fr));
+      }
+    }
+
+    @media (max-width: 460px) {
+      .wings {
         grid-template-columns: 1fr;
+      }
+
+      .shelf-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .nova,
+      .wing-icon,
+      .sticker.unlocked {
+        animation: none;
       }
     }
   </style>
@@ -563,7 +1269,7 @@
         </div>
 
         <div>
-          <h1>ELCraft Library</h1>
+          <h1>ELCraft Magical Library</h1>
 
           <p id="childName">
             Loading reader...
@@ -578,7 +1284,7 @@
           id="mapButton"
           class="top-button"
           type="button">
-          World Map
+          My World
         </button>
 
         <button
@@ -592,140 +1298,446 @@
 
     </header>
 
-    <section class="hero">
+    <section class="entrance">
 
-      <article class="hero-card">
+      <div class="nova-zone">
 
-        <div class="hero-icon">
-          📚
+        <div
+          class="nova"
+          aria-label="Nova the owl librarian">
+          🦉
         </div>
 
-        <div>
-          <h2>
-            Choose a Reading Adventure
-          </h2>
-
-          <p>
-            Read together, track minutes, complete stories, earn
-            rewards, and fill the Family Feed with reading memories.
-          </p>
+        <div class="nova-name">
+          Nova the Librarian
         </div>
 
-      </article>
+      </div>
 
-      <article class="summary-card">
+      <div class="welcome-panel">
 
-        <div class="stat">
-          <div
-            id="bookCount"
-            class="stat-value">
-            0
-          </div>
+        <h2>
+          Welcome,
+          <span id="readerName">
+            Reader
+          </span>!
+        </h2>
 
-          <div class="stat-label">
-            Library Books
-          </div>
+        <p>
+          Every book opens a new world. Explore magical stories,
+          discover science, practice math, learn about people and places,
+          and collect rewards along the way.
+        </p>
+
+        <div
+          id="novaSpeech"
+          class="speech">
+          Which reading adventure would you like today?
         </div>
 
-        <div class="stat">
-          <div
-            id="readingCount"
-            class="stat-value">
-            0
-          </div>
-
-          <div class="stat-label">
-            Reading Now
-          </div>
-        </div>
-
-        <div class="stat">
-          <div
-            id="completedCount"
-            class="stat-value">
-            0
-          </div>
-
-          <div class="stat-label">
-            Books Finished
-          </div>
-        </div>
-
-        <div class="stat">
-          <div
-            id="minuteCount"
-            class="stat-value">
-            0
-          </div>
-
-          <div class="stat-label">
-            Minutes Read
-          </div>
-        </div>
-
-      </article>
-
-    </section>
-
-    <section
-      id="filters"
-      class="filters">
-
-      <button
-        class="filter active"
-        type="button"
-        data-filter="all">
-        All
-      </button>
-
-      <button
-        class="filter"
-        type="button"
-        data-filter="story">
-        ✨ Stories
-      </button>
-
-      <button
-        class="filter"
-        type="button"
-        data-filter="science">
-        🔬 Science
-      </button>
-
-      <button
-        class="filter"
-        type="button"
-        data-filter="math">
-        ➗ Math
-      </button>
-
-      <button
-        class="filter"
-        type="button"
-        data-filter="family">
-        💛 Kindness
-      </button>
-
-      <button
-        class="filter"
-        type="button"
-        data-filter="completed">
-        ✅ Completed
-      </button>
-
-    </section>
-
-    <section
-      id="bookGrid"
-      class="book-grid">
-
-      <div class="loading">
-        Opening the library...
       </div>
 
     </section>
 
+    <section class="stats">
+
+      <article class="stat">
+        <div
+          id="bookCount"
+          class="stat-value">
+          0
+        </div>
+
+        <div class="stat-label">
+          Library Books
+        </div>
+      </article>
+
+      <article class="stat">
+        <div
+          id="readingCount"
+          class="stat-value">
+          0
+        </div>
+
+        <div class="stat-label">
+          Reading Now
+        </div>
+      </article>
+
+      <article class="stat">
+        <div
+          id="completedCount"
+          class="stat-value">
+          0
+        </div>
+
+        <div class="stat-label">
+          Books Finished
+        </div>
+      </article>
+
+      <article class="stat">
+        <div
+          id="minuteCount"
+          class="stat-value">
+          0
+        </div>
+
+        <div class="stat-label">
+          Minutes Read
+        </div>
+      </article>
+
+    </section>
+
+    <h2 class="section-title">
+      Choose a Library Wing
+    </h2>
+
+    <p class="section-copy">
+      Each wing has a different kind of reading adventure.
+    </p>
+
+    <section
+      id="wings"
+      class="wings">
+
+      <button
+        class="wing active"
+        type="button"
+        data-filter="story"
+        data-title="Storybook Forest"
+        data-copy="Fairy tales, friendship stories, mysteries, and magical adventures."
+        style="
+          --wing-start:#9d68e6;
+          --wing-end:#6750bf;
+        ">
+
+        <div class="wing-icon">
+          📖
+        </div>
+
+        <h3>
+          Storybook Forest
+        </h3>
+
+        <p>
+          Stories, adventures, and imagination.
+        </p>
+
+      </button>
+
+      <button
+        class="wing"
+        type="button"
+        data-filter="science"
+        data-title="Discovery Lab"
+        data-copy="Animals, space, weather, nature, inventions, and experiments."
+        style="
+          --wing-start:#43c4db;
+          --wing-end:#2c8fc8;
+        ">
+
+        <div class="wing-icon">
+          🔬
+        </div>
+
+        <h3>
+          Discovery Lab
+        </h3>
+
+        <p>
+          Science, animals, nature, and space.
+        </p>
+
+      </button>
+
+      <button
+        class="wing"
+        type="button"
+        data-filter="math"
+        data-title="Math Quest Hall"
+        data-copy="Patterns, counting, shapes, puzzles, and number adventures."
+        style="
+          --wing-start:#ffb85c;
+          --wing-end:#ef7f3a;
+        ">
+
+        <div class="wing-icon">
+          🧮
+        </div>
+
+        <h3>
+          Math Quest Hall
+        </h3>
+
+        <p>
+          Numbers, patterns, puzzles, and shapes.
+        </p>
+
+      </button>
+
+      <button
+        class="wing"
+        type="button"
+        data-filter="family"
+        data-title="Kindness Garden"
+        data-copy="Friendship, feelings, family, teamwork, courage, and kindness."
+        style="
+          --wing-start:#ff83b4;
+          --wing-end:#d85492;
+        ">
+
+        <div class="wing-icon">
+          💛
+        </div>
+
+        <h3>
+          Kindness Garden
+        </h3>
+
+        <p>
+          Feelings, family, courage, and kindness.
+        </p>
+
+      </button>
+
+      <button
+        class="wing"
+        type="button"
+        data-filter="world"
+        data-title="World & Culture"
+        data-copy="Places, traditions, languages, history, celebrations, and people around the world."
+        style="
+          --wing-start:#79cf73;
+          --wing-end:#3aa37a;
+        ">
+
+        <div class="wing-icon">
+          🌍
+        </div>
+
+        <h3>
+          World & Culture
+        </h3>
+
+        <p>
+          People, places, traditions, and languages.
+        </p>
+
+      </button>
+
+    </section>
+
+    <section class="library-room">
+
+      <div class="room-header">
+
+        <div>
+          <h2 id="roomTitle">
+            Storybook Forest
+          </h2>
+
+          <p id="roomCopy">
+            Fairy tales, friendship stories, mysteries, and magical adventures.
+          </p>
+        </div>
+
+        <div class="room-actions">
+
+          <button
+            id="showAllButton"
+            class="room-button"
+            type="button">
+            All Books
+          </button>
+
+          <button
+            id="completedButton"
+            class="room-button"
+            type="button">
+            Completed
+          </button>
+
+        </div>
+
+      </div>
+
+      <section
+        id="bookGrid"
+        class="shelf-grid">
+
+        <div class="loading">
+          Nova is opening the shelves...
+        </div>
+
+      </section>
+
+    </section>
+
+    <section class="collection-grid">
+
+      <article class="collection-card">
+
+        <h3>
+          🗺️ Reading Passport
+        </h3>
+
+        <p>
+          Finish books in each wing to fill your passport.
+        </p>
+
+        <div
+          id="passportList"
+          class="passport-list">
+        </div>
+
+      </article>
+
+      <article class="collection-card">
+
+        <h3>
+          ⭐ Sticker Book
+        </h3>
+
+        <p>
+          Complete books to unlock special reading stickers.
+        </p>
+
+        <div
+          id="stickerGrid"
+          class="stickers">
+
+          <div class="sticker" data-sticker="1">
+            🦄
+          </div>
+
+          <div class="sticker" data-sticker="2">
+            🚀
+          </div>
+
+          <div class="sticker" data-sticker="3">
+            🐸
+          </div>
+
+          <div class="sticker" data-sticker="4">
+            🐉
+          </div>
+
+          <div class="sticker" data-sticker="5">
+            🌈
+          </div>
+
+          <div class="sticker" data-sticker="6">
+            🦖
+          </div>
+
+          <div class="sticker" data-sticker="7">
+            🏆
+          </div>
+
+          <div class="sticker" data-sticker="8">
+            ⭐
+          </div>
+
+        </div>
+
+      </article>
+
+    </section>
+
   </main>
+
+  <section
+    id="readerModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
+
+    <div class="reader">
+
+      <div class="reader-top">
+
+        <h3 id="readerTitle">
+          Reading Adventure
+        </h3>
+
+        <button
+          id="closeReaderButton"
+          class="close-button"
+          type="button"
+          aria-label="Close reader">
+          ×
+        </button>
+
+      </div>
+
+      <div class="book-spread">
+
+        <section class="page-sheet left">
+
+          <div
+            id="readerEmoji"
+            class="reader-emoji">
+            📖
+          </div>
+
+          <div
+            id="readerPageLabel"
+            class="book-status">
+            Page 1
+          </div>
+
+        </section>
+
+        <section class="page-sheet right">
+
+          <div
+            id="readerText"
+            class="reader-text">
+            Every reading adventure begins with one page.
+          </div>
+
+        </section>
+
+      </div>
+
+      <div class="reader-actions">
+
+        <button
+          id="previousPageButton"
+          class="reader-button"
+          type="button">
+          ← Previous
+        </button>
+
+        <button
+          id="readToMeButton"
+          class="reader-button"
+          type="button">
+          🔊 Read to Me
+        </button>
+
+        <button
+          id="nextPageButton"
+          class="reader-button"
+          type="button">
+          Next →
+        </button>
+
+        <button
+          id="finishReadingButton"
+          class="reader-button primary"
+          type="button">
+          Finish Reading
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
 
   <section
     id="readingModal"
@@ -733,7 +1745,7 @@
     role="dialog"
     aria-modal="true">
 
-    <div class="modal-card">
+    <div class="log-card">
 
       <h3 id="modalTitle">
         Log Reading Time
@@ -767,7 +1779,9 @@
         </button>
 
       </div>
+
     </div>
+
   </section>
 
   <div
@@ -784,7 +1798,9 @@
       logReading
     } from "./library.js";
 
-    import { supabase } from "./supabase-client.js";
+    import {
+      supabase
+    } from "./supabase-client.js";
 
     import {
       completeGameAction,
@@ -795,49 +1811,168 @@
       getSelectedChildId();
 
     const childName =
-      document.getElementById("childName");
+      document.getElementById(
+        "childName"
+      );
+
+    const readerName =
+      document.getElementById(
+        "readerName"
+      );
 
     const bookGrid =
-      document.getElementById("bookGrid");
+      document.getElementById(
+        "bookGrid"
+      );
 
-    const filters =
-      document.getElementById("filters");
+    const wings =
+      document.getElementById(
+        "wings"
+      );
+
+    const roomTitle =
+      document.getElementById(
+        "roomTitle"
+      );
+
+    const roomCopy =
+      document.getElementById(
+        "roomCopy"
+      );
 
     const bookCount =
-      document.getElementById("bookCount");
+      document.getElementById(
+        "bookCount"
+      );
 
     const readingCount =
-      document.getElementById("readingCount");
+      document.getElementById(
+        "readingCount"
+      );
 
     const completedCount =
-      document.getElementById("completedCount");
+      document.getElementById(
+        "completedCount"
+      );
 
     const minuteCount =
-      document.getElementById("minuteCount");
+      document.getElementById(
+        "minuteCount"
+      );
+
+    const passportList =
+      document.getElementById(
+        "passportList"
+      );
+
+    const readerModal =
+      document.getElementById(
+        "readerModal"
+      );
+
+    const readerTitle =
+      document.getElementById(
+        "readerTitle"
+      );
+
+    const readerEmoji =
+      document.getElementById(
+        "readerEmoji"
+      );
+
+    const readerText =
+      document.getElementById(
+        "readerText"
+      );
+
+    const readerPageLabel =
+      document.getElementById(
+        "readerPageLabel"
+      );
 
     const readingModal =
-      document.getElementById("readingModal");
+      document.getElementById(
+        "readingModal"
+      );
 
     const modalTitle =
-      document.getElementById("modalTitle");
+      document.getElementById(
+        "modalTitle"
+      );
 
     const minutesInput =
-      document.getElementById("minutesInput");
+      document.getElementById(
+        "minutesInput"
+      );
 
     const saveReadingButton =
-      document.getElementById("saveReadingButton");
-
-    const cancelReadingButton =
-      document.getElementById("cancelReadingButton");
+      document.getElementById(
+        "saveReadingButton"
+      );
 
     const toast =
-      document.getElementById("toast");
+      document.getElementById(
+        "toast"
+      );
 
     let books = [];
-    let activeFilter = "all";
+    let activeFilter = "story";
     let selectedBook = null;
+    let currentPage = 0;
 
-    function showToast(message) {
+    const PASSPORT = [
+      {
+        category:
+          "story",
+        label:
+          "Storybook Forest",
+        icon:
+          "📖"
+      },
+      {
+        category:
+          "science",
+        label:
+          "Discovery Lab",
+        icon:
+          "🔬"
+      },
+      {
+        category:
+          "math",
+        label:
+          "Math Quest Hall",
+        icon:
+          "🧮"
+      },
+      {
+        category:
+          "family",
+        label:
+          "Kindness Garden",
+        icon:
+          "💛"
+      },
+      {
+        category:
+          "world",
+        label:
+          "World & Culture",
+        icon:
+          "🌍"
+      }
+    ];
+
+    const FALLBACK_PAGES = [
+      "A new adventure begins. Look closely and imagine what might happen next.",
+      "The characters discover something surprising and learn an important lesson.",
+      "The journey continues with courage, curiosity, and kindness.",
+      "Every story leaves a little magic behind."
+    ];
+
+    function showToast(
+      message
+    ) {
       toast.textContent =
         message;
 
@@ -845,75 +1980,263 @@
         "visible"
       );
 
-      window.setTimeout(
-        () => {
-          toast.classList.remove(
-            "visible"
-          );
-        },
-        3000
+      window.clearTimeout(
+        toast._timer
       );
+
+      toast._timer =
+        window.setTimeout(
+          () => {
+            toast.classList.remove(
+              "visible"
+            );
+          },
+          3000
+        );
     }
 
     function visibleBooks() {
-      if (activeFilter === "all") {
+      if (
+        activeFilter ===
+        "all"
+      ) {
         return books;
       }
 
-      if (activeFilter === "completed") {
+      if (
+        activeFilter ===
+        "completed"
+      ) {
         return books.filter(
-          item => item.status === "completed"
+          item =>
+            item.status ===
+            "completed"
         );
       }
 
       return books.filter(
         item =>
-          item.book?.category === activeFilter
+          item.book?.category ===
+          activeFilter
       );
     }
 
     function updateStats() {
       bookCount.textContent =
-        String(books.length);
+        String(
+          books.length
+        );
 
       readingCount.textContent =
         String(
           books.filter(
-            item => item.status === "reading"
+            item =>
+              item.status ===
+              "reading"
           ).length
         );
 
       completedCount.textContent =
         String(
           books.filter(
-            item => item.status === "completed"
+            item =>
+              item.status ===
+              "completed"
           ).length
         );
 
       minuteCount.textContent =
         String(
           books.reduce(
-            (total, item) =>
+            (
+              total,
+              item
+            ) =>
               total +
-              Number(item.minutes_read || 0),
+              Number(
+                item.minutes_read ||
+                0
+              ),
             0
           )
         );
+
+      renderCollections();
     }
 
-    function createBookCard(item) {
+    function categoryColors(
+      category
+    ) {
+      const colors = {
+        story:
+          [
+            "#d8c6ff",
+            "#fff0c4"
+          ],
+
+        science:
+          [
+            "#c8f2ff",
+            "#d7ffd8"
+          ],
+
+        math:
+          [
+            "#ffe2b0",
+            "#ffd0a8"
+          ],
+
+        family:
+          [
+            "#ffd3e4",
+            "#fff0c2"
+          ],
+
+        world:
+          [
+            "#c9f3cc",
+            "#cbeaff"
+          ]
+      };
+
+      return (
+        colors[category] ||
+        [
+          "#eeeaff",
+          "#fff4c8"
+        ]
+      );
+    }
+
+    function openReader(
+      item
+    ) {
+      selectedBook =
+        item;
+
+      currentPage =
+        0;
+
+      renderReaderPage();
+
+      readerModal.classList.add(
+        "visible"
+      );
+    }
+
+    function pagesForBook() {
       const book =
-        item.book || {};
+        selectedBook?.book ||
+        {};
+
+      if (
+        Array.isArray(
+          book.pages
+        ) &&
+        book.pages.length
+      ) {
+        return book.pages.map(
+          page =>
+            typeof page ===
+              "string"
+              ? page
+              : page.text
+        );
+      }
+
+      const description =
+        book.description ||
+        "A special reading adventure.";
+
+      return [
+        `Welcome to ${book.title || "this story"}.`,
+        description,
+        FALLBACK_PAGES[1],
+        FALLBACK_PAGES[2],
+        FALLBACK_PAGES[3]
+      ];
+    }
+
+    function renderReaderPage() {
+      if (
+        !selectedBook
+      ) {
+        return;
+      }
+
+      const book =
+        selectedBook.book ||
+        {};
+
+      const pages =
+        pagesForBook();
+
+      currentPage =
+        Math.max(
+          0,
+          Math.min(
+            currentPage,
+            pages.length - 1
+          )
+        );
+
+      readerTitle.textContent =
+        book.title ||
+        "Reading Adventure";
+
+      readerEmoji.textContent =
+        book.cover_emoji ||
+        "📖";
+
+      readerText.textContent =
+        pages[currentPage];
+
+      readerPageLabel.textContent =
+        `Page ${
+          currentPage + 1
+        } of ${
+          pages.length
+        }`;
+
+      document
+        .getElementById(
+          "previousPageButton"
+        )
+        .disabled =
+          currentPage ===
+          0;
+
+      document
+        .getElementById(
+          "nextPageButton"
+        )
+        .disabled =
+          currentPage >=
+          pages.length - 1;
+    }
+
+    function createBookCard(
+      item
+    ) {
+      const book =
+        item.book ||
+        {};
 
       const target =
         Math.max(
-          Number(book.minutes_goal || 15),
+          Number(
+            book.minutes_goal ||
+            15
+          ),
           1
         );
 
       const progress =
         Math.min(
-          Number(item.minutes_read || 0),
+          Number(
+            item.minutes_read ||
+            0
+          ),
           target
         );
 
@@ -921,60 +2244,107 @@
         Math.min(
           100,
           Math.round(
-            (progress / target) * 100
+            progress /
+            target *
+            100
           )
         );
 
+      const [
+        start,
+        end
+      ] =
+        categoryColors(
+          book.category
+        );
+
       const card =
-        document.createElement("article");
+        document.createElement(
+          "article"
+        );
 
       card.className =
         `book-card ${
-          item.status || "available"
+          item.status ||
+          "available"
         }`;
 
       const cover =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       cover.className =
         "book-cover";
 
-      cover.textContent =
-        book.cover_emoji || "📖";
+      cover.style.setProperty(
+        "--cover-start",
+        start
+      );
+
+      cover.style.setProperty(
+        "--cover-end",
+        end
+      );
+
+      cover.innerHTML = `
+        <span>
+          ${
+            book.cover_emoji ||
+            "📖"
+          }
+        </span>
+
+        <span class="completed-badge">
+          ⭐ Finished
+        </span>
+      `;
 
       const status =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       status.className =
         "book-status";
 
       status.textContent =
-        item.status === "completed"
+        item.status ===
+        "completed"
           ? "Completed"
-          : item.status === "reading"
+          : item.status ===
+            "reading"
             ? "Reading"
             : "Available";
 
       const title =
-        document.createElement("h3");
+        document.createElement(
+          "h3"
+        );
 
       title.className =
         "book-title";
 
       title.textContent =
-        book.title || "Untitled Book";
+        book.title ||
+        "Untitled Book";
 
       const author =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       author.className =
         "book-author";
 
       author.textContent =
-        book.author || "ELCraft Library";
+        book.author ||
+        "ELCraft Library";
 
       const description =
-        document.createElement("p");
+        document.createElement(
+          "p"
+        );
 
       description.className =
         "book-description";
@@ -984,22 +2354,28 @@
         "A special reading adventure.";
 
       const progressRow =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       progressRow.className =
         "progress-row";
 
       progressRow.innerHTML =
-        `<span>Reading Progress</span><span>${progress} / ${target} min</span>`;
+        `<span>Progress</span><span>${progress} / ${target} min</span>`;
 
       const track =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       track.className =
         "progress-track";
 
       const fill =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       fill.className =
         "progress-fill";
@@ -1007,26 +2383,42 @@
       fill.style.width =
         `${percent}%`;
 
-      track.appendChild(fill);
+      track.appendChild(
+        fill
+      );
 
       const rewards =
-        document.createElement("div");
+        document.createElement(
+          "div"
+        );
 
       rewards.className =
         "rewards";
 
       rewards.innerHTML = `
         <span class="reward">
-          ✨ ${book.xp_reward || 0} XP
+          ✨ ${
+            book.xp_reward ||
+            0
+          } XP
         </span>
 
         <span class="reward">
-          🪙 ${book.coin_reward || 0} Coins
+          🪙 ${
+            book.coin_reward ||
+            0
+          } Coins
+        </span>
+
+        <span class="reward">
+          ⭐ Sticker
         </span>
       `;
 
       const button =
-        document.createElement("button");
+        document.createElement(
+          "button"
+        );
 
       button.className =
         "read-button";
@@ -1035,28 +2427,20 @@
         "button";
 
       button.textContent =
-        item.status === "completed"
+        item.status ===
+        "completed"
           ? "Read Again"
-          : item.status === "reading"
-            ? "Continue Reading"
-            : "Start Reading";
+          : item.status ===
+            "reading"
+            ? "Continue Adventure"
+            : "Open Book";
 
       button.addEventListener(
         "click",
         () => {
-          selectedBook = item;
-
-          modalTitle.textContent =
-            `Read ${book.title}`;
-
-          minutesInput.value =
-            "5";
-
-          readingModal.classList.add(
-            "visible"
+          openReader(
+            item
           );
-
-          minutesInput.focus();
         }
       );
 
@@ -1081,54 +2465,148 @@
       const visible =
         visibleBooks();
 
-      if (!visible.length) {
+      if (
+        !visible.length
+      ) {
         const empty =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
 
         empty.className =
           "empty";
 
         empty.textContent =
-          "No books are available in this section.";
+          "Nova is still filling this wing with books.";
 
-        bookGrid.appendChild(empty);
+        bookGrid.appendChild(
+          empty
+        );
 
         updateStats();
 
         return;
       }
 
-      visible.forEach(item => {
-        bookGrid.appendChild(
-          createBookCard(item)
-        );
-      });
+      visible.forEach(
+        item => {
+          bookGrid.appendChild(
+            createBookCard(
+              item
+            )
+          );
+        }
+      );
 
       updateStats();
+    }
+
+    function renderCollections() {
+      passportList.replaceChildren();
+
+      PASSPORT.forEach(
+        item => {
+          const completed =
+            books.some(
+              bookItem =>
+                bookItem.status ===
+                  "completed" &&
+                bookItem.book?.category ===
+                  item.category
+            );
+
+          const row =
+            document.createElement(
+              "div"
+            );
+
+          row.className =
+            `passport-row${
+              completed
+                ? " complete"
+                : ""
+            }`;
+
+          row.innerHTML = `
+            <div class="passport-icon">
+              ${item.icon}
+            </div>
+
+            <div style="flex:1;">
+              ${item.label}
+            </div>
+
+            <div>
+              ${completed ? "✓" : "○"}
+            </div>
+          `;
+
+          passportList.appendChild(
+            row
+          );
+        }
+      );
+
+      const completedBooks =
+        books.filter(
+          item =>
+            item.status ===
+            "completed"
+        ).length;
+
+      document
+        .querySelectorAll(
+          "[data-sticker]"
+        )
+        .forEach(
+          (
+            sticker,
+            index
+          ) => {
+            sticker.classList.toggle(
+              "unlocked",
+              index <
+              completedBooks
+            );
+          }
+        );
     }
 
     async function refreshLibrary() {
       const {
         data,
         error
-      } = await loadLibrary(
-        childId
-      );
+      } =
+        await loadLibrary(
+          childId
+        );
 
-      if (error) {
+      if (
+        error
+      ) {
         throw error;
       }
 
       books =
         data
-          .filter(item => item.book)
+          .filter(
+            item =>
+              item.book
+          )
           .sort(
-            (a, b) =>
+            (
+              a,
+              b
+            ) =>
               Number(
-                a.book?.sort_order || 0
+                a.book
+                  ?.sort_order ||
+                0
               ) -
               Number(
-                b.book?.sort_order || 0
+                b.book
+                  ?.sort_order ||
+                0
               )
           );
 
@@ -1139,31 +2617,54 @@
       const {
         data,
         error
-      } = await supabase
-        .from("child_profiles")
-        .select("display_name")
-        .eq("id", childId)
-        .single();
+      } =
+        await supabase
+          .from(
+            "child_profiles"
+          )
+          .select(
+            "display_name"
+          )
+          .eq(
+            "id",
+            childId
+          )
+          .single();
 
-      if (!error && data) {
+      if (
+        !error &&
+        data
+      ) {
+        const name =
+          data.display_name ||
+          "Reader";
+
         childName.textContent =
-          `${
-            data.display_name || "Reader"
-          }'s Library`;
+          `${name}'s Library`;
+
+        readerName.textContent =
+          name;
       }
     }
 
     async function saveReading() {
-      if (!selectedBook) {
+      if (
+        !selectedBook
+      ) {
         return;
       }
 
       const minutes =
-        Number(minutesInput.value);
+        Number(
+          minutesInput.value
+        );
 
       if (
-        !Number.isFinite(minutes) ||
-        minutes <= 0
+        !Number.isFinite(
+          minutes
+        ) ||
+        minutes <=
+        0
       ) {
         showToast(
           "Enter at least one reading minute."
@@ -1185,63 +2686,94 @@
         const updated =
           await logReading({
             childId,
+
             bookId:
               selectedBook.book.id,
+
             minutes
           });
 
         const completedNow =
-          oldStatus !== "completed" &&
-          updated.status === "completed";
+          oldStatus !==
+            "completed" &&
+          updated.status ===
+            "completed";
 
         await completeGameAction({
           questKey:
             "daily_read_15",
+
           questAmount:
             minutes,
 
           xp:
             completedNow
               ? Number(
-                  selectedBook.book.xp_reward || 0
+                  selectedBook
+                    .book
+                    .xp_reward ||
+                  0
                 )
               : 0,
 
           coins:
             completedNow
               ? Number(
-                  selectedBook.book.coin_reward || 0
+                  selectedBook
+                    .book
+                    .coin_reward ||
+                  0
                 )
               : 0,
 
-          feedActivity: completedNow
-            ? {
-                activityType:
-                  "book",
-                title:
-                  `${
-                    selectedBook.book.title
-                  } completed!`,
-                message:
-                  `A new reading adventure was completed in the ELCraft Library.`,
-                icon:
-                  selectedBook.book.cover_emoji ||
-                  "📚"
-              }
-            : null
+          feedActivity:
+            completedNow
+              ? {
+                  activityType:
+                    "book",
+
+                  title:
+                    `${
+                      selectedBook
+                        .book
+                        .title
+                    } completed!`,
+
+                  message:
+                    "A new reading adventure was completed in the ELCraft Library.",
+
+                  icon:
+                    selectedBook
+                      .book
+                      .cover_emoji ||
+                    "📚"
+                }
+              : null
         });
 
-        if (completedNow) {
+        if (
+          completedNow
+        ) {
           await notifyPlayer({
             type:
               "reward",
+
             title:
               "Book Completed!",
+
             message:
-              `Rewards are ready for ${selectedBook.book.title}.`,
+              `A new sticker and rewards are ready for ${
+                selectedBook
+                  .book
+                  .title
+              }.`,
+
             icon:
-              selectedBook.book.cover_emoji ||
+              selectedBook
+                .book
+                .cover_emoji ||
               "📚",
+
             actionUrl:
               "library.html"
           });
@@ -1251,15 +2783,21 @@
           "visible"
         );
 
+        readerModal.classList.remove(
+          "visible"
+        );
+
         showToast(
           completedNow
-            ? `Book completed! Rewards earned.`
+            ? "Book completed! A new sticker was unlocked."
             : `${minutes} reading minutes saved.`
         );
 
         await refreshLibrary();
 
-      } catch (error) {
+      } catch (
+        error
+      ) {
         console.error(
           "Reading error:",
           error
@@ -1279,7 +2817,7 @@
       }
     }
 
-    filters.addEventListener(
+    wings.addEventListener(
       "click",
       event => {
         const button =
@@ -1287,65 +2825,253 @@
             "[data-filter]"
           );
 
-        if (!button) {
+        if (
+          !button
+        ) {
           return;
         }
 
         activeFilter =
           button.dataset.filter;
 
-        filters
+        wings
           .querySelectorAll(
             "[data-filter]"
           )
-          .forEach(filter => {
-            filter.classList.toggle(
-              "active",
-              filter === button
-            );
-          });
+          .forEach(
+            wing => {
+              wing.classList.toggle(
+                "active",
+                wing ===
+                button
+              );
+            }
+          );
+
+        roomTitle.textContent =
+          button.dataset.title;
+
+        roomCopy.textContent =
+          button.dataset.copy;
+
+        document
+          .getElementById(
+            "novaSpeech"
+          )
+          .textContent =
+            `Welcome to ${button.dataset.title}! Choose any book from the shelves.`;
 
         renderBooks();
       }
     );
+
+    document
+      .getElementById(
+        "showAllButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          activeFilter =
+            "all";
+
+          roomTitle.textContent =
+            "All Library Books";
+
+          roomCopy.textContent =
+            "Explore every book currently available in the ELCraft Library.";
+
+          wings
+            .querySelectorAll(
+              ".wing"
+            )
+            .forEach(
+              wing => {
+                wing.classList.remove(
+                  "active"
+                );
+              }
+            );
+
+          renderBooks();
+        }
+      );
+
+    document
+      .getElementById(
+        "completedButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          activeFilter =
+            "completed";
+
+          roomTitle.textContent =
+            "Completed Adventures";
+
+          roomCopy.textContent =
+            "Revisit books that have already been completed.";
+
+          wings
+            .querySelectorAll(
+              ".wing"
+            )
+            .forEach(
+              wing => {
+                wing.classList.remove(
+                  "active"
+                );
+              }
+            );
+
+          renderBooks();
+        }
+      );
+
+    document
+      .getElementById(
+        "previousPageButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          currentPage -=
+            1;
+
+          renderReaderPage();
+        }
+      );
+
+    document
+      .getElementById(
+        "nextPageButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          currentPage +=
+            1;
+
+          renderReaderPage();
+        }
+      );
+
+    document
+      .getElementById(
+        "readToMeButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          if (
+            !("speechSynthesis" in window)
+          ) {
+            showToast(
+              "Read to Me is not supported on this device."
+            );
+
+            return;
+          }
+
+          window.speechSynthesis
+            .cancel();
+
+          const speech =
+            new SpeechSynthesisUtterance(
+              readerText.textContent
+            );
+
+          speech.rate =
+            .9;
+
+          speech.pitch =
+            1.05;
+
+          window.speechSynthesis
+            .speak(
+              speech
+            );
+        }
+      );
+
+    document
+      .getElementById(
+        "finishReadingButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          if (
+            !selectedBook
+          ) {
+            return;
+          }
+
+          modalTitle.textContent =
+            `Finish ${
+              selectedBook.book.title
+            }`;
+
+          minutesInput.value =
+            "5";
+
+          readingModal.classList.add(
+            "visible"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "closeReaderButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.speechSynthesis
+            ?.cancel();
+
+          readerModal.classList.remove(
+            "visible"
+          );
+        }
+      );
 
     saveReadingButton.addEventListener(
       "click",
       saveReading
     );
 
-    cancelReadingButton.addEventListener(
-      "click",
-      () => {
-        readingModal.classList.remove(
-          "visible"
-        );
-      }
-    );
-
-    readingModal.addEventListener(
-      "click",
-      event => {
-        if (event.target === readingModal) {
+    document
+      .getElementById(
+        "cancelReadingButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
           readingModal.classList.remove(
             "visible"
           );
         }
-      }
-    );
+      );
 
     document
-      .getElementById("mapButton")
+      .getElementById(
+        "mapButton"
+      )
       .addEventListener(
         "click",
         () => {
           window.location.href =
-            "world-map.html";
+            "my-city.html";
         }
       );
 
     document
-      .getElementById("questsButton")
+      .getElementById(
+        "questsButton"
+      )
       .addEventListener(
         "click",
         () => {
@@ -1355,9 +3081,14 @@
       );
 
     async function initialize() {
-      if (!childId) {
+      if (
+        !childId
+      ) {
         childName.textContent =
           "No child selected";
+
+        readerName.textContent =
+          "Reader";
 
         bookGrid.innerHTML =
           '<div class="empty">Choose a child profile before opening the Library.</div>';
@@ -1373,11 +3104,14 @@
         await completeGameAction({
           questKey:
             "story_visit_library",
+
           questAmount:
             1
         });
 
-      } catch (error) {
+      } catch (
+        error
+      ) {
         console.error(
           "Library initialization error:",
           error
@@ -1405,9 +3139,9 @@
   </script>
 
   <script
-  type="module"
-  src="global-navigation.js?v=1">
-</script>
-  
+    type="module"
+    src="global-navigation.js?v=1">
+  </script>
+
 </body>
 </html>
