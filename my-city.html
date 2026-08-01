@@ -9,6 +9,8 @@
 
   <title>ELCraft — My City</title>
 
+  <!-- ELCraft family world access build: shared-family-v3 -->
+
   <link rel="stylesheet" href="city.css">
   <link rel="stylesheet" href="city-layout.css">
 
@@ -25,6 +27,34 @@
       display: flex;
       flex-direction: column;
       background: #45b8e5;
+    }
+
+    body.auth-checking > * {
+      visibility: hidden;
+    }
+
+    body.auth-checking::before {
+      content: "Opening the selected child’s world...";
+
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+
+      display: grid;
+      place-items: center;
+
+      visibility: visible;
+
+      color: #6544af;
+      background:
+        linear-gradient(
+          145deg,
+          #e7f8ff,
+          #eee6ff,
+          #ffeaf4
+        );
+
+      font: 900 18px Arial, Helvetica, sans-serif;
     }
 
     /* ------------------------------------------- */
@@ -367,7 +397,7 @@
 </style>
 </head>
 
-<body data-page="city">
+<body data-page="city" class="auth-checking">
 
   <!-- ELCraft Header -->
 
@@ -3237,6 +3267,225 @@
   );
 })();
 </script>
+
+
+  <script type="module">
+    import {
+      supabase
+    } from "./supabase-client.js";
+
+    const SELECTED_CHILD_ID_KEY =
+      "elcraft_selected_child_id";
+
+    async function validateFamilyWorldAccess() {
+      try {
+        const {
+          data: userData,
+          error: userError
+        } =
+          await supabase.auth.getUser();
+
+        if (
+          userError ||
+          !userData.user
+        ) {
+          window.location.replace(
+            "auth.html"
+          );
+
+          return;
+        }
+
+        const user =
+          userData.user;
+
+        const {
+          data: membershipRows,
+          error: membershipError
+        } =
+          await supabase
+            .from(
+              "family_members"
+            )
+            .select(
+              "id, user_id, family_id, member_role, status"
+            )
+            .eq(
+              "user_id",
+              user.id
+            )
+            .eq(
+              "status",
+              "active"
+            );
+
+        if (membershipError) {
+          throw membershipError;
+        }
+
+        const memberships =
+          membershipRows ||
+          [];
+
+        const membership =
+          memberships.find(
+            item =>
+              item.member_role ===
+              "owner"
+          ) ||
+          memberships[0] ||
+          null;
+
+        if (!membership) {
+          window.location.replace(
+            "parent-dashboard.html"
+          );
+
+          return;
+        }
+
+        const isFamilyOwner =
+          membership.member_role ===
+          "owner";
+
+        const passwordIsSet =
+          user.user_metadata
+            ?.password_set ===
+          true;
+
+        if (
+          !isFamilyOwner &&
+          !passwordIsSet
+        ) {
+          window.location.replace(
+            "accept-invite.html?v=3"
+          );
+
+          return;
+        }
+
+        const {
+          data: familyMembers,
+          error: familyError
+        } =
+          await supabase
+            .from(
+              "family_members"
+            )
+            .select(
+              "user_id, member_role"
+            )
+            .eq(
+              "family_id",
+              membership.family_id
+            )
+            .eq(
+              "status",
+              "active"
+            );
+
+        if (familyError) {
+          throw familyError;
+        }
+
+        const owner =
+          (familyMembers || [])
+            .find(
+              member =>
+                member.member_role ===
+                "owner"
+            );
+
+        const ownerUserId =
+          owner?.user_id ||
+          (
+            isFamilyOwner
+              ? user.id
+              : null
+          );
+
+        const selectedChildId =
+          localStorage.getItem(
+            SELECTED_CHILD_ID_KEY
+          );
+
+        if (
+          !ownerUserId ||
+          !selectedChildId
+        ) {
+          window.location.replace(
+            "parent-dashboard.html"
+          );
+
+          return;
+        }
+
+        const {
+          data: child,
+          error: childError
+        } =
+          await supabase
+            .from(
+              "child_profiles"
+            )
+            .select(
+              "id, display_name, avatar, parent_id"
+            )
+            .eq(
+              "id",
+              selectedChildId
+            )
+            .eq(
+              "parent_id",
+              ownerUserId
+            )
+            .maybeSingle();
+
+        if (
+          childError ||
+          !child
+        ) {
+          localStorage.removeItem(
+            SELECTED_CHILD_ID_KEY
+          );
+
+          window.location.replace(
+            "parent-dashboard.html"
+          );
+
+          return;
+        }
+
+        localStorage.setItem(
+          "elcraft_child_name",
+          child.display_name ||
+          "Player"
+        );
+
+        localStorage.setItem(
+          "elcraft_child_avatar",
+          child.avatar ||
+          "🌟"
+        );
+
+        document.body.classList.remove(
+          "auth-checking"
+        );
+
+      } catch (error) {
+        console.error(
+          "My World family access error:",
+          error
+        );
+
+        window.location.replace(
+          "parent-dashboard.html"
+        );
+      }
+    }
+
+    validateFamilyWorldAccess();
+  </script>
 
   <script
     type="module"
