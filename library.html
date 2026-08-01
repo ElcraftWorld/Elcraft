@@ -11,6 +11,8 @@
 
   <title>ELCraft Interactive Library</title>
 
+  <!-- ELCraft interactive library build: clickable-v3 -->
+
   <link
     rel="preload"
     as="image"
@@ -1378,1214 +1380,708 @@
       "library-background.png?v=2";
   </script>
 
-  <script type="module">
-    import {
-      getSelectedChildId,
-      loadLibrary,
-      logReading
-    } from "./library.js";
 
-    import {
-      supabase
-    } from "./supabase-client.js";
+  <script>
+    const FALLBACK_BOOKS = [
+      {
+        id: "story-1",
+        category: "story",
+        title: "The Brave Little Fox",
+        emoji: "🦊",
+        description: "A little fox discovers that bravery can be quiet.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Finn heard a tiny sound beside the river.",
+          "A duckling was caught behind a fallen branch.",
+          "Finn felt nervous, but he took one careful step at a time.",
+          "He moved the branch and guided the duckling home.",
+          "Finn learned that being brave means helping even when your paws shake."
+        ]
+      },
+      {
+        id: "story-2",
+        category: "story",
+        title: "Luna and the Stars",
+        emoji: "🌙",
+        description: "Luna follows a trail of starlight through a magical forest.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Luna saw one bright star resting on a tree branch.",
+          "The star asked for help finding its way back to the sky.",
+          "Together they crossed a silver stream and climbed the tallest hill.",
+          "Luna lifted the star high, and the whole forest began to glow.",
+          "From that night on, one star always twinkled just for Luna."
+        ]
+      },
+      {
+        id: "science-1",
+        category: "science",
+        title: "Amazing Animals",
+        emoji: "🦁",
+        description: "Meet animals with incredible abilities.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Animals have amazing ways to live and grow.",
+          "Owls can turn their heads much farther than people can.",
+          "Dolphins use sounds to understand the world around them.",
+          "Chameleons change color to communicate and stay safe.",
+          "Every animal has special tools that help it survive."
+        ]
+      },
+      {
+        id: "science-2",
+        category: "science",
+        title: "Space Adventures",
+        emoji: "🚀",
+        description: "Travel beyond Earth and explore the stars.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "A rocket needs enormous power to leave Earth.",
+          "Astronauts float because they are in microgravity.",
+          "The Moon has mountains, valleys, and many craters.",
+          "Mars is called the red planet because of iron in its soil.",
+          "There are billions of stars waiting to be explored."
+        ]
+      },
+      {
+        id: "math-1",
+        category: "math",
+        title: "Shape Quest",
+        emoji: "🔷",
+        description: "Find circles, squares, and triangles in a magical kingdom.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "The Shape Kingdom was missing three golden keys.",
+          "The circle key rolled beneath the castle bridge.",
+          "The square key fit perfectly inside a stone window.",
+          "The triangle key waited at the top of a pointed mountain.",
+          "Every shape helped open the treasure room."
+        ]
+      },
+      {
+        id: "math-2",
+        category: "math",
+        title: "Fun With Numbers",
+        emoji: "🔢",
+        description: "Count, compare, and solve playful number puzzles.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Three frogs sat beside a pond.",
+          "Two more frogs hopped over to join them.",
+          "Three plus two makes five frogs altogether.",
+          "Then one frog jumped into the water.",
+          "Five minus one leaves four frogs beside the pond."
+        ]
+      },
+      {
+        id: "world-1",
+        category: "world",
+        title: "Around the World",
+        emoji: "🌍",
+        description: "Visit places, people, foods, and traditions around the world.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Our world is filled with many countries and communities.",
+          "People speak thousands of different languages.",
+          "Families celebrate with music, food, stories, and traditions.",
+          "Homes and clothing can look different in every place.",
+          "Learning about others helps us understand our shared world."
+        ]
+      },
+      {
+        id: "world-2",
+        category: "world",
+        title: "Music and Traditions",
+        emoji: "🎶",
+        description: "Discover instruments and celebrations from many cultures.",
+        status: "available",
+        minutesRead: 0,
+        pages: [
+          "Music can tell a story without using any words.",
+          "Drums, strings, bells, and voices create different sounds.",
+          "Communities use music for celebrations, ceremonies, and play.",
+          "Every tradition carries memories from one generation to the next.",
+          "Listening carefully helps us appreciate every culture."
+        ]
+      }
+    ];
 
-    import {
-      completeGameAction,
-      notifyPlayer
-    } from "./elcraft-engine.js";
-
-    const childId =
-      getSelectedChildId();
-
-    let books =
-      [];
-
-    let selectedBook =
-      null;
-
-    let currentPage =
-      0;
+    let books = [...FALLBACK_BOOKS];
+    let selectedBook = null;
+    let currentPage = 0;
+    let connectedLibrary = null;
+    let connectedLogReading = null;
+    let selectedChildId = localStorage.getItem("elcraft_selected_child_id");
 
     const CATEGORY_INFO = {
       story: {
-        title:
-          "Storybook Forest",
-
-        copy:
-          "Fairy tales, friendship stories, mysteries, and magical adventures."
+        title: "Storybook Forest",
+        copy: "Fairy tales, friendship stories, mysteries, and magical adventures."
       },
-
       science: {
-        title:
-          "Discovery Lab",
-
-        copy:
-          "Animals, space, weather, nature, inventions, and experiments."
+        title: "Discovery Lab",
+        copy: "Animals, space, weather, nature, inventions, and experiments."
       },
-
       math: {
-        title:
-          "Math Quests",
-
-        copy:
-          "Counting, patterns, shapes, puzzles, and number adventures."
+        title: "Math Quests",
+        copy: "Counting, patterns, shapes, puzzles, and number adventures."
       },
-
       world: {
-        title:
-          "World & Culture",
-
-        copy:
-          "People, places, traditions, languages, celebrations, and history."
+        title: "World & Culture",
+        copy: "People, places, traditions, languages, celebrations, and history."
       }
     };
 
     const PASSPORT = [
-      {
-        category:
-          "story",
-
-        label:
-          "Storybook Forest",
-
-        icon:
-          "📖"
-      },
-
-      {
-        category:
-          "science",
-
-        label:
-          "Discovery Lab",
-
-        icon:
-          "🔬"
-      },
-
-      {
-        category:
-          "math",
-
-        label:
-          "Math Quests",
-
-        icon:
-          "🧮"
-      },
-
-      {
-        category:
-          "family",
-
-        label:
-          "Kindness & Feelings",
-
-        icon:
-          "💛"
-      },
-
-      {
-        category:
-          "world",
-
-        label:
-          "World & Culture",
-
-        icon:
-          "🌍"
-      }
+      ["story", "📖", "Storybook Forest"],
+      ["science", "🔬", "Discovery Lab"],
+      ["math", "🧮", "Math Quests"],
+      ["world", "🌍", "World & Culture"]
     ];
 
-    const FALLBACK_PAGES = [
-      "A new adventure begins. Look closely and imagine what might happen next.",
-      "The characters discover something surprising and learn an important lesson.",
-      "The journey continues with courage, curiosity, and kindness.",
-      "Every story leaves a little magic behind."
-    ];
+    const childName =
+      localStorage.getItem("elcraft_child_name") ||
+      "Reader";
 
-    function showToast(
-      message
-    ) {
-      const toast =
-        document.getElementById(
-          "toast"
-        );
+    document.getElementById("childName").textContent =
+      `${childName}'s Library`;
 
-      toast.textContent =
-        message;
-
-      toast.classList.add(
-        "visible"
-      );
-
-      window.clearTimeout(
-        toast._timer
-      );
-
-      toast._timer =
-        window.setTimeout(
-          () => {
-            toast.classList.remove(
-              "visible"
-            );
-          },
-          3000
-        );
-    }
-
-    function openModal(
-      id
-    ) {
-      document
-        .getElementById(
-          id
-        )
-        .classList.add(
-          "visible"
-        );
-    }
-
-    function closeModal(
-      id
-    ) {
-      document
-        .getElementById(
-          id
-        )
-        .classList.remove(
-          "visible"
-        );
-    }
-
-    function booksInCategory(
-      category
-    ) {
-      if (
-        category ===
-        "world"
-      ) {
-        return books.filter(
-          item =>
-            item.book?.category ===
-              "world" ||
-            item.book?.category ===
-              "culture"
-        );
-      }
-
-      return books.filter(
-        item =>
-          item.book?.category ===
-          category
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.add("visible");
+      clearTimeout(toast._timer);
+      toast._timer = setTimeout(
+        () => toast.classList.remove("visible"),
+        3000
       );
     }
 
-    function pagesForBook() {
-      const book =
-        selectedBook?.book ||
-        {};
-
-      if (
-        Array.isArray(
-          book.pages
-        ) &&
-        book.pages.length
-      ) {
-        return book.pages.map(
-          page =>
-            typeof page ===
-              "string"
-              ? page
-              : page.text
-        );
-      }
-
-      return [
-        `Welcome to ${
-          book.title ||
-          "this story"
-        }.`,
-        book.description ||
-          "A special reading adventure.",
-        ...FALLBACK_PAGES
-      ];
+    function openModal(id) {
+      document.getElementById(id)?.classList.add("visible");
     }
 
-    function renderShelf(
-      category
-    ) {
-      const info =
-        CATEGORY_INFO[
-          category
-        ];
+    function closeModal(id) {
+      document.getElementById(id)?.classList.remove("visible");
+    }
 
-      document
-        .getElementById(
-          "booksTitle"
-        )
-        .textContent =
-          info.title;
+    function categoryBooks(category) {
+      return books.filter(book => book.category === category);
+    }
 
-      document
-        .getElementById(
-          "booksCopy"
-        )
-        .textContent =
-          info.copy;
+    function renderShelf(category) {
+      const info = CATEGORY_INFO[category];
 
-      const grid =
-        document.getElementById(
-          "bookGrid"
-        );
+      document.getElementById("booksTitle").textContent =
+        info.title;
 
+      document.getElementById("booksCopy").textContent =
+        info.copy;
+
+      const grid = document.getElementById("bookGrid");
       grid.replaceChildren();
 
-      const visible =
-        booksInCategory(
-          category
-        );
+      const visibleBooks = categoryBooks(category);
 
-      if (
-        !visible.length
-      ) {
+      if (!visibleBooks.length) {
         grid.innerHTML =
           '<div class="info-box">Nova is still adding books to this shelf.</div>';
-
-        openModal(
-          "booksModal"
-        );
-
+        openModal("booksModal");
         return;
       }
 
-      visible.forEach(
-        item => {
-          const book =
-            item.book ||
-            {};
+      visibleBooks.forEach(book => {
+        const card = document.createElement("article");
+        card.className =
+          `book-card${book.status === "completed" ? " completed" : ""}`;
 
-          const card =
-            document.createElement(
-              "article"
-            );
+        card.innerHTML = `
+          <div class="book-cover">${book.emoji || "📖"}</div>
+          <h3>${book.title}</h3>
+          <p>${book.description}</p>
+          <div class="book-meta">
+            ${
+              book.status === "completed"
+                ? "⭐ Completed"
+                : `${Number(book.minutesRead || 0)} minutes read`
+            }
+          </div>
+          <button class="book-button" type="button">
+            ${book.status === "completed" ? "Read Again" : "Choose This Book"}
+          </button>
+        `;
 
-          card.className =
-            `book-card${
-              item.status ===
-              "completed"
-                ? " completed"
-                : ""
-            }`;
+        card.querySelector(".book-button").addEventListener(
+          "click",
+          () => selectBook(book)
+        );
 
-          card.innerHTML = `
-            <div class="book-cover">
-              ${
-                book.cover_emoji ||
-                "📖"
-              }
-            </div>
+        grid.appendChild(card);
+      });
 
-            <h3>
-              ${
-                book.title ||
-                "Untitled Book"
-              }
-            </h3>
+      openModal("booksModal");
+    }
 
-            <p>
-              ${
-                book.description ||
-                "A special reading adventure."
-              }
-            </p>
+    function selectBook(book) {
+      selectedBook = book;
 
-            <div class="book-meta">
-              ${
-                item.status ===
-                "completed"
-                  ? "⭐ Completed"
-                  : `${Number(item.minutes_read || 0)} minutes read`
-              }
-            </div>
+      document.getElementById("selectedBookEmoji").textContent =
+        book.emoji || "📖";
 
-            <button
-              class="book-button"
-              type="button">
-              ${
-                item.status ===
-                "completed"
-                  ? "Read Again"
-                  : "Choose This Book"
-              }
-            </button>
-          `;
+      document.getElementById("selectedBookTitle").textContent =
+        book.title;
 
-          card
-            .querySelector(
-              ".book-button"
-            )
-            .addEventListener(
-              "click",
-              () => {
-                selectedBook =
-                  item;
+      document
+        .getElementById("selectedBookChip")
+        .classList.add("visible");
 
-                document
-                  .getElementById(
-                    "selectedBookEmoji"
-                  )
-                  .textContent =
-                    book.cover_emoji ||
-                    "📖";
+      closeModal("booksModal");
 
-                document
-                  .getElementById(
-                    "selectedBookTitle"
-                  )
-                  .textContent =
-                    book.title ||
-                    "Selected Book";
-
-                document
-                  .getElementById(
-                    "selectedBookChip"
-                  )
-                  .classList.add(
-                    "visible"
-                  );
-
-                closeModal(
-                  "booksModal"
-                );
-
-                showToast(
-                  "Book selected! Click a cozy seat to start reading."
-                );
-              }
-            );
-
-          grid.appendChild(
-            card
-          );
-        }
-      );
-
-      openModal(
-        "booksModal"
+      showToast(
+        `${book.title} selected! Click a cozy seat to start reading.`
       );
     }
 
     function renderReader() {
-      if (
-        !selectedBook
-      ) {
-        return;
-      }
-
-      const book =
-        selectedBook.book ||
-        {};
+      if (!selectedBook) return;
 
       const pages =
-        pagesForBook();
+        Array.isArray(selectedBook.pages) && selectedBook.pages.length
+          ? selectedBook.pages
+          : [
+              `Welcome to ${selectedBook.title}.`,
+              selectedBook.description,
+              "Every reading adventure begins with curiosity.",
+              "Keep turning pages to discover what happens next."
+            ];
 
       currentPage =
-        Math.max(
-          0,
-          Math.min(
-            currentPage,
-            pages.length -
-            1
-          )
-        );
+        Math.max(0, Math.min(currentPage, pages.length - 1));
 
-      document
-        .getElementById(
-          "readerTitle"
-        )
-        .textContent =
-          book.title ||
-          "Reading Adventure";
+      document.getElementById("readerTitle").textContent =
+        selectedBook.title;
 
-      document
-        .getElementById(
-          "readerEmoji"
-        )
-        .textContent =
-          book.cover_emoji ||
-          "📖";
+      document.getElementById("readerEmoji").textContent =
+        selectedBook.emoji || "📖";
 
-      document
-        .getElementById(
-          "readerText"
-        )
-        .textContent =
-          pages[
-            currentPage
-          ];
+      document.getElementById("readerText").textContent =
+        pages[currentPage];
 
-      document
-        .getElementById(
-          "readerPageLabel"
-        )
-        .textContent =
-          `Page ${
-            currentPage +
-            1
-          } of ${
-            pages.length
-          }`;
+      document.getElementById("readerPageLabel").textContent =
+        `Page ${currentPage + 1} of ${pages.length}`;
 
-      document
-        .getElementById(
-          "previousButton"
-        )
-        .disabled =
-          currentPage ===
-          0;
+      document.getElementById("previousButton").disabled =
+        currentPage === 0;
 
-      document
-        .getElementById(
-          "nextButton"
-        )
-        .disabled =
-          currentPage >=
-          pages.length -
-          1;
+      document.getElementById("nextButton").disabled =
+        currentPage >= pages.length - 1;
     }
 
     function openReader() {
-      if (
-        !selectedBook
-      ) {
-        showToast(
-          "Choose a book from a shelf first."
-        );
-
+      if (!selectedBook) {
+        showToast("Choose a book from a bookshelf first.");
         return;
       }
 
-      currentPage =
-        0;
-
+      currentPage = 0;
       renderReader();
+      openModal("readerModal");
+    }
 
-      openModal(
-        "readerModal"
-      );
+    function completedBooks() {
+      return books.filter(book => book.status === "completed");
     }
 
     function renderPassport() {
-      const list =
-        document.getElementById(
-          "passportList"
-        );
-
+      const list = document.getElementById("passportList");
       list.replaceChildren();
 
-      PASSPORT.forEach(
-        item => {
-          const complete =
-            books.some(
-              bookItem =>
-                bookItem.status ===
-                  "completed" &&
-                bookItem.book?.category ===
-                  item.category
-            );
-
-          const row =
-            document.createElement(
-              "div"
-            );
-
-          row.className =
-            `passport-row${
-              complete
-                ? " complete"
-                : ""
-            }`;
-
-          row.innerHTML = `
-            <div style="font-size:23px;">
-              ${item.icon}
-            </div>
-
-            <div style="flex:1;">
-              ${item.label}
-            </div>
-
-            <div>
-              ${complete ? "✓" : "○"}
-            </div>
-          `;
-
-          list.appendChild(
-            row
+      PASSPORT.forEach(([category, icon, label]) => {
+        const complete =
+          books.some(
+            book =>
+              book.category === category &&
+              book.status === "completed"
           );
-        }
-      );
+
+        const row = document.createElement("div");
+        row.className =
+          `passport-row${complete ? " complete" : ""}`;
+
+        row.innerHTML = `
+          <div style="font-size:23px;">${icon}</div>
+          <div style="flex:1;">${label}</div>
+          <div>${complete ? "✓" : "○"}</div>
+        `;
+
+        list.appendChild(row);
+      });
     }
 
     function renderStickers() {
-      const completed =
-        books.filter(
-          item =>
-            item.status ===
-            "completed"
-        ).length;
+      const total = completedBooks().length;
 
       document
-        .querySelectorAll(
-          "[data-sticker]"
-        )
-        .forEach(
-          (
-            sticker,
-            index
-          ) => {
-            sticker.classList.toggle(
-              "unlocked",
-              index <
-              completed
-            );
-          }
-        );
+        .querySelectorAll("[data-sticker]")
+        .forEach((sticker, index) => {
+          sticker.classList.toggle(
+            "unlocked",
+            index < total
+          );
+        });
+    }
+
+    function finishReading() {
+      openModal("minutesModal");
     }
 
     async function saveReading() {
-      if (
-        !selectedBook
-      ) {
+      if (!selectedBook) return;
+
+      const input = document.getElementById("minutesInput");
+      const minutes = Number(input.value);
+
+      if (!Number.isFinite(minutes) || minutes <= 0) {
+        showToast("Enter at least one reading minute.");
         return;
       }
 
-      const minutes =
-        Number(
-          document
-            .getElementById(
-              "minutesInput"
-            )
-            .value
-        );
-
-      if (
-        !Number.isFinite(
-          minutes
-        ) ||
-        minutes <=
-        0
-      ) {
-        showToast(
-          "Enter at least one reading minute."
-        );
-
-        return;
-      }
-
-      const oldStatus =
-        selectedBook.status;
-
-      const button =
-        document.getElementById(
-          "saveReadingButton"
-        );
-
-      button.disabled =
-        true;
-
-      button.textContent =
-        "Saving...";
+      const button = document.getElementById("saveReadingButton");
+      button.disabled = true;
+      button.textContent = "Saving...";
 
       try {
-        const updated =
-          await logReading({
-            childId,
-
-            bookId:
-              selectedBook.book.id,
-
+        if (
+          connectedLogReading &&
+          selectedChildId &&
+          selectedBook.realBookId
+        ) {
+          const updated = await connectedLogReading({
+            childId: selectedChildId,
+            bookId: selectedBook.realBookId,
             minutes
           });
 
-        const completedNow =
-          oldStatus !==
-            "completed" &&
-          updated.status ===
-            "completed";
+          selectedBook.status =
+            updated.status || selectedBook.status;
 
-        await completeGameAction({
-          questKey:
-            "daily_read_15",
+          selectedBook.minutesRead =
+            Number(updated.minutes_read || minutes);
+        } else {
+          selectedBook.minutesRead =
+            Number(selectedBook.minutesRead || 0) + minutes;
 
-          questAmount:
-            minutes,
+          if (selectedBook.minutesRead >= 10) {
+            selectedBook.status = "completed";
+          }
 
-          xp:
-            completedNow
-              ? Number(
-                  selectedBook.book.xp_reward ||
-                  0
-                )
-              : 0,
-
-          coins:
-            completedNow
-              ? Number(
-                  selectedBook.book.coin_reward ||
-                  0
-                )
-              : 0,
-
-          feedActivity:
-            completedNow
-              ? {
-                  activityType:
-                    "book",
-
-                  title:
-                    `${selectedBook.book.title} completed!`,
-
-                  message:
-                    "A reading adventure was completed inside the ELCraft Library.",
-
-                  icon:
-                    selectedBook.book.cover_emoji ||
-                    "📚"
-                }
-              : null
-        });
-
-        if (
-          completedNow
-        ) {
-          await notifyPlayer({
-            type:
-              "reward",
-
-            title:
-              "Book Completed!",
-
-            message:
-              "A new reading sticker was unlocked.",
-
-            icon:
-              selectedBook.book.cover_emoji ||
-              "📚",
-
-            actionUrl:
-              "library.html"
-          });
+          localStorage.setItem(
+            "elcraft_demo_library_books",
+            JSON.stringify(books)
+          );
         }
 
-        closeModal(
-          "minutesModal"
-        );
+        closeModal("minutesModal");
+        closeModal("readerModal");
 
-        closeModal(
-          "readerModal"
-        );
+        renderPassport();
+        renderStickers();
 
         showToast(
-          completedNow
-            ? "Book completed! A new sticker was unlocked."
+          selectedBook.status === "completed"
+            ? "Book completed! A sticker was unlocked."
             : `${minutes} reading minutes saved.`
         );
-
-        await refreshLibrary();
-
-      } catch (
-        error
-      ) {
-        console.error(
-          "Reading save error:",
-          error
-        );
-
+      } catch (error) {
+        console.error(error);
         showToast(
-          error?.message ||
-          "Unable to save reading time."
+          error?.message || "Unable to save reading time."
         );
-
       } finally {
-        button.disabled =
-          false;
-
-        button.textContent =
-          "Save Reading";
+        button.disabled = false;
+        button.textContent = "Save Reading";
       }
     }
 
-    async function refreshLibrary() {
-      const {
-        data,
-        error
-      } =
-        await loadLibrary(
-          childId
-        );
-
-      if (
-        error
-      ) {
-        throw error;
-      }
-
-      books =
-        data
-          .filter(
-            item =>
-              item.book
-          )
-          .sort(
-            (
-              a,
-              b
-            ) =>
-              Number(
-                a.book?.sort_order ||
-                0
-              ) -
-              Number(
-                b.book?.sort_order ||
-                0
-              )
-          );
-
-      renderPassport();
-      renderStickers();
+    function showInfo(title, copy) {
+      document.getElementById("infoTitle").textContent = title;
+      document.getElementById("infoCopy").textContent = copy;
+      openModal("infoModal");
     }
 
-    async function loadChildName() {
-      const {
-        data,
-        error
-      } =
-        await supabase
-          .from(
-            "child_profiles"
-          )
-          .select(
-            "display_name"
-          )
-          .eq(
-            "id",
-            childId
-          )
-          .single();
-
-      if (
-        !error &&
-        data
-      ) {
-        document
-          .getElementById(
-            "childName"
-          )
-          .textContent =
-            `${data.display_name || "Reader"}'s Library`;
-      }
-    }
-
-    document
-      .querySelectorAll(
-        "[data-category]"
-      )
-      .forEach(
-        button => {
+    function attachEvents() {
+      document
+        .querySelectorAll("[data-category]")
+        .forEach(button => {
           button.addEventListener(
             "click",
-            () => {
-              renderShelf(
-                button.dataset.category
-              );
-            }
+            () => renderShelf(button.dataset.category)
           );
-        }
-      );
+        });
 
-    document
-      .getElementById(
-        "novaHotspot"
-      )
-      .addEventListener(
+      document.getElementById("novaHotspot").addEventListener(
         "click",
         () => {
-          const completed =
-            books.filter(
-              item =>
-                item.status ===
-                "completed"
-            ).length;
+          const total = completedBooks().length;
 
-          document
-            .getElementById(
-              "novaMessage"
-            )
-            .textContent =
-              completed
-                ? `You have completed ${completed} book${completed === 1 ? "" : "s"}! Keep exploring. The Dragon Archives unlock after 10 completed books.`
-                : "Welcome! Choose a bookshelf, pick a book, then click a cozy seat to begin reading.";
+          document.getElementById("novaMessage").textContent =
+            total
+              ? `You have completed ${total} book${total === 1 ? "" : "s"}! Keep exploring.`
+              : "Welcome! Choose a bookshelf, pick a book, then click a cozy seat to begin reading.";
 
-          openModal(
-            "novaModal"
-          );
+          openModal("novaModal");
         }
       );
 
-    document
-      .getElementById(
-        "cozyHotspot"
-      )
-      .addEventListener(
+      document.getElementById("cozyHotspot").addEventListener(
         "click",
         openReader
       );
 
-    document
-      .getElementById(
-        "centerSeatHotspot"
-      )
-      .addEventListener(
+      document.getElementById("centerSeatHotspot").addEventListener(
         "click",
         openReader
       );
 
-    document
-      .getElementById(
-        "passportHotspot"
-      )
-      .addEventListener(
+      const openPassport = () => {
+        renderPassport();
+        openModal("passportModal");
+      };
+
+      document.getElementById("passportHotspot").addEventListener(
+        "click",
+        openPassport
+      );
+
+      document.getElementById("passportTopButton").addEventListener(
+        "click",
+        openPassport
+      );
+
+      const openStickers = () => {
+        renderStickers();
+        openModal("stickersModal");
+      };
+
+      document.getElementById("stickerHotspot").addEventListener(
+        "click",
+        openStickers
+      );
+
+      document.getElementById("stickersTopButton").addEventListener(
+        "click",
+        openStickers
+      );
+
+      document.getElementById("secretHotspot").addEventListener(
         "click",
         () => {
-          renderPassport();
+          const total = completedBooks().length;
+          const remaining = Math.max(0, 10 - total);
 
-          openModal(
-            "passportModal"
+          showInfo(
+            "🐉 Dragon Archives",
+            remaining
+              ? `Complete ${remaining} more book${remaining === 1 ? "" : "s"} to unlock the Dragon Archives.`
+              : "The Dragon Archives are unlocked! The hidden room can be built next."
           );
         }
       );
 
-    document
-      .getElementById(
-        "passportTopButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          renderPassport();
+      const goToQuests = () => {
+        window.location.href = "quests.html";
+      };
 
-          openModal(
-            "passportModal"
-          );
-        }
+      document.getElementById("questHotspot").addEventListener(
+        "click",
+        goToQuests
       );
 
-    document
-      .getElementById(
-        "stickerHotspot"
-      )
-      .addEventListener(
+      document.getElementById("questsTopButton").addEventListener(
         "click",
-        () => {
-          renderStickers();
-
-          openModal(
-            "stickersModal"
-          );
-        }
+        goToQuests
       );
 
-    document
-      .getElementById(
-        "stickersTopButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          renderStickers();
+      const goToWorld = () => {
+        window.location.href = "my-city.html";
+      };
 
-          openModal(
-            "stickersModal"
-          );
-        }
+      document.getElementById("exitHotspot").addEventListener(
+        "click",
+        goToWorld
       );
 
-    document
-      .getElementById(
-        "secretHotspot"
-      )
-      .addEventListener(
+      document.getElementById("worldTopButton").addEventListener(
         "click",
-        () => {
-          const completed =
-            books.filter(
-              item =>
-                item.status ===
-                "completed"
-            ).length;
-
-          document
-            .getElementById(
-              "infoTitle"
-            )
-            .textContent =
-              "🐉 Dragon Archives";
-
-          document
-            .getElementById(
-              "infoCopy"
-            )
-            .textContent =
-              completed >=
-              10
-                ? "The Dragon Archives are unlocked! The hidden room can be added as the next Library expansion."
-                : `Complete ${
-                    10 -
-                    completed
-                  } more book${
-                    10 -
-                    completed ===
-                    1
-                      ? ""
-                      : "s"
-                  } to unlock the Dragon Archives.`;
-
-          openModal(
-            "infoModal"
-          );
-        }
+        goToWorld
       );
 
-    document
-      .getElementById(
-        "questHotspot"
-      )
-      .addEventListener(
+      document.getElementById("previousButton").addEventListener(
         "click",
         () => {
-          window.location.href =
-            "quests.html";
-        }
-      );
-
-    document
-      .getElementById(
-        "questsTopButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "quests.html";
-        }
-      );
-
-    document
-      .getElementById(
-        "exitHotspot"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "my-city.html";
-        }
-      );
-
-    document
-      .getElementById(
-        "worldTopButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "my-city.html";
-        }
-      );
-
-    document
-      .getElementById(
-        "previousButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          currentPage -=
-            1;
-
+          currentPage -= 1;
           renderReader();
         }
       );
 
-    document
-      .getElementById(
-        "nextButton"
-      )
-      .addEventListener(
+      document.getElementById("nextButton").addEventListener(
         "click",
         () => {
-          currentPage +=
-            1;
-
+          currentPage += 1;
           renderReader();
         }
       );
 
-    document
-      .getElementById(
-        "readToMeButton"
-      )
-      .addEventListener(
+      document.getElementById("readToMeButton").addEventListener(
         "click",
         () => {
-          if (
-            !(
-              "speechSynthesis" in
-              window
-            )
-          ) {
-            showToast(
-              "Read to Me is not supported on this device."
-            );
-
+          if (!("speechSynthesis" in window)) {
+            showToast("Read to Me is not supported on this device.");
             return;
           }
 
-          window.speechSynthesis
-            .cancel();
+          window.speechSynthesis.cancel();
 
           const speech =
             new SpeechSynthesisUtterance(
-              document
-                .getElementById(
-                  "readerText"
-                )
-                .textContent
+              document.getElementById("readerText").textContent
             );
 
-          speech.rate =
-            .88;
+          speech.rate = .88;
+          speech.pitch = 1.05;
 
-          speech.pitch =
-            1.05;
-
-          window.speechSynthesis
-            .speak(
-              speech
-            );
+          window.speechSynthesis.speak(speech);
         }
       );
 
-    document
-      .getElementById(
-        "finishButton"
-      )
-      .addEventListener(
+      document.getElementById("finishButton").addEventListener(
         "click",
-        () => {
-          openModal(
-            "minutesModal"
-          );
-        }
+        finishReading
       );
 
-    document
-      .getElementById(
-        "saveReadingButton"
-      )
-      .addEventListener(
+      document.getElementById("saveReadingButton").addEventListener(
         "click",
         saveReading
       );
 
-    document
-      .querySelectorAll(
-        "[data-close]"
-      )
-      .forEach(
-        button => {
+      document
+        .querySelectorAll("[data-close]")
+        .forEach(button => {
           button.addEventListener(
             "click",
-            () => {
-              closeModal(
-                button.dataset.close
-              );
-            }
+            () => closeModal(button.dataset.close)
           );
-        }
-      );
+        });
 
-    document
-      .querySelectorAll(
-        ".modal"
-      )
-      .forEach(
-        modal => {
+      document
+        .querySelectorAll(".modal")
+        .forEach(modal => {
           modal.addEventListener(
             "click",
             event => {
-              if (
-                event.target ===
-                modal
-              ) {
-                closeModal(
-                  modal.id
-                );
+              if (event.target === modal) {
+                closeModal(modal.id);
               }
             }
           );
-        }
-      );
-
-    async function initialize() {
-      if (
-        !childId
-      ) {
-        document
-          .getElementById(
-            "childName"
-          )
-          .textContent =
-            "No child selected";
-
-        showToast(
-          "Choose a child profile before entering the Library."
-        );
-
-        return;
-      }
-
-      try {
-        await loadChildName();
-        await refreshLibrary();
-
-        await completeGameAction({
-          questKey:
-            "story_visit_library",
-
-          questAmount:
-            1
         });
+    }
 
-      } catch (
-        error
-      ) {
-        console.error(
-          "Interactive Library initialization error:",
+    async function connectExistingLibrary() {
+      try {
+        const libraryModule =
+          await import("./library.js");
+
+        connectedLibrary =
+          libraryModule.loadLibrary;
+
+        connectedLogReading =
+          libraryModule.logReading;
+
+        if (
+          typeof libraryModule.getSelectedChildId === "function"
+        ) {
+          selectedChildId =
+            libraryModule.getSelectedChildId() ||
+            selectedChildId;
+        }
+
+        if (!selectedChildId || !connectedLibrary) {
+          return;
+        }
+
+        const result =
+          await connectedLibrary(selectedChildId);
+
+        if (result?.error) {
+          throw result.error;
+        }
+
+        const connectedBooks =
+          (result?.data || [])
+            .filter(item => item.book)
+            .map(item => ({
+              id: item.id || item.book.id,
+              realBookId: item.book.id,
+              category:
+                item.book.category === "culture"
+                  ? "world"
+                  : item.book.category,
+              title: item.book.title || "Untitled Book",
+              emoji: item.book.cover_emoji || "📖",
+              description:
+                item.book.description ||
+                "A special reading adventure.",
+              status: item.status || "available",
+              minutesRead: Number(item.minutes_read || 0),
+              pages:
+                Array.isArray(item.book.pages)
+                  ? item.book.pages.map(
+                      page =>
+                        typeof page === "string"
+                          ? page
+                          : page.text
+                    )
+                  : null
+            }));
+
+        if (connectedBooks.length) {
+          books = connectedBooks;
+          renderPassport();
+          renderStickers();
+          showToast("Library books connected.");
+        }
+      } catch (error) {
+        console.warn(
+          "Using built-in Library books because the connected module did not load:",
           error
-        );
-
-        showToast(
-          error?.message ||
-          "Unable to open the Library."
         );
       }
     }
 
-    initialize();
+    const storedDemo =
+      localStorage.getItem("elcraft_demo_library_books");
+
+    if (storedDemo) {
+      try {
+        const parsed = JSON.parse(storedDemo);
+        if (Array.isArray(parsed) && parsed.length) {
+          books = parsed;
+        }
+      } catch {}
+    }
+
+    attachEvents();
+    renderPassport();
+    renderStickers();
+    connectExistingLibrary();
   </script>
 
   <script
