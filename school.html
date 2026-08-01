@@ -1,557 +1,2548 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#172b68">
-<title>ELCraft | Academy</title>
-<style>
-:root{
-  --ink:#1a2852;
-  --deep:#13245c;
-  --purple:#7044c3;
-  --gold:#ffd64d;
-  --green:#66c84f;
-  --sky:#83d8ff;
-  --panel:#fff;
-  --line:#ded9f2;
-  --shadow:0 18px 45px rgba(27,39,91,.22);
-}
-*{box-sizing:border-box}
-html,body{margin:0;min-height:100%;font-family:Trebuchet MS,Arial,sans-serif;color:var(--ink)}
-body{
-  min-height:100vh;
-  background:
-    radial-gradient(circle at 12% 8%,rgba(255,255,255,.9),transparent 20%),
-    radial-gradient(circle at 88% 14%,rgba(255,255,255,.65),transparent 18%),
-    linear-gradient(#7bd5ff 0 39%,#dff5ff 39% 58%,#93db6c 58% 100%);
-}
-button{font:inherit;cursor:pointer}
-button:focus-visible{outline:4px solid var(--gold);outline-offset:3px}
-.app{min-height:100vh;position:relative;overflow:hidden}
-.cloud{position:fixed;z-index:0;opacity:.78;animation:float 18s linear infinite;pointer-events:none}
-.cloud.one{top:95px;left:-120px;font-size:92px}
-.cloud.two{top:190px;left:-180px;font-size:67px;animation-delay:-7s}
-.cloud.three{top:55px;left:-230px;font-size:55px;animation-delay:-13s}
-@keyframes float{to{transform:translateX(calc(100vw + 320px))}}
-.bird{position:fixed;z-index:1;top:150px;left:-70px;font-size:35px;animation:fly 14s linear infinite;pointer-events:none}
-.bird.b2{top:235px;animation-delay:-6s;font-size:28px}
-@keyframes fly{to{transform:translateX(calc(100vw + 150px)) translateY(-45px)}}
-.topbar{
-  position:sticky;top:0;z-index:20;
-  display:flex;align-items:center;justify-content:space-between;gap:12px;
-  padding:10px 15px;background:rgba(255,255,255,.93);
-  border-bottom:2px solid rgba(255,255,255,.9);
-  box-shadow:0 7px 22px rgba(29,39,89,.15);backdrop-filter:blur(12px)
-}
-.leftbar,.stats{display:flex;align-items:center;gap:10px}
-.home-btn,.sound-btn{
-  border:0;border-radius:15px;padding:10px 13px;font-weight:1000;
-  color:#5e3ca2;background:#eee7ff;box-shadow:0 4px 0 #d3c6ed
-}
-.logo{
-  font-weight:1000;font-size:clamp(24px,3vw,40px);line-height:.9;color:#ffc72c;
-  text-shadow:-2px -2px 0 #6e3ca8,2px -2px 0 #6e3ca8,-2px 2px 0 #6e3ca8,2px 2px 0 #6e3ca8,0 5px 0 #43277a
-}
-.stat{
-  min-width:96px;border-radius:999px;padding:9px 12px;background:#fff5c7;
-  color:#5a3e75;font-weight:1000;text-align:center;box-shadow:0 4px 0 rgba(103,73,150,.14)
-}
-.stat.xp{background:#e5f3ff}.stat.streak{background:#ffe1d0}
-main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px}
-.welcome{
-  position:relative;overflow:hidden;
-  display:grid;grid-template-columns:1.3fr .7fr;gap:16px;
-  padding:22px;border:3px solid rgba(255,255,255,.92);border-radius:30px;
-  background:linear-gradient(135deg,rgba(255,255,255,.96),rgba(239,233,255,.94));
-  box-shadow:var(--shadow)
-}
-.welcome:after{content:"🏫";position:absolute;right:4%;bottom:-34px;font-size:180px;opacity:.14;transform:rotate(-3deg)}
-.welcome h1{margin:0;color:#56369c;font-size:clamp(30px,4vw,55px)}
-.welcome p{margin:8px 0 0;font-size:17px;font-weight:900;color:#66749a}
-.level-card{
-  position:relative;z-index:1;align-self:center;padding:15px;border-radius:23px;
-  background:linear-gradient(#273b82,#14245d);color:#fff;box-shadow:inset 0 0 0 2px rgba(255,255,255,.1)
-}
-.level-top{display:flex;justify-content:space-between;align-items:center;font-weight:1000}
-.progress{height:15px;margin-top:10px;border-radius:999px;background:rgba(255,255,255,.17);overflow:hidden}
-.progress span{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,#ffd64d,#91e25d);transition:.45s ease}
-.grid{display:grid;grid-template-columns:1.75fr .85fr;gap:15px;margin-top:15px}
-.panel{
-  border:3px solid rgba(255,255,255,.92);border-radius:28px;background:rgba(255,255,255,.95);
-  box-shadow:var(--shadow);overflow:hidden
-}
-.panel-head{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  padding:16px 18px;border-bottom:1px solid var(--line);background:#f8f6ff
-}
-.panel-head h2{margin:0;color:#5a399e;font-size:25px}
-.panel-body{padding:16px}
-.subjects{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
-.subject{
-  position:relative;min-height:155px;border:0;border-radius:23px;padding:16px;text-align:left;color:#fff;
-  box-shadow:0 8px 0 rgba(35,34,83,.23);transition:.18s ease;overflow:hidden
-}
-.subject:hover{transform:translateY(-3px)}
-.subject:active{transform:translateY(5px);box-shadow:0 3px 0 rgba(35,34,83,.23)}
-.subject .icon{font-size:47px;display:block;margin-bottom:7px}
-.subject strong{display:block;font-size:22px}
-.subject small{display:block;margin-top:4px;font-weight:900;opacity:.93}
-.subject .done-mark{position:absolute;right:12px;top:12px;font-size:29px;display:none}
-.subject.done .done-mark{display:block}
-.subject.reading{background:linear-gradient(135deg,#6e58d3,#9e69e8)}
-.subject.writing{background:linear-gradient(135deg,#e06a85,#f09772)}
-.subject.math{background:linear-gradient(135deg,#2878c7,#4eb8de)}
-.subject.science{background:linear-gradient(135deg,#299e79,#60c96b)}
-.subject.discovery{background:linear-gradient(135deg,#d48a2f,#e7bd49)}
-.subject.music{background:linear-gradient(135deg,#8b4aba,#d35ca3)}
-.daily-list{display:grid;gap:10px}
-.task{
-  display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;
-  padding:12px;border:2px solid #ebe6f7;border-radius:17px;background:#fff
-}
-.task.done{background:#efffe9;border-color:#a4df8d}
-.task-icon{font-size:29px}.task-title{font-weight:1000}.task-sub{font-size:11px;color:#7882a2;font-weight:900;margin-top:2px}
-.task-reward{font-weight:1000;color:#6d4a93;white-space:nowrap}
-.big-reward{
-  width:100%;margin-top:12px;border:0;border-radius:20px;padding:16px;
-  color:#fff;background:linear-gradient(#ffc84b,#e99427);font-weight:1000;
-  box-shadow:0 6px 0 #bd6d19;font-size:17px
-}
-.big-reward:disabled{opacity:.55;cursor:not-allowed}
-.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.mini{
-  padding:12px;border-radius:18px;background:#f4f1ff;border:2px solid #e2dcf5;text-align:center;font-weight:1000
-}
-.mini span{display:block;font-size:30px;margin-bottom:4px}
-.badges{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
-.badge{
-  padding:12px 7px;border-radius:18px;background:#f7f5ff;border:2px solid #e4def4;text-align:center;font-weight:1000
-}
-.badge.locked{filter:grayscale(1);opacity:.48}
-.badge span{display:block;font-size:32px;margin-bottom:5px}
-.modal{
-  position:fixed;inset:0;z-index:50;display:none;align-items:center;justify-content:center;padding:18px;
-  background:rgba(17,27,68,.56);backdrop-filter:blur(7px)
-}
-.modal.show{display:flex}
-.modal-card{
-  width:min(560px,100%);border-radius:28px;padding:23px;background:#fff;text-align:center;
-  box-shadow:0 25px 70px rgba(16,25,64,.35);border:4px solid #fff
-}
-.teacher{font-size:82px}.modal-card h2{margin:3px 0;color:#5a399e;font-size:31px}
-.modal-card p{color:#68769b;font-weight:900;line-height:1.45}
-.lesson-preview{
-  margin:15px 0;padding:17px;border-radius:20px;background:#f3f0ff;color:#4e3a86;font-weight:1000
-}
-.modal-actions{display:flex;gap:9px}
-.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}
-.close{background:#e9e4f4;color:#63499b}
-.complete{background:linear-gradient(#8bd84d,#59ad28);color:#fff;box-shadow:0 5px 0 #438b1d}
-.toast{
-  position:fixed;left:50%;bottom:22px;z-index:80;transform:translateX(-50%) translateY(150px);
-  padding:13px 19px;border-radius:999px;background:#12235c;color:#fff;font-weight:1000;
-  transition:.3s ease;box-shadow:0 12px 30px rgba(20,29,70,.28);white-space:nowrap
-}
-.toast.show{transform:translateX(-50%) translateY(0)}
-.confetti{position:fixed;inset:0;z-index:70;pointer-events:none;overflow:hidden}
-.confetti i{position:absolute;top:-8%;font-style:normal;animation:fall 1.8s linear forwards}
-@keyframes fall{to{transform:translateY(115vh) rotate(720deg)}}
-@media(max-width:950px){
-  .grid,.welcome{grid-template-columns:1fr}.stats .stat.xp{display:none}
-}
-@media(max-width:620px){
-  main{padding:8px}.topbar{padding:8px}.logo{font-size:24px}.sound-btn{display:none}
-  .stat{min-width:auto;padding:8px 10px;font-size:12px}.welcome{padding:16px;border-radius:23px}
-  .subjects{grid-template-columns:1fr}.subject{min-height:132px}
-  .mini-grid,.badges{grid-template-columns:repeat(2,1fr)}
-  .panel-head{padding:13px}.panel-body{padding:12px}
-}
+  <meta charset="UTF-8">
 
-.progress-button{
-  position:fixed;right:18px;bottom:18px;z-index:45;border:0;border-radius:999px;
-  padding:13px 17px;background:linear-gradient(#9a78e4,#6c4db5);color:#fff;font-weight:1000;
-  box-shadow:0 7px 0 #4c3685,0 12px 28px rgba(61,42,102,.28)
-}
-.progress-button:active{transform:translateY(5px);box-shadow:0 2px 0 #4c3685}
-</style>
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="theme-color" content="#21133d">
+
+  <title>ELCraft Interactive School</title>
+
+  <link
+    rel="preload"
+    as="image"
+    href="school-background.png?v=1">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --purple: #7758df;
+      --purple-dark: #4e3ca6;
+      --purple-light: #efeaff;
+      --gold: #ffd467;
+      --green: #6cc855;
+      --ink: #35385d;
+      --muted: #747a98;
+    }
+
+    html,
+    body {
+      width: 100%;
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+
+      color: var(--ink);
+
+      font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+
+      background: #21133d;
+    }
+
+    button {
+      font: inherit;
+      cursor: pointer;
+    }
+
+    .school-app {
+      position: fixed;
+      inset: 0;
+
+      display: grid;
+      grid-template-rows: auto 1fr;
+
+      background: #21133d;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 100;
+
+      min-height: 72px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      padding:
+        10px
+        max(14px, env(safe-area-inset-right))
+        10px
+        max(14px, env(safe-area-inset-left));
+
+      color: white;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(42,24,75,.98),
+          rgba(25,14,48,.98)
+        );
+
+      box-shadow:
+        0 7px 0 rgba(15,8,30,.34);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-icon {
+      font-size: 36px;
+    }
+
+    .brand h1 {
+      margin: 0;
+
+      overflow: hidden;
+
+      font-size: clamp(21px,3vw,32px);
+      line-height: 1;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+
+      color: rgba(255,255,255,.78);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .stat,
+    .top-button {
+      min-height: 43px;
+
+      border: 3px solid rgba(255,255,255,.7);
+      border-radius: 14px;
+      padding: 8px 12px;
+
+      color: white;
+      background: rgba(255,255,255,.1);
+
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .scene-shell {
+      position: relative;
+      min-height: 0;
+      overflow: hidden;
+    }
+
+    .scene {
+      position: absolute;
+      inset: 0;
+
+      overflow: hidden;
+
+      background:
+        #21133d
+        url("school-background.png?v=1")
+        center center /
+        cover
+        no-repeat;
+    }
+
+    .scene::after {
+      content: "";
+
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+
+      pointer-events: none;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(19,9,35,.01),
+          rgba(19,9,35,.07)
+        );
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 10;
+
+      border: 3px solid transparent;
+      border-radius: 18px;
+
+      background: transparent;
+
+      transition:
+        border-color .16s ease,
+        background .16s ease,
+        box-shadow .16s ease,
+        transform .16s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible {
+      border-color: rgba(255,226,107,.96);
+
+      background:
+        rgba(255,244,170,.11);
+
+      box-shadow:
+        0 0 0 5px rgba(119,88,223,.2),
+        0 0 26px rgba(255,222,95,.42);
+
+      outline: none;
+
+      transform: translateY(-2px);
+    }
+
+    .hotspot::after {
+      content: attr(data-label);
+
+      position: absolute;
+      left: 50%;
+      bottom: -42px;
+
+      transform: translateX(-50%);
+
+      display: none;
+
+      min-width: max-content;
+
+      border: 3px solid white;
+      border-radius: 999px;
+      padding: 8px 12px;
+
+      color: white;
+      background:
+        linear-gradient(
+          145deg,
+          #7758df,
+          #4e3ca6
+        );
+
+      box-shadow:
+        0 7px 0 rgba(56,36,108,.35);
+
+      font-size: 11px;
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+
+    .hotspot:hover::after,
+    .hotspot:focus-visible::after {
+      display: block;
+    }
+
+    .reading-hotspot {
+      left: 8%;
+      top: 24%;
+      width: 21%;
+      height: 38%;
+    }
+
+    .writing-hotspot {
+      left: 28.5%;
+      top: 24%;
+      width: 20%;
+      height: 38%;
+    }
+
+    .math-hotspot {
+      left: 50.7%;
+      top: 24%;
+      width: 19.5%;
+      height: 38%;
+    }
+
+    .science-hotspot {
+      left: 69.2%;
+      top: 24%;
+      width: 18.8%;
+      height: 38%;
+    }
+
+    .discovery-hotspot {
+      left: 7%;
+      top: 61%;
+      width: 24%;
+      height: 30%;
+    }
+
+    .music-hotspot {
+      left: 27.5%;
+      top: 61%;
+      width: 25%;
+      height: 30%;
+    }
+
+    .nova-hotspot {
+      left: 38%;
+      top: 60%;
+      width: 20%;
+      height: 31%;
+    }
+
+    .lessons-hotspot {
+      left: 77%;
+      top: 49%;
+      width: 21%;
+      height: 40%;
+    }
+
+    .progress-hotspot {
+      left: 0;
+      top: 91%;
+      width: 17%;
+      height: 8%;
+    }
+
+    .achievements-hotspot {
+      left: 17%;
+      top: 91%;
+      width: 21%;
+      height: 8%;
+    }
+
+    .backpacks-hotspot {
+      left: 38%;
+      top: 91%;
+      width: 17%;
+      height: 8%;
+    }
+
+    .quests-hotspot {
+      left: 55%;
+      top: 91%;
+      width: 16%;
+      height: 8%;
+    }
+
+    .world-map-hotspot {
+      left: 71%;
+      top: 91%;
+      width: 16%;
+      height: 8%;
+    }
+
+    .my-world-hotspot {
+      left: 87%;
+      top: 90%;
+      width: 13%;
+      height: 9%;
+    }
+
+    .floating-tip {
+      position: absolute;
+      left: 50%;
+      bottom:
+        max(
+          9px,
+          env(safe-area-inset-bottom)
+        );
+      z-index: 20;
+
+      transform: translateX(-50%);
+
+      width: min(720px, calc(100% - 26px));
+
+      border: 4px solid rgba(255,255,255,.92);
+      border-radius: 999px;
+      padding: 10px 16px;
+
+      color: white;
+      background: rgba(29,16,54,.88);
+
+      box-shadow:
+        0 10px 24px rgba(15,8,32,.34);
+
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+
+      backdrop-filter: blur(8px);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 18px;
+
+      background: rgba(20,11,39,.68);
+      backdrop-filter: blur(9px);
+    }
+
+    .modal.visible {
+      display: flex;
+    }
+
+    .panel {
+      width: min(760px,100%);
+      max-height: min(88vh,760px);
+
+      overflow: auto;
+
+      border: 6px solid white;
+      border-radius: 30px;
+      padding: 20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f8efff,
+          #fff9e9
+        );
+
+      box-shadow:
+        0 30px 72px rgba(19,10,38,.42);
+    }
+
+    .panel.small {
+      width: min(560px,100%);
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      margin-bottom: 16px;
+    }
+
+    .panel-top h2 {
+      margin: 0;
+
+      color: var(--purple-dark);
+      font-size: clamp(24px,4vw,36px);
+    }
+
+    .close-button {
+      width: 44px;
+      height: 44px;
+
+      border: 0;
+      border-radius: 50%;
+
+      color: white;
+      background: var(--purple);
+
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .teacher {
+      font-size: 82px;
+      text-align: center;
+    }
+
+    .message,
+    .info-box {
+      border: 4px solid #e8ddff;
+      border-radius: 20px;
+      padding: 18px;
+
+      color: var(--purple-dark);
+      background: white;
+
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .classroom-preview {
+      margin-top: 14px;
+
+      border-radius: 18px;
+      padding: 16px;
+
+      color: #4e3a86;
+      background: #f1ecff;
+
+      font-size: 13px;
+      font-weight: 900;
+      line-height: 1.5;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 9px;
+
+      margin-top: 15px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+
+      border: 0;
+      border-radius: 16px;
+      padding: 13px;
+
+      font-weight: 1000;
+    }
+
+    .cancel-button {
+      color: #63499b;
+      background: #e9e4f4;
+    }
+
+    .enter-button {
+      color: white;
+      background:
+        linear-gradient(
+          #8bd84d,
+          #59ad28
+        );
+
+      box-shadow:
+        0 5px 0 #438b1d;
+    }
+
+    .lesson-list {
+      display: grid;
+      gap: 10px;
+    }
+
+    .lesson-row {
+      display: grid;
+      grid-template-columns: auto 1fr auto;
+      align-items: center;
+      gap: 10px;
+
+      border: 3px solid #ebe6f7;
+      border-radius: 17px;
+      padding: 12px;
+
+      background: white;
+    }
+
+    .lesson-row.done {
+      border-color: #a4df8d;
+      background: #efffe9;
+    }
+
+    .lesson-icon {
+      font-size: 28px;
+    }
+
+    .lesson-title {
+      font-weight: 1000;
+    }
+
+    .lesson-copy {
+      margin-top: 2px;
+
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .lesson-status {
+      color: var(--purple-dark);
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .daily-reward {
+      width: 100%;
+
+      margin-top: 14px;
+      border: 0;
+      border-radius: 18px;
+      padding: 14px;
+
+      color: white;
+      background:
+        linear-gradient(
+          #ffc84b,
+          #e99427
+        );
+
+      box-shadow:
+        0 6px 0 #bd6d19;
+
+      font-size: 14px;
+      font-weight: 1000;
+    }
+
+    .daily-reward:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .progress-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(3,minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .progress-card {
+      border: 3px solid #e4def4;
+      border-radius: 18px;
+      padding: 14px;
+
+      background: white;
+
+      text-align: center;
+      font-weight: 1000;
+    }
+
+    .progress-card span {
+      display: block;
+
+      margin-bottom: 5px;
+
+      font-size: 32px;
+    }
+
+    .badge-grid {
+      display: grid;
+      grid-template-columns:
+        repeat(3,minmax(0,1fr));
+      gap: 10px;
+    }
+
+    .badge {
+      border: 3px solid #e4def4;
+      border-radius: 18px;
+      padding: 12px 7px;
+
+      background: white;
+
+      text-align: center;
+      font-weight: 1000;
+    }
+
+    .badge.locked {
+      filter: grayscale(1);
+      opacity: .42;
+    }
+
+    .badge span {
+      display: block;
+
+      margin-bottom: 5px;
+
+      font-size: 34px;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 1300;
+
+      transform:
+        translateX(-50%)
+        translateY(150px);
+
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 13px 19px;
+
+      color: white;
+      background: #12235c;
+
+      box-shadow:
+        0 12px 30px rgba(20,29,70,.28);
+
+      font-size: 12px;
+      font-weight: 1000;
+      white-space: nowrap;
+
+      transition: .3s ease;
+    }
+
+    .toast.visible {
+      transform:
+        translateX(-50%)
+        translateY(0);
+    }
+
+    .confetti {
+      position: fixed;
+      inset: 0;
+      z-index: 1250;
+
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .confetti i {
+      position: absolute;
+      top: -8%;
+
+      font-style: normal;
+
+      animation:
+        fall
+        1.8s linear
+        forwards;
+    }
+
+    @keyframes fall {
+      to {
+        transform:
+          translateY(115vh)
+          rotate(720deg);
+      }
+    }
+
+    @media (max-width: 900px) {
+      .brand p,
+      .top-actions .stat {
+        display: none;
+      }
+
+      .floating-tip {
+        font-size: 9px;
+      }
+
+      .hotspot::after {
+        font-size: 9px;
+      }
+    }
+
+    @media (max-width: 680px) {
+      .top-actions {
+        display: none;
+      }
+
+      .scene {
+        background-size: auto 100%;
+      }
+
+      .progress-grid,
+      .badge-grid {
+        grid-template-columns:
+          repeat(2,minmax(0,1fr));
+      }
+
+      .modal-actions {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="app">
-  <div class="cloud one">☁️</div><div class="cloud two">☁️</div><div class="cloud three">☁️</div>
-  <div class="bird">🕊️</div><div class="bird b2">🐦</div>
 
-  <header class="topbar">
-    <div class="leftbar">
-      <button class="home-btn" id="cityBtn">← My City</button>
-      <div class="logo">ELCraft</div>
-    </div>
-    <div class="stats">
-      <div class="stat">🪙 <span id="coins">0</span></div>
-      <div class="stat xp">⭐ <span id="xp">0</span> XP</div>
-      <div class="stat streak">🔥 <span id="streak">0</span></div>
-      <button class="sound-btn" id="soundBtn">🔊</button>
-    </div>
-  </header>
+  <div class="school-app">
 
-  <main>
-    <section class="welcome">
-      <div>
-        <h1 id="welcomeTitle">Welcome to ELCraft Academy!</h1>
-        <p>Learn, play, discover, and earn rewards for your world.</p>
-      </div>
-      <div class="level-card">
-        <div class="level-top"><span id="levelLabel">Student Level 1</span><span id="xpLabel">0 / 100 XP</span></div>
-        <div class="progress"><span id="levelBar" style="width:0%"></span></div>
-      </div>
-    </section>
+    <header class="topbar">
 
-    <div class="grid">
-      <section class="panel">
-        <div class="panel-head">
-          <h2>🏫 Choose a Classroom</h2>
-          <strong id="todayLabel"></strong>
+      <div class="brand">
+
+        <div class="brand-icon">
+          🏫
         </div>
-        <div class="panel-body">
-          <div class="subjects" id="subjects"></div>
+
+        <div>
+          <h1>
+            ELCraft Interactive School
+          </h1>
+
+          <p id="studentName">
+            Loading student...
+          </p>
         </div>
+
+      </div>
+
+      <div class="top-actions">
+
+        <div class="stat">
+          🪙 <span id="coins">0</span>
+        </div>
+
+        <div class="stat">
+          ⭐ <span id="xp">0</span> XP
+        </div>
+
+        <div class="stat">
+          🔥 <span id="streak">0</span>
+        </div>
+
+        <button
+          id="soundButton"
+          class="top-button"
+          type="button">
+          🔊
+        </button>
+
+        <button
+          id="worldButton"
+          class="top-button"
+          type="button">
+          🏙️ My World
+        </button>
+
+      </div>
+
+    </header>
+
+    <main class="scene-shell">
+
+      <section
+        class="scene"
+        aria-label="Interactive ELCraft School">
+
+        <button
+          class="hotspot reading-hotspot"
+          type="button"
+          data-subject="reading"
+          data-label="📚 Enter Reading Hall"
+          aria-label="Enter Reading Hall">
+        </button>
+
+        <button
+          class="hotspot writing-hotspot"
+          type="button"
+          data-subject="writing"
+          data-label="✏️ Enter Writing Workshop"
+          aria-label="Enter Writing Workshop">
+        </button>
+
+        <button
+          class="hotspot math-hotspot"
+          type="button"
+          data-subject="math"
+          data-label="➕ Enter Math Lab"
+          aria-label="Enter Math Lab">
+        </button>
+
+        <button
+          class="hotspot science-hotspot"
+          type="button"
+          data-subject="science"
+          data-label="🔬 Enter Science Center"
+          aria-label="Enter Science Center">
+        </button>
+
+        <button
+          class="hotspot discovery-hotspot"
+          type="button"
+          data-subject="discovery"
+          data-label="🌎 Enter Discovery Room"
+          aria-label="Enter Discovery Room">
+        </button>
+
+        <button
+          class="hotspot music-hotspot"
+          type="button"
+          data-subject="music"
+          data-label="🎵 Enter Music Studio"
+          aria-label="Enter Music Studio">
+        </button>
+
+        <button
+          id="novaHotspot"
+          class="hotspot nova-hotspot"
+          type="button"
+          data-label="🦉 Talk to Nova"
+          aria-label="Talk to Nova">
+        </button>
+
+        <button
+          id="lessonsHotspot"
+          class="hotspot lessons-hotspot"
+          type="button"
+          data-label="🌟 View Today's Lessons"
+          aria-label="View Today's Lessons">
+        </button>
+
+        <button
+          id="progressHotspot"
+          class="hotspot progress-hotspot"
+          type="button"
+          data-label="📈 View My Progress"
+          aria-label="View My Progress">
+        </button>
+
+        <button
+          id="achievementsHotspot"
+          class="hotspot achievements-hotspot"
+          type="button"
+          data-label="🏆 Open Achievement Board"
+          aria-label="Open Achievement Board">
+        </button>
+
+        <button
+          id="backpacksHotspot"
+          class="hotspot backpacks-hotspot"
+          type="button"
+          data-label="🎒 Open Backpacks"
+          aria-label="Open Backpacks">
+        </button>
+
+        <button
+          id="questsHotspot"
+          class="hotspot quests-hotspot"
+          type="button"
+          data-label="📜 Open Quests"
+          aria-label="Open Quests">
+        </button>
+
+        <button
+          id="worldMapHotspot"
+          class="hotspot world-map-hotspot"
+          type="button"
+          data-label="🌍 Open World Map"
+          aria-label="Open World Map">
+        </button>
+
+        <button
+          id="myWorldHotspot"
+          class="hotspot my-world-hotspot"
+          type="button"
+          data-label="✨ Return to My World"
+          aria-label="Return to My World">
+        </button>
+
+        <div class="floating-tip">
+          💡 Click a classroom doorway to enter and start learning.
+        </div>
+
       </section>
 
-      <aside class="panel">
-        <div class="panel-head"><h2>🌟 Today's School</h2><strong id="dailyCount">0/4</strong></div>
-        <div class="panel-body">
-          <div class="daily-list" id="dailyList"></div>
-          <button class="big-reward" id="dailyReward" disabled>🎁 Complete 4 lessons to unlock</button>
-        </div>
-      </aside>
-    </div>
+    </main>
 
-    <div class="grid">
-      <section class="panel">
-        <div class="panel-head"><h2>📈 My Progress</h2></div>
-        <div class="panel-body">
-          <div class="mini-grid">
-            <div class="mini"><span>📚</span><b id="lessonTotal">0</b><br>Lessons</div>
-            <div class="mini"><span>⭐</span><b id="totalXp">0</b><br>Total XP</div>
-            <div class="mini"><span>🪙</span><b id="earnedCoins">0</b><br>School Coins</div>
-          </div>
-        </div>
-      </section>
-
-      <section class="panel">
-        <div class="panel-head"><h2>🏅 Achievement Board</h2></div>
-        <div class="panel-body"><div class="badges" id="badges"></div></div>
-      </section>
-    </div>
-  </main>
-
-  <div class="modal" id="lessonModal">
-    <div class="modal-card">
-      <div class="teacher" id="teacherIcon">🦉</div>
-      <h2 id="modalTitle">Reading Hall</h2>
-      <p id="teacherMessage"></p>
-      <div class="lesson-preview" id="lessonPreview"></div>
-      <div class="modal-actions">
-        <button class="close" id="closeModal">Maybe Later</button>
-        <button class="complete" id="completeLesson">Complete Lesson</button>
-      </div>
-    </div>
   </div>
 
-  <div class="toast" id="toast"></div>
-  <div class="confetti" id="confetti"></div>
-</div>
+  <section
+    id="classroomModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
 
-<script>
-(() => {
-  const NAME_KEY='elcraft_child_name';
-  const COINS_KEY='elcraft_coins';
-  const PROFILE_KEY='elcraft_profile_v1';
-  const SCHOOL_KEY='elcraft_school_v1';
+    <div class="panel small">
 
-  const childName=localStorage.getItem(NAME_KEY)||'Student';
-  const today=new Date().toLocaleDateString('en-CA');
-  let soundOn=true;
-  let activeSubject=null;
+      <div class="panel-top">
 
-  const subjects=[
-    {id:'reading',icon:'📚',name:'Reading Hall',teacher:'🦉',teacherName:'Mrs. Owl',color:'reading',reward:10,xp:20,preview:'Read a short story and answer one fun question.'},
-    {id:'writing',icon:'✏️',name:'Writing Workshop',teacher:'🦊',teacherName:'Ms. Fox',color:'writing',reward:10,xp:20,preview:'Practice letters, words, and creative sentences.'},
-    {id:'math',icon:'➕',name:'Math Lab',teacher:'🐻',teacherName:'Mr. Bear',color:'math',reward:12,xp:25,preview:'Solve a playful number puzzle and help the classroom.'},
-    {id:'science',icon:'🔬',name:'Science Center',teacher:'🐼',teacherName:'Dr. Panda',color:'science',reward:12,xp:25,preview:'Explore plants, animals, weather, space, and experiments.'},
-    {id:'discovery',icon:'🌎',name:'Discovery Room',teacher:'🦁',teacherName:'Professor Lion',color:'discovery',reward:10,xp:20,preview:'Discover countries, cultures, maps, and amazing places.'},
-    {id:'music',icon:'🎵',name:'Music Studio',teacher:'🐰',teacherName:'Ms. Bunny',color:'music',reward:10,xp:20,preview:'Explore rhythm, sounds, instruments, and musical patterns.'}
-  ];
+        <h2 id="classroomTitle">
+          Classroom
+        </h2>
 
-  let profile={
-    version:1,
-    coins:Number(localStorage.getItem(COINS_KEY)||100),
-    xp:0,
-    totalXp:0,
-    level:1,
-    achievements:[],
-    schoolCoinsEarned:0
-  };
-  let school={
-    completedByDate:{},
-    dailyRewardDates:[],
-    lessonTotals:{reading:0,writing:0,math:0,science:0,discovery:0,music:0},
-    lastSchoolDate:'',
-    streak:0
-  };
+        <button
+          class="close-button"
+          type="button"
+          data-close="classroomModal">
+          ×
+        </button>
 
-  try{
-    const saved=JSON.parse(localStorage.getItem(PROFILE_KEY));
-    if(saved) profile={...profile,...saved};
-  }catch{}
-  try{
-    const saved=JSON.parse(localStorage.getItem(SCHOOL_KEY));
-    if(saved) school={...school,...saved,lessonTotals:{...school.lessonTotals,...(saved.lessonTotals||{})}};
-  }catch{}
+      </div>
 
-  function completedToday(){
-    const done=(school.completedByDate[today]||[]).filter(id=>id!=='reading');
-    school.completedByDate[today]=done;
-    return done;
-  }
+      <div
+        id="teacherIcon"
+        class="teacher">
+        🦉
+      </div>
 
-  function removeOldReadingChecks(){
-    Object.keys(school.completedByDate||{}).forEach(date=>{
-      school.completedByDate[date]=(school.completedByDate[date]||[]).filter(id=>id!=='reading');
-    });
-  }
+      <div
+        id="teacherMessage"
+        class="message">
+      </div>
 
-  function saveAll(){
-    profile.coins=Math.max(0,Number(profile.coins)||0);
-    localStorage.setItem(PROFILE_KEY,JSON.stringify(profile));
-    localStorage.setItem(SCHOOL_KEY,JSON.stringify(school));
-    localStorage.setItem(COINS_KEY,String(profile.coins));
-  }
+      <div
+        id="classroomPreview"
+        class="classroom-preview">
+      </div>
 
-  function updateLevel(){
-    profile.level=Math.floor(profile.xp/100)+1;
-  }
+      <div class="modal-actions">
 
-  function awardAchievement(id){
-    if(!profile.achievements.includes(id)){
-      profile.achievements.push(id);
-      setTimeout(()=>toast('🏅 New achievement unlocked!'),450);
-    }
-  }
+        <button
+          class="cancel-button"
+          type="button"
+          data-close="classroomModal">
+          Maybe Later
+        </button>
 
-  function updateAchievements(){
-    const total=Object.values(school.lessonTotals).reduce((a,b)=>a+b,0);
-    if(total>=1) awardAchievement('first-lesson');
-    if(total>=10) awardAchievement('ten-lessons');
-    if(school.streak>=3) awardAchievement('three-day');
-    if(school.dailyRewardDates.length>=1) awardAchievement('full-day');
-    if((school.lessonTotals.reading||0)>=5) awardAchievement('bookworm');
-    if((school.lessonTotals.math||0)>=5) awardAchievement('math-star');
-  }
+        <button
+          id="enterClassroomButton"
+          class="enter-button"
+          type="button">
+          Enter Classroom
+        </button>
 
-  function updateStreak(){
-    if(school.lastSchoolDate===today)return;
-    const yesterday=new Date();
-    yesterday.setDate(yesterday.getDate()-1);
-    const y=yesterday.toLocaleDateString('en-CA');
-    school.streak=school.lastSchoolDate===y?school.streak+1:1;
-    school.lastSchoolDate=today;
-  }
+      </div>
 
-  removeOldReadingChecks();
+    </div>
 
-  function render(){
-    updateLevel();
-    const done=completedToday();
-    document.querySelector('#welcomeTitle').textContent=`Welcome, ${childName}!`;
-    document.querySelector('#coins').textContent=profile.coins;
-    document.querySelector('#xp').textContent=profile.xp;
-    document.querySelector('#streak').textContent=school.streak;
-    document.querySelector('#levelLabel').textContent=`Student Level ${profile.level}`;
-    document.querySelector('#xpLabel').textContent=`${profile.xp%100} / 100 XP`;
-    document.querySelector('#levelBar').style.width=(profile.xp%100)+'%';
-    document.querySelector('#todayLabel').textContent=new Date().toLocaleDateString('en-US',{weekday:'long'});
-    document.querySelector('#dailyCount').textContent=Math.min(done.length,4)+'/4';
+  </section>
 
-    const subjectsBox=document.querySelector('#subjects');
-    subjectsBox.innerHTML='';
-    subjects.forEach(s=>{
-      const b=document.createElement('button');
-      const isReading=s.id==='reading';
-      const isWriting=s.id==='writing';
-      const isMath=s.id==='math';
-      const isScience=s.id==='science';
-      const isDiscovery=s.id==='discovery';
-      const isMusic=s.id==='music';
-      b.className=`subject ${s.color} ${(!isReading&&!isWriting&&!isMath&&!isScience&&!isDiscovery&&!isMusic&&done.includes(s.id))?'done':''}`;
-      b.innerHTML=`<span class="done-mark">✅</span><span class="icon">${s.icon}</span><strong>${s.name}</strong><small>${isReading?'Always open • Books and Reading Passport':isWriting?'Always open • Activities and Writing Portfolio':isMath?'Always open • Math stations and Math Passport':isScience?'Always open • Science stations and Science Passport':isDiscovery?'Always open • World adventures and Discovery Passport':isMusic?'Always open • Music stations and Music Passport':`${s.teacherName} • +${s.reward} coins • +${s.xp} XP`}</small>`;
-      b.onclick=()=>openLesson(s);
-      subjectsBox.append(b);
-    });
+  <section
+    id="novaModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
 
-    const daily=document.querySelector('#dailyList');
-    daily.innerHTML='';
-    subjects.slice(0,4).forEach(s=>{
-      const isReading=s.id==='reading';
-      const isWriting=s.id==='writing';
-      const isMath=s.id==='math';
-      const isScience=s.id==='science';
-      const isAlwaysOpen=isReading||isWriting||isMath||isScience;
-      const isDone=!isAlwaysOpen&&done.includes(s.id);
-      const row=document.createElement('div');
-      row.className='task '+(isDone?'done':'');
-      row.innerHTML=`<div class="task-icon">${isDone?'✅':s.icon}</div><div><div class="task-title">${s.name}</div><div class="task-sub">${isReading?'Always open • Read or reread any book':isWriting?'Always open • Choose any writing activity':isMath?'Always open • Choose any math station':isScience?'Always open • Choose any science station':isDone?'Completed today':'Tap the classroom to begin'}</div></div><div class="task-reward">${isReading?'📘':isWriting?'✏️':isMath?'➕':isScience?'🔬':`+${s.reward} 🪙`}</div>`;
-      daily.append(row);
-    });
+    <div class="panel small">
 
-    const reward=document.querySelector('#dailyReward');
-    const claimed=school.dailyRewardDates.includes(today);
-    reward.disabled=done.length<4 || claimed;
-    reward.textContent=claimed?'✅ Daily reward collected':done.length>=4?'🎁 Collect +25 coins and +40 XP':'🎁 Complete 4 lessons to unlock';
+      <div class="panel-top">
 
-    const total=Object.values(school.lessonTotals).reduce((a,b)=>a+b,0);
-    document.querySelector('#lessonTotal').textContent=total;
-    document.querySelector('#totalXp').textContent=profile.totalXp||0;
-    document.querySelector('#earnedCoins').textContent=profile.schoolCoinsEarned||0;
+        <h2>
+          🦉 Nova
+        </h2>
 
-    const badgeData=[
-      ['first-lesson','🌟','First Lesson'],
-      ['full-day','🎒','Full School Day'],
-      ['three-day','🔥','3-Day Streak'],
-      ['ten-lessons','🏆','10 Lessons'],
-      ['bookworm','📚','Bookworm'],
-      ['math-star','➕','Math Star']
-    ];
-    const badgeBox=document.querySelector('#badges');
-    badgeBox.innerHTML='';
-    badgeData.forEach(([id,icon,name])=>{
-      const div=document.createElement('div');
-      div.className='badge '+(profile.achievements.includes(id)?'':'locked');
-      div.innerHTML=`<span>${icon}</span>${name}`;
-      badgeBox.append(div);
-    });
+        <button
+          class="close-button"
+          type="button"
+          data-close="novaModal">
+          ×
+        </button>
 
-    saveAll();
-  }
+      </div>
 
-  function openLesson(subject){
-    const classroomPages={
-      reading:'reading.html',
-      writing:'writing.html',
-      math:'math.html',
-      science:'science.html',
-      discovery:'discovery.html',
-      music:'music-studio.html'
-    };
+      <div
+        id="novaMessage"
+        class="message">
+      </div>
 
-    if(classroomPages[subject.id]){
-      location.href=classroomPages[subject.id];
-      return;
-    }
+    </div>
 
-    activeSubject=subject;
-    document.querySelector('#teacherIcon').textContent=subject.teacher;
-    document.querySelector('#modalTitle').textContent=subject.name;
-    document.querySelector('#teacherMessage').textContent=`${subject.teacherName} says: “Welcome, ${childName}! Ready for today's learning adventure?”`;
-    document.querySelector('#lessonPreview').textContent=subject.preview;
-    const already=completedToday().includes(subject.id);
-    document.querySelector('#completeLesson').textContent=already?'Completed Today ✅':'Complete Lesson';
-    document.querySelector('#completeLesson').disabled=already;
-    document.querySelector('#lessonModal').classList.add('show');
-    sound('tap');
-  }
+  </section>
 
-  function completeLesson(){
-    if(!activeSubject)return;
-    const done=completedToday();
-    if(done.includes(activeSubject.id))return;
+  <section
+    id="lessonsModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
 
-    updateStreak();
-    done.push(activeSubject.id);
-    school.completedByDate[today]=done;
-    school.lessonTotals[activeSubject.id]=(school.lessonTotals[activeSubject.id]||0)+1;
+    <div class="panel small">
 
-    profile.coins+=activeSubject.reward;
-    profile.xp+=activeSubject.xp;
-    profile.totalXp=(profile.totalXp||0)+activeSubject.xp;
-    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+activeSubject.reward;
+      <div class="panel-top">
 
-    updateAchievements();
-    saveAll();
-    document.querySelector('#lessonModal').classList.remove('show');
-    confetti();
-    toast(`Great job! +${activeSubject.reward} coins and +${activeSubject.xp} XP`);
-    render();
-  }
+        <h2>
+          🌟 Today's Lessons
+        </h2>
 
-  function collectDailyReward(){
-    const done=completedToday();
-    if(done.length<4 || school.dailyRewardDates.includes(today))return;
-    school.dailyRewardDates.push(today);
-    profile.coins+=25;
-    profile.xp+=40;
-    profile.totalXp=(profile.totalXp||0)+40;
-    profile.schoolCoinsEarned=(profile.schoolCoinsEarned||0)+25;
-    updateAchievements();
-    saveAll();
-    confetti();
-    toast('🎁 Daily School complete! +25 coins and +40 XP');
-    render();
-  }
+        <button
+          class="close-button"
+          type="button"
+          data-close="lessonsModal">
+          ×
+        </button>
 
-  function toast(message){
-    const el=document.querySelector('#toast');
-    el.textContent=message;el.classList.add('show');
-    clearTimeout(window.__schoolToast);
-    window.__schoolToast=setTimeout(()=>el.classList.remove('show'),2200);
-  }
+      </div>
 
-  function confetti(){
-    const c=document.querySelector('#confetti');c.innerHTML='';
-    ['⭐','✨','📚','🎉','🪙'].forEach(symbol=>{
-      for(let i=0;i<7;i++){
-        const n=document.createElement('i');
-        n.textContent=symbol;
-        n.style.left=(Math.random()*100)+'%';
-        n.style.fontSize=(17+Math.random()*22)+'px';
-        n.style.animationDelay=(Math.random()*.55)+'s';
-        c.append(n);
+      <div
+        id="dailyList"
+        class="lesson-list">
+      </div>
+
+      <button
+        id="dailyReward"
+        class="daily-reward"
+        type="button"
+        disabled>
+        🎁 Complete 4 lessons to unlock
+      </button>
+
+    </div>
+
+  </section>
+
+  <section
+    id="progressModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
+
+    <div class="panel small">
+
+      <div class="panel-top">
+
+        <h2>
+          📈 My Progress
+        </h2>
+
+        <button
+          class="close-button"
+          type="button"
+          data-close="progressModal">
+          ×
+        </button>
+
+      </div>
+
+      <div class="progress-grid">
+
+        <div class="progress-card">
+          <span>📚</span>
+          <b id="lessonTotal">0</b>
+          <br>
+          Lessons
+        </div>
+
+        <div class="progress-card">
+          <span>⭐</span>
+          <b id="totalXp">0</b>
+          <br>
+          Total XP
+        </div>
+
+        <div class="progress-card">
+          <span>🪙</span>
+          <b id="earnedCoins">0</b>
+          <br>
+          School Coins
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    id="achievementModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
+
+    <div class="panel">
+
+      <div class="panel-top">
+
+        <h2>
+          🏆 Achievement Board
+        </h2>
+
+        <button
+          class="close-button"
+          type="button"
+          data-close="achievementModal">
+          ×
+        </button>
+
+      </div>
+
+      <div
+        id="badges"
+        class="badge-grid">
+      </div>
+
+    </div>
+
+  </section>
+
+  <section
+    id="infoModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
+
+    <div class="panel small">
+
+      <div class="panel-top">
+
+        <h2 id="infoTitle">
+          School
+        </h2>
+
+        <button
+          class="close-button"
+          type="button"
+          data-close="infoModal">
+          ×
+        </button>
+
+      </div>
+
+      <div
+        id="infoCopy"
+        class="info-box">
+      </div>
+
+    </div>
+
+  </section>
+
+  <div
+    id="toast"
+    class="toast"
+    role="status"
+    aria-live="polite">
+  </div>
+
+  <div
+    id="confetti"
+    class="confetti">
+  </div>
+
+  <script>
+    (() => {
+      const NAME_KEY =
+        "elcraft_child_name";
+
+      const COINS_KEY =
+        "elcraft_coins";
+
+      const PROFILE_KEY =
+        "elcraft_profile_v1";
+
+      const SCHOOL_KEY =
+        "elcraft_school_v1";
+
+      const childName =
+        localStorage.getItem(
+          NAME_KEY
+        ) ||
+        "Student";
+
+      const today =
+        new Date()
+          .toLocaleDateString(
+            "en-CA"
+          );
+
+      let soundOn =
+        true;
+
+      let activeSubject =
+        null;
+
+      const subjects = [
+        {
+          id:
+            "reading",
+
+          icon:
+            "📚",
+
+          name:
+            "Reading Hall",
+
+          teacher:
+            "🦉",
+
+          teacherName:
+            "Mrs. Owl",
+
+          reward:
+            10,
+
+          xp:
+            20,
+
+          page:
+            "reading.html",
+
+          preview:
+            "Choose a book, read or listen, and grow your Reading Passport."
+        },
+
+        {
+          id:
+            "writing",
+
+          icon:
+            "✏️",
+
+          name:
+            "Writing Workshop",
+
+          teacher:
+            "🦊",
+
+          teacherName:
+            "Ms. Fox",
+
+          reward:
+            10,
+
+          xp:
+            20,
+
+          page:
+            "writing.html",
+
+          preview:
+            "Practice letters, words, sentences, and creative storytelling."
+        },
+
+        {
+          id:
+            "math",
+
+          icon:
+            "➕",
+
+          name:
+            "Math Lab",
+
+          teacher:
+            "🐻",
+
+          teacherName:
+            "Mr. Bear",
+
+          reward:
+            12,
+
+          xp:
+            25,
+
+          page:
+            "math.html",
+
+          preview:
+            "Explore counting, number puzzles, shapes, patterns, and math stations."
+        },
+
+        {
+          id:
+            "science",
+
+          icon:
+            "🔬",
+
+          name:
+            "Science Center",
+
+          teacher:
+            "🐼",
+
+          teacherName:
+            "Dr. Panda",
+
+          reward:
+            12,
+
+          xp:
+            25,
+
+          page:
+            "science.html",
+
+          preview:
+            "Explore animals, plants, weather, space, and safe experiments."
+        },
+
+        {
+          id:
+            "discovery",
+
+          icon:
+            "🌎",
+
+          name:
+            "Discovery Room",
+
+          teacher:
+            "🦁",
+
+          teacherName:
+            "Professor Lion",
+
+          reward:
+            10,
+
+          xp:
+            20,
+
+          page:
+            "discovery.html",
+
+          preview:
+            "Discover countries, cultures, maps, landmarks, and amazing places."
+        },
+
+        {
+          id:
+            "music",
+
+          icon:
+            "🎵",
+
+          name:
+            "Music Studio",
+
+          teacher:
+            "🐰",
+
+          teacherName:
+            "Ms. Bunny",
+
+          reward:
+            10,
+
+          xp:
+            20,
+
+          page:
+            "music-studio.html",
+
+          preview:
+            "Explore rhythm, sounds, instruments, songs, and musical patterns."
+        }
+      ];
+
+      let profile = {
+        version:
+          1,
+
+        coins:
+          Number(
+            localStorage.getItem(
+              COINS_KEY
+            ) ||
+            100
+          ),
+
+        xp:
+          0,
+
+        totalXp:
+          0,
+
+        level:
+          1,
+
+        achievements:
+          [],
+
+        schoolCoinsEarned:
+          0
+      };
+
+      let school = {
+        completedByDate:
+          {},
+
+        dailyRewardDates:
+          [],
+
+        lessonTotals: {
+          reading:
+            0,
+
+          writing:
+            0,
+
+          math:
+            0,
+
+          science:
+            0,
+
+          discovery:
+            0,
+
+          music:
+            0
+        },
+
+        lastSchoolDate:
+          "",
+
+        streak:
+          0
+      };
+
+      try {
+        const saved =
+          JSON.parse(
+            localStorage.getItem(
+              PROFILE_KEY
+            )
+          );
+
+        if (
+          saved
+        ) {
+          profile = {
+            ...profile,
+            ...saved
+          };
+        }
+      } catch {}
+
+      try {
+        const saved =
+          JSON.parse(
+            localStorage.getItem(
+              SCHOOL_KEY
+            )
+          );
+
+        if (
+          saved
+        ) {
+          school = {
+            ...school,
+            ...saved,
+
+            lessonTotals: {
+              ...school.lessonTotals,
+              ...(
+                saved.lessonTotals ||
+                {}
+              )
+            }
+          };
+        }
+      } catch {}
+
+      function completedToday() {
+        const completed =
+          school.completedByDate[
+            today
+          ] ||
+          [];
+
+        school.completedByDate[
+          today
+        ] =
+          completed;
+
+        return completed;
       }
-    });
-    setTimeout(()=>c.innerHTML='',2400);
-  }
 
-  function sound(type){
-    if(!soundOn)return;
-    try{
-      const ctx=new (window.AudioContext||window.webkitAudioContext)();
-      const osc=ctx.createOscillator(),gain=ctx.createGain();
-      osc.connect(gain);gain.connect(ctx.destination);
-      osc.frequency.value=type==='reward'?690:460;
-      gain.gain.setValueAtTime(.04,ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001,ctx.currentTime+.13);
-      osc.start();osc.stop(ctx.currentTime+.14);
-    }catch{}
-  }
+      function saveAll() {
+        profile.coins =
+          Math.max(
+            0,
+            Number(
+              profile.coins
+            ) ||
+            0
+          );
 
-  document.querySelector('#cityBtn').onclick=()=>location.href='my-city.html';
-  document.querySelector('#closeModal').onclick=()=>document.querySelector('#lessonModal').classList.remove('show');
-  document.querySelector('#completeLesson').onclick=completeLesson;
-  document.querySelector('#dailyReward').onclick=collectDailyReward;
-  document.querySelector('#soundBtn').onclick=()=>{
-    soundOn=!soundOn;
-    document.querySelector('#soundBtn').textContent=soundOn?'🔊':'🔇';
-    if(soundOn)sound('tap');
-  };
-  document.querySelector('#lessonModal').onclick=e=>{
-    if(e.target.id==='lessonModal')document.querySelector('#lessonModal').classList.remove('show');
-  };
+        localStorage.setItem(
+          PROFILE_KEY,
+          JSON.stringify(
+            profile
+          )
+        );
 
-  render();
-})();
-</script>
-<button class="progress-button" onclick="location.href='progress.html'">⭐ World Progress</button>
-<script src="world-engine.js"></script>
+        localStorage.setItem(
+          SCHOOL_KEY,
+          JSON.stringify(
+            school
+          )
+        );
+
+        localStorage.setItem(
+          COINS_KEY,
+          String(
+            profile.coins
+          )
+        );
+      }
+
+      function updateLevel() {
+        profile.level =
+          Math.floor(
+            profile.xp /
+            100
+          ) +
+          1;
+      }
+
+      function updateStreak() {
+        if (
+          school.lastSchoolDate ===
+          today
+        ) {
+          return;
+        }
+
+        const yesterday =
+          new Date();
+
+        yesterday.setDate(
+          yesterday.getDate() -
+          1
+        );
+
+        const yesterdayKey =
+          yesterday
+            .toLocaleDateString(
+              "en-CA"
+            );
+
+        school.streak =
+          school.lastSchoolDate ===
+          yesterdayKey
+            ? school.streak +
+              1
+            : 1;
+
+        school.lastSchoolDate =
+          today;
+      }
+
+      function awardAchievement(
+        id
+      ) {
+        if (
+          profile.achievements.includes(
+            id
+          )
+        ) {
+          return;
+        }
+
+        profile.achievements.push(
+          id
+        );
+
+        window.setTimeout(
+          () => {
+            toast(
+              "🏅 New achievement unlocked!"
+            );
+          },
+          450
+        );
+      }
+
+      function updateAchievements() {
+        const total =
+          Object.values(
+            school.lessonTotals
+          )
+            .reduce(
+              (
+                sum,
+                value
+              ) =>
+                sum +
+                Number(
+                  value ||
+                  0
+                ),
+              0
+            );
+
+        if (
+          total >=
+          1
+        ) {
+          awardAchievement(
+            "first-lesson"
+          );
+        }
+
+        if (
+          total >=
+          10
+        ) {
+          awardAchievement(
+            "ten-lessons"
+          );
+        }
+
+        if (
+          school.streak >=
+          3
+        ) {
+          awardAchievement(
+            "three-day"
+          );
+        }
+
+        if (
+          school.dailyRewardDates.length >=
+          1
+        ) {
+          awardAchievement(
+            "full-day"
+          );
+        }
+
+        if (
+          Number(
+            school.lessonTotals.reading ||
+            0
+          ) >=
+          5
+        ) {
+          awardAchievement(
+            "bookworm"
+          );
+        }
+
+        if (
+          Number(
+            school.lessonTotals.math ||
+            0
+          ) >=
+          5
+        ) {
+          awardAchievement(
+            "math-star"
+          );
+        }
+      }
+
+      function openModal(
+        id
+      ) {
+        document
+          .getElementById(
+            id
+          )
+          ?.classList.add(
+            "visible"
+          );
+      }
+
+      function closeModal(
+        id
+      ) {
+        document
+          .getElementById(
+            id
+          )
+          ?.classList.remove(
+            "visible"
+          );
+      }
+
+      function openClassroom(
+        subject
+      ) {
+        activeSubject =
+          subject;
+
+        document
+          .getElementById(
+            "classroomTitle"
+          )
+          .textContent =
+            subject.name;
+
+        document
+          .getElementById(
+            "teacherIcon"
+          )
+          .textContent =
+            subject.teacher;
+
+        document
+          .getElementById(
+            "teacherMessage"
+          )
+          .textContent =
+            `${subject.teacherName} says: “Welcome, ${childName}! Ready for today's learning adventure?”`;
+
+        document
+          .getElementById(
+            "classroomPreview"
+          )
+          .textContent =
+            subject.preview;
+
+        document
+          .getElementById(
+            "enterClassroomButton"
+          )
+          .textContent =
+            `Enter ${subject.name}`;
+
+        openModal(
+          "classroomModal"
+        );
+
+        sound(
+          "tap"
+        );
+      }
+
+      function enterClassroom() {
+        if (
+          !activeSubject
+        ) {
+          return;
+        }
+
+        window.location.href =
+          activeSubject.page;
+      }
+
+      function renderLessons() {
+        const completed =
+          completedToday();
+
+        document
+          .getElementById(
+            "dailyList"
+          )
+          .replaceChildren();
+
+        subjects
+          .slice(
+            0,
+            4
+          )
+          .forEach(
+            subject => {
+              const done =
+                completed.includes(
+                  subject.id
+                );
+
+              const row =
+                document.createElement(
+                  "div"
+                );
+
+              row.className =
+                `lesson-row${
+                  done
+                    ? " done"
+                    : ""
+                }`;
+
+              row.innerHTML = `
+                <div class="lesson-icon">
+                  ${
+                    done
+                      ? "✅"
+                      : subject.icon
+                  }
+                </div>
+
+                <div>
+                  <div class="lesson-title">
+                    ${subject.name}
+                  </div>
+
+                  <div class="lesson-copy">
+                    ${
+                      done
+                        ? "Completed today"
+                        : subject.preview
+                    }
+                  </div>
+                </div>
+
+                <div class="lesson-status">
+                  ${
+                    done
+                      ? "Done"
+                      : `+${subject.reward} 🪙`
+                  }
+                </div>
+              `;
+
+              row.addEventListener(
+                "click",
+                () => {
+                  closeModal(
+                    "lessonsModal"
+                  );
+
+                  openClassroom(
+                    subject
+                  );
+                }
+              );
+
+              document
+                .getElementById(
+                  "dailyList"
+                )
+                .appendChild(
+                  row
+                );
+            }
+          );
+
+        const reward =
+          document.getElementById(
+            "dailyReward"
+          );
+
+        const claimed =
+          school.dailyRewardDates.includes(
+            today
+          );
+
+        reward.disabled =
+          completed.length <
+            4 ||
+          claimed;
+
+        reward.textContent =
+          claimed
+            ? "✅ Daily reward collected"
+            : completed.length >=
+              4
+              ? "🎁 Collect +25 coins and +40 XP"
+              : "🎁 Complete 4 lessons to unlock";
+      }
+
+      function renderProgress() {
+        const total =
+          Object.values(
+            school.lessonTotals
+          )
+            .reduce(
+              (
+                sum,
+                value
+              ) =>
+                sum +
+                Number(
+                  value ||
+                  0
+                ),
+              0
+            );
+
+        document
+          .getElementById(
+            "lessonTotal"
+          )
+          .textContent =
+            total;
+
+        document
+          .getElementById(
+            "totalXp"
+          )
+          .textContent =
+            profile.totalXp ||
+            0;
+
+        document
+          .getElementById(
+            "earnedCoins"
+          )
+          .textContent =
+            profile.schoolCoinsEarned ||
+            0;
+      }
+
+      function renderBadges() {
+        const badgeData = [
+          [
+            "first-lesson",
+            "🌟",
+            "First Lesson"
+          ],
+
+          [
+            "full-day",
+            "🎒",
+            "Full School Day"
+          ],
+
+          [
+            "three-day",
+            "🔥",
+            "3-Day Streak"
+          ],
+
+          [
+            "ten-lessons",
+            "🏆",
+            "10 Lessons"
+          ],
+
+          [
+            "bookworm",
+            "📚",
+            "Bookworm"
+          ],
+
+          [
+            "math-star",
+            "➕",
+            "Math Star"
+          ]
+        ];
+
+        const box =
+          document.getElementById(
+            "badges"
+          );
+
+        box.replaceChildren();
+
+        badgeData.forEach(
+          (
+            [
+              id,
+              icon,
+              name
+            ]
+          ) => {
+            const badge =
+              document.createElement(
+                "div"
+              );
+
+            badge.className =
+              `badge${
+                profile.achievements.includes(
+                  id
+                )
+                  ? ""
+                  : " locked"
+              }`;
+
+            badge.innerHTML = `
+              <span>${icon}</span>
+              ${name}
+            `;
+
+            box.appendChild(
+              badge
+            );
+          }
+        );
+      }
+
+      function render() {
+        updateLevel();
+
+        document
+          .getElementById(
+            "studentName"
+          )
+          .textContent =
+            `${childName}'s School`;
+
+        document
+          .getElementById(
+            "coins"
+          )
+          .textContent =
+            profile.coins;
+
+        document
+          .getElementById(
+            "xp"
+          )
+          .textContent =
+            profile.xp;
+
+        document
+          .getElementById(
+            "streak"
+          )
+          .textContent =
+            school.streak;
+
+        renderLessons();
+        renderProgress();
+        renderBadges();
+        saveAll();
+      }
+
+      function collectDailyReward() {
+        const completed =
+          completedToday();
+
+        if (
+          completed.length <
+            4 ||
+          school.dailyRewardDates.includes(
+            today
+          )
+        ) {
+          return;
+        }
+
+        school.dailyRewardDates.push(
+          today
+        );
+
+        profile.coins +=
+          25;
+
+        profile.xp +=
+          40;
+
+        profile.totalXp =
+          Number(
+            profile.totalXp ||
+            0
+          ) +
+          40;
+
+        profile.schoolCoinsEarned =
+          Number(
+            profile.schoolCoinsEarned ||
+            0
+          ) +
+          25;
+
+        updateStreak();
+        updateAchievements();
+        saveAll();
+        confetti();
+
+        toast(
+          "🎁 Daily School complete! +25 coins and +40 XP"
+        );
+
+        render();
+      }
+
+      function showInfo(
+        title,
+        copy
+      ) {
+        document
+          .getElementById(
+            "infoTitle"
+          )
+          .textContent =
+            title;
+
+        document
+          .getElementById(
+            "infoCopy"
+          )
+          .textContent =
+            copy;
+
+        openModal(
+          "infoModal"
+        );
+      }
+
+      function toast(
+        message
+      ) {
+        const element =
+          document.getElementById(
+            "toast"
+          );
+
+        element.textContent =
+          message;
+
+        element.classList.add(
+          "visible"
+        );
+
+        window.clearTimeout(
+          window.__schoolToast
+        );
+
+        window.__schoolToast =
+          window.setTimeout(
+            () => {
+              element.classList.remove(
+                "visible"
+              );
+            },
+            2400
+          );
+      }
+
+      function confetti() {
+        const container =
+          document.getElementById(
+            "confetti"
+          );
+
+        container.replaceChildren();
+
+        [
+          "⭐",
+          "✨",
+          "📚",
+          "🎉",
+          "🪙"
+        ].forEach(
+          symbol => {
+            for (
+              let index =
+                0;
+              index <
+                7;
+              index +=
+                1
+            ) {
+              const item =
+                document.createElement(
+                  "i"
+                );
+
+              item.textContent =
+                symbol;
+
+              item.style.left =
+                `${Math.random() * 100}%`;
+
+              item.style.fontSize =
+                `${17 + Math.random() * 22}px`;
+
+              item.style.animationDelay =
+                `${Math.random() * .55}s`;
+
+              container.appendChild(
+                item
+              );
+            }
+          }
+        );
+
+        window.setTimeout(
+          () => {
+            container.replaceChildren();
+          },
+          2400
+        );
+      }
+
+      function sound(
+        type
+      ) {
+        if (
+          !soundOn
+        ) {
+          return;
+        }
+
+        try {
+          const AudioContextClass =
+            window.AudioContext ||
+            window.webkitAudioContext;
+
+          const context =
+            new AudioContextClass();
+
+          const oscillator =
+            context.createOscillator();
+
+          const gain =
+            context.createGain();
+
+          oscillator.connect(
+            gain
+          );
+
+          gain.connect(
+            context.destination
+          );
+
+          oscillator.frequency.value =
+            type ===
+            "reward"
+              ? 690
+              : 460;
+
+          gain.gain.setValueAtTime(
+            .04,
+            context.currentTime
+          );
+
+          gain.gain.exponentialRampToValueAtTime(
+            .001,
+            context.currentTime +
+            .13
+          );
+
+          oscillator.start();
+
+          oscillator.stop(
+            context.currentTime +
+            .14
+          );
+        } catch {}
+      }
+
+      document
+        .querySelectorAll(
+          "[data-subject]"
+        )
+        .forEach(
+          button => {
+            button.addEventListener(
+              "click",
+              () => {
+                const subject =
+                  subjects.find(
+                    item =>
+                      item.id ===
+                      button.dataset.subject
+                  );
+
+                if (
+                  subject
+                ) {
+                  openClassroom(
+                    subject
+                  );
+                }
+              }
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "enterClassroomButton"
+        )
+        .addEventListener(
+          "click",
+          enterClassroom
+        );
+
+      document
+        .getElementById(
+          "novaHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            const completed =
+              completedToday();
+
+            document
+              .getElementById(
+                "novaMessage"
+              )
+              .textContent =
+                completed.length
+                  ? `Amazing work, ${childName}! You have completed ${completed.length} lesson${completed.length === 1 ? "" : "s"} today. Choose another classroom whenever you are ready.`
+                  : `Welcome, ${childName}! Choose any classroom doorway to begin. Complete four lessons to unlock today's reward.`;
+
+            openModal(
+              "novaModal"
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "lessonsHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            renderLessons();
+
+            openModal(
+              "lessonsModal"
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "dailyReward"
+        )
+        .addEventListener(
+          "click",
+          collectDailyReward
+        );
+
+      document
+        .getElementById(
+          "progressHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            renderProgress();
+
+            openModal(
+              "progressModal"
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "achievementsHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            renderBadges();
+
+            openModal(
+              "achievementModal"
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "backpacksHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            showInfo(
+              "🎒 Backpacks",
+              "The Backpack area is ready for school supplies, collected learning tools, classroom rewards, and saved projects. We can build this as a complete module next."
+            );
+          }
+        );
+
+      document
+        .getElementById(
+          "questsHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            window.location.href =
+              "quests.html";
+          }
+        );
+
+      document
+        .getElementById(
+          "worldMapHotspot"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            window.location.href =
+              "world-map.html";
+          }
+        );
+
+      const returnToWorld =
+        () => {
+          window.location.href =
+            "my-city.html";
+        };
+
+      document
+        .getElementById(
+          "myWorldHotspot"
+        )
+        .addEventListener(
+          "click",
+          returnToWorld
+        );
+
+      document
+        .getElementById(
+          "worldButton"
+        )
+        .addEventListener(
+          "click",
+          returnToWorld
+        );
+
+      document
+        .getElementById(
+          "soundButton"
+        )
+        .addEventListener(
+          "click",
+          () => {
+            soundOn =
+              !soundOn;
+
+            document
+              .getElementById(
+                "soundButton"
+              )
+              .textContent =
+                soundOn
+                  ? "🔊"
+                  : "🔇";
+
+            if (
+              soundOn
+            ) {
+              sound(
+                "tap"
+              );
+            }
+          }
+        );
+
+      document
+        .querySelectorAll(
+          "[data-close]"
+        )
+        .forEach(
+          button => {
+            button.addEventListener(
+              "click",
+              () => {
+                closeModal(
+                  button.dataset.close
+                );
+              }
+            );
+          }
+        );
+
+      document
+        .querySelectorAll(
+          ".modal"
+        )
+        .forEach(
+          modal => {
+            modal.addEventListener(
+              "click",
+              event => {
+                if (
+                  event.target ===
+                  modal
+                ) {
+                  closeModal(
+                    modal.id
+                  );
+                }
+              }
+            );
+          }
+        );
+
+      const backgroundTest =
+        new Image();
+
+      backgroundTest.onerror =
+        () => {
+          showInfo(
+            "School artwork missing",
+            "Upload school-background.png in the same folder as school.html, then refresh the page."
+          );
+        };
+
+      backgroundTest.src =
+        "school-background.png?v=1";
+
+      render();
+    })();
+  </script>
 
   <script
     type="module"
@@ -560,13 +2551,8 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:17px
 
   <script
     type="module"
-    src="parent-gate.js">
+    src="global-navigation.js?v=1">
   </script>
 
-  <script
-  type="module"
-  src="global-navigation.js?v=1">
-</script>
-  
 </body>
 </html>
