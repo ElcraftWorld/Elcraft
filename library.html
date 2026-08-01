@@ -7,9 +7,9 @@
     name="viewport"
     content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  <meta name="theme-color" content="#50378f">
+  <meta name="theme-color" content="#24133f">
 
-  <title>ELCraft — Walkable Library</title>
+  <title>ELCraft Interactive Library</title>
 
   <style>
     * {
@@ -21,14 +21,8 @@
       --purple-dark: #4e3ca6;
       --purple-light: #efeaff;
       --gold: #ffd467;
-      --pink: #ff7fb5;
-      --blue: #6ec6ff;
-      --green: #79cf73;
       --ink: #35385d;
       --muted: #747a98;
-      --wood: #8d5934;
-      --wood-dark: #59341e;
-      --cream: #fff9ea;
     }
 
     html,
@@ -40,29 +34,40 @@
 
     body {
       overflow: hidden;
-
       color: var(--ink);
+
       font-family:
         Arial,
         Helvetica,
         sans-serif;
 
-      background: #35255c;
+      background: #211334;
     }
 
-    button {
+    button,
+    input {
       font: inherit;
     }
 
-    /* ======================================================
-       TOP BAR
-       ====================================================== */
+    button {
+      cursor: pointer;
+    }
 
-    .library-topbar {
+    .library-app {
+      position: fixed;
+      inset: 0;
+
+      display: grid;
+      grid-template-rows: auto 1fr;
+
+      background: #211334;
+    }
+
+    .topbar {
       position: relative;
-      z-index: 200;
+      z-index: 100;
 
-      min-height: 76px;
+      min-height: 72px;
 
       display: flex;
       align-items: center;
@@ -80,780 +85,348 @@
       background:
         linear-gradient(
           180deg,
-          #5e409d,
-          #3f286f
+          rgba(42,24,75,.98),
+          rgba(25,14,48,.98)
         );
 
       box-shadow:
-        0 7px 0 rgba(37,23,67,.28),
-        0 13px 25px rgba(34,22,61,.25);
+        0 7px 0 rgba(15,8,30,.34);
     }
 
-    .topbar-left,
-    .topbar-right {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 11px;
+      min-width: 0;
     }
 
-    .back-button,
-    .top-button {
-      min-height: 46px;
-
-      border: 3px solid rgba(255,255,255,.7);
-      border-radius: 15px;
-      padding: 9px 13px;
-
-      color: white;
-      background: rgba(255,255,255,.12);
-
-      font-size: 12px;
-      font-weight: 1000;
-      cursor: pointer;
+    .brand-icon {
+      font-size: 36px;
     }
 
-    .library-title {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .library-title-icon {
-      font-size: 38px;
-    }
-
-    .library-title h1 {
+    .brand h1 {
       margin: 0;
-      font-size: clamp(23px,3vw,36px);
+
+      overflow: hidden;
+
+      font-size: clamp(21px,3vw,32px);
       line-height: 1;
+
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .library-title p {
+    .brand p {
       margin: 4px 0 0;
-      color: rgba(255,255,255,.82);
+
+      color: rgba(255,255,255,.78);
       font-size: 10px;
       font-weight: 900;
     }
 
-    /* ======================================================
-       GAME STAGE
-       ====================================================== */
-
-    .library-shell {
-      position: relative;
-
-      height:
-        calc(
-          100vh -
-          76px
-        );
-
-      height:
-        calc(
-          100dvh -
-          76px
-        );
-
-      overflow: hidden;
+    .top-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
     }
 
-    .library-stage {
+    .top-button {
+      min-height: 44px;
+
+      border: 3px solid rgba(255,255,255,.72);
+      border-radius: 14px;
+      padding: 9px 12px;
+
+      color: white;
+      background: rgba(255,255,255,.1);
+
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .scene-shell {
       position: relative;
       overflow: hidden;
+      min-height: 0;
+    }
 
-      width: 100%;
-      height: 100%;
+    .scene {
+      position: absolute;
+      inset: 0;
+
+      overflow: hidden;
 
       background:
-        linear-gradient(
-          180deg,
-          #a78162 0 13%,
-          #d6b089 13% 22%,
-          #d9bb98 22% 72%,
-          #bd8b5c 72% 100%
-        );
-
-      touch-action: none;
-      user-select: none;
+        #211334
+        url("library-interactive-assets/library-background.png")
+        center center /
+        cover
+        no-repeat;
     }
 
-    .library-stage::before {
+    .scene::after {
       content: "";
 
       position: absolute;
-      inset: 22% 0 0;
-
-      background:
-        repeating-linear-gradient(
-          90deg,
-          rgba(255,255,255,.08) 0 2px,
-          transparent 2px 82px
-        ),
-        repeating-linear-gradient(
-          0deg,
-          rgba(88,51,26,.11) 0 3px,
-          transparent 3px 56px
-        );
-    }
-
-    .back-wall {
-      position: absolute;
-      inset: 0 0 auto;
-      height: 22%;
-
-      background:
-        linear-gradient(
-          180deg,
-          #65477f,
-          #8461a0
-        );
-
-      box-shadow:
-        inset 0 -12px 0 rgba(68,40,90,.25);
-    }
-
-    .window {
-      position: absolute;
-      top: 4%;
-
-      width: 13%;
-      height: 13%;
-
-      border: 7px solid #efe1c4;
-      border-radius: 45% 45% 12px 12px;
-
-      background:
-        radial-gradient(
-          circle at 65% 25%,
-          #fff3a3 0 12%,
-          transparent 13%
-        ),
-        linear-gradient(
-          180deg,
-          #7dd7ff,
-          #d7f5ff
-        );
-
-      box-shadow:
-        0 8px 0 rgba(67,37,82,.24);
-    }
-
-    .window.one {
-      left: 21%;
-    }
-
-    .window.two {
-      right: 21%;
-    }
-
-    /* ======================================================
-       SHELVES
-       ====================================================== */
-
-    .shelf {
-      position: absolute;
-
-      width: 19%;
-      height: 28%;
-
-      border: 9px solid var(--wood-dark);
-      border-radius: 20px 20px 10px 10px;
-
-      background:
-        repeating-linear-gradient(
-          0deg,
-          transparent 0 28%,
-          var(--wood-dark) 28% 33%
-        ),
-        linear-gradient(
-          145deg,
-          #b67b48,
-          #81502c
-        );
-
-      box-shadow:
-        inset 0 0 0 5px rgba(255,255,255,.08),
-        0 14px 18px rgba(58,34,22,.22);
-
-      cursor: pointer;
-    }
-
-    .shelf::before {
-      content: "📕 📗 📘 📙";
-
-      position: absolute;
-      inset: 12% 5% auto;
-
-      font-size: clamp(16px,2.3vw,34px);
-      letter-spacing: 4px;
-      text-align: center;
-    }
-
-    .shelf::after {
-      content: "📘 📙 📕 📗";
-
-      position: absolute;
-      inset: auto 5% 14%;
-
-      font-size: clamp(16px,2.3vw,34px);
-      letter-spacing: 4px;
-      text-align: center;
-    }
-
-    .shelf.story {
-      left: 5%;
-      top: 27%;
-    }
-
-    .shelf.science {
-      left: 28%;
-      top: 27%;
-    }
-
-    .shelf.math {
-      right: 28%;
-      top: 27%;
-    }
-
-    .shelf.world {
-      right: 5%;
-      top: 27%;
-    }
-
-    .shelf-label {
-      position: absolute;
-      left: 50%;
-      bottom: -17px;
-
-      transform: translateX(-50%);
-
-      border: 4px solid white;
-      border-radius: 999px;
-      padding: 6px 10px;
-
-      color: var(--purple-dark);
-      background: white;
-
-      font-size: clamp(8px,1vw,12px);
-      font-weight: 1000;
-      white-space: nowrap;
-
-      box-shadow:
-        0 7px 12px rgba(57,36,77,.15);
-    }
-
-    /* ======================================================
-       NOVA DESK
-       ====================================================== */
-
-    .nova-desk {
-      position: absolute;
-      left: 50%;
-      top: 12%;
-
-      width: 19%;
-      height: 17%;
-
-      transform: translateX(-50%);
-
-      border: 8px solid var(--wood-dark);
-      border-radius: 19px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #b97e4d,
-          #7c4828
-        );
-
-      box-shadow:
-        0 11px 17px rgba(56,31,20,.25);
-    }
-
-    .nova {
-      position: absolute;
-      left: 50%;
-      top: -63px;
-
-      transform: translateX(-50%);
-
-      font-size: clamp(68px,7vw,112px);
-
-      filter:
-        drop-shadow(
-          0 9px 5px
-          rgba(39,23,51,.24)
-        );
-
-      animation:
-        novaFloat
-        3s ease-in-out
-        infinite;
-    }
-
-    .desk-sign {
-      position: absolute;
-      left: 50%;
-      bottom: 12px;
-
-      transform: translateX(-50%);
-
-      color: #fff7d8;
-      font-size: clamp(8px,1vw,13px);
-      font-weight: 1000;
-      white-space: nowrap;
-    }
-
-    /* ======================================================
-       READING AREAS
-       ====================================================== */
-
-    .reading-rug {
-      position: absolute;
-      left: 50%;
-      bottom: 6%;
-
-      width: 34%;
-      height: 22%;
-
-      transform: translateX(-50%);
-
-      border: 9px solid #e7c14e;
-      border-radius: 50%;
-
-      background:
-        radial-gradient(
-          circle,
-          #b76bd6 0 18%,
-          #7d4fbc 19% 37%,
-          #eaa4d2 38% 55%,
-          #6ec6ff 56% 72%,
-          #f6da6e 73%
-        );
-
-      box-shadow:
-        0 12px 18px rgba(75,46,95,.18);
-    }
-
-    .beanbag,
-    .chair,
-    .table {
-      position: absolute;
-
-      cursor: pointer;
-
-      filter:
-        drop-shadow(
-          0 9px 6px
-          rgba(58,33,70,.18)
-        );
-    }
-
-    .beanbag {
-      width: 8%;
-      aspect-ratio: 1.1;
-
-      border: 6px solid rgba(83,45,105,.35);
-      border-radius: 47% 53% 45% 55%;
-
-      background:
-        linear-gradient(
-          145deg,
-          #ff89bc,
-          #ce4a93
-        );
-    }
-
-    .beanbag.one {
-      left: 31%;
-      bottom: 12%;
-    }
-
-    .beanbag.two {
-      right: 31%;
-      bottom: 12%;
-
-      background:
-        linear-gradient(
-          145deg,
-          #7fd7ff,
-          #3aa4df
-        );
-    }
-
-    .chair {
-      width: 9%;
-      height: 12%;
-
-      border: 7px solid #5e3a22;
-      border-radius: 22px 22px 14px 14px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #f0b75e,
-          #d18139
-        );
-    }
-
-    .chair.fire-one {
-      left: 7%;
-      bottom: 10%;
-    }
-
-    .chair.fire-two {
-      left: 18%;
-      bottom: 10%;
-    }
-
-    .fireplace {
-      position: absolute;
-      left: 5%;
-      bottom: 24%;
-
-      width: 23%;
-      height: 20%;
-
-      border: 10px solid #7d553b;
-      border-radius: 28px 28px 8px 8px;
-
-      background:
-        radial-gradient(
-          ellipse at 50% 85%,
-          #ffdc55 0 15%,
-          #ff7b2d 16% 29%,
-          #5a2d24 30% 45%,
-          transparent 46%
-        ),
-        linear-gradient(
-          180deg,
-          #644332,
-          #2d1f1d
-        );
-
-      box-shadow:
-        inset 0 0 0 6px rgba(255,255,255,.08),
-        0 10px 16px rgba(50,28,25,.22);
-    }
-
-    .table {
-      right: 7%;
-      bottom: 10%;
-
-      width: 19%;
-      height: 14%;
-
-      border: 8px solid var(--wood-dark);
-      border-radius: 50%;
-
-      background:
-        linear-gradient(
-          145deg,
-          #b77a48,
-          #7a4828
-        );
-    }
-
-    .passport-book {
-      position: absolute;
-      left: 50%;
-      top: 14%;
-
-      transform: translateX(-50%);
-
-      font-size: clamp(35px,4vw,60px);
-    }
-
-    /* ======================================================
-       SECRET DOOR
-       ====================================================== */
-
-    .secret-door {
-      position: absolute;
-      right: 3%;
-      top: 5%;
-
-      width: 11%;
-      height: 17%;
-
-      border: 9px solid #4d2d22;
-      border-radius: 45% 45% 8px 8px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #6c3b2c,
-          #3d211c
-        );
-
-      box-shadow:
-        inset 0 0 0 5px rgba(255,255,255,.06),
-        0 10px 18px rgba(44,24,23,.22);
-
-      cursor: pointer;
-    }
-
-    .secret-door::before {
-      content: "🔒";
-
-      position: absolute;
-      left: 50%;
-      top: 43%;
-
-      transform: translate(-50%,-50%);
-
-      font-size: clamp(24px,3vw,48px);
-    }
-
-    .secret-door.unlocked::before {
-      content: "✨";
-    }
-
-    .secret-label {
-      position: absolute;
-      left: 50%;
-      bottom: -25px;
-
-      transform: translateX(-50%);
-
-      color: white;
-      font-size: clamp(7px,.9vw,11px);
-      font-weight: 1000;
-      white-space: nowrap;
-    }
-
-    /* ======================================================
-       PLAYER
-       ====================================================== */
-
-    .player {
-      position: absolute;
-      z-index: 80;
-
-      width: clamp(46px,5vw,72px);
-      height: clamp(70px,7vw,100px);
-
-      transform:
-        translate(-50%,-82%);
+      inset: 0;
+      z-index: 3;
 
       pointer-events: none;
-    }
-
-    .player-head {
-      position: absolute;
-      left: 50%;
-      top: 0;
-
-      width: 58%;
-      aspect-ratio: 1;
-
-      transform: translateX(-50%);
-
-      border: 5px solid #5d423c;
-      border-radius: 50%;
 
       background:
-        radial-gradient(
-          circle at 50% 42%,
-          #2d2630 0 4%,
-          transparent 5%
-        ),
-        #b97752;
+        linear-gradient(
+          180deg,
+          rgba(17,8,35,.02),
+          rgba(17,8,35,.08)
+        );
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 10;
+
+      border: 3px solid transparent;
+      border-radius: 18px;
+
+      background: transparent;
+
+      cursor: pointer;
+
+      transition:
+        border-color .16s ease,
+        background .16s ease,
+        transform .16s ease,
+        box-shadow .16s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible {
+      border-color: rgba(255,226,107,.96);
+
+      background:
+        rgba(255,244,170,.12);
 
       box-shadow:
-        0 5px 8px rgba(44,28,43,.18);
+        0 0 0 5px rgba(119,88,223,.2),
+        0 0 26px rgba(255,222,95,.42);
+
+      outline: none;
+
+      transform: translateY(-2px);
     }
 
-    .player-head::before,
-    .player-head::after {
-      content: "";
+    .hotspot::after {
+      content: attr(data-label);
 
-      position: absolute;
-      top: 40%;
-
-      width: 7px;
-      height: 10px;
-
-      border-radius: 50%;
-      background: #2d2630;
-    }
-
-    .player-head::before {
-      left: 28%;
-    }
-
-    .player-head::after {
-      right: 28%;
-    }
-
-    .player-body {
       position: absolute;
       left: 50%;
-      top: 44%;
-
-      width: 76%;
-      height: 48%;
+      bottom: -42px;
 
       transform: translateX(-50%);
 
-      border: 5px solid #4e3ca6;
-      border-radius: 18px 18px 12px 12px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #8f73ed,
-          #6149bb
-        );
-    }
-
-    .player-feet {
-      position: absolute;
-      left: 50%;
-      bottom: 0;
-
-      width: 78%;
-      height: 17%;
-
-      transform: translateX(-50%);
-
-      background:
-        linear-gradient(
-          90deg,
-          #373247 0 44%,
-          transparent 45% 55%,
-          #373247 56%
-        );
-    }
-
-    .player.walking {
-      animation:
-        playerBob
-        .28s ease-in-out
-        infinite alternate;
-    }
-
-    .player[data-direction="left"] {
-      transform:
-        translate(-50%,-82%)
-        scaleX(-1);
-    }
-
-    /* ======================================================
-       INTERACTION PROMPT
-       ====================================================== */
-
-    .interaction-prompt {
-      position: absolute;
-      left: 50%;
-      bottom: 2%;
-      z-index: 150;
-
-      transform: translateX(-50%);
-    }
-
-    .interaction-prompt[hidden] {
       display: none;
-    }
 
-    .interaction-button {
-      min-width: 190px;
-      min-height: 52px;
+      min-width: max-content;
 
-      border: 5px solid white;
+      border: 3px solid white;
       border-radius: 999px;
-      padding: 10px 18px;
+      padding: 8px 12px;
 
       color: white;
       background:
         linear-gradient(
           145deg,
-          var(--purple),
-          #9a76ef
+          #7758df,
+          #4e3ca6
         );
-
-      font-size: 14px;
-      font-weight: 1000;
-      cursor: pointer;
 
       box-shadow:
-        0 7px 0 var(--purple-dark),
-        0 14px 25px rgba(57,39,103,.24);
+        0 7px 0 rgba(56,36,108,.35);
 
-      animation:
-        promptPulse
-        1.6s ease-in-out
-        infinite;
+      font-size: 11px;
+      font-weight: 1000;
+      white-space: nowrap;
     }
 
-    /* ======================================================
-       TOUCH JOYSTICK
-       ====================================================== */
+    .hotspot:hover::after,
+    .hotspot:focus-visible::after {
+      display: block;
+    }
 
-    .touch-joystick {
+    .story-hotspot {
+      left: 3.2%;
+      top: 42%;
+      width: 22.5%;
+      height: 33%;
+    }
+
+    .science-hotspot {
+      left: 27.1%;
+      top: 42%;
+      width: 22.5%;
+      height: 33%;
+    }
+
+    .math-hotspot {
+      left: 50.2%;
+      top: 42%;
+      width: 22.5%;
+      height: 33%;
+    }
+
+    .world-hotspot {
+      left: 73.2%;
+      top: 42%;
+      width: 19.5%;
+      height: 33%;
+    }
+
+    .nova-hotspot {
+      left: 24%;
+      top: 13%;
+      width: 24%;
+      height: 29%;
+    }
+
+    .cozy-hotspot {
+      left: 0;
+      top: 65%;
+      width: 26%;
+      height: 28%;
+    }
+
+    .center-seat-hotspot {
+      left: 25%;
+      top: 69%;
+      width: 44%;
+      height: 28%;
+    }
+
+    .passport-hotspot {
+      left: 68%;
+      top: 69%;
+      width: 23%;
+      height: 27%;
+    }
+
+    .sticker-hotspot {
+      left: 88.5%;
+      top: 40%;
+      width: 11%;
+      height: 30%;
+    }
+
+    .secret-hotspot {
+      left: 71%;
+      top: 8%;
+      width: 14%;
+      height: 28%;
+    }
+
+    .exit-hotspot {
+      left: 90%;
+      top: 70%;
+      width: 9.5%;
+      height: 24%;
+    }
+
+    .quest-hotspot {
+      left: 0;
+      top: 7%;
+      width: 18%;
+      height: 26%;
+    }
+
+    .floating-tip {
       position: absolute;
-      left:
-        max(
-          18px,
-          env(safe-area-inset-left)
-        );
+      left: 50%;
       bottom:
         max(
-          18px,
+          12px,
           env(safe-area-inset-bottom)
         );
-      z-index: 140;
+      z-index: 20;
 
-      width: 118px;
-      height: 118px;
+      transform: translateX(-50%);
 
-      display: grid;
-      place-items: center;
+      width: min(690px, calc(100% - 26px));
 
-      border: 5px solid rgba(255,255,255,.75);
-      border-radius: 50%;
+      border: 4px solid rgba(255,255,255,.92);
+      border-radius: 999px;
+      padding: 10px 16px;
 
-      background: rgba(78,60,166,.34);
-      backdrop-filter: blur(7px);
-
-      touch-action: none;
-    }
-
-    .touch-joystick-knob {
-      width: 52px;
-      height: 52px;
-
-      border: 5px solid white;
-      border-radius: 50%;
-
-      background:
-        linear-gradient(
-          145deg,
-          #9c7ff2,
-          #6247b6
-        );
+      color: white;
+      background: rgba(29,16,54,.88);
 
       box-shadow:
-        0 7px 14px rgba(43,30,78,.28);
+        0 10px 24px rgba(15,8,32,.34);
+
+      font-size: 11px;
+      font-weight: 900;
+      text-align: center;
+
+      backdrop-filter: blur(8px);
     }
 
-    /* ======================================================
-       PANELS / MODALS
-       ====================================================== */
+    .selected-book-chip {
+      position: absolute;
+      left: 18px;
+      bottom: 72px;
+      z-index: 25;
+
+      display: none;
+
+      align-items: center;
+      gap: 10px;
+
+      max-width: 320px;
+
+      border: 4px solid white;
+      border-radius: 18px;
+      padding: 10px 13px;
+
+      color: #4e3ca6;
+      background: rgba(255,255,255,.96);
+
+      box-shadow:
+        0 10px 24px rgba(15,8,32,.28);
+    }
+
+    .selected-book-chip.visible {
+      display: flex;
+    }
+
+    .selected-book-emoji {
+      font-size: 30px;
+    }
+
+    .selected-book-title {
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .selected-book-note {
+      margin-top: 2px;
+
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 800;
+    }
 
     .modal {
       position: fixed;
       inset: 0;
-      z-index: 3000;
+      z-index: 1000;
 
       display: none;
       align-items: center;
       justify-content: center;
 
-      padding: 20px;
+      padding: 18px;
 
-      background: rgba(35,27,67,.64);
-      backdrop-filter: blur(8px);
+      background: rgba(20,11,39,.68);
+      backdrop-filter: blur(9px);
     }
 
     .modal.visible {
@@ -878,11 +451,11 @@
         );
 
       box-shadow:
-        0 30px 70px rgba(35,31,84,.34);
+        0 30px 72px rgba(19,10,38,.42);
     }
 
     .panel.small {
-      width: min(560px,100%);
+      width: min(580px,100%);
     }
 
     .panel-top {
@@ -891,75 +464,92 @@
       justify-content: space-between;
       gap: 12px;
 
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     .panel-top h2 {
       margin: 0;
-      color: var(--purple-dark);
+
+      color: #4e3ca6;
+      font-size: clamp(24px,4vw,36px);
     }
 
     .close-button {
-      width: 42px;
-      height: 42px;
+      width: 44px;
+      height: 44px;
 
       border: 0;
       border-radius: 50%;
 
       color: white;
-      background: var(--purple);
+      background: #7758df;
 
-      font-size: 20px;
+      font-size: 22px;
       font-weight: 1000;
-      cursor: pointer;
+    }
+
+    .panel-copy {
+      margin: -4px 0 16px;
+
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+      line-height: 1.5;
     }
 
     .book-grid {
       display: grid;
       grid-template-columns:
         repeat(auto-fill,minmax(210px,1fr));
-      gap: 13px;
+      gap: 14px;
     }
 
     .book-card {
+      position: relative;
+
       border: 4px solid white;
-      border-radius: 20px;
-      padding: 13px;
+      border-radius: 22px;
+      padding: 14px;
 
       background: white;
 
       box-shadow:
-        0 9px 0 rgba(84,59,121,.08),
-        0 16px 25px rgba(66,48,103,.13);
+        0 10px 0 rgba(78,60,166,.08),
+        0 18px 30px rgba(54,38,91,.14);
+    }
+
+    .book-card.completed {
+      outline: 4px solid var(--gold);
     }
 
     .book-cover {
-      min-height: 115px;
+      min-height: 138px;
 
       display: grid;
       place-items: center;
 
-      border-radius: 16px;
+      border-radius: 18px;
 
       background:
         linear-gradient(
           145deg,
-          #e7dcff,
-          #fff0bd
+          #d9c9ff,
+          #fff0b7
         );
 
-      font-size: 68px;
+      font-size: 82px;
     }
 
     .book-card h3 {
-      margin: 9px 0 0;
+      margin: 10px 0 4px;
 
-      color: var(--purple-dark);
-      font-size: 16px;
+      color: #4e3ca6;
+      font-size: 17px;
     }
 
     .book-card p {
-      min-height: 45px;
+      min-height: 49px;
+      margin: 0;
 
       color: var(--muted);
       font-size: 10px;
@@ -968,25 +558,28 @@
     }
 
     .book-meta {
+      margin-top: 8px;
+
       color: var(--muted);
       font-size: 9px;
       font-weight: 900;
     }
 
-    .book-button {
+    .book-button,
+    .reader-button,
+    .save-button {
       width: 100%;
 
-      margin-top: 10px;
+      margin-top: 11px;
       border: 0;
-      border-radius: 13px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 11px;
 
       color: white;
-      background: var(--purple);
+      background: #7758df;
 
       font-size: 11px;
       font-weight: 1000;
-      cursor: pointer;
     }
 
     .reader-spread {
@@ -996,7 +589,7 @@
     }
 
     .reader-page {
-      min-height: 360px;
+      min-height: 390px;
 
       display: flex;
       flex-direction: column;
@@ -1010,22 +603,22 @@
     }
 
     .reader-page.left {
-      border-radius: 20px 5px 5px 20px;
+      border-radius: 22px 5px 5px 22px;
     }
 
     .reader-page.right {
-      border-radius: 5px 20px 20px 5px;
+      border-radius: 5px 22px 22px 5px;
     }
 
     .reader-emoji {
-      font-size: 110px;
+      font-size: 120px;
     }
 
     .reader-text {
       color: #554b60;
-      font-size: 18px;
+      font-size: 19px;
       font-weight: 800;
-      line-height: 1.7;
+      line-height: 1.75;
       text-align: center;
     }
 
@@ -1038,30 +631,35 @@
       margin-top: 14px;
     }
 
-    .reader-button {
-      border: 0;
-      border-radius: 13px;
-      padding: 11px;
+    .reader-actions .reader-button {
+      margin-top: 0;
 
-      color: var(--purple-dark);
-      background: var(--purple-light);
-
-      font-size: 11px;
-      font-weight: 1000;
-      cursor: pointer;
+      color: #4e3ca6;
+      background: #efeaff;
     }
 
-    .reader-button.primary {
+    .reader-actions .reader-button.primary {
       color: white;
-      background: var(--purple);
+      background: #7758df;
     }
 
-    .passport-list,
-    .sticker-grid {
+    .nova-message,
+    .info-box {
+      border: 4px solid #e8ddff;
+      border-radius: 20px;
+      padding: 18px;
+
+      color: #4e3ca6;
+      background: white;
+
+      font-size: 14px;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .passport-list {
       display: grid;
       gap: 10px;
-
-      margin-top: 13px;
     }
 
     .passport-row {
@@ -1086,8 +684,10 @@
     }
 
     .sticker-grid {
+      display: grid;
       grid-template-columns:
         repeat(4,minmax(0,1fr));
+      gap: 10px;
     }
 
     .sticker {
@@ -1115,21 +715,6 @@
       background: #fff9d8;
     }
 
-    .nova-message {
-      margin-top: 10px;
-
-      border: 4px solid #efe6ff;
-      border-radius: 18px;
-      padding: 16px;
-
-      color: var(--purple-dark);
-      background: white;
-
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.55;
-    }
-
     .minutes-field {
       width: 100%;
 
@@ -1140,108 +725,49 @@
       font: inherit;
     }
 
-    .save-button {
-      width: 100%;
-
-      margin-top: 12px;
-      border: 0;
-      border-radius: 14px;
-      padding: 12px;
-
-      color: white;
-      background: var(--purple);
-
-      font-weight: 1000;
-      cursor: pointer;
-    }
-
     .toast {
       position: fixed;
-      right: 20px;
+      right: 18px;
       bottom: 90px;
-      z-index: 4000;
+      z-index: 1300;
 
       display: none;
-
       max-width: 360px;
 
       border: 4px solid white;
       border-radius: 18px;
-      padding: 13px 16px;
+      padding: 14px 16px;
 
       color: white;
-      background: var(--purple-dark);
+      background: #4e3ca6;
+
+      box-shadow:
+        0 14px 30px rgba(34,23,65,.32);
 
       font-size: 12px;
       font-weight: 1000;
-
-      box-shadow:
-        0 13px 30px rgba(37,34,85,.28);
     }
 
     .toast.visible {
       display: block;
     }
 
-    @keyframes novaFloat {
-      0%,
-      100% {
-        transform:
-          translateX(-50%)
-          translateY(0);
-      }
-
-      50% {
-        transform:
-          translateX(-50%)
-          translateY(-7px);
-      }
-    }
-
-    @keyframes playerBob {
-      from {
-        margin-top: 0;
-      }
-
-      to {
-        margin-top: -4px;
-      }
-    }
-
-    @keyframes promptPulse {
-      0%,
-      100% {
-        transform: scale(1);
-      }
-
-      50% {
-        transform: scale(1.04);
-      }
-    }
-
-    @media (max-width: 850px) {
-      .topbar-right {
+    @media (max-width: 900px) {
+      .brand p {
         display: none;
       }
 
-      .shelf {
-        width: 22%;
+      .top-actions {
+        display: none;
       }
 
-      .shelf.story {
-        left: 2%;
+      .floating-tip {
+        bottom: 8px;
+        font-size: 9px;
       }
 
-      .shelf.science {
-        left: 26%;
-      }
-
-      .shelf.math {
-        right: 26%;
-      }
-
-      .shelf.world {
-        right: 2%;
+      .hotspot::after {
+        font-size: 9px;
       }
 
       .reader-spread {
@@ -1250,7 +776,7 @@
 
       .reader-page.left,
       .reader-page.right {
-        border-radius: 16px;
+        border-radius: 18px;
       }
 
       .reader-actions {
@@ -1259,72 +785,25 @@
       }
     }
 
-    @media (max-width: 650px) {
-      .library-title p,
-      .back-button span {
-        display: none;
+    @media (max-width: 620px) {
+      .scene {
+        background-size: auto 100%;
+        background-position: 50% center;
       }
 
-      .library-topbar {
-        min-height: 68px;
+      .selected-book-chip {
+        left: 10px;
+        bottom: 58px;
+        max-width: calc(100% - 20px);
       }
 
-      .library-shell {
-        height:
-          calc(
-            100dvh -
-            68px
-          );
+      .book-grid {
+        grid-template-columns: 1fr;
       }
 
-      .touch-joystick {
-        width: 102px;
-        height: 102px;
-      }
-
-      .nova-desk {
-        width: 27%;
-      }
-
-      .shelf {
-        height: 24%;
-      }
-
-      .shelf-label {
-        display: none;
-      }
-
-      .reading-rug {
-        width: 48%;
-      }
-
-      .beanbag {
-        width: 12%;
-      }
-
-      .beanbag.one {
-        left: 25%;
-      }
-
-      .beanbag.two {
-        right: 25%;
-      }
-
-      .chair {
-        width: 12%;
-      }
-
-      .fireplace {
-        width: 28%;
-      }
-
-      .table {
-        width: 23%;
-      }
-
-      .interaction-button {
-        min-width: 170px;
-        font-size: 12px;
+      .sticker-grid {
+        grid-template-columns:
+          repeat(3,minmax(0,1fr));
       }
     }
   </style>
@@ -1332,26 +811,19 @@
 
 <body>
 
-  <header class="library-topbar">
+  <div class="library-app">
 
-    <div class="topbar-left">
+    <header class="topbar">
 
-      <button
-        id="backButton"
-        class="back-button"
-        type="button">
-        ← <span>My World</span>
-      </button>
+      <div class="brand">
 
-      <div class="library-title">
-
-        <div class="library-title-icon">
+        <div class="brand-icon">
           📚
         </div>
 
         <div>
           <h1>
-            ELCraft Library
+            ELCraft Interactive Library
           </h1>
 
           <p id="childName">
@@ -1361,192 +833,178 @@
 
       </div>
 
-    </div>
-
-    <div class="topbar-right">
-
-      <button
-        id="passportButton"
-        class="top-button"
-        type="button">
-        🗺️ Passport
-      </button>
-
-      <button
-        id="stickersButton"
-        class="top-button"
-        type="button">
-        ⭐ Stickers
-      </button>
-
-      <button
-        id="questsButton"
-        class="top-button"
-        type="button">
-        📜 Quests
-      </button>
-
-    </div>
-
-  </header>
-
-  <main class="library-shell">
-
-    <section
-      id="libraryStage"
-      class="library-stage"
-      aria-label="Walkable ELCraft Library">
-
-      <div class="back-wall"></div>
-
-      <div class="window one"></div>
-      <div class="window two"></div>
-
-      <div
-        id="novaDesk"
-        class="nova-desk">
-
-        <div class="nova">
-          🦉
-        </div>
-
-        <div class="desk-sign">
-          Nova’s Welcome Desk
-        </div>
-
-      </div>
-
-      <div
-        id="storyShelf"
-        class="shelf story">
-
-        <div class="shelf-label">
-          📖 Stories
-        </div>
-
-      </div>
-
-      <div
-        id="scienceShelf"
-        class="shelf science">
-
-        <div class="shelf-label">
-          🔬 Science
-        </div>
-
-      </div>
-
-      <div
-        id="mathShelf"
-        class="shelf math">
-
-        <div class="shelf-label">
-          🧮 Math
-        </div>
-
-      </div>
-
-      <div
-        id="worldShelf"
-        class="shelf world">
-
-        <div class="shelf-label">
-          🌍 World & Culture
-        </div>
-
-      </div>
-
-      <div
-        id="fireplace"
-        class="fireplace">
-      </div>
-
-      <div
-        id="fireChairOne"
-        class="chair fire-one">
-      </div>
-
-      <div
-        id="fireChairTwo"
-        class="chair fire-two">
-      </div>
-
-      <div class="reading-rug"></div>
-
-      <div
-        id="beanbagOne"
-        class="beanbag one">
-      </div>
-
-      <div
-        id="beanbagTwo"
-        class="beanbag two">
-      </div>
-
-      <div
-        id="passportTable"
-        class="table">
-
-        <div class="passport-book">
-          🗺️
-        </div>
-
-      </div>
-
-      <div
-        id="secretDoor"
-        class="secret-door">
-
-        <div class="secret-label">
-          Dragon Archives
-        </div>
-
-      </div>
-
-      <div
-        id="player"
-        class="player"
-        data-start-x="50"
-        data-start-y="88">
-
-        <div class="player-head"></div>
-        <div class="player-body"></div>
-        <div class="player-feet"></div>
-
-      </div>
-
-      <div
-        id="interactionPrompt"
-        class="interaction-prompt"
-        hidden>
+      <div class="top-actions">
 
         <button
-          id="interactionButton"
-          class="interaction-button"
+          id="passportTopButton"
+          class="top-button"
           type="button">
-          ✨ Interact
+          🗺️ Passport
+        </button>
+
+        <button
+          id="stickersTopButton"
+          class="top-button"
+          type="button">
+          ⭐ Stickers
+        </button>
+
+        <button
+          id="questsTopButton"
+          class="top-button"
+          type="button">
+          📜 Quests
+        </button>
+
+        <button
+          id="worldTopButton"
+          class="top-button"
+          type="button">
+          🏙️ My World
         </button>
 
       </div>
 
-      <div
-        id="touchJoystick"
-        class="touch-joystick"
-        aria-label="Movement joystick">
+    </header>
+
+    <main class="scene-shell">
+
+      <section
+        class="scene"
+        aria-label="Interactive ELCraft Library">
+
+        <button
+          class="hotspot story-hotspot"
+          type="button"
+          data-category="story"
+          data-label="📖 Browse Storybook Forest"
+          aria-label="Browse Storybook Forest">
+        </button>
+
+        <button
+          class="hotspot science-hotspot"
+          type="button"
+          data-category="science"
+          data-label="🔬 Browse Discovery Lab"
+          aria-label="Browse Discovery Lab">
+        </button>
+
+        <button
+          class="hotspot math-hotspot"
+          type="button"
+          data-category="math"
+          data-label="🧮 Browse Math Quests"
+          aria-label="Browse Math Quests">
+        </button>
+
+        <button
+          class="hotspot world-hotspot"
+          type="button"
+          data-category="world"
+          data-label="🌍 Browse World & Culture"
+          aria-label="Browse World and Culture">
+        </button>
+
+        <button
+          id="novaHotspot"
+          class="hotspot nova-hotspot"
+          type="button"
+          data-label="🦉 Talk to Nova"
+          aria-label="Talk to Nova">
+        </button>
+
+        <button
+          id="cozyHotspot"
+          class="hotspot cozy-hotspot"
+          type="button"
+          data-label="🔥 Read in the Cozy Nook"
+          aria-label="Read in the Cozy Nook">
+        </button>
+
+        <button
+          id="centerSeatHotspot"
+          class="hotspot center-seat-hotspot"
+          type="button"
+          data-label="🛋️ Sit and Read"
+          aria-label="Sit and read">
+        </button>
+
+        <button
+          id="passportHotspot"
+          class="hotspot passport-hotspot"
+          type="button"
+          data-label="🗺️ Open Reading Passport"
+          aria-label="Open Reading Passport">
+        </button>
+
+        <button
+          id="stickerHotspot"
+          class="hotspot sticker-hotspot"
+          type="button"
+          data-label="⭐ Open Sticker Collection"
+          aria-label="Open Sticker Collection">
+        </button>
+
+        <button
+          id="secretHotspot"
+          class="hotspot secret-hotspot"
+          type="button"
+          data-label="🚪 Check Dragon Archives"
+          aria-label="Check Dragon Archives">
+        </button>
+
+        <button
+          id="exitHotspot"
+          class="hotspot exit-hotspot"
+          type="button"
+          data-label="🏙️ Exit to My World"
+          aria-label="Exit to My World">
+        </button>
+
+        <button
+          id="questHotspot"
+          class="hotspot quest-hotspot"
+          type="button"
+          data-label="📜 Open Today's Quest"
+          aria-label="Open Today's Quest">
+        </button>
 
         <div
-          id="touchJoystickKnob"
-          class="touch-joystick-knob">
+          id="selectedBookChip"
+          class="selected-book-chip">
+
+          <div
+            id="selectedBookEmoji"
+            class="selected-book-emoji">
+            📖
+          </div>
+
+          <div>
+            <div
+              id="selectedBookTitle"
+              class="selected-book-title">
+              Selected Book
+            </div>
+
+            <div class="selected-book-note">
+              Click a seat to start reading.
+            </div>
+          </div>
+
         </div>
 
-      </div>
+        <div class="floating-tip">
+          💡 Click a bookshelf to explore books. Pick one, then click a cozy seat to start reading.
+        </div>
 
-    </section>
+      </section>
 
-  </main>
+    </main>
+
+  </div>
 
   <section
-    id="shelfModal"
+    id="booksModal"
     class="modal"
     role="dialog"
     aria-modal="true">
@@ -1556,20 +1014,20 @@
       <div class="panel-top">
 
         <div>
-          <h2 id="shelfTitle">
-            Library Shelf
+          <h2 id="booksTitle">
+            Choose a Book
           </h2>
 
-          <div
-            id="shelfCopy"
-            class="book-meta">
-          </div>
+          <p
+            id="booksCopy"
+            class="panel-copy">
+          </p>
         </div>
 
         <button
           class="close-button"
           type="button"
-          data-close-modal="shelfModal">
+          data-close="booksModal">
           ×
         </button>
 
@@ -1601,7 +1059,7 @@
         <button
           class="close-button"
           type="button"
-          data-close-modal="readerModal">
+          data-close="readerModal">
           ×
         </button>
 
@@ -1630,7 +1088,7 @@
           <div
             id="readerText"
             class="reader-text">
-            Every adventure begins with one page.
+            Every reading adventure begins with one page.
           </div>
 
         </div>
@@ -1640,7 +1098,7 @@
       <div class="reader-actions">
 
         <button
-          id="previousPageButton"
+          id="previousButton"
           class="reader-button"
           type="button">
           ← Previous
@@ -1654,14 +1112,14 @@
         </button>
 
         <button
-          id="nextPageButton"
+          id="nextButton"
           class="reader-button"
           type="button">
           Next →
         </button>
 
         <button
-          id="finishReadingButton"
+          id="finishButton"
           class="reader-button primary"
           type="button">
           Finish Reading
@@ -1690,13 +1148,13 @@
         <button
           class="close-button"
           type="button"
-          data-close-modal="minutesModal">
+          data-close="minutesModal">
           ×
         </button>
 
       </div>
 
-      <p class="book-meta">
+      <p class="panel-copy">
         Enter how many minutes were read.
       </p>
 
@@ -1736,7 +1194,7 @@
         <button
           class="close-button"
           type="button"
-          data-close-modal="novaModal">
+          data-close="novaModal">
           ×
         </button>
 
@@ -1768,7 +1226,7 @@
         <button
           class="close-button"
           type="button"
-          data-close-modal="passportModal">
+          data-close="passportModal">
           ×
         </button>
 
@@ -1794,13 +1252,13 @@
       <div class="panel-top">
 
         <h2>
-          ⭐ Sticker Book
+          ⭐ Sticker Collection
         </h2>
 
         <button
           class="close-button"
           type="button"
-          data-close-modal="stickersModal">
+          data-close="stickersModal">
           ×
         </button>
 
@@ -1825,6 +1283,38 @@
 
   </section>
 
+  <section
+    id="infoModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true">
+
+    <div class="panel small">
+
+      <div class="panel-top">
+
+        <h2 id="infoTitle">
+          Library
+        </h2>
+
+        <button
+          class="close-button"
+          type="button"
+          data-close="infoModal">
+          ×
+        </button>
+
+      </div>
+
+      <div
+        id="infoCopy"
+        class="info-box">
+      </div>
+
+    </div>
+
+  </section>
+
   <div
     id="toast"
     class="toast"
@@ -1833,10 +1323,6 @@
   </div>
 
   <script type="module">
-    import {
-      WalkableBuildingEngine
-    } from "./walkable-building-engine.js";
-
     import {
       getSelectedChildId,
       loadLibrary,
@@ -1855,26 +1341,6 @@
     const childId =
       getSelectedChildId();
 
-    const stage =
-      document.getElementById(
-        "libraryStage"
-      );
-
-    const player =
-      document.getElementById(
-        "player"
-      );
-
-    const bookGrid =
-      document.getElementById(
-        "bookGrid"
-      );
-
-    const toast =
-      document.getElementById(
-        "toast"
-      );
-
     let books =
       [];
 
@@ -1884,13 +1350,10 @@
     let currentPage =
       0;
 
-    let activeReadingSpot =
-      null;
-
-    const shelfInfo = {
+    const CATEGORY_INFO = {
       story: {
         title:
-          "Storybook Forest Shelf",
+          "Storybook Forest",
 
         copy:
           "Fairy tales, friendship stories, mysteries, and magical adventures."
@@ -1898,15 +1361,15 @@
 
       science: {
         title:
-          "Discovery Lab Shelf",
+          "Discovery Lab",
 
         copy:
-          "Animals, space, nature, weather, inventions, and experiments."
+          "Animals, space, weather, nature, inventions, and experiments."
       },
 
       math: {
         title:
-          "Math Quest Shelf",
+          "Math Quests",
 
         copy:
           "Counting, patterns, shapes, puzzles, and number adventures."
@@ -1914,14 +1377,14 @@
 
       world: {
         title:
-          "World & Culture Shelf",
+          "World & Culture",
 
         copy:
           "People, places, traditions, languages, celebrations, and history."
       }
     };
 
-    const passportCategories = [
+    const PASSPORT = [
       {
         category:
           "story",
@@ -1932,6 +1395,7 @@
         icon:
           "📖"
       },
+
       {
         category:
           "science",
@@ -1942,16 +1406,18 @@
         icon:
           "🔬"
       },
+
       {
         category:
           "math",
 
         label:
-          "Math Quest",
+          "Math Quests",
 
         icon:
           "🧮"
       },
+
       {
         category:
           "family",
@@ -1962,6 +1428,7 @@
         icon:
           "💛"
       },
+
       {
         category:
           "world",
@@ -1974,7 +1441,7 @@
       }
     ];
 
-    const fallbackPages = [
+    const FALLBACK_PAGES = [
       "A new adventure begins. Look closely and imagine what might happen next.",
       "The characters discover something surprising and learn an important lesson.",
       "The journey continues with courage, curiosity, and kindness.",
@@ -1984,6 +1451,11 @@
     function showToast(
       message
     ) {
+      const toast =
+        document.getElementById(
+          "toast"
+        );
+
       toast.textContent =
         message;
 
@@ -2053,27 +1525,65 @@
       );
     }
 
+    function pagesForBook() {
+      const book =
+        selectedBook?.book ||
+        {};
+
+      if (
+        Array.isArray(
+          book.pages
+        ) &&
+        book.pages.length
+      ) {
+        return book.pages.map(
+          page =>
+            typeof page ===
+              "string"
+              ? page
+              : page.text
+        );
+      }
+
+      return [
+        `Welcome to ${
+          book.title ||
+          "this story"
+        }.`,
+        book.description ||
+          "A special reading adventure.",
+        ...FALLBACK_PAGES
+      ];
+    }
+
     function renderShelf(
       category
     ) {
       const info =
-        shelfInfo[category];
+        CATEGORY_INFO[
+          category
+        ];
 
       document
         .getElementById(
-          "shelfTitle"
+          "booksTitle"
         )
         .textContent =
           info.title;
 
       document
         .getElementById(
-          "shelfCopy"
+          "booksCopy"
         )
         .textContent =
           info.copy;
 
-      bookGrid.replaceChildren();
+      const grid =
+        document.getElementById(
+          "bookGrid"
+        );
+
+      grid.replaceChildren();
 
       const visible =
         booksInCategory(
@@ -2083,11 +1593,11 @@
       if (
         !visible.length
       ) {
-        bookGrid.innerHTML =
-          '<div class="book-card"><h3>More books are coming!</h3><p>Nova is still organizing this shelf.</p></div>';
+        grid.innerHTML =
+          '<div class="info-box">Nova is still adding books to this shelf.</div>';
 
         openModal(
-          "shelfModal"
+          "booksModal"
         );
 
         return;
@@ -2105,7 +1615,12 @@
             );
 
           card.className =
-            "book-card";
+            `book-card${
+              item.status ===
+              "completed"
+                ? " completed"
+                : ""
+            }`;
 
           card.innerHTML = `
             <div class="book-cover">
@@ -2160,70 +1675,61 @@
                 selectedBook =
                   item;
 
+                document
+                  .getElementById(
+                    "selectedBookEmoji"
+                  )
+                  .textContent =
+                    book.cover_emoji ||
+                    "📖";
+
+                document
+                  .getElementById(
+                    "selectedBookTitle"
+                  )
+                  .textContent =
+                    book.title ||
+                    "Selected Book";
+
+                document
+                  .getElementById(
+                    "selectedBookChip"
+                  )
+                  .classList.add(
+                    "visible"
+                  );
+
                 closeModal(
-                  "shelfModal"
+                  "booksModal"
                 );
 
-                if (
-                  activeReadingSpot
-                ) {
-                  openReader();
-                } else {
-                  showToast(
-                    "Book selected! Walk to a chair or beanbag to read."
-                  );
-                }
+                showToast(
+                  "Book selected! Click a cozy seat to start reading."
+                );
               }
             );
 
-          bookGrid.appendChild(
+          grid.appendChild(
             card
           );
         }
       );
 
       openModal(
-        "shelfModal"
+        "booksModal"
       );
     }
 
-    function pagesForBook() {
-      const book =
-        selectedBook?.book ||
-        {};
-
-      if (
-        Array.isArray(
-          book.pages
-        ) &&
-        book.pages.length
-      ) {
-        return book.pages.map(
-          page =>
-            typeof page ===
-              "string"
-              ? page
-              : page.text
-        );
-      }
-
-      return [
-        `Welcome to ${
-          book.title ||
-          "this story"
-        }.`,
-        book.description ||
-          "A special reading adventure.",
-        ...fallbackPages
-      ];
-    }
-
-    function renderReaderPage() {
+    function renderReader() {
       if (
         !selectedBook
       ) {
         return;
       }
+
+      const book =
+        selectedBook.book ||
+        {};
 
       const pages =
         pagesForBook();
@@ -2237,10 +1743,6 @@
             1
           )
         );
-
-      const book =
-        selectedBook.book ||
-        {};
 
       document
         .getElementById(
@@ -2263,7 +1765,9 @@
           "readerText"
         )
         .textContent =
-          pages[currentPage];
+          pages[
+            currentPage
+          ];
 
       document
         .getElementById(
@@ -2279,7 +1783,7 @@
 
       document
         .getElementById(
-          "previousPageButton"
+          "previousButton"
         )
         .disabled =
           currentPage ===
@@ -2287,7 +1791,7 @@
 
       document
         .getElementById(
-          "nextPageButton"
+          "nextButton"
         )
         .disabled =
           currentPage >=
@@ -2309,7 +1813,7 @@
       currentPage =
         0;
 
-      renderReaderPage();
+      renderReader();
 
       openModal(
         "readerModal"
@@ -2324,7 +1828,7 @@
 
       list.replaceChildren();
 
-      passportCategories.forEach(
+      PASSPORT.forEach(
         item => {
           const complete =
             books.some(
@@ -2391,25 +1895,6 @@
               completed
             );
           }
-        );
-    }
-
-    function updateSecretDoor() {
-      const completed =
-        books.filter(
-          item =>
-            item.status ===
-            "completed"
-        ).length;
-
-      document
-        .getElementById(
-          "secretDoor"
-        )
-        .classList.toggle(
-          "unlocked",
-          completed >=
-          10
         );
     }
 
@@ -2614,7 +2099,6 @@
 
       renderPassport();
       renderStickers();
-      updateSecretDoor();
     }
 
     async function loadChildName() {
@@ -2648,400 +2132,17 @@
       }
     }
 
-    function interact(
-      item
-    ) {
-      if (
-        item.type ===
-        "shelf"
-      ) {
-        renderShelf(
-          item.category
-        );
-
-        return;
-      }
-
-      if (
-        item.type ===
-        "nova"
-      ) {
-        const completed =
-          books.filter(
-            book =>
-              book.status ===
-              "completed"
-          ).length;
-
-        document
-          .getElementById(
-            "novaMessage"
-          )
-          .textContent =
-            completed
-              ? `You have completed ${completed} book${completed === 1 ? "" : "s"}! Keep exploring. The Dragon Archives unlock after 10 completed books.`
-              : "Welcome! Choose a bookshelf, select a book, and then walk to a chair or beanbag to read.";
-
-        openModal(
-          "novaModal"
-        );
-
-        return;
-      }
-
-      if (
-        item.type ===
-        "seat"
-      ) {
-        activeReadingSpot =
-          item.id;
-
-        player.classList.add(
-          "seated"
-        );
-
-        if (
-          selectedBook
-        ) {
-          openReader();
-        } else {
-          showToast(
-            "This is a cozy reading spot. Choose a book from a shelf."
-          );
-        }
-
-        return;
-      }
-
-      if (
-        item.type ===
-        "passport"
-      ) {
-        renderPassport();
-
-        openModal(
-          "passportModal"
-        );
-
-        return;
-      }
-
-      if (
-        item.type ===
-        "stickers"
-      ) {
-        renderStickers();
-
-        openModal(
-          "stickersModal"
-        );
-
-        return;
-      }
-
-      if (
-        item.type ===
-        "secret"
-      ) {
-        const completed =
-          books.filter(
-            book =>
-              book.status ===
-              "completed"
-          ).length;
-
-        if (
-          completed <
-          10
-        ) {
-          showToast(
-            `Complete ${
-              10 -
-              completed
-            } more book${
-              10 -
-              completed ===
-              1
-                ? ""
-                : "s"
-            } to unlock the Dragon Archives.`
-          );
-
-          return;
-        }
-
-        showToast(
-          "The Dragon Archives are unlocked! This room is coming next. 🐉"
-        );
-      }
-    }
-
-    const obstacles = [
-      {
-        left: 4,
-        right: 25,
-        top: 25,
-        bottom: 58
-      },
-      {
-        left: 27,
-        right: 48,
-        top: 25,
-        bottom: 58
-      },
-      {
-        left: 52,
-        right: 73,
-        top: 25,
-        bottom: 58
-      },
-      {
-        left: 75,
-        right: 96,
-        top: 25,
-        bottom: 58
-      },
-      {
-        left: 39,
-        right: 61,
-        top: 8,
-        bottom: 31
-      },
-      {
-        left: 4,
-        right: 29,
-        top: 55,
-        bottom: 80
-      },
-      {
-        left: 73,
-        right: 98,
-        top: 75,
-        bottom: 96
-      }
-    ];
-
-    const interactables = [
-      {
-        id:
-          "story-shelf",
-        type:
-          "shelf",
-        category:
-          "story",
-        x:
-          14,
-        y:
-          62,
-        radius:
-          12,
-        icon:
-          "📖",
-        label:
-          "Browse Stories"
-      },
-      {
-        id:
-          "science-shelf",
-        type:
-          "shelf",
-        category:
-          "science",
-        x:
-          38,
-        y:
-          62,
-        radius:
-          12,
-        icon:
-          "🔬",
-        label:
-          "Browse Science"
-      },
-      {
-        id:
-          "math-shelf",
-        type:
-          "shelf",
-        category:
-          "math",
-        x:
-          62,
-        y:
-          62,
-        radius:
-          12,
-        icon:
-          "🧮",
-        label:
-          "Browse Math"
-      },
-      {
-        id:
-          "world-shelf",
-        type:
-          "shelf",
-        category:
-          "world",
-        x:
-          86,
-        y:
-          62,
-        radius:
-          12,
-        icon:
-          "🌍",
-        label:
-          "Browse World Books"
-      },
-      {
-        id:
-          "nova",
-        type:
-          "nova",
-        x:
-          50,
-        y:
-          35,
-        radius:
-          12,
-        icon:
-          "🦉",
-        label:
-          "Talk to Nova"
-      },
-      {
-        id:
-          "beanbag-one",
-        type:
-          "seat",
-        x:
-          35,
-        y:
-          86,
-        radius:
-          9,
-        icon:
-          "📖",
-        label:
-          "Read on Beanbag"
-      },
-      {
-        id:
-          "beanbag-two",
-        type:
-          "seat",
-        x:
-          65,
-        y:
-          86,
-        radius:
-          9,
-        icon:
-          "📖",
-        label:
-          "Read on Beanbag"
-      },
-      {
-        id:
-          "fire-chair-one",
-        type:
-          "seat",
-        x:
-          11,
-        y:
-          88,
-        radius:
-          10,
-        icon:
-          "🔥",
-        label:
-          "Read by Fireplace"
-      },
-      {
-        id:
-          "fire-chair-two",
-        type:
-          "seat",
-        x:
-          22,
-        y:
-          88,
-        radius:
-          10,
-        icon:
-          "🔥",
-        label:
-          "Read by Fireplace"
-      },
-      {
-        id:
-          "passport-table",
-        type:
-          "passport",
-        x:
-          83,
-        y:
-          84,
-        radius:
-          11,
-        icon:
-          "🗺️",
-        label:
-          "Open Reading Passport"
-      },
-      {
-        id:
-          "secret-door",
-        type:
-          "secret",
-        x:
-          92,
-        y:
-          23,
-        radius:
-          12,
-        icon:
-          "🚪",
-        label:
-          "Check Secret Door"
-      }
-    ];
-
-    const engine =
-      new WalkableBuildingEngine({
-        stage,
-        player,
-        obstacles,
-        interactables,
-        speed:
-          4.5,
-        onInteract:
-          interact
-      });
-
-    document
-      .getElementById(
-        "interactionButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          engine.interact();
-        }
-      );
-
     document
       .querySelectorAll(
-        "[data-close-modal]"
+        "[data-category]"
       )
       .forEach(
         button => {
           button.addEventListener(
             "click",
             () => {
-              closeModal(
-                button.dataset.closeModal
+              renderShelf(
+                button.dataset.category
               );
             }
           );
@@ -3049,30 +2150,209 @@
       );
 
     document
-      .querySelectorAll(
-        ".modal"
+      .getElementById(
+        "novaHotspot"
       )
-      .forEach(
-        modal => {
-          modal.addEventListener(
-            "click",
-            event => {
-              if (
-                event.target ===
-                modal
-              ) {
-                modal.classList.remove(
-                  "visible"
-                );
-              }
-            }
+      .addEventListener(
+        "click",
+        () => {
+          const completed =
+            books.filter(
+              item =>
+                item.status ===
+                "completed"
+            ).length;
+
+          document
+            .getElementById(
+              "novaMessage"
+            )
+            .textContent =
+              completed
+                ? `You have completed ${completed} book${completed === 1 ? "" : "s"}! Keep exploring. The Dragon Archives unlock after 10 completed books.`
+                : "Welcome! Choose a bookshelf, pick a book, then click a cozy seat to begin reading.";
+
+          openModal(
+            "novaModal"
           );
         }
       );
 
     document
       .getElementById(
-        "previousPageButton"
+        "cozyHotspot"
+      )
+      .addEventListener(
+        "click",
+        openReader
+      );
+
+    document
+      .getElementById(
+        "centerSeatHotspot"
+      )
+      .addEventListener(
+        "click",
+        openReader
+      );
+
+    document
+      .getElementById(
+        "passportHotspot"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          renderPassport();
+
+          openModal(
+            "passportModal"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "passportTopButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          renderPassport();
+
+          openModal(
+            "passportModal"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "stickerHotspot"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          renderStickers();
+
+          openModal(
+            "stickersModal"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "stickersTopButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          renderStickers();
+
+          openModal(
+            "stickersModal"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "secretHotspot"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          const completed =
+            books.filter(
+              item =>
+                item.status ===
+                "completed"
+            ).length;
+
+          document
+            .getElementById(
+              "infoTitle"
+            )
+            .textContent =
+              "🐉 Dragon Archives";
+
+          document
+            .getElementById(
+              "infoCopy"
+            )
+            .textContent =
+              completed >=
+              10
+                ? "The Dragon Archives are unlocked! The hidden room can be added as the next Library expansion."
+                : `Complete ${
+                    10 -
+                    completed
+                  } more book${
+                    10 -
+                    completed ===
+                    1
+                      ? ""
+                      : "s"
+                  } to unlock the Dragon Archives.`;
+
+          openModal(
+            "infoModal"
+          );
+        }
+      );
+
+    document
+      .getElementById(
+        "questHotspot"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "quests.html";
+        }
+      );
+
+    document
+      .getElementById(
+        "questsTopButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "quests.html";
+        }
+      );
+
+    document
+      .getElementById(
+        "exitHotspot"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "my-city.html";
+        }
+      );
+
+    document
+      .getElementById(
+        "worldTopButton"
+      )
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "my-city.html";
+        }
+      );
+
+    document
+      .getElementById(
+        "previousButton"
       )
       .addEventListener(
         "click",
@@ -3080,13 +2360,13 @@
           currentPage -=
             1;
 
-          renderReaderPage();
+          renderReader();
         }
       );
 
     document
       .getElementById(
-        "nextPageButton"
+        "nextButton"
       )
       .addEventListener(
         "click",
@@ -3094,7 +2374,7 @@
           currentPage +=
             1;
 
-          renderReaderPage();
+          renderReader();
         }
       );
 
@@ -3131,7 +2411,7 @@
             );
 
           speech.rate =
-            .9;
+            .88;
 
           speech.pitch =
             1.05;
@@ -3145,7 +2425,7 @@
 
     document
       .getElementById(
-        "finishReadingButton"
+        "finishButton"
       )
       .addEventListener(
         "click",
@@ -3166,56 +2446,41 @@
       );
 
     document
-      .getElementById(
-        "passportButton"
+      .querySelectorAll(
+        "[data-close]"
       )
-      .addEventListener(
-        "click",
-        () => {
-          renderPassport();
-
-          openModal(
-            "passportModal"
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              closeModal(
+                button.dataset.close
+              );
+            }
           );
         }
       );
 
     document
-      .getElementById(
-        "stickersButton"
+      .querySelectorAll(
+        ".modal"
       )
-      .addEventListener(
-        "click",
-        () => {
-          renderStickers();
-
-          openModal(
-            "stickersModal"
+      .forEach(
+        modal => {
+          modal.addEventListener(
+            "click",
+            event => {
+              if (
+                event.target ===
+                modal
+              ) {
+                closeModal(
+                  modal.id
+                );
+              }
+            }
           );
-        }
-      );
-
-    document
-      .getElementById(
-        "questsButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "quests.html";
-        }
-      );
-
-    document
-      .getElementById(
-        "backButton"
-      )
-      .addEventListener(
-        "click",
-        () => {
-          window.location.href =
-            "my-city.html";
         }
       );
 
@@ -3244,17 +2509,16 @@
         await completeGameAction({
           questKey:
             "story_visit_library",
+
           questAmount:
             1
         });
-
-        engine.start();
 
       } catch (
         error
       ) {
         console.error(
-          "Walkable Library initialization error:",
+          "Interactive Library initialization error:",
           error
         );
 
