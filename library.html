@@ -11,7 +11,7 @@
 
   <title>ELCraft Interactive Library</title>
 
-  <!-- ELCraft interactive library build: clickable-v3 -->
+  <!-- ELCraft interactive library build: flying-book-v4 -->
 
   <link
     rel="preload"
@@ -419,6 +419,113 @@
       color: var(--muted);
       font-size: 9px;
       font-weight: 800;
+    }
+
+
+    .flying-book {
+      position: fixed;
+      z-index: 950;
+
+      width: 74px;
+      height: 96px;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      border: 6px solid #4e3ca6;
+      border-radius: 12px;
+
+      color: white;
+      background:
+        linear-gradient(
+          145deg,
+          #8a69e6,
+          #5a3db4
+        );
+
+      box-shadow:
+        0 14px 28px rgba(35,20,70,.35);
+
+      font-size: 40px;
+
+      pointer-events: none;
+
+      transform:
+        translate(-50%,-50%)
+        scale(.72)
+        rotate(-8deg);
+
+      transition:
+        left 1.15s cubic-bezier(.25,.8,.25,1),
+        top 1.15s cubic-bezier(.25,.8,.25,1),
+        transform 1.15s cubic-bezier(.25,.8,.25,1),
+        opacity .2s ease;
+    }
+
+    .flying-book.visible {
+      display: flex;
+    }
+
+    .flying-book.opening {
+      transform:
+        translate(-50%,-50%)
+        scale(1.18)
+        rotate(0deg);
+    }
+
+    .reading-nook-glow {
+      position: absolute;
+      left: 25%;
+      top: 69%;
+      z-index: 8;
+
+      width: 44%;
+      height: 28%;
+
+      display: none;
+
+      border: 6px solid rgba(255,226,91,.95);
+      border-radius: 48%;
+
+      background:
+        radial-gradient(
+          circle,
+          rgba(255,245,167,.28),
+          rgba(255,221,82,.08) 60%,
+          transparent 72%
+        );
+
+      box-shadow:
+        0 0 30px rgba(255,224,92,.7),
+        0 0 70px rgba(255,209,73,.36);
+
+      pointer-events: none;
+
+      animation:
+        nookGlowPulse
+        .7s ease-in-out
+        infinite alternate;
+    }
+
+    .reading-nook-glow.visible {
+      display: block;
+    }
+
+    .library-busy .hotspot {
+      pointer-events: none;
+    }
+
+    @keyframes nookGlowPulse {
+      from {
+        opacity: .55;
+        transform: scale(.97);
+      }
+
+      to {
+        opacity: 1;
+        transform: scale(1.03);
+      }
     }
 
     .modal {
@@ -976,6 +1083,20 @@
           aria-label="Open Today's Quest">
         </button>
 
+
+        <div
+          id="readingNookGlow"
+          class="reading-nook-glow"
+          aria-hidden="true">
+        </div>
+
+        <div
+          id="flyingBook"
+          class="flying-book"
+          aria-hidden="true">
+          📖
+        </div>
+
         <div
           id="selectedBookChip"
           class="selected-book-chip">
@@ -1001,7 +1122,7 @@
         </div>
 
         <div class="floating-tip">
-          💡 Click a bookshelf to explore books. Pick one, then click a cozy seat to start reading.
+          💡 Click a bookshelf and choose a book. It will fly to the cozy nook and open automatically.
         </div>
 
       </section>
@@ -1516,6 +1637,7 @@
     let books = [...FALLBACK_BOOKS];
     let selectedBook = null;
     let currentPage = 0;
+    let bookAnimationRunning = false;
     let connectedLibrary = null;
     let connectedLogReading = null;
     let selectedChildId = localStorage.getItem("elcraft_selected_child_id");
@@ -1629,7 +1751,11 @@
       openModal("booksModal");
     }
 
-    function selectBook(book) {
+    function selectBook(book, category) {
+      if (bookAnimationRunning) {
+        return;
+      }
+
       selectedBook = book;
 
       document.getElementById("selectedBookEmoji").textContent =
@@ -1644,8 +1770,137 @@
 
       closeModal("booksModal");
 
+      animateBookToReadingNook(
+        category,
+        book
+      );
+    }
+
+    function animateBookToReadingNook(category, book) {
+      bookAnimationRunning = true;
+
+      document.body.classList.add(
+        "library-busy"
+      );
+
+      const source =
+        document.querySelector(
+          `[data-category="${category}"]`
+        );
+
+      const destination =
+        document.getElementById(
+          "centerSeatHotspot"
+        );
+
+      const flyingBook =
+        document.getElementById(
+          "flyingBook"
+        );
+
+      const nookGlow =
+        document.getElementById(
+          "readingNookGlow"
+        );
+
+      const sourceRect =
+        source.getBoundingClientRect();
+
+      const destinationRect =
+        destination.getBoundingClientRect();
+
+      const startX =
+        sourceRect.left +
+        sourceRect.width / 2;
+
+      const startY =
+        sourceRect.top +
+        sourceRect.height * .48;
+
+      const endX =
+        destinationRect.left +
+        destinationRect.width / 2;
+
+      const endY =
+        destinationRect.top +
+        destinationRect.height * .42;
+
+      flyingBook.textContent =
+        book.emoji ||
+        "📖";
+
+      flyingBook.style.left =
+        `${startX}px`;
+
+      flyingBook.style.top =
+        `${startY}px`;
+
+      flyingBook.style.opacity =
+        "1";
+
+      flyingBook.classList.remove(
+        "opening"
+      );
+
+      flyingBook.classList.add(
+        "visible"
+      );
+
       showToast(
-        `${book.title} selected! Click a cozy seat to start reading.`
+        `Great choice! ${book.title} is flying to the cozy nook.`
+      );
+
+      window.requestAnimationFrame(
+        () => {
+          window.requestAnimationFrame(
+            () => {
+              flyingBook.style.left =
+                `${endX}px`;
+
+              flyingBook.style.top =
+                `${endY}px`;
+
+              flyingBook.classList.add(
+                "opening"
+              );
+
+              nookGlow.classList.add(
+                "visible"
+              );
+            }
+          );
+        }
+      );
+
+      window.setTimeout(
+        () => {
+          flyingBook.style.opacity =
+            "0";
+        },
+        1120
+      );
+
+      window.setTimeout(
+        () => {
+          flyingBook.classList.remove(
+            "visible",
+            "opening"
+          );
+
+          nookGlow.classList.remove(
+            "visible"
+          );
+
+          document.body.classList.remove(
+            "library-busy"
+          );
+
+          bookAnimationRunning =
+            false;
+
+          openReader();
+        },
+        1380
       );
     }
 
