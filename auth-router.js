@@ -1,60 +1,26 @@
 /*
   ELCraft authentication router
-  Rename this file to: auth-router.js
+  File name: auth-router.js
 
-  Add this to protected parent pages:
-
-  <script type="module">
-    import { routeAuthenticatedParent } from "./auth-router.js";
-    routeAuthenticatedParent();
-  </script>
+  This router uses the existing:
+    - supabase-client.js
+    - family_members table
+    - parent-dashboard.html
+    - accept-invite.html
 */
 
 import {
-  createClient
-} from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+  supabase
+} from "./supabase-client.js";
 
-import {
-  SUPABASE_URL,
-  SUPABASE_ANON_KEY
-} from "./supabase-settings.js";
-
-export const supabase =
-  createClient(
-    SUPABASE_URL,
-    SUPABASE_ANON_KEY,
-    {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true
-      }
-    }
-  );
-
-const ROUTES = {
-  login:
-    "index.html",
-
-  onboarding:
-    "accept-invite.html",
-
-  ownerDashboard:
-    "parent-dashboard.html",
-
-  invitedParentDashboard:
-    "parent-dashboard.html"
+export const AUTH_ROUTES = {
+  login: "auth.html",
+  inviteSetup: "accept-invite.html",
+  dashboard: "parent-dashboard.html",
+  resetPassword: "reset-password.html"
 };
 
-function samePage(fileName) {
-  return window.location.pathname
-    .toLowerCase()
-    .endsWith(
-      `/${fileName.toLowerCase()}`
-    );
-}
-
-export async function getCurrentUser() {
+export async function getSignedInUser() {
   const {
     data,
     error
@@ -65,10 +31,10 @@ export async function getCurrentUser() {
     throw error;
   }
 
-  return data.user;
+  return data.user || null;
 }
 
-export async function getParentProfile(
+export async function getActiveMemberships(
   userId
 ) {
   const {
@@ -76,214 +42,167 @@ export async function getParentProfile(
     error
   } =
     await supabase
-      .from(
-        "parent_profiles"
-      )
+      .from("family_members")
       .select(
-        `
-          id,
-          user_id,
-          display_name,
-          relationship,
-          onboarding_complete,
-          is_family_owner,
-          created_at,
-          updated_at
-        `
+        "id, family_id, user_id, member_role, relationship, status, display_name, email"
       )
-      .eq(
-        "user_id",
-        userId
-      )
-      .maybeSingle();
+      .eq("user_id", userId)
+      .eq("status", "active");
 
   if (error) {
     throw error;
   }
 
-  return data;
+  return data || [];
 }
 
-export async function getFamilyMembership(
-  userId
+export function chooseMembership(
+  memberships
 ) {
-  const {
-    data,
-    error
-  } =
-    await supabase
-      .from(
-        "family_memberships"
-      )
-      .select(
-        `
-          id,
-          family_id,
-          user_id,
-          role,
-          status,
-          joined_at
-        `
-      )
-      .eq(
-        "user_id",
-        userId
-      )
-      .eq(
-        "status",
-        "active"
-      )
-      .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
+  return (
+    memberships.find(
+      membership =>
+        membership.member_role === "owner"
+    ) ||
+    memberships[0] ||
+    null
+  );
 }
 
-export async function routeAuthenticatedParent({
-  redirect = true
-} = {}) {
-  try {
-    const user =
-      await getCurrentUser();
+export function passwordSetupRequired(
+  user,
+  membership
+) {
+  if (!user || !membership) {
+    return false;
+  }
 
-    if (!user) {
-      if (
-        redirect &&
-        !samePage(
-          ROUTES.login
-        )
-      ) {
-        window.location.replace(
-          ROUTES.login
-        );
-      }
+  /*
+    Existing family owners may predate the password_set metadata.
+    Invited adults must have the marker before entering ELCraft.
+  */
+  if (
+    membership.member_role ===
+    "owner"
+  ) {
+    return false;
+  }
 
-      return {
-        user: null,
-        profile: null,
-        membership: null,
-        destination:
-          ROUTES.login
-      };
-    }
+  return (
+    user.user_metadata
+      ?.password_set !==
+    true
+  );
+}
 
-    const [
-      profile,
-      membership
-    ] =
-      await Promise.all([
-        getParentProfile(
-          user.id
-        ),
+export async function resolveAuthenticatedRoute() {
+  const user =
+    await getSignedInUser();
 
-        getFamilyMembership(
-          user.id
-        )
-      ]);
-
-    const passwordIsSet =
-      user.user_metadata
-        ?.password_set ===
-      true;
-
-    const needsOnboarding =
-      !passwordIsSet ||
-      !profile ||
-      profile.onboarding_complete !==
-        true ||
-      !membership;
-
-    if (
-      needsOnboarding
-    ) {
-      if (
-        redirect &&
-        !samePage(
-          ROUTES.onboarding
-        )
-      ) {
-        window.location.replace(
-          ROUTES.onboarding
-        );
-      }
-
-      return {
-        user,
-        profile,
-        membership,
-        destination:
-          ROUTES.onboarding
-      };
-    }
-
-    const destination =
-      profile.is_family_owner
-        ? ROUTES.ownerDashboard
-        : ROUTES.invitedParentDashboard;
-
-    if (
-      redirect &&
-      (
-        samePage(
-          ROUTES.login
-        ) ||
-        samePage(
-          ROUTES.onboarding
-        )
-      )
-    ) {
-      window.location.replace(
-        destination
-      );
-    }
-
-    return {
-      user,
-      profile,
-      membership,
-      destination
-    };
-
-  } catch (error) {
-    console.error(
-      "ELCraft auth routing error:",
-      error
-    );
-
-    if (
-      redirect &&
-      !samePage(
-        ROUTES.login
-      )
-    ) {
-      const url =
-        new URL(
-          ROUTES.login,
-          window.location.href
-        );
-
-      url.searchParams.set(
-        "auth_error",
-        "routing_failed"
-      );
-
-      window.location.replace(
-        url.toString()
-      );
-    }
-
+  if (!user) {
     return {
       user: null,
-      profile: null,
+      memberships: [],
       membership: null,
       destination:
-        ROUTES.login,
-      error
+        AUTH_ROUTES.login
     };
   }
+
+  const memberships =
+    await getActiveMemberships(
+      user.id
+    );
+
+  const membership =
+    chooseMembership(
+      memberships
+    );
+
+  if (!membership) {
+    return {
+      user,
+      memberships,
+      membership: null,
+      destination:
+        AUTH_ROUTES.dashboard
+    };
+  }
+
+  if (
+    passwordSetupRequired(
+      user,
+      membership
+    )
+  ) {
+    return {
+      user,
+      memberships,
+      membership,
+      destination:
+        AUTH_ROUTES.inviteSetup
+    };
+  }
+
+  return {
+    user,
+    memberships,
+    membership,
+    destination:
+      AUTH_ROUTES.dashboard
+  };
+}
+
+export async function routeSignedInUser({
+  replace = true
+} = {}) {
+  const result =
+    await resolveAuthenticatedRoute();
+
+  const method =
+    replace
+      ? "replace"
+      : "assign";
+
+  window.location[method](
+    result.destination
+  );
+
+  return result;
+}
+
+export async function requireParentAccess() {
+  const result =
+    await resolveAuthenticatedRoute();
+
+  const page =
+    window.location.pathname
+      .split("/")
+      .pop()
+      .toLowerCase();
+
+  if (!result.user) {
+    window.location.replace(
+      AUTH_ROUTES.login
+    );
+
+    return null;
+  }
+
+  if (
+    result.destination ===
+      AUTH_ROUTES.inviteSetup &&
+    page !==
+      AUTH_ROUTES.inviteSetup
+  ) {
+    window.location.replace(
+      `${AUTH_ROUTES.inviteSetup}?required=1`
+    );
+
+    return null;
+  }
+
+  return result;
 }
 
 export async function signOutParent() {
@@ -296,7 +215,15 @@ export async function signOutParent() {
     throw error;
   }
 
+  [
+    "elcraft_selected_child_id",
+    "elcraft_child_name",
+    "elcraft_child_avatar"
+  ].forEach(key => {
+    localStorage.removeItem(key);
+  });
+
   window.location.replace(
-    ROUTES.login
+    AUTH_ROUTES.login
   );
 }
