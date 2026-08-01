@@ -9,7 +9,13 @@
 
   <meta name="theme-color" content="#7259d6">
 
+  <meta http-equiv="Cache-Control" content="no-store, no-cache, must-revalidate">
+  <meta http-equiv="Pragma" content="no-cache">
+  <meta http-equiv="Expires" content="0">
+
   <title>ELCraft — Set Up Parent Profile</title>
+
+  <!-- ELCraft onboarding build: password-fix-v2 -->
 
   <style>
     * {
@@ -942,11 +948,6 @@
             "";
 
         hideLoading();
-
-        const passwordIsSet =
-          currentUser.user_metadata
-            ?.password_set ===
-          true;
 
         if (
           !passwordIsSet
