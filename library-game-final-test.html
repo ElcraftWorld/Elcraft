@@ -1,0 +1,2167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#4b2d73">
+  <title>ELCraft Library — Final Game Test</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.85.0/dist/phaser.min.js"></script>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #2f1c48;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    #game {
+      position: fixed;
+      inset: 0;
+    }
+
+    #game canvas {
+      display: block;
+    }
+
+    .hud {
+      position: fixed;
+      inset: 0 0 auto 0;
+      z-index: 30;
+
+      min-height: 68px;
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      padding:
+        10px
+        max(14px, env(safe-area-inset-right))
+        10px
+        max(14px, env(safe-area-inset-left));
+
+      color: white;
+
+      background:
+        linear-gradient(
+          180deg,
+          rgba(87,54,146,.98),
+          rgba(55,31,99,.96)
+        );
+
+      box-shadow: 0 7px 0 rgba(30,18,58,.27);
+    }
+
+    .hud-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+
+    .hud-icon {
+      font-size: 36px;
+    }
+
+    .hud h1 {
+      margin: 0;
+      font-size: clamp(20px,3vw,31px);
+      line-height: 1;
+    }
+
+    .hud p {
+      margin: 4px 0 0;
+      color: rgba(255,255,255,.78);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .hud-actions {
+      display: flex;
+      gap: 8px;
+    }
+
+    .hud-button {
+      min-height: 43px;
+      border: 3px solid rgba(255,255,255,.76);
+      border-radius: 14px;
+      padding: 9px 12px;
+
+      color: white;
+      background: rgba(255,255,255,.12);
+
+      font: 1000 11px Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+
+    .hint {
+      position: fixed;
+      left: 50%;
+      top: 80px;
+      z-index: 25;
+
+      transform: translateX(-50%);
+
+      width: min(640px, calc(100vw - 24px));
+
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 9px 15px;
+
+      color: #4c358e;
+      background: rgba(255,255,255,.95);
+
+      box-shadow: 0 9px 20px rgba(44,29,77,.21);
+
+      font-size: 11px;
+      font-weight: 1000;
+      text-align: center;
+
+      transition:
+        opacity .25s ease,
+        transform .25s ease;
+
+      pointer-events: none;
+    }
+
+    .hint.hidden {
+      opacity: 0;
+      transform: translate(-50%,-12px);
+    }
+
+    .action-wrap {
+      position: fixed;
+      left: 50%;
+      bottom: max(22px, env(safe-area-inset-bottom));
+      z-index: 40;
+
+      display: none;
+      transform: translateX(-50%);
+    }
+
+    .action-wrap.visible {
+      display: block;
+    }
+
+    .action-button {
+      min-width: 220px;
+      min-height: 56px;
+
+      border: 5px solid white;
+      border-radius: 999px;
+      padding: 11px 20px;
+
+      color: white;
+      background:
+        linear-gradient(
+          145deg,
+          #805fe5,
+          #a47af1
+        );
+
+      box-shadow:
+        0 8px 0 #4c358e,
+        0 16px 28px rgba(42,27,78,.31);
+
+      font: 1000 14px Arial, Helvetica, sans-serif;
+      cursor: pointer;
+
+      animation: pulse 1.45s ease-in-out infinite;
+    }
+
+    .mobile-pad {
+      position: fixed;
+      left: max(14px, env(safe-area-inset-left));
+      bottom: max(14px, env(safe-area-inset-bottom));
+      z-index: 38;
+
+      width: 142px;
+      height: 142px;
+
+      display: none;
+
+      border: 4px solid rgba(255,255,255,.5);
+      border-radius: 50%;
+
+      background: rgba(59,38,99,.3);
+      backdrop-filter: blur(6px);
+    }
+
+    .dir {
+      position: absolute;
+
+      width: 48px;
+      height: 48px;
+
+      display: grid;
+      place-items: center;
+
+      border: 4px solid white;
+      border-radius: 16px;
+
+      color: white;
+      background: rgba(125,92,225,.94);
+
+      font: 1000 20px Arial, Helvetica, sans-serif;
+
+      touch-action: none;
+      user-select: none;
+    }
+
+    .up { left: 47px; top: 4px; }
+    .down { left: 47px; bottom: 4px; }
+    .left { left: 4px; top: 47px; }
+    .right { right: 4px; top: 47px; }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 18px;
+
+      background: rgba(28,17,54,.7);
+      backdrop-filter: blur(9px);
+    }
+
+    .modal.visible {
+      display: flex;
+    }
+
+    .panel {
+      width: min(900px,100%);
+      max-height: min(88vh,780px);
+      overflow: auto;
+
+      border: 6px solid white;
+      border-radius: 30px;
+      padding: 20px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f8efff,
+          #fff9e9
+        );
+
+      box-shadow: 0 28px 72px rgba(26,17,49,.4);
+    }
+
+    .panel.small {
+      width: min(560px,100%);
+    }
+
+    .panel-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .panel h2 {
+      margin: 0;
+      color: #4e3ca6;
+      font-size: clamp(24px,4vw,35px);
+    }
+
+    .close {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+
+      color: white;
+      background: #7758df;
+
+      font-size: 22px;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .books {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 14px;
+    }
+
+    .book-choice {
+      border: 4px solid white;
+      border-radius: 22px;
+      padding: 14px;
+      background: white;
+
+      box-shadow:
+        0 10px 0 rgba(75,53,120,.08),
+        0 18px 30px rgba(48,32,86,.14);
+    }
+
+    .cover {
+      min-height: 155px;
+
+      display: grid;
+      place-items: center;
+
+      border-radius: 18px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #d8c8ff,
+          #fff0b8
+        );
+
+      font-size: 88px;
+    }
+
+    .book-choice h3 {
+      margin: 10px 0 5px;
+      color: #4e3ca6;
+    }
+
+    .book-choice p {
+      min-height: 48px;
+      margin: 0;
+
+      color: #727895;
+      font-size: 11px;
+      font-weight: 800;
+      line-height: 1.45;
+    }
+
+    .choose,
+    .reader-control {
+      width: 100%;
+
+      margin-top: 11px;
+      border: 0;
+      border-radius: 14px;
+      padding: 11px;
+
+      color: white;
+      background: #7758df;
+
+      font: 1000 11px Arial, Helvetica, sans-serif;
+      cursor: pointer;
+    }
+
+    .reader-layout {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .page {
+      min-height: 380px;
+
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+
+      border: 3px solid #d8c7a8;
+      padding: 24px;
+
+      background: #fffdf6;
+    }
+
+    .page.left-page {
+      border-radius: 22px 5px 5px 22px;
+    }
+
+    .page.right-page {
+      border-radius: 5px 22px 22px 5px;
+    }
+
+    .story-emoji {
+      font-size: 122px;
+    }
+
+    .story-copy {
+      color: #554b60;
+      font-size: 19px;
+      font-weight: 800;
+      line-height: 1.75;
+      text-align: center;
+    }
+
+    .reader-buttons {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 9px;
+      margin-top: 14px;
+    }
+
+    .reader-buttons .reader-control {
+      margin-top: 0;
+      color: #4e3ca6;
+      background: #efeaff;
+    }
+
+    .reader-buttons .reader-control.primary {
+      color: white;
+      background: #7758df;
+    }
+
+    .nova-box {
+      border: 4px solid #e8ddff;
+      border-radius: 20px;
+      padding: 18px;
+
+      color: #4e3ca6;
+      background: white;
+
+      font-size: 15px;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .toast {
+      position: fixed;
+      right: 18px;
+      bottom: 92px;
+      z-index: 120;
+
+      display: none;
+      max-width: 360px;
+
+      border: 4px solid white;
+      border-radius: 18px;
+      padding: 14px 16px;
+
+      color: white;
+      background: #4e3ca6;
+
+      box-shadow: 0 14px 30px rgba(34,23,65,.32);
+
+      font-size: 12px;
+      font-weight: 1000;
+    }
+
+    .toast.visible {
+      display: block;
+    }
+
+    @keyframes pulse {
+      0%,
+      100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    @media (pointer: coarse), (max-width: 850px) {
+      .mobile-pad { display: block; }
+    }
+
+    @media (max-width: 700px) {
+      .hud-actions { display: none; }
+      .hud p { display: none; }
+
+      .hint {
+        top: 76px;
+        font-size: 9px;
+      }
+
+      .books {
+        grid-template-columns: 1fr;
+      }
+
+      .reader-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .page.left-page,
+      .page.right-page {
+        border-radius: 18px;
+      }
+
+      .reader-buttons {
+        grid-template-columns: repeat(2,minmax(0,1fr));
+      }
+
+      .action-button {
+        min-width: 185px;
+        min-height: 50px;
+        font-size: 12px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="game"></div>
+
+  <header class="hud">
+
+    <div class="hud-brand">
+      <div class="hud-icon">📚</div>
+
+      <div>
+        <h1>ELCraft Library — Final Test</h1>
+        <p id="playerName">Playable Library corner</p>
+      </div>
+    </div>
+
+    <div class="hud-actions">
+      <button id="currentLibrary" class="hud-button" type="button">
+        Current Library
+      </button>
+
+      <button id="myWorld" class="hud-button" type="button">
+        My World
+      </button>
+    </div>
+
+  </header>
+
+  <div id="hint" class="hint">
+    Walk to Nova or the sparkling shelf. Pick a book, then carry it to the beanbag and sit down.
+  </div>
+
+  <div id="actionWrap" class="action-wrap">
+    <button id="actionButton" class="action-button" type="button">
+      ✨ Interact
+    </button>
+  </div>
+
+  <div class="mobile-pad">
+
+    <button class="dir up" data-direction="up" type="button">▲</button>
+    <button class="dir down" data-direction="down" type="button">▼</button>
+    <button class="dir left" data-direction="left" type="button">◀</button>
+    <button class="dir right" data-direction="right" type="button">▶</button>
+
+  </div>
+
+  <section id="booksModal" class="modal" role="dialog" aria-modal="true">
+    <div class="panel">
+
+      <div class="panel-top">
+        <h2>Choose a Book</h2>
+
+        <button class="close" data-close="booksModal" type="button">
+          ×
+        </button>
+      </div>
+
+      <div id="books" class="books"></div>
+
+    </div>
+  </section>
+
+  <section id="readerModal" class="modal" role="dialog" aria-modal="true">
+    <div class="panel">
+
+      <div class="panel-top">
+        <h2 id="readerTitle">Reading Adventure</h2>
+
+        <button class="close" data-close="readerModal" type="button">
+          ×
+        </button>
+      </div>
+
+      <div class="reader-layout">
+
+        <div class="page left-page">
+          <div id="storyEmoji" class="story-emoji">📖</div>
+          <div id="pageLabel">Page 1</div>
+        </div>
+
+        <div class="page right-page">
+          <div id="storyCopy" class="story-copy">
+            Every adventure begins with one page.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="reader-buttons">
+
+        <button id="previousPage" class="reader-control" type="button">
+          ← Previous
+        </button>
+
+        <button id="readToMe" class="reader-control" type="button">
+          🔊 Read to Me
+        </button>
+
+        <button id="nextPage" class="reader-control" type="button">
+          Next →
+        </button>
+
+        <button id="finishBook" class="reader-control primary" type="button">
+          Finish Book
+        </button>
+
+      </div>
+
+    </div>
+  </section>
+
+  <section id="novaModal" class="modal" role="dialog" aria-modal="true">
+    <div class="panel small">
+
+      <div class="panel-top">
+        <h2>🦉 Nova</h2>
+
+        <button class="close" data-close="novaModal" type="button">
+          ×
+        </button>
+      </div>
+
+      <div class="nova-box">
+        Hi! This is a smaller, more polished ELCraft game test.
+        Walk to the glowing shelf, choose a book, carry it to the beanbag,
+        and sit down. Watch the shelf, book, character, camera, and furniture
+        react instead of acting like plain webpage buttons.
+      </div>
+
+    </div>
+  </section>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script>
+    const CHILD_NAME =
+      localStorage.getItem("elcraft_child_name") ||
+      "Player";
+
+    document
+      .getElementById("playerName")
+      .textContent =
+        `${CHILD_NAME}'s playable Library corner`;
+
+    const BOOKS = [
+      {
+        id: "moon-garden",
+        title: "The Moon Garden",
+        emoji: "🌙",
+        description: "A secret garden wakes up when the moon begins to glow.",
+        coverColor: 0x8a68dc,
+        pages: [
+          "Mina found a silver gate at the end of the garden path.",
+          "When moonlight touched the gate, tiny flowers opened their eyes.",
+          "A sleepy rabbit showed Mina a trail made of sparkling stones.",
+          "Together they planted one last star-shaped seed before sunrise.",
+          "The garden whispered, “Come back whenever you need a little wonder.”"
+        ]
+      },
+      {
+        id: "rocket-friends",
+        title: "Rocket Friends",
+        emoji: "🚀",
+        description: "Two friends discover that teamwork makes their rocket fly.",
+        coverColor: 0x4bb9df,
+        pages: [
+          "Kai drew the rocket while Nia collected boxes, tape, and shiny buttons.",
+          "The first launch tipped sideways, but nobody gave up.",
+          "They listened to each other and rebuilt the wings together.",
+          "This time the rocket lifted above the clouds.",
+          "Their greatest discovery was that good teammates help every idea soar."
+        ]
+      },
+      {
+        id: "brave-fox",
+        title: "The Brave Little Fox",
+        emoji: "🦊",
+        description: "A little fox learns that bravery can be quiet.",
+        coverColor: 0xe88743,
+        pages: [
+          "Finn heard a tiny sound beside the river.",
+          "A duckling was caught behind a fallen branch.",
+          "Finn felt nervous, but he took one careful step at a time.",
+          "He moved the branch and guided the duckling home.",
+          "Finn learned that being brave means helping even when your paws shake."
+        ]
+      }
+    ];
+
+    const state = {
+      scene: null,
+      player: null,
+      nearby: null,
+      selectedBook: null,
+      currentPage: 0,
+      carriedBook: null,
+      sitting: false,
+      mobile: {
+        up: false,
+        down: false,
+        left: false,
+        right: false
+      }
+    };
+
+    function showToast(message) {
+      const toast =
+        document.getElementById("toast");
+
+      toast.textContent =
+        message;
+
+      toast.classList.add("visible");
+
+      clearTimeout(toast._timer);
+
+      toast._timer =
+        setTimeout(
+          () => {
+            toast.classList.remove("visible");
+          },
+          2800
+        );
+    }
+
+    function showAction(label) {
+      document
+        .getElementById("actionButton")
+        .textContent =
+          label;
+
+      document
+        .getElementById("actionWrap")
+        .classList
+        .add("visible");
+    }
+
+    function hideAction() {
+      document
+        .getElementById("actionWrap")
+        .classList
+        .remove("visible");
+    }
+
+    function openModal(id) {
+      document
+        .getElementById(id)
+        .classList
+        .add("visible");
+
+      state.scene?.physics.world.pause();
+    }
+
+    function closeModal(id) {
+      document
+        .getElementById(id)
+        .classList
+        .remove("visible");
+
+      state.scene?.physics.world.resume();
+    }
+
+    function hideHint() {
+      document
+        .getElementById("hint")
+        .classList
+        .add("hidden");
+    }
+
+    function svgTexture(scene, key, svg, width, height) {
+      const url =
+        "data:image/svg+xml;charset=utf-8," +
+        encodeURIComponent(svg);
+
+      return new Promise(resolve => {
+        scene.load.svg(key, url, {
+          width,
+          height
+        });
+
+        scene.load.once(
+          `filecomplete-svg-${key}`,
+          () => resolve()
+        );
+      });
+    }
+
+    class LibraryFinalScene extends Phaser.Scene {
+
+      constructor() {
+        super("LibraryFinalScene");
+      }
+
+      preload() {
+        const avatarSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="120" height="190">
+            <defs>
+              <linearGradient id="shirt" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#9c7cf4"/>
+                <stop offset="1" stop-color="#6345bd"/>
+              </linearGradient>
+            </defs>
+
+            <ellipse cx="60" cy="182" rx="34" ry="7" fill="#352447" opacity=".22"/>
+
+            <path d="M25 51 Q15 20 31 10 Q56 -5 84 12 Q104 26 95 62 Q88 43 60 41 Q37 42 25 51Z"
+                  fill="#382843"/>
+
+            <circle cx="60" cy="54" r="31" fill="#b97b58" stroke="#6a493e" stroke-width="5"/>
+
+            <path d="M30 48 Q38 17 60 17 Q85 18 94 50 Q82 36 60 35 Q43 35 30 48Z"
+                  fill="#34253f"/>
+
+            <circle cx="49" cy="54" r="4" fill="#2b2531"/>
+            <circle cx="72" cy="54" r="4" fill="#2b2531"/>
+
+            <path d="M49 69 Q60 78 72 68"
+                  fill="none"
+                  stroke="#6c3d43"
+                  stroke-width="4"
+                  stroke-linecap="round"/>
+
+            <rect x="29" y="84" width="62" height="65" rx="22"
+                  fill="url(#shirt)"
+                  stroke="#4d3598"
+                  stroke-width="5"/>
+
+            <circle cx="60" cy="109" r="9" fill="#ffd55f"/>
+
+            <rect x="16" y="93" width="18" height="50" rx="9"
+                  fill="#b97b58"/>
+
+            <rect x="86" y="93" width="18" height="50" rx="9"
+                  fill="#b97b58"/>
+
+            <rect x="35" y="146" width="19" height="28" rx="8"
+                  fill="#39476e"/>
+
+            <rect x="66" y="146" width="19" height="28" rx="8"
+                  fill="#39476e"/>
+
+            <ellipse cx="44" cy="176" rx="17" ry="9"
+                     fill="#4d3cb4"/>
+
+            <ellipse cx="76" cy="176" rx="17" ry="9"
+                     fill="#4d3cb4"/>
+          </svg>
+        `;
+
+        const novaSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="160" height="150">
+            <ellipse cx="80" cy="140" rx="44" ry="8" fill="#2e1f3e" opacity=".2"/>
+
+            <path d="M33 65 Q21 27 49 16 Q75 5 80 33 Q86 4 113 16 Q140 30 127 66"
+                  fill="#6a4a3a"/>
+
+            <ellipse cx="80" cy="85" rx="49" ry="52"
+                     fill="#8b6046"
+                     stroke="#4f352b"
+                     stroke-width="6"/>
+
+            <ellipse cx="61" cy="68" rx="24" ry="26" fill="#f4d98e"/>
+            <ellipse cx="100" cy="68" rx="24" ry="26" fill="#f4d98e"/>
+
+            <circle cx="61" cy="69" r="12" fill="#282330"/>
+            <circle cx="100" cy="69" r="12" fill="#282330"/>
+
+            <circle cx="57" cy="65" r="4" fill="white"/>
+            <circle cx="96" cy="65" r="4" fill="white"/>
+
+            <path d="M74 87 L86 87 L80 98 Z" fill="#f39b4d"/>
+
+            <ellipse cx="80" cy="113" rx="27" ry="29" fill="#f6c7aa"/>
+
+            <path d="M37 89 Q17 102 35 121 Q47 108 52 93Z" fill="#6a4a3a"/>
+            <path d="M123 89 Q143 102 125 121 Q113 108 108 93Z" fill="#6a4a3a"/>
+          </svg>
+        `;
+
+        const shelfSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="450" height="420">
+            <defs>
+              <linearGradient id="wood" x1="0" y1="0" x2="1" y2="1">
+                <stop stop-color="#b77b4a"/>
+                <stop offset="1" stop-color="#754329"/>
+              </linearGradient>
+            </defs>
+
+            <rect x="15" y="20" width="420" height="375" rx="28"
+                  fill="url(#wood)"
+                  stroke="#55301f"
+                  stroke-width="16"/>
+
+            <rect x="34" y="64" width="382" height="20" rx="8" fill="#58331f"/>
+            <rect x="34" y="180" width="382" height="20" rx="8" fill="#58331f"/>
+            <rect x="34" y="296" width="382" height="20" rx="8" fill="#58331f"/>
+
+            <g stroke="#ffffff" stroke-width="4">
+              <rect x="58" y="92" width="34" height="70" rx="5" fill="#e64d77"/>
+              <rect x="102" y="101" width="35" height="61" rx="5" fill="#61c982"/>
+              <rect x="147" y="88" width="38" height="74" rx="5" fill="#4ab9e8"/>
+              <rect x="197" y="98" width="35" height="64" rx="5" fill="#f09448"/>
+              <rect x="244" y="90" width="34" height="72" rx="5" fill="#8b67e1"/>
+              <rect x="289" y="102" width="35" height="60" rx="5" fill="#e2c94f"/>
+              <rect x="336" y="92" width="36" height="70" rx="5" fill="#e95786"/>
+
+              <rect x="70" y="212" width="38" height="66" rx="5" fill="#4ab9e8"/>
+              <rect x="120" y="222" width="34" height="56" rx="5" fill="#f09448"/>
+              <rect x="164" y="207" width="37" height="71" rx="5" fill="#e64d77"/>
+              <rect x="214" y="218" width="35" height="60" rx="5" fill="#61c982"/>
+              <rect x="260" y="210" width="35" height="68" rx="5" fill="#8b67e1"/>
+              <rect x="307" y="220" width="37" height="58" rx="5" fill="#e2c94f"/>
+            </g>
+
+            <rect x="35" y="330" width="380" height="48" rx="14" fill="#68402a"/>
+          </svg>
+        `;
+
+        const beanbagSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="270" height="180">
+            <ellipse cx="135" cy="158" rx="105" ry="18" fill="#432a57" opacity=".18"/>
+
+            <path d="M35 133 Q17 79 49 40 Q85 3 138 14 Q199 6 229 53 Q260 106 220 145 Q181 173 135 166 Q83 176 35 133Z"
+                  fill="#dc5da7"
+                  stroke="#9e3f7a"
+                  stroke-width="9"/>
+
+            <path d="M58 82 Q102 31 178 36 Q210 41 225 69 Q168 60 122 92 Q85 115 58 82Z"
+                  fill="#f58bc6"
+                  opacity=".85"/>
+          </svg>
+        `;
+
+        const bookSvg = `
+          <svg xmlns="http://www.w3.org/2000/svg" width="70" height="88">
+            <rect x="5" y="4" width="58" height="76" rx="8"
+                  fill="#7656d8"
+                  stroke="#4e3b99"
+                  stroke-width="6"/>
+
+            <rect x="14" y="15" width="40" height="10" rx="4" fill="#ffd467"/>
+            <circle cx="34" cy="47" r="13" fill="#ffffff" opacity=".75"/>
+            <path d="M21 77 Q35 68 56 77" fill="none" stroke="#ffd467" stroke-width="5"/>
+          </svg>
+        `;
+
+        this.load.svg(
+          "avatar",
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(avatarSvg),
+          { width: 120, height: 190 }
+        );
+
+        this.load.svg(
+          "nova",
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(novaSvg),
+          { width: 160, height: 150 }
+        );
+
+        this.load.svg(
+          "shelf",
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(shelfSvg),
+          { width: 450, height: 420 }
+        );
+
+        this.load.svg(
+          "beanbag",
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(beanbagSvg),
+          { width: 270, height: 180 }
+        );
+
+        this.load.svg(
+          "book",
+          "data:image/svg+xml;charset=utf-8," + encodeURIComponent(bookSvg),
+          { width: 70, height: 88 }
+        );
+      }
+
+      create() {
+        state.scene =
+          this;
+
+        this.physics.world.setBounds(
+          0,
+          0,
+          1900,
+          1200
+        );
+
+        this.cameras.main.setBounds(
+          0,
+          0,
+          1900,
+          1200
+        );
+
+        this.createRoom();
+        this.createActors();
+        this.createInteractions();
+
+        this.cursors =
+          this.input.keyboard.createCursorKeys();
+
+        this.keys =
+          this.input.keyboard.addKeys("W,A,S,D,E,SPACE");
+
+        this.cameras.main.startFollow(
+          this.player,
+          true,
+          .08,
+          .08
+        );
+
+        this.cameras.main.setZoom(1.08);
+
+        this.input.keyboard.on(
+          "keydown-E",
+          () => interact()
+        );
+
+        this.input.keyboard.on(
+          "keydown-SPACE",
+          () => interact()
+        );
+      }
+
+      createRoom() {
+        this.add.rectangle(
+          950,
+          600,
+          1900,
+          1200,
+          0xd8b791
+        );
+
+        this.add.rectangle(
+          950,
+          145,
+          1900,
+          290,
+          0x74588e
+        );
+
+        this.add.rectangle(
+          950,
+          295,
+          1900,
+          20,
+          0x4e3565
+        );
+
+        for (let x = 0; x < 1900; x += 95) {
+          this.add.line(
+            0,
+            0,
+            x,
+            300,
+            x,
+            1200,
+            0xa77750,
+            .18
+          ).setOrigin(0);
+        }
+
+        for (let y = 300; y < 1200; y += 64) {
+          this.add.line(
+            0,
+            0,
+            0,
+            y,
+            1900,
+            y,
+            0x946541,
+            .16
+          ).setOrigin(0);
+        }
+
+        this.add.ellipse(
+          1080,
+          880,
+          700,
+          340,
+          0x6bcaf2
+        );
+
+        this.add.ellipse(
+          1080,
+          880,
+          550,
+          280,
+          0xea9ed4
+        );
+
+        this.add.ellipse(
+          1080,
+          880,
+          360,
+          210,
+          0x8b61d8
+        );
+
+        this.add.text(
+          955,
+          80,
+          "THE MOONLIGHT READING ROOM",
+          {
+            fontFamily: "Arial",
+            fontSize: "30px",
+            color: "#fff5d8",
+            fontStyle: "bold"
+          }
+        ).setOrigin(.5);
+
+        this.add.rectangle(
+          230,
+          170,
+          240,
+          115,
+          0x9cdff6
+        ).setStrokeStyle(
+          14,
+          0xf5e8cc
+        );
+
+        this.add.circle(
+          270,
+          145,
+          24,
+          0xffe77e
+        );
+
+        this.add.rectangle(
+          1680,
+          170,
+          240,
+          115,
+          0x9cdff6
+        ).setStrokeStyle(
+          14,
+          0xf5e8cc
+        );
+
+        this.add.circle(
+          1720,
+          145,
+          24,
+          0xffe77e
+        );
+
+        this.add.rectangle(
+          300,
+          900,
+          340,
+          210,
+          0x4a2a21
+        ).setStrokeStyle(
+          16,
+          0x80563b
+        );
+
+        const fire =
+          this.add.text(
+            300,
+            915,
+            "🔥",
+            { fontSize: "112px" }
+          ).setOrigin(.5);
+
+        this.tweens.add({
+          targets: fire,
+          scaleX: 1.08,
+          scaleY: .95,
+          duration: 520,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut"
+        });
+
+        this.add.rectangle(
+          1620,
+          950,
+          310,
+          175,
+          0x9a633a
+        ).setStrokeStyle(
+          14,
+          0x57331f
+        );
+
+        this.add.text(
+          1620,
+          940,
+          "🗺️",
+          { fontSize: "90px" }
+        ).setOrigin(.5);
+
+        this.sparkles = [];
+
+        for (let i = 0; i < 30; i += 1) {
+          const sparkle =
+            this.add.text(
+              Phaser.Math.Between(120,1780),
+              Phaser.Math.Between(330,1080),
+              "✦",
+              {
+                fontSize: Phaser.Math.Between(10,21) + "px",
+                color: "#fff0a4"
+              }
+            ).setAlpha(
+              Phaser.Math.FloatBetween(.15,.5)
+            );
+
+          this.sparkles.push(sparkle);
+
+          this.tweens.add({
+            targets: sparkle,
+            y: sparkle.y - Phaser.Math.Between(25,60),
+            alpha: .05,
+            duration: Phaser.Math.Between(2600,5200),
+            yoyo: true,
+            repeat: -1,
+            ease: "Sine.easeInOut"
+          });
+        }
+
+        this.shelf =
+          this.physics.add.staticImage(
+            680,
+            500,
+            "shelf"
+          );
+
+        this.shelf.setDepth(
+          20
+        );
+
+        this.shelf.refreshBody();
+
+        this.add.text(
+          680,
+          737,
+          "✨ STORYBOOK FOREST ✨",
+          {
+            fontFamily: "Arial",
+            fontSize: "20px",
+            color: "#4e3ca6",
+            backgroundColor: "#ffffff",
+            padding: { x: 15, y: 9 },
+            fontStyle: "bold"
+          }
+        ).setOrigin(.5).setDepth(30);
+
+        this.beanbag =
+          this.physics.add.staticImage(
+            1180,
+            900,
+            "beanbag"
+          );
+
+        this.beanbag.setDepth(
+          14
+        );
+
+        this.beanbag.refreshBody();
+
+        this.add.text(
+          1180,
+          1030,
+          "COZY READING NOOK",
+          {
+            fontFamily: "Arial",
+            fontSize: "18px",
+            color: "#4e3ca6",
+            backgroundColor: "#ffffff",
+            padding: { x: 13, y: 8 },
+            fontStyle: "bold"
+          }
+        ).setOrigin(.5).setDepth(30);
+
+        const plant =
+          this.add.text(
+            1450,
+            560,
+            "🪴",
+            { fontSize: "105px" }
+          ).setOrigin(.5);
+
+        plant.setDepth(
+          18
+        );
+
+        this.add.rectangle(
+          1480,
+          420,
+          240,
+          150,
+          0x8d5934
+        ).setStrokeStyle(
+          12,
+          0x56341f
+        ).setDepth(
+          12
+        );
+
+        this.add.text(
+          1480,
+          425,
+          "NOVA'S DESK",
+          {
+            fontFamily: "Arial",
+            fontSize: "18px",
+            color: "#fff5d8",
+            fontStyle: "bold"
+          }
+        ).setOrigin(.5).setDepth(20);
+      }
+
+      createActors() {
+        this.nova =
+          this.physics.add.sprite(
+            1480,
+            305,
+            "nova"
+          );
+
+        this.nova.setDepth(
+          40
+        );
+
+        this.nova.body.setAllowGravity(
+          false
+        );
+
+        this.tweens.add({
+          targets: this.nova,
+          y: this.nova.y - 18,
+          duration: 1350,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut"
+        });
+
+        this.player =
+          this.physics.add.sprite(
+            930,
+            1080,
+            "avatar"
+          );
+
+        state.player =
+          this.player;
+
+        this.player.setDepth(
+          25
+        );
+
+        this.player.setCollideWorldBounds(
+          true
+        );
+
+        this.player.body.setSize(
+          58,
+          70
+        );
+
+        this.player.body.setOffset(
+          31,
+          112
+        );
+
+        this.physics.add.collider(
+          this.player,
+          this.shelf
+        );
+
+        this.physics.add.collider(
+          this.player,
+          this.beanbag
+        );
+
+        this.bookGlow =
+          this.add.circle(
+            680,
+            295,
+            46,
+            0xffe676,
+            .28
+          ).setDepth(
+            26
+          );
+
+        this.tweens.add({
+          targets: this.bookGlow,
+          scaleX: 1.35,
+          scaleY: 1.35,
+          alpha: .08,
+          duration: 850,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut"
+        });
+
+        this.bookOnShelf =
+          this.add.image(
+            680,
+            310,
+            "book"
+          ).setDepth(
+            27
+          );
+
+        this.bookOnShelf.setScale(
+          .78
+        );
+
+        this.bookOnShelf.setInteractive({
+          useHandCursor: true
+        });
+
+        this.bookOnShelf.on(
+          "pointerdown",
+          () => {
+            this.walkToShelfAndOpen();
+          }
+        );
+
+        this.beanbag.setInteractive({
+          useHandCursor: true
+        });
+
+        this.beanbag.on(
+          "pointerdown",
+          () => {
+            if (state.selectedBook) {
+              this.walkToBeanbagAndSit();
+            } else {
+              showToast(
+                "Choose a book from the shelf first."
+              );
+            }
+          }
+        );
+
+        this.nova.setInteractive({
+          useHandCursor: true
+        });
+
+        this.nova.on(
+          "pointerdown",
+          () => {
+            this.walkToNova();
+          }
+        );
+      }
+
+      createInteractions() {
+        this.interactionPoints = [
+          {
+            x: 680,
+            y: 760,
+            radius: 150,
+            type: "shelf",
+            label: "📚 Pull Out a Book"
+          },
+          {
+            x: 1180,
+            y: 1060,
+            radius: 155,
+            type: "seat",
+            label: "🛋️ Sit and Read"
+          },
+          {
+            x: 1480,
+            y: 570,
+            radius: 165,
+            type: "nova",
+            label: "🦉 Talk to Nova"
+          }
+        ];
+      }
+
+      walkToShelfAndOpen() {
+        hideHint();
+
+        this.physics.world.pause();
+
+        this.tweens.add({
+          targets: this.player,
+          x: 680,
+          y: 770,
+          duration: 900,
+          ease: "Sine.easeInOut",
+          onUpdate: () => {
+            this.player.setDepth(
+              this.player.y > 620 ? 25 : 10
+            );
+          },
+          onComplete: () => {
+            this.physics.world.resume();
+            this.animateBookOut();
+          }
+        });
+      }
+
+      walkToNova() {
+        hideHint();
+
+        this.physics.world.pause();
+
+        this.tweens.add({
+          targets: this.player,
+          x: 1480,
+          y: 590,
+          duration: 900,
+          ease: "Sine.easeInOut",
+          onComplete: () => {
+            this.physics.world.resume();
+            openModal("novaModal");
+          }
+        });
+      }
+
+      walkToBeanbagAndSit() {
+        hideHint();
+
+        this.physics.world.pause();
+
+        this.tweens.add({
+          targets: this.player,
+          x: 1180,
+          y: 965,
+          duration: 900,
+          ease: "Sine.easeInOut",
+          onComplete: () => {
+            this.physics.world.resume();
+            this.sitOnBeanbag();
+          }
+        });
+      }
+
+      animateBookOut() {
+        this.tweens.add({
+          targets: this.bookOnShelf,
+          y: 250,
+          scaleX: 1.05,
+          scaleY: 1.05,
+          angle: -8,
+          duration: 420,
+          ease: "Back.easeOut",
+          onComplete: () => {
+            renderBookChoices();
+          }
+        });
+      }
+
+      carryBook(book) {
+        state.selectedBook =
+          book;
+
+        if (state.carriedBook) {
+          state.carriedBook.destroy();
+        }
+
+        state.carriedBook =
+          this.add.image(
+            this.player.x + 42,
+            this.player.y - 52,
+            "book"
+          ).setDepth(
+            55
+          );
+
+        state.carriedBook.setTint(
+          book.coverColor
+        );
+
+        state.carriedBook.setScale(
+          .75
+        );
+
+        this.bookOnShelf.setVisible(
+          false
+        );
+
+        this.bookGlow.setVisible(
+          false
+        );
+
+        showToast(
+          `${book.title} selected! Carry it to the beanbag.`
+        );
+
+        this.cameras.main.flash(
+          250,
+          255,
+          244,
+          164
+        );
+      }
+
+      sitOnBeanbag() {
+        state.sitting =
+          true;
+
+        this.player.setScale(
+          .9
+        );
+
+        this.player.setAngle(
+          -4
+        );
+
+        this.player.setDepth(
+          16
+        );
+
+        this.beanbag.setDepth(
+          18
+        );
+
+        if (state.carriedBook) {
+          state.carriedBook.setVisible(
+            false
+          );
+        }
+
+        this.cameras.main.zoomTo(
+          1.35,
+          650,
+          "Sine.easeInOut"
+        );
+
+        this.cameras.main.pan(
+          1180,
+          900,
+          650,
+          "Sine.easeInOut",
+          true,
+          () => {
+            state.currentPage =
+              0;
+
+            renderReader();
+
+            openModal("readerModal");
+          }
+        );
+      }
+
+      standUp() {
+        if (!state.sitting) {
+          return;
+        }
+
+        state.sitting =
+          false;
+
+        this.player.setScale(
+          1
+        );
+
+        this.player.setAngle(
+          0
+        );
+
+        this.player.setDepth(
+          25
+        );
+
+        this.beanbag.setDepth(
+          14
+        );
+
+        if (state.carriedBook) {
+          state.carriedBook.setVisible(
+            true
+          );
+        }
+
+        this.cameras.main.zoomTo(
+          1.08,
+          500,
+          "Sine.easeInOut"
+        );
+      }
+
+      update() {
+        if (state.sitting) {
+          this.player.setVelocity(0,0);
+          return;
+        }
+
+        const speed =
+          245;
+
+        let vx =
+          0;
+
+        let vy =
+          0;
+
+        if (
+          this.cursors.left.isDown ||
+          this.keys.A.isDown ||
+          state.mobile.left
+        ) {
+          vx = -speed;
+        } else if (
+          this.cursors.right.isDown ||
+          this.keys.D.isDown ||
+          state.mobile.right
+        ) {
+          vx = speed;
+        }
+
+        if (
+          this.cursors.up.isDown ||
+          this.keys.W.isDown ||
+          state.mobile.up
+        ) {
+          vy = -speed;
+        } else if (
+          this.cursors.down.isDown ||
+          this.keys.S.isDown ||
+          state.mobile.down
+        ) {
+          vy = speed;
+        }
+
+        if (vx && vy) {
+          vx *= .7071;
+          vy *= .7071;
+        }
+
+        this.player.setVelocity(
+          vx,
+          vy
+        );
+
+        if (vx < 0) {
+          this.player.setFlipX(
+            true
+          );
+        } else if (vx > 0) {
+          this.player.setFlipX(
+            false
+          );
+        }
+
+        if (vx || vy) {
+          this.player.angle =
+            Math.sin(this.time.now / 80) * 2.4;
+        } else {
+          this.player.angle =
+            0;
+        }
+
+        /*
+          Dynamic depth:
+          character can pass behind Nova's desk and in front of the rug.
+        */
+        this.player.setDepth(
+          Math.floor(this.player.y)
+        );
+
+        this.nova.setDepth(
+          390
+        );
+
+        this.shelf.setDepth(
+          500
+        );
+
+        this.beanbag.setDepth(
+          905
+        );
+
+        if (state.carriedBook) {
+          state.carriedBook.setPosition(
+            this.player.x + (this.player.flipX ? -43 : 43),
+            this.player.y - 52
+          );
+
+          state.carriedBook.setDepth(
+            this.player.depth + 2
+          );
+        }
+
+        this.updateNearby();
+      }
+
+      updateNearby() {
+        let nearest =
+          null;
+
+        let nearestDistance =
+          Infinity;
+
+        this.interactionPoints.forEach(point => {
+          const distance =
+            Phaser.Math.Distance.Between(
+              this.player.x,
+              this.player.y,
+              point.x,
+              point.y
+            );
+
+          if (
+            distance <= point.radius &&
+            distance < nearestDistance
+          ) {
+            nearest =
+              point;
+
+            nearestDistance =
+              distance;
+          }
+        });
+
+        state.nearby =
+          nearest;
+
+        if (nearest) {
+          showAction(nearest.label);
+        } else {
+          hideAction();
+        }
+      }
+    }
+
+    function renderBookChoices() {
+      const container =
+        document.getElementById("books");
+
+      container.replaceChildren();
+
+      BOOKS.forEach(book => {
+        const card =
+          document.createElement("article");
+
+        card.className =
+          "book-choice";
+
+        card.innerHTML = `
+          <div class="cover">${book.emoji}</div>
+          <h3>${book.title}</h3>
+          <p>${book.description}</p>
+          <button class="choose" type="button">
+            Take This Book
+          </button>
+        `;
+
+        card
+          .querySelector(".choose")
+          .addEventListener(
+            "click",
+            () => {
+              closeModal("booksModal");
+
+              state.scene.carryBook(
+                book
+              );
+            }
+          );
+
+        container.appendChild(
+          card
+        );
+      });
+
+      openModal("booksModal");
+    }
+
+    function interact() {
+      const item =
+        state.nearby;
+
+      if (!item) {
+        return;
+      }
+
+      hideHint();
+
+      if (item.type === "shelf") {
+        state.scene.walkToShelfAndOpen();
+        return;
+      }
+
+      if (item.type === "nova") {
+        state.scene.walkToNova();
+        return;
+      }
+
+      if (item.type === "seat") {
+        if (!state.selectedBook) {
+          showToast(
+            "Choose a book from the shelf first."
+          );
+          return;
+        }
+
+        state.scene.walkToBeanbagAndSit();
+      }
+    }
+
+    function renderReader() {
+      const book =
+        state.selectedBook;
+
+      if (!book) {
+        return;
+      }
+
+      state.currentPage =
+        Math.max(
+          0,
+          Math.min(
+            state.currentPage,
+            book.pages.length - 1
+          )
+        );
+
+      document
+        .getElementById("readerTitle")
+        .textContent =
+          book.title;
+
+      document
+        .getElementById("storyEmoji")
+        .textContent =
+          book.emoji;
+
+      document
+        .getElementById("storyCopy")
+        .textContent =
+          book.pages[state.currentPage];
+
+      document
+        .getElementById("pageLabel")
+        .textContent =
+          `Page ${state.currentPage + 1} of ${book.pages.length}`;
+
+      document
+        .getElementById("previousPage")
+        .disabled =
+          state.currentPage === 0;
+
+      document
+        .getElementById("nextPage")
+        .disabled =
+          state.currentPage >= book.pages.length - 1;
+    }
+
+    document
+      .getElementById("actionButton")
+      .addEventListener(
+        "click",
+        interact
+      );
+
+    document
+      .querySelectorAll("[data-close]")
+      .forEach(button => {
+        button.addEventListener(
+          "click",
+          () => {
+            const id =
+              button.dataset.close;
+
+            closeModal(id);
+
+            if (
+              id === "readerModal"
+            ) {
+              state.scene.standUp();
+            }
+          }
+        );
+      });
+
+    document
+      .querySelectorAll(".modal")
+      .forEach(modal => {
+        modal.addEventListener(
+          "click",
+          event => {
+            if (event.target === modal) {
+              closeModal(modal.id);
+
+              if (
+                modal.id === "readerModal"
+              ) {
+                state.scene.standUp();
+              }
+            }
+          }
+        );
+      });
+
+    document
+      .getElementById("previousPage")
+      .addEventListener(
+        "click",
+        () => {
+          state.currentPage -= 1;
+          renderReader();
+        }
+      );
+
+    document
+      .getElementById("nextPage")
+      .addEventListener(
+        "click",
+        () => {
+          state.currentPage += 1;
+          renderReader();
+        }
+      );
+
+    document
+      .getElementById("readToMe")
+      .addEventListener(
+        "click",
+        () => {
+          if (!("speechSynthesis" in window)) {
+            showToast(
+              "Read to Me is not supported on this device."
+            );
+            return;
+          }
+
+          window.speechSynthesis.cancel();
+
+          const speech =
+            new SpeechSynthesisUtterance(
+              document
+                .getElementById("storyCopy")
+                .textContent
+            );
+
+          speech.rate = .88;
+          speech.pitch = 1.05;
+
+          window.speechSynthesis.speak(
+            speech
+          );
+        }
+      );
+
+    document
+      .getElementById("finishBook")
+      .addEventListener(
+        "click",
+        () => {
+          closeModal("readerModal");
+
+          state.scene.standUp();
+
+          state.scene.cameras.main.flash(
+            350,
+            255,
+            236,
+            119
+          );
+
+          showToast(
+            "Book completed! In the full version this will award a sticker, XP, and coins."
+          );
+        }
+      );
+
+    document
+      .getElementById("currentLibrary")
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "library.html";
+        }
+      );
+
+    document
+      .getElementById("myWorld")
+      .addEventListener(
+        "click",
+        () => {
+          window.location.href =
+            "my-city.html";
+        }
+      );
+
+    document
+      .querySelectorAll("[data-direction]")
+      .forEach(button => {
+        const direction =
+          button.dataset.direction;
+
+        const start =
+          event => {
+            event.preventDefault();
+
+            state.mobile[direction] =
+              true;
+
+            button.setPointerCapture?.(
+              event.pointerId
+            );
+          };
+
+        const stop =
+          event => {
+            event.preventDefault();
+
+            state.mobile[direction] =
+              false;
+          };
+
+        button.addEventListener(
+          "pointerdown",
+          start
+        );
+
+        button.addEventListener(
+          "pointerup",
+          stop
+        );
+
+        button.addEventListener(
+          "pointercancel",
+          stop
+        );
+
+        button.addEventListener(
+          "pointerleave",
+          stop
+        );
+      });
+
+    const game =
+      new Phaser.Game({
+        type: Phaser.AUTO,
+        parent: "game",
+        width: window.innerWidth,
+        height: window.innerHeight,
+        backgroundColor: "#2f1c48",
+
+        physics: {
+          default: "arcade",
+          arcade: {
+            gravity: { y: 0 },
+            debug: false
+          }
+        },
+
+        scale: {
+          mode: Phaser.Scale.RESIZE,
+          autoCenter: Phaser.Scale.CENTER_BOTH
+        },
+
+        scene: LibraryFinalScene
+      });
+  </script>
+
+</body>
+</html>
