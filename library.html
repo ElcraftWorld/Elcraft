@@ -11,12 +11,12 @@
 
   <title>ELCraft Interactive Library</title>
 
-  <!-- ELCraft interactive library build: flying-book-v4 -->
+  <!-- ELCraft interactive library build: flying-book-v5 -->
 
   <link
     rel="preload"
     as="image"
-    href="library-background.png?v=2">
+    href="library-background.png?v=5">
 
   <style>
     * {
@@ -166,7 +166,7 @@
 
       background:
         #211334
-        url("library-background.png?v=2")
+        url("library-background.png?v=5")
         center center /
         cover
         no-repeat;
@@ -1498,7 +1498,7 @@
       };
 
     libraryBackgroundTest.src =
-      "library-background.png?v=2";
+      "library-background.png?v=5";
   </script>
 
 
@@ -1742,7 +1742,7 @@
 
         card.querySelector(".book-button").addEventListener(
           "click",
-          () => selectBook(book)
+          () => selectBook(book, category)
         );
 
         grid.appendChild(card);
@@ -1804,10 +1804,38 @@
         );
 
       const sourceRect =
-        source.getBoundingClientRect();
+        source
+          ? source.getBoundingClientRect()
+          : {
+              left:
+                window.innerWidth * .5,
+
+              top:
+                window.innerHeight * .42,
+
+              width:
+                1,
+
+              height:
+                1
+            };
 
       const destinationRect =
-        destination.getBoundingClientRect();
+        destination
+          ? destination.getBoundingClientRect()
+          : {
+              left:
+                window.innerWidth * .38,
+
+              top:
+                window.innerHeight * .73,
+
+              width:
+                window.innerWidth * .24,
+
+              height:
+                window.innerHeight * .14
+            };
 
       const startX =
         sourceRect.left +
@@ -2342,11 +2370,6 @@
   <script
     type="module"
     src="notification-bell.js">
-  </script>
-
-  <script
-    type="module"
-    src="parent-gate.js">
   </script>
 
   <script
