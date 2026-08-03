@@ -1,187 +1,3448 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#2a174d">
-<title>ELCraft Art Studio</title>
-<!-- Safe Art Studio build: no missing-page routes -->
-<link rel="preload" as="image" href="art-studio-background.png?v=2">
-<style>
-*{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}
-:root{--purple:#7758df;--dark:#4e3ca6;--header:68px}
-body{overflow:hidden;font-family:Arial,Helvetica,sans-serif;background:#1b102d;color:#34375b}
-button{font:inherit;cursor:pointer}
-.app{position:fixed;inset:0;display:grid;grid-template-rows:auto minmax(0,1fr);background:radial-gradient(circle at 50% 30%,#593978,#1a0e2a 75%)}
-.topbar{min-height:var(--header);z-index:50;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:9px max(13px,env(safe-area-inset-right)) 9px max(13px,env(safe-area-inset-left));color:#fff;background:linear-gradient(#352061,#1d1038);box-shadow:0 7px 0 #10091f66}
-.brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{font-size:34px}.brand h1{margin:0;font-size:clamp(20px,3vw,31px);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{margin:4px 0 0;font-size:10px;font-weight:900;color:#ffffffc7}
-.actions{display:flex;gap:8px;align-items:center}.pill{min-height:41px;border:3px solid #ffffffb8;border-radius:14px;padding:8px 11px;color:#fff;background:#ffffff17;font-size:11px;font-weight:1000}
-.shell{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:clamp(4px,1vw,11px)}
-.stage{position:relative;width:min(100%,calc(100dvh - var(--header) - clamp(8px,2vw,22px)));max-height:100%;aspect-ratio:1/1;overflow:hidden;border:clamp(2px,.35vw,6px) solid #ffffff28;border-radius:clamp(8px,1vw,16px);background:#eea17e url("art-studio-background.png?v=2") center/100% 100% no-repeat;box-shadow:0 22px 55px #0804146b}
-.hotspot{position:absolute;z-index:10;border:3px solid transparent;border-radius:18px;background:transparent;transition:.16s}
-.hotspot:hover,.hotspot:focus-visible{border-color:#ffe56f;background:#fff3a422;box-shadow:0 0 0 5px #7758df35,0 0 28px #ffdd5c7d;outline:none;transform:translateY(-2px)}
-.hotspot:after{content:attr(data-label);position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:none;min-width:max-content;border:3px solid #fff;border-radius:999px;padding:7px 11px;color:#fff;background:linear-gradient(145deg,#7758df,#4e3ca6);font-size:10px;font-weight:1000;white-space:nowrap}
-.hotspot:hover:after,.hotspot:focus-visible:after{display:block}
-.inspiration{left:0;top:20%;width:19%;height:55%}.painting{left:15%;top:43%;width:21%;height:39%}.gallery{left:22%;top:28%;width:48%;height:28%}.crafts{left:34%;top:52%;width:28%;height:27%}.digital{left:61%;top:45%;width:35%;height:34%}.drawing{left:0;top:70%;width:30%;height:28%}.supplies{left:73%;top:71%;width:27%;height:28%}.challenge{left:26%;top:72%;width:51%;height:27%}
-.tip{position:absolute;left:50%;bottom:clamp(5px,1.2%,13px);z-index:20;transform:translateX(-50%);width:min(680px,calc(100% - 22px));border:4px solid #ffffffe8;border-radius:999px;padding:8px 14px;color:#fff;background:#27143ee3;font-size:10px;font-weight:900;text-align:center;backdrop-filter:blur(7px)}
-.modal{position:fixed;inset:0;z-index:1000;display:none;align-items:center;justify-content:center;padding:18px;background:#140b27ad;backdrop-filter:blur(9px)}.modal.visible{display:flex}
-.panel{width:min(570px,100%);max-height:min(88vh,760px);overflow:auto;border:6px solid #fff;border-radius:30px;padding:20px;background:linear-gradient(145deg,#f8efff,#fff9e9);box-shadow:0 30px 72px #130a266b}
-.panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:15px}.panel h2{margin:0;color:var(--dark);font-size:clamp(24px,4vw,35px)}.close{width:44px;height:44px;border:0;border-radius:50%;color:#fff;background:var(--purple);font-size:22px;font-weight:1000}
-.icon{text-align:center;font-size:78px}.message{border:4px solid #e8ddff;border-radius:20px;padding:17px;color:var(--dark);background:#fff;font-size:14px;font-weight:900;line-height:1.55}
-.list{display:grid;gap:9px;margin-top:12px}.row{border:3px solid #e9e3f7;border-radius:15px;padding:11px;background:#fff;font-size:11px;font-weight:900}
-.modal-actions{display:flex;gap:9px;margin-top:14px}.modal-actions button{flex:1;border:0;border-radius:16px;padding:13px;font-weight:1000}.cancel{color:#63499b;background:#e9e4f4}.enter{color:#fff;background:linear-gradient(#8bd84d,#59ad28);box-shadow:0 5px 0 #438b1d}
-@media(max-width:1000px){:root{--header:61px}.topbar{padding:7px 9px}.brand-icon{font-size:28px}.brand h1{font-size:clamp(18px,3.4vw,25px)}.brand p,.actions .stat{display:none}.pill{min-height:37px;padding:7px 9px}.tip{font-size:8px;padding:6px 10px}.hotspot:after{font-size:8px;padding:5px 8px}}
-@media(max-width:700px){:root{--header:55px}.brand-icon{font-size:23px}.brand h1{font-size:17px}.actions{display:none}.shell{padding:4px}.hotspot:after,.tip{display:none!important}.modal-actions{flex-direction:column}}
-@media(orientation:portrait) and (max-width:700px){.shell{align-items:flex-start;padding-top:7px}.stage{width:calc(100vw - 8px);height:auto}}
-</style>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#2b174d">
+  <title>ELCraft Art Studio</title>
+<!-- Permanent Art Studio scene: future updates are code-only -->
+
+  <link
+    rel="preload"
+    as="image"
+    href="art-studio-background-final.png?v=4">
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --purple: #7758df;
+      --purple-dark: #4e3ca6;
+      --purple-soft: #eee8ff;
+      --pink: #ff76ad;
+      --gold: #ffd467;
+      --green: #66c84f;
+      --ink: #35385d;
+      --muted: #747a98;
+      --header-height: 68px;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    body {
+      overflow: hidden;
+      color: var(--ink);
+      background: #1b102d;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button,
+    input,
+    select {
+      font: inherit;
+    }
+
+    button {
+      cursor: pointer;
+    }
+
+    .app {
+      position: fixed;
+      inset: 0;
+
+      display: grid;
+      grid-template-rows: auto minmax(0,1fr);
+
+      background:
+        radial-gradient(
+          circle at 50% 25%,
+          #5c3b78,
+          #1a0e2a 75%
+        );
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 100;
+
+      min-height: var(--header-height);
+
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+
+      padding:
+        9px
+        max(13px,env(safe-area-inset-right))
+        9px
+        max(13px,env(safe-area-inset-left));
+
+      color: white;
+      background: linear-gradient(#352061,#1d1038);
+      box-shadow: 0 7px 0 #10091f66;
+    }
+
+    .brand {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-icon {
+      font-size: 34px;
+    }
+
+    .brand h1 {
+      margin: 0;
+      overflow: hidden;
+      font-size: clamp(20px,3vw,31px);
+      line-height: 1;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+
+    .brand p {
+      margin: 4px 0 0;
+      color: #ffffffc7;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill {
+      min-height: 41px;
+      border: 3px solid #ffffffb8;
+      border-radius: 14px;
+      padding: 8px 11px;
+      color: white;
+      background: #ffffff17;
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .shell {
+      min-width: 0;
+      min-height: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+      padding: clamp(4px,1vw,11px);
+    }
+
+    .stage {
+      position: relative;
+
+      width:
+        min(
+          100%,
+          calc(
+            (
+              100dvh -
+              var(--header-height) -
+              clamp(8px,2vw,22px)
+            ) *
+            1.5
+          )
+        );
+
+      max-height: 100%;
+      aspect-ratio: 3 / 2;
+
+      overflow: hidden;
+
+      border: clamp(2px,.35vw,6px) solid #ffffff28;
+      border-radius: clamp(8px,1vw,16px);
+
+      background:
+        #eea17e
+        url("art-studio-background-final.png?v=4")
+        center center / 100% 100% no-repeat;
+
+      box-shadow: 0 22px 55px #0804146b;
+    }
+
+    .hotspot {
+      position: absolute;
+      z-index: 10;
+
+      border: 3px solid transparent;
+      border-radius: 18px;
+
+      background: transparent;
+
+      transition:
+        border-color .16s ease,
+        background .16s ease,
+        box-shadow .16s ease,
+        transform .16s ease;
+    }
+
+    .hotspot:hover,
+    .hotspot:focus-visible {
+      border-color: #ffe56f;
+      background: #fff3a422;
+      box-shadow:
+        0 0 0 5px #7758df35,
+        0 0 28px #ffdd5c7d;
+      outline: none;
+      transform: translateY(-2px);
+    }
+
+    .hotspot::after {
+      content: attr(data-label);
+
+      position: absolute;
+      left: 50%;
+      bottom: 8px;
+
+      transform: translateX(-50%);
+
+      display: none;
+      min-width: max-content;
+
+      border: 3px solid white;
+      border-radius: 999px;
+      padding: 7px 11px;
+
+      color: white;
+      background: linear-gradient(145deg,#7758df,#4e3ca6);
+
+      font-size: 10px;
+      font-weight: 1000;
+      white-space: nowrap;
+    }
+
+    .hotspot:hover::after,
+    .hotspot:focus-visible::after {
+      display: block;
+    }
+
+    .inspiration {
+      left: 0%;
+      top: 71%;
+      width: 18%;
+      height: 29%;
+    }
+
+    .painting {
+      left: 19%;
+      top: 24%;
+      width: 25%;
+      height: 47%;
+    }
+
+    .gallery {
+      left: 39%;
+      top: 17%;
+      width: 29%;
+      height: 29%;
+    }
+
+    .crafts {
+      left: 75%;
+      top: 57%;
+      width: 25%;
+      height: 43%;
+    }
+
+    .digital {
+      left: 72%;
+      top: 29%;
+      width: 28%;
+      height: 36%;
+    }
+
+    .drawing {
+      left: 36%;
+      top: 57%;
+      width: 29%;
+      height: 43%;
+    }
+
+    .supplies {
+      left: 0%;
+      top: 8%;
+      width: 26%;
+      height: 64%;
+    }
+
+    .challenge {
+      left: 0%;
+      top: 57%;
+      width: 18%;
+      height: 34%;
+    }
+
+    .tip {
+      position: absolute;
+      left: 50%;
+      bottom: clamp(5px,1.2%,13px);
+      z-index: 20;
+
+      transform: translateX(-50%);
+
+      width: min(680px,calc(100% - 22px));
+
+      border: 4px solid #ffffffe8;
+      border-radius: 999px;
+      padding: 8px 14px;
+
+      color: white;
+      background: #27143ee3;
+
+      font-size: 10px;
+      font-weight: 900;
+      text-align: center;
+      backdrop-filter: blur(7px);
+    }
+
+    .overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 12px;
+
+      background: #140b27c4;
+      backdrop-filter: blur(9px);
+    }
+
+    .overlay.visible {
+      display: flex;
+    }
+
+    .workspace {
+      width: min(1180px,100%);
+      height: min(92vh,850px);
+
+      display: grid;
+      grid-template-rows: auto minmax(0,1fr);
+
+      overflow: hidden;
+
+      border: 6px solid white;
+      border-radius: 28px;
+
+      background: linear-gradient(145deg,#f8efff,#fff9e9);
+      box-shadow: 0 30px 72px #130a2670;
+    }
+
+    .workspace-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+
+      padding: 12px 14px;
+
+      color: white;
+      background: linear-gradient(145deg,#7758df,#4e3ca6);
+    }
+
+    .workspace-title {
+      min-width: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .workspace-title h2 {
+      margin: 0;
+      font-size: clamp(19px,3vw,29px);
+    }
+
+    .workspace-title p {
+      margin: 3px 0 0;
+      color: #ffffffcf;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .head-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .head-button {
+      min-height: 38px;
+      border: 3px solid #ffffffb8;
+      border-radius: 12px;
+      padding: 7px 10px;
+      color: white;
+      background: #ffffff16;
+      font-size: 10px;
+      font-weight: 1000;
+    }
+
+    .workspace-body {
+      min-height: 0;
+
+      display: grid;
+      grid-template-columns: 220px minmax(0,1fr) 220px;
+      gap: 10px;
+
+      padding: 10px;
+    }
+
+    .tool-panel,
+    .side-panel {
+      min-height: 0;
+      overflow: auto;
+
+      border: 4px solid #e6ddf5;
+      border-radius: 18px;
+      padding: 10px;
+
+      background: #ffffffd9;
+    }
+
+    .tool-panel h3,
+    .side-panel h3 {
+      margin: 0 0 9px;
+      color: var(--purple-dark);
+      font-size: 16px;
+    }
+
+    .tool-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 7px;
+    }
+
+    .tool-button {
+      min-height: 54px;
+      border: 3px solid #e7e0f4;
+      border-radius: 13px;
+      padding: 7px;
+      color: #4d4770;
+      background: white;
+      font-size: 10px;
+      font-weight: 1000;
+    }
+
+    .tool-button.active {
+      border-color: var(--pink);
+      background: #fff0f7;
+      color: #9e2f69;
+    }
+
+    .palette {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 7px;
+      margin-top: 10px;
+    }
+
+    .color {
+      aspect-ratio: 1;
+      border: 4px solid white;
+      border-radius: 12px;
+      box-shadow: 0 0 0 2px #ded5eb;
+    }
+
+    .color.active {
+      box-shadow:
+        0 0 0 4px #7758df,
+        0 0 0 7px white;
+    }
+
+    .range-label {
+      display: block;
+      margin-top: 11px;
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 1000;
+    }
+
+    input[type="range"] {
+      width: 100%;
+    }
+
+    .canvas-wrap {
+      min-width: 0;
+      min-height: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      overflow: hidden;
+
+      border: 5px solid #ded2ee;
+      border-radius: 20px;
+
+      background:
+        repeating-conic-gradient(
+          #f0edf5 0 25%,
+          white 0 50%
+        )
+        50% / 24px 24px;
+    }
+
+    #artCanvas {
+      display: block;
+      max-width: 100%;
+      max-height: 100%;
+
+      background: white;
+      touch-action: none;
+      cursor: crosshair;
+    }
+
+    .template-grid,
+    .stamp-grid,
+    .shape-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 7px;
+    }
+
+    .template,
+    .stamp,
+    .shape {
+      min-height: 48px;
+      border: 3px solid #e7e0f4;
+      border-radius: 12px;
+      padding: 6px;
+      background: white;
+      font-size: 24px;
+      font-weight: 1000;
+    }
+
+    .template {
+      font-size: 9px;
+      color: #5d527b;
+    }
+
+    .save-card {
+      margin-top: 10px;
+      border: 3px solid #ddcff1;
+      border-radius: 14px;
+      padding: 10px;
+      background: #f5efff;
+      color: #5a448b;
+      font-size: 10px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .gallery-panel {
+      width: min(1050px,100%);
+      max-height: 90vh;
+      overflow: auto;
+
+      border: 6px solid white;
+      border-radius: 28px;
+      padding: 17px;
+
+      background: linear-gradient(145deg,#f8efff,#fff9e9);
+      box-shadow: 0 30px 72px #130a2670;
+    }
+
+    .gallery-head,
+    .simple-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .gallery-head h2,
+    .simple-head h2 {
+      margin: 0;
+      color: var(--purple-dark);
+    }
+
+    .close {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      color: white;
+      background: var(--purple);
+      font-size: 22px;
+      font-weight: 1000;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      gap: 12px;
+    }
+
+    .art-card {
+      border: 4px solid white;
+      border-radius: 18px;
+      padding: 9px;
+      background: white;
+      box-shadow: 0 12px 25px #4a376526;
+    }
+
+    .art-card img {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+      border-radius: 12px;
+      background: #f0ebf6;
+    }
+
+    .art-card h4 {
+      margin: 8px 0 3px;
+      color: var(--purple-dark);
+    }
+
+    .art-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .card-actions button {
+      flex: 1;
+      border: 0;
+      border-radius: 10px;
+      padding: 8px;
+      font-size: 9px;
+      font-weight: 1000;
+    }
+
+    .open-art {
+      color: white;
+      background: var(--purple);
+    }
+
+    .delete-art {
+      color: #9b3a50;
+      background: #ffe8ee;
+    }
+
+    .empty-gallery {
+      grid-column: 1 / -1;
+      border: 4px dashed #d9cdec;
+      border-radius: 20px;
+      padding: 30px;
+      color: #76668e;
+      background: white;
+      text-align: center;
+      font-weight: 1000;
+    }
+
+    .simple-panel {
+      width: min(650px,100%);
+      max-height: 88vh;
+      overflow: auto;
+
+      border: 6px solid white;
+      border-radius: 28px;
+      padding: 17px;
+
+      background: linear-gradient(145deg,#f8efff,#fff9e9);
+      box-shadow: 0 30px 72px #130a2670;
+    }
+
+    .option-list {
+      display: grid;
+      gap: 9px;
+    }
+
+    .option {
+      border: 3px solid #e7e0f4;
+      border-radius: 16px;
+      padding: 12px;
+      color: #4f4770;
+      background: white;
+      font-size: 12px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
+    .option button {
+      width: 100%;
+      margin-top: 8px;
+      border: 0;
+      border-radius: 12px;
+      padding: 10px;
+      color: white;
+      background: var(--purple);
+      font-weight: 1000;
+    }
+
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 2000;
+
+      transform: translateX(-50%) translateY(150px);
+
+      border: 4px solid white;
+      border-radius: 999px;
+      padding: 13px 19px;
+
+      color: white;
+      background: #4e3ca6;
+
+      box-shadow: 0 12px 30px #1e133e4d;
+
+      font-size: 12px;
+      font-weight: 1000;
+      white-space: nowrap;
+
+      transition: .3s ease;
+    }
+
+    .toast.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    @media (max-width: 1000px) {
+      :root {
+        --header-height: 61px;
+      }
+
+      .topbar {
+        padding: 7px 9px;
+      }
+
+      .brand-icon {
+        font-size: 28px;
+      }
+
+      .brand h1 {
+        font-size: clamp(18px,3.4vw,25px);
+      }
+
+      .brand p,
+      .actions .stat {
+        display: none;
+      }
+
+      .pill {
+        min-height: 37px;
+        padding: 7px 9px;
+      }
+
+      .workspace-body {
+        grid-template-columns: 180px minmax(0,1fr) 180px;
+      }
+
+      .tip {
+        font-size: 8px;
+        padding: 6px 10px;
+      }
+
+      .hotspot::after {
+        font-size: 8px;
+        padding: 5px 8px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      :root {
+        --header-height: 55px;
+      }
+
+      .brand-icon {
+        font-size: 23px;
+      }
+
+      .brand h1 {
+        font-size: 17px;
+      }
+
+      .actions {
+        display: none;
+      }
+
+      .shell {
+        padding: 4px;
+      }
+
+      .hotspot::after,
+      .tip {
+        display: none !important;
+      }
+
+      .workspace {
+        height: 96vh;
+      }
+
+      .workspace-body {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto minmax(300px,1fr) auto;
+        overflow: auto;
+      }
+
+      .tool-panel,
+      .side-panel {
+        overflow: visible;
+      }
+
+      .tool-grid {
+        grid-template-columns: repeat(4,minmax(0,1fr));
+      }
+
+      .palette {
+        grid-template-columns: repeat(8,minmax(0,1fr));
+      }
+
+      .canvas-wrap {
+        min-height: 340px;
+      }
+    }
+
+    @media (orientation: portrait) and (max-width: 700px) {
+      .shell {
+        align-items: flex-start;
+        padding-top: 7px;
+      }
+
+      .stage {
+        width: calc(100vw - 8px);
+        height: auto;
+      }
+    }
+  </style>
 </head>
+
 <body>
+
 <div class="app">
-<header class="topbar">
-  <div class="brand">
-    <div class="brand-icon">🎨</div>
-    <div><h1>ELCraft Art Studio</h1><p id="artistName">Loading artist...</p></div>
-  </div>
-  <div class="actions">
-    <div class="pill stat">🪙 <span id="coins">0</span></div>
-    <div class="pill stat">⭐ <span id="xp">0</span> XP</div>
-    <button id="galleryTop" class="pill" type="button">🖼️ My Gallery</button>
-    <button id="cityTop" class="pill" type="button">🏙️ My City</button>
-  </div>
-</header>
 
-<main class="shell">
-<section class="stage" aria-label="Interactive ELCraft Art Studio">
-  <button class="hotspot inspiration" data-feature="inspiration" data-label="📚 Inspiration Shelf" aria-label="Inspiration Shelf"></button>
-  <button class="hotspot painting" data-feature="painting" data-label="🎨 Painting Easels" aria-label="Painting Easels"></button>
-  <button class="hotspot gallery" data-feature="gallery" data-label="🖼️ My Gallery" aria-label="My Gallery"></button>
-  <button class="hotspot crafts" data-feature="crafts" data-label="✂️ Craft Station" aria-label="Craft Station"></button>
-  <button class="hotspot digital" data-feature="digital" data-label="💻 Digital Art" aria-label="Digital Art"></button>
-  <button class="hotspot drawing" data-feature="drawing" data-label="✏️ Drawing Table" aria-label="Drawing Table"></button>
-  <button class="hotspot supplies" data-feature="supplies" data-label="🖌️ Art Supplies" aria-label="Art Supplies"></button>
-  <button class="hotspot challenge" data-feature="challenge" data-label="✨ Creative Challenge" aria-label="Creative Challenge"></button>
-  <div class="tip">💡 Click any art station to paint, draw, create, or explore.</div>
-</section>
-</main>
+  <header class="topbar">
+
+    <div class="brand">
+      <div class="brand-icon">🎨</div>
+
+      <div>
+        <h1>ELCraft Art Studio</h1>
+        <p id="artistName">Loading artist...</p>
+      </div>
+    </div>
+
+    <div class="actions">
+      <div class="pill stat">🪙 <span id="coins">0</span></div>
+      <div class="pill stat">⭐ <span id="xp">0</span> XP</div>
+
+      <button id="galleryTop" class="pill" type="button">
+        🖼️ My Gallery
+      </button>
+
+      <button id="cityTop" class="pill" type="button">
+        🏙️ My City
+      </button>
+    </div>
+
+  </header>
+
+  <main class="shell">
+
+    <section class="stage" aria-label="Interactive ELCraft Art Studio">
+
+      <button
+        class="hotspot inspiration"
+        data-feature="inspiration"
+        data-label="📚 Inspiration Shelf"
+        aria-label="Inspiration Shelf">
+      </button>
+
+      <button
+        class="hotspot painting"
+        data-feature="painting"
+        data-label="🎨 Painting Easels"
+        aria-label="Painting Easels">
+      </button>
+
+      <button
+        class="hotspot gallery"
+        data-feature="gallery"
+        data-label="🖼️ My Gallery"
+        aria-label="My Gallery">
+      </button>
+
+      <button
+        class="hotspot crafts"
+        data-feature="crafts"
+        data-label="✂️ Craft Station"
+        aria-label="Craft Station">
+      </button>
+
+      <button
+        class="hotspot digital"
+        data-feature="digital"
+        data-label="💻 Digital Art"
+        aria-label="Digital Art">
+      </button>
+
+      <button
+        class="hotspot drawing"
+        data-feature="drawing"
+        data-label="✏️ Drawing Table"
+        aria-label="Drawing Table">
+      </button>
+
+      <button
+        class="hotspot supplies"
+        data-feature="supplies"
+        data-label="🖌️ Art Supplies"
+        aria-label="Art Supplies">
+      </button>
+
+      <button
+        class="hotspot challenge"
+        data-feature="challenge"
+        data-label="✨ Creative Challenge"
+        aria-label="Creative Challenge">
+      </button>
+
+      <div class="tip">
+        💡 Click any station to paint, draw, make crafts, or explore.
+      </div>
+
+    </section>
+
+  </main>
+
 </div>
 
-<section id="featureModal" class="modal" role="dialog" aria-modal="true">
-<div class="panel">
-  <div class="panel-top"><h2 id="featureTitle">Art Studio</h2><button class="close" data-close="featureModal" type="button">×</button></div>
-  <div id="featureIcon" class="icon">🎨</div>
-  <div id="featureMessage" class="message"></div>
-  <div id="featureList" class="list"></div>
-  <div class="modal-actions">
-    <button class="cancel" data-close="featureModal" type="button">Maybe Later</button>
-    <button id="enterFeature" class="enter" type="button">Start Creating</button>
+<section id="workspaceOverlay" class="overlay" role="dialog" aria-modal="true">
+
+  <div class="workspace">
+
+    <div class="workspace-head">
+
+      <div class="workspace-title">
+        <div id="workspaceIcon" style="font-size:32px;">🎨</div>
+
+        <div>
+          <h2 id="workspaceTitle">Painting Easels</h2>
+          <p id="workspaceCopy">Create something wonderful.</p>
+        </div>
+      </div>
+
+      <div class="head-actions">
+        <button id="newCanvasButton" class="head-button" type="button">
+          📄 New
+        </button>
+
+        <button id="saveButton" class="head-button" type="button">
+          💾 Save
+        </button>
+
+        <button class="head-button" data-close="workspaceOverlay" type="button">
+          ✕ Close
+        </button>
+      </div>
+
+    </div>
+
+    <div class="workspace-body">
+
+      <aside class="tool-panel">
+
+        <h3>Tools</h3>
+
+        <div id="toolGrid" class="tool-grid">
+
+          <button class="tool-button active" data-tool="brush" type="button">
+            🖌️ Brush
+          </button>
+
+          <button class="tool-button" data-tool="pencil" type="button">
+            ✏️ Pencil
+          </button>
+
+          <button class="tool-button" data-tool="marker" type="button">
+            🖍️ Marker
+          </button>
+
+          <button class="tool-button" data-tool="eraser" type="button">
+            🧽 Eraser
+          </button>
+
+          <button class="tool-button" data-tool="line" type="button">
+            📏 Line
+          </button>
+
+          <button class="tool-button" data-tool="rectangle" type="button">
+            ▭ Rectangle
+          </button>
+
+          <button class="tool-button" data-tool="circle" type="button">
+            ◯ Circle
+          </button>
+
+          <button class="tool-button" data-tool="fill" type="button">
+            🪣 Fill
+          </button>
+
+        </div>
+
+        <div id="palette" class="palette"></div>
+
+        <label class="range-label" for="sizeRange">
+          Tool size
+        </label>
+
+        <input
+          id="sizeRange"
+          type="range"
+          min="2"
+          max="45"
+          value="12">
+
+        <div class="tool-grid" style="margin-top:10px;">
+
+          <button id="undoButton" class="tool-button" type="button">
+            ↶ Undo
+          </button>
+
+          <button id="redoButton" class="tool-button" type="button">
+            ↷ Redo
+          </button>
+
+          <button id="clearButton" class="tool-button" type="button">
+            🗑️ Clear
+          </button>
+
+          <button id="backgroundButton" class="tool-button" type="button">
+            🌈 Background
+          </button>
+
+        </div>
+
+      </aside>
+
+      <div class="canvas-wrap">
+        <canvas
+          id="artCanvas"
+          width="960"
+          height="720"
+          aria-label="Art canvas">
+        </canvas>
+      </div>
+
+      <aside class="side-panel">
+
+        <h3 id="sideTitle">Creative Extras</h3>
+
+        <div id="stampGrid" class="stamp-grid"></div>
+
+        <h3 style="margin-top:14px;">Templates</h3>
+
+        <div id="templateGrid" class="template-grid"></div>
+
+        <div class="save-card">
+          Finished artwork saves to the Gallery Wall on this device.
+          Saving also awards coins and XP once per new piece.
+        </div>
+
+      </aside>
+
+    </div>
+
   </div>
-</div>
+
 </section>
 
-<section id="infoModal" class="modal" role="dialog" aria-modal="true">
-<div class="panel">
-  <div class="panel-top"><h2>Art Studio</h2><button class="close" data-close="infoModal" type="button">×</button></div>
-  <div class="message">This Art Studio station is ready to be built and connected.</div>
-</div>
+<section id="galleryOverlay" class="overlay" role="dialog" aria-modal="true">
+
+  <div class="gallery-panel">
+
+    <div class="gallery-head">
+      <div>
+        <h2>🖼️ My Art Gallery</h2>
+        <div style="font-size:10px;font-weight:900;color:#766b8d;margin-top:3px;">
+          Paintings, drawings, digital art, and crafts
+        </div>
+      </div>
+
+      <button class="close" data-close="galleryOverlay" type="button">
+        ×
+      </button>
+    </div>
+
+    <div id="galleryGrid" class="gallery-grid"></div>
+
+  </div>
+
 </section>
+
+<section id="simpleOverlay" class="overlay" role="dialog" aria-modal="true">
+
+  <div class="simple-panel">
+
+    <div class="simple-head">
+      <h2 id="simpleTitle">Art Studio</h2>
+
+      <button class="close" data-close="simpleOverlay" type="button">
+        ×
+      </button>
+    </div>
+
+    <div id="simpleList" class="option-list"></div>
+
+  </div>
+
+</section>
+
+<div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <script>
 (() => {
-  const childName = localStorage.getItem("elcraft_child_name") || "Artist";
-  let profile = {coins:Number(localStorage.getItem("elcraft_coins")||0),xp:0};
-  try{profile={...profile,...JSON.parse(localStorage.getItem("elcraft_profile_v1")||"{}")}}catch{}
+  const NAME_KEY = "elcraft_child_name";
+  const PROFILE_KEY = "elcraft_profile_v1";
+  const COINS_KEY = "elcraft_coins";
+  const GALLERY_KEY = "elcraft_art_gallery_v1";
+  const SUPPLIES_KEY = "elcraft_art_supplies_v1";
+  const CHALLENGE_KEY = "elcraft_art_challenge_v1";
 
-  const features = {
-    painting:{icon:"🎨",title:"Painting Easels",message:`Choose an easel and create a colorful masterpiece, ${childName}!`,items:["Free painting","Coloring pages","Brushes, stamps, and shapes"],route:null},
-    drawing:{icon:"✏️",title:"Drawing Table",message:"Draw with pencils, crayons, markers, and shapes.",items:["Free draw","Tracing","Learn to draw"],route:null},
-    digital:{icon:"💻",title:"Digital Art Desk",message:"Create digital pictures and decorate scenes.",items:["Digital canvas","Pixel art","Stickers and backgrounds"],route:null},
-    crafts:{icon:"✂️",title:"Craft Station",message:"Build paper crafts, clay creations, and collages.",items:["Paper crafts","Clay and sculpture","Collages"],route:null},
-    gallery:{icon:"🖼️",title:"My Art Gallery",message:"See every masterpiece saved from the Art Studio.",items:["Saved paintings","Saved drawings","Favorite creations"],route:null},
-    inspiration:{icon:"📚",title:"Inspiration Shelf",message:"Explore art ideas and simple drawing lessons.",items:["Color ideas","Art inspiration","Step-by-step lessons"],route:null},
-    supplies:{icon:"🖌️",title:"Art Supply Shelf",message:"Explore brushes, paints, stamps, and creative tools.",items:["Brush collection","Color palettes","Stamps and stickers"],route:null},
-    challenge:{icon:"✨",title:"Creative Challenge",message:`Welcome, ${childName}! Choose a station and make something special.`,items:["Try a new color","Draw from imagination","Save art to your gallery"],route:null}
+  const childName =
+    localStorage.getItem(NAME_KEY) ||
+    "Artist";
+
+  let profile = {
+    coins:
+      Number(
+        localStorage.getItem(COINS_KEY) ||
+        0
+      ),
+
+    xp:
+      0,
+
+    totalXp:
+      0
   };
 
-  let active = null;
-  const $ = id => document.getElementById(id);
-  $("artistName").textContent = `${childName}'s Creative Studio`;
-  $("coins").textContent = Number(profile.coins||0);
-  $("xp").textContent = Number(profile.xp||0);
+  try {
+    profile = {
+      ...profile,
+      ...JSON.parse(
+        localStorage.getItem(PROFILE_KEY) ||
+        "{}"
+      )
+    };
+  } catch {}
 
-  function open(id){$(id)?.classList.add("visible")}
-  function close(id){$(id)?.classList.remove("visible")}
-  function showFeature(feature){
-    active=feature;
-    $("featureTitle").textContent=feature.title;
-    $("featureIcon").textContent=feature.icon;
-    $("featureMessage").textContent=feature.message;
-    $("featureList").replaceChildren();
-    feature.items.forEach(item=>{
-      const row=document.createElement("div");
-      row.className="row";
-      row.textContent=`✨ ${item}`;
-      $("featureList").appendChild(row);
+  let gallery = [];
+
+  try {
+    gallery =
+      JSON.parse(
+        localStorage.getItem(GALLERY_KEY) ||
+        "[]"
+      );
+
+    if (!Array.isArray(gallery)) {
+      gallery = [];
+    }
+  } catch {
+    gallery = [];
+  }
+
+  let supplies = {
+    brush: true,
+    pencil: true,
+    marker: true,
+    eraser: true,
+    line: true,
+    rectangle: true,
+    circle: true,
+    fill: true,
+    rainbowBackground: true,
+    stamps: true
+  };
+
+  try {
+    supplies = {
+      ...supplies,
+      ...JSON.parse(
+        localStorage.getItem(SUPPLIES_KEY) ||
+        "{}"
+      )
+    };
+  } catch {}
+
+  const canvas =
+    document.getElementById("artCanvas");
+
+  const ctx =
+    canvas.getContext("2d",{
+      willReadFrequently: true
     });
-    $("enterFeature").textContent =
-      feature.route
-        ? (feature.title === "My Art Gallery" ? "Open Gallery" : "Start Creating")
-        : "See This Station";
-    open("featureModal");
-  }
 
-  document.querySelectorAll("[data-feature]").forEach(button=>{
-    button.addEventListener("click",()=>showFeature(features[button.dataset.feature]));
-  });
-  $("galleryTop").addEventListener("click",()=>showFeature(features.gallery));
-  $("cityTop").addEventListener("click",()=>{
-    location.href = "my-city.html";
-  });
-  $("enterFeature").addEventListener("click",()=>{
-    if(!active){
-      return;
+  let currentMode = "painting";
+  let currentTool = "brush";
+  let currentColor = "#7a5ce0";
+  let toolSize = 12;
+  let drawing = false;
+  let startX = 0;
+  let startY = 0;
+  let lastX = 0;
+  let lastY = 0;
+  let shapeSnapshot = null;
+  let history = [];
+  let historyIndex = -1;
+  let selectedStamp = "⭐";
+  let backgroundIndex = 0;
+
+  const colors = [
+    "#ff4f91",
+    "#e33d5d",
+    "#9b4bd3",
+    "#5574d8",
+    "#42a8b8",
+    "#45b86b",
+    "#ff8b42",
+    "#f4c947",
+    "#7b4d37",
+    "#29243c",
+    "#ffffff",
+    "#f2a5cf"
+  ];
+
+  const stamps = [
+    "⭐","❤️","🌈","🌸","🦋","🐾",
+    "☀️","🌙","🍓","🎵","✨","🎈"
+  ];
+
+  const templates = [
+    {
+      label: "Blank",
+      action: () => clearCanvas(true)
+    },
+    {
+      label: "Sky",
+      action: () => drawSkyTemplate()
+    },
+    {
+      label: "Garden",
+      action: () => drawGardenTemplate()
+    },
+    {
+      label: "Shapes",
+      action: () => drawShapeTemplate()
+    },
+    {
+      label: "Face",
+      action: () => drawFaceTemplate()
+    },
+    {
+      label: "House",
+      action: () => drawHouseTemplate()
     }
+  ];
 
-    if(active.route){
-      location.href=active.route;
-      return;
+  const modes = {
+    painting: {
+      icon: "🎨",
+      title: "Painting Easels",
+      copy: "Paint freely with brushes, colors, stamps, shapes, and backgrounds."
+    },
+
+    drawing: {
+      icon: "✏️",
+      title: "Drawing Table",
+      copy: "Draw with pencils, markers, shapes, tracing templates, and stamps."
+    },
+
+    digital: {
+      icon: "💻",
+      title: "Digital Art Desk",
+      copy: "Make bright digital art with shapes, backgrounds, stickers, and patterns."
+    },
+
+    crafts: {
+      icon: "✂️",
+      title: "Craft Station",
+      copy: "Build a digital collage using shapes, stamps, colors, and craft templates."
     }
-
-    close("featureModal");
-
-    $("infoModal").querySelector("h2").textContent =
-      `${active.icon} ${active.title}`;
-
-    $("infoModal").querySelector(".message").textContent =
-      `${active.title} is safely connected to the new Art Studio, but its creative activity has not been built yet. We can build this station next without sending the child to a missing page.`;
-
-    open("infoModal");
-  });
-  document.querySelectorAll("[data-close]").forEach(button=>button.addEventListener("click",()=>close(button.dataset.close)));
-  document.querySelectorAll(".modal").forEach(modal=>modal.addEventListener("click",event=>{if(event.target===modal)close(modal.id)}));
-
-  const image = new Image();
-  image.onerror=()=>{
-    $("infoModal").querySelector("h2").textContent =
-      "Art Studio artwork missing";
-
-    $("infoModal").querySelector(".message").textContent =
-      "Upload art-studio-background.png in the same folder as sky-world.html, then refresh the page.";
-
-    open("infoModal");
   };
-  image.src="art-studio-background.png?v=2";
 
-  function syncHeader(){
-    const header=document.querySelector(".topbar");
-    if(header)document.documentElement.style.setProperty("--header",`${Math.ceil(header.getBoundingClientRect().height)}px`);
+  const $ =
+    id =>
+      document.getElementById(id);
+
+  $("artistName").textContent =
+    `${childName}'s Creative Studio`;
+
+  function saveProfile() {
+    profile.coins =
+      Math.max(
+        0,
+        Number(profile.coins) ||
+        0
+      );
+
+    localStorage.setItem(
+      PROFILE_KEY,
+      JSON.stringify(profile)
+    );
+
+    localStorage.setItem(
+      COINS_KEY,
+      String(profile.coins)
+    );
+
+    renderStats();
   }
-  addEventListener("resize",syncHeader);
-  addEventListener("orientationchange",()=>setTimeout(syncHeader,180));
+
+  function renderStats() {
+    $("coins").textContent =
+      Number(profile.coins || 0);
+
+    $("xp").textContent =
+      Number(profile.xp || 0);
+  }
+
+  function toast(message) {
+    const element =
+      $("toast");
+
+    element.textContent =
+      message;
+
+    element.classList.add(
+      "visible"
+    );
+
+    clearTimeout(
+      window.__artToast
+    );
+
+    window.__artToast =
+      setTimeout(
+        () => {
+          element.classList.remove(
+            "visible"
+          );
+        },
+        2600
+      );
+  }
+
+  function openOverlay(id) {
+    $(id)?.classList.add(
+      "visible"
+    );
+  }
+
+  function closeOverlay(id) {
+    $(id)?.classList.remove(
+      "visible"
+    );
+  }
+
+  function fillWhite() {
+    ctx.save();
+    ctx.globalCompositeOperation =
+      "source-over";
+    ctx.fillStyle =
+      "#ffffff";
+    ctx.fillRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+    ctx.restore();
+  }
+
+  function clearCanvas(push = true) {
+    ctx.clearRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    fillWhite();
+
+    if (push) {
+      pushHistory();
+    }
+  }
+
+  function canvasPoint(event) {
+    const rect =
+      canvas.getBoundingClientRect();
+
+    const clientX =
+      event.touches?.[0]?.clientX ??
+      event.clientX;
+
+    const clientY =
+      event.touches?.[0]?.clientY ??
+      event.clientY;
+
+    return {
+      x:
+        (
+          clientX -
+          rect.left
+        ) *
+        (
+          canvas.width /
+          rect.width
+        ),
+
+      y:
+        (
+          clientY -
+          rect.top
+        ) *
+        (
+          canvas.height /
+          rect.height
+        )
+    };
+  }
+
+  function pushHistory() {
+    const data =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    history =
+      history.slice(
+        0,
+        historyIndex + 1
+      );
+
+    history.push(data);
+
+    if (history.length > 30) {
+      history.shift();
+    }
+
+    historyIndex =
+      history.length - 1;
+  }
+
+  function restoreHistory(index) {
+    if (
+      index < 0 ||
+      index >= history.length
+    ) {
+      return;
+    }
+
+    const image =
+      new Image();
+
+    image.onload =
+      () => {
+        ctx.clearRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        ctx.drawImage(
+          image,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      };
+
+    image.src =
+      history[index];
+  }
+
+  function setTool(tool) {
+    currentTool =
+      tool;
+
+    document
+      .querySelectorAll(
+        "[data-tool]"
+      )
+      .forEach(
+        button => {
+          button.classList.toggle(
+            "active",
+            button.dataset.tool ===
+              tool
+          );
+        }
+      );
+
+    canvas.style.cursor =
+      tool === "fill"
+        ? "cell"
+        : "crosshair";
+  }
+
+  function drawStroke(
+    x1,
+    y1,
+    x2,
+    y2
+  ) {
+    ctx.save();
+
+    ctx.lineCap =
+      "round";
+
+    ctx.lineJoin =
+      "round";
+
+    if (
+      currentTool ===
+      "eraser"
+    ) {
+      ctx.globalCompositeOperation =
+        "source-over";
+
+      ctx.strokeStyle =
+        "#ffffff";
+
+      ctx.lineWidth =
+        toolSize * 2;
+    } else if (
+      currentTool ===
+      "pencil"
+    ) {
+      ctx.globalAlpha =
+        .92;
+
+      ctx.strokeStyle =
+        currentColor;
+
+      ctx.lineWidth =
+        Math.max(
+          2,
+          toolSize * .42
+        );
+    } else if (
+      currentTool ===
+      "marker"
+    ) {
+      ctx.globalAlpha =
+        .48;
+
+      ctx.strokeStyle =
+        currentColor;
+
+      ctx.lineWidth =
+        toolSize * 1.8;
+    } else {
+      ctx.strokeStyle =
+        currentColor;
+
+      ctx.lineWidth =
+        toolSize;
+    }
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      x1,
+      y1
+    );
+
+    ctx.lineTo(
+      x2,
+      y2
+    );
+
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  function floodFill(
+    startX,
+    startY,
+    fillColor
+  ) {
+    const image =
+      ctx.getImageData(
+        0,
+        0,
+        canvas.width,
+        canvas.height
+      );
+
+    const data =
+      image.data;
+
+    const x =
+      Math.floor(startX);
+
+    const y =
+      Math.floor(startY);
+
+    const index =
+      (
+        y *
+        canvas.width +
+        x
+      ) *
+      4;
+
+    const target = [
+      data[index],
+      data[index + 1],
+      data[index + 2],
+      data[index + 3]
+    ];
+
+    const fill =
+      hexToRgba(fillColor);
+
+    if (
+      target[0] === fill[0] &&
+      target[1] === fill[1] &&
+      target[2] === fill[2]
+    ) {
+      return;
+    }
+
+    const stack = [
+      [x,y]
+    ];
+
+    const matches =
+      i =>
+        Math.abs(data[i] - target[0]) < 12 &&
+        Math.abs(data[i + 1] - target[1]) < 12 &&
+        Math.abs(data[i + 2] - target[2]) < 12 &&
+        Math.abs(data[i + 3] - target[3]) < 12;
+
+    while (stack.length) {
+      const [
+        px,
+        py
+      ] =
+        stack.pop();
+
+      if (
+        px < 0 ||
+        py < 0 ||
+        px >= canvas.width ||
+        py >= canvas.height
+      ) {
+        continue;
+      }
+
+      const i =
+        (
+          py *
+          canvas.width +
+          px
+        ) *
+        4;
+
+      if (!matches(i)) {
+        continue;
+      }
+
+      data[i] =
+        fill[0];
+
+      data[i + 1] =
+        fill[1];
+
+      data[i + 2] =
+        fill[2];
+
+      data[i + 3] =
+        255;
+
+      stack.push(
+        [px + 1,py],
+        [px - 1,py],
+        [px,py + 1],
+        [px,py - 1]
+      );
+    }
+
+    ctx.putImageData(
+      image,
+      0,
+      0
+    );
+  }
+
+  function hexToRgba(hex) {
+    const clean =
+      hex.replace(
+        "#",
+        ""
+      );
+
+    return [
+      parseInt(
+        clean.slice(0,2),
+        16
+      ),
+
+      parseInt(
+        clean.slice(2,4),
+        16
+      ),
+
+      parseInt(
+        clean.slice(4,6),
+        16
+      ),
+
+      255
+    ];
+  }
+
+  function pointerDown(event) {
+    event.preventDefault();
+
+    const point =
+      canvasPoint(event);
+
+    if (
+      currentTool ===
+      "fill"
+    ) {
+      floodFill(
+        point.x,
+        point.y,
+        currentColor
+      );
+
+      pushHistory();
+
+      return;
+    }
+
+    if (
+      currentTool ===
+      "stamp"
+    ) {
+      drawStamp(
+        point.x,
+        point.y
+      );
+
+      pushHistory();
+
+      return;
+    }
+
+    drawing =
+      true;
+
+    startX =
+      point.x;
+
+    startY =
+      point.y;
+
+    lastX =
+      point.x;
+
+    lastY =
+      point.y;
+
+    if (
+      ["line","rectangle","circle"]
+        .includes(currentTool)
+    ) {
+      shapeSnapshot =
+        ctx.getImageData(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+    }
+  }
+
+  function pointerMove(event) {
+    if (!drawing) {
+      return;
+    }
+
+    event.preventDefault();
+
+    const point =
+      canvasPoint(event);
+
+    if (
+      ["brush","pencil","marker","eraser"]
+        .includes(currentTool)
+    ) {
+      drawStroke(
+        lastX,
+        lastY,
+        point.x,
+        point.y
+      );
+
+      lastX =
+        point.x;
+
+      lastY =
+        point.y;
+
+      return;
+    }
+
+    if (
+      shapeSnapshot
+    ) {
+      ctx.putImageData(
+        shapeSnapshot,
+        0,
+        0
+      );
+    }
+
+    drawShapePreview(
+      point.x,
+      point.y
+    );
+  }
+
+  function pointerUp(event) {
+    if (!drawing) {
+      return;
+    }
+
+    drawing =
+      false;
+
+    if (
+      event
+    ) {
+      const point =
+        canvasPoint(event);
+
+      if (
+        ["line","rectangle","circle"]
+          .includes(currentTool)
+      ) {
+        if (
+          shapeSnapshot
+        ) {
+          ctx.putImageData(
+            shapeSnapshot,
+            0,
+            0
+          );
+        }
+
+        drawShapeFinal(
+          point.x,
+          point.y
+        );
+      }
+    }
+
+    shapeSnapshot =
+      null;
+
+    pushHistory();
+  }
+
+  function drawShapePreview(
+    x,
+    y
+  ) {
+    drawShape(
+      x,
+      y,
+      .65
+    );
+  }
+
+  function drawShapeFinal(
+    x,
+    y
+  ) {
+    drawShape(
+      x,
+      y,
+      1
+    );
+  }
+
+  function drawShape(
+    x,
+    y,
+    alpha
+  ) {
+    ctx.save();
+
+    ctx.globalAlpha =
+      alpha;
+
+    ctx.strokeStyle =
+      currentColor;
+
+    ctx.fillStyle =
+      currentColor + "33";
+
+    ctx.lineWidth =
+      Math.max(
+        3,
+        toolSize * .55
+      );
+
+    if (
+      currentTool ===
+      "line"
+    ) {
+      ctx.beginPath();
+
+      ctx.moveTo(
+        startX,
+        startY
+      );
+
+      ctx.lineTo(
+        x,
+        y
+      );
+
+      ctx.stroke();
+    }
+
+    if (
+      currentTool ===
+      "rectangle"
+    ) {
+      const width =
+        x -
+        startX;
+
+      const height =
+        y -
+        startY;
+
+      ctx.fillRect(
+        startX,
+        startY,
+        width,
+        height
+      );
+
+      ctx.strokeRect(
+        startX,
+        startY,
+        width,
+        height
+      );
+    }
+
+    if (
+      currentTool ===
+      "circle"
+    ) {
+      const radius =
+        Math.hypot(
+          x -
+          startX,
+          y -
+          startY
+        );
+
+      ctx.beginPath();
+
+      ctx.arc(
+        startX,
+        startY,
+        radius,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+      ctx.stroke();
+    }
+
+    ctx.restore();
+  }
+
+  function drawStamp(
+    x,
+    y
+  ) {
+    ctx.save();
+
+    ctx.font =
+      `${Math.max(34,toolSize * 4)}px Arial`;
+
+    ctx.textAlign =
+      "center";
+
+    ctx.textBaseline =
+      "middle";
+
+    ctx.fillText(
+      selectedStamp,
+      x,
+      y
+    );
+
+    ctx.restore();
+  }
+
+  function cycleBackground() {
+    const backgrounds = [
+      () => {
+        clearCanvas(false);
+      },
+
+      () => {
+        const gradient =
+          ctx.createLinearGradient(
+            0,
+            0,
+            canvas.width,
+            canvas.height
+          );
+
+        gradient.addColorStop(
+          0,
+          "#dff4ff"
+        );
+
+        gradient.addColorStop(
+          .5,
+          "#fff2cb"
+        );
+
+        gradient.addColorStop(
+          1,
+          "#ffd9ec"
+        );
+
+        ctx.fillStyle =
+          gradient;
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      },
+
+      () => {
+        const gradient =
+          ctx.createLinearGradient(
+            0,
+            0,
+            0,
+            canvas.height
+          );
+
+        gradient.addColorStop(
+          0,
+          "#8ed7ff"
+        );
+
+        gradient.addColorStop(
+          .66,
+          "#dff6ff"
+        );
+
+        gradient.addColorStop(
+          .67,
+          "#8bd36b"
+        );
+
+        gradient.addColorStop(
+          1,
+          "#5fb650"
+        );
+
+        ctx.fillStyle =
+          gradient;
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+      },
+
+      () => {
+        ctx.fillStyle =
+          "#17152f";
+
+        ctx.fillRect(
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
+
+        ctx.fillStyle =
+          "#fff1a6";
+
+        for (
+          let i =
+            0;
+          i <
+            90;
+          i +=
+            1
+        ) {
+          const x =
+            Math.random() *
+            canvas.width;
+
+          const y =
+            Math.random() *
+            canvas.height;
+
+          const r =
+            Math.random() *
+            3 +
+            1;
+
+          ctx.beginPath();
+
+          ctx.arc(
+            x,
+            y,
+            r,
+            0,
+            Math.PI * 2
+          );
+
+          ctx.fill();
+        }
+      }
+    ];
+
+    backgroundIndex =
+      (
+        backgroundIndex +
+        1
+      ) %
+      backgrounds.length;
+
+    backgrounds[
+      backgroundIndex
+    ]();
+
+    pushHistory();
+  }
+
+  function drawSkyTemplate() {
+    clearCanvas(false);
+
+    const gradient =
+      ctx.createLinearGradient(
+        0,
+        0,
+        0,
+        canvas.height
+      );
+
+    gradient.addColorStop(
+      0,
+      "#89d7ff"
+    );
+
+    gradient.addColorStop(
+      .68,
+      "#e9faff"
+    );
+
+    gradient.addColorStop(
+      .69,
+      "#8dd36b"
+    );
+
+    gradient.addColorStop(
+      1,
+      "#59ad4b"
+    );
+
+    ctx.fillStyle =
+      gradient;
+
+    ctx.fillRect(
+      0,
+      0,
+      canvas.width,
+      canvas.height
+    );
+
+    ctx.fillStyle =
+      "#ffe36a";
+
+    ctx.beginPath();
+
+    ctx.arc(
+      780,
+      120,
+      62,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fill();
+
+    pushHistory();
+  }
+
+  function drawGardenTemplate() {
+    drawSkyTemplate();
+
+    ctx.fillStyle =
+      "#e76a91";
+
+    for (
+      let x =
+        110;
+      x <
+        900;
+      x +=
+        120
+    ) {
+      ctx.beginPath();
+
+      ctx.arc(
+        x,
+        555,
+        24,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+
+      ctx.strokeStyle =
+        "#39864d";
+
+      ctx.lineWidth =
+        7;
+
+      ctx.beginPath();
+
+      ctx.moveTo(
+        x,
+        580
+      );
+
+      ctx.lineTo(
+        x,
+        665
+      );
+
+      ctx.stroke();
+    }
+
+    pushHistory();
+  }
+
+  function drawShapeTemplate() {
+    clearCanvas(false);
+
+    ctx.lineWidth =
+      8;
+
+    ctx.strokeStyle =
+      "#c7b8df";
+
+    const shapes = [
+      ["circle",220,210,95],
+      ["square",520,115,190],
+      ["triangle",780,115,190],
+      ["circle",300,520,100],
+      ["square",580,425,190]
+    ];
+
+    shapes.forEach(
+      shape => {
+        if (
+          shape[0] ===
+          "circle"
+        ) {
+          ctx.beginPath();
+
+          ctx.arc(
+            shape[1],
+            shape[2],
+            shape[3],
+            0,
+            Math.PI * 2
+          );
+
+          ctx.stroke();
+        }
+
+        if (
+          shape[0] ===
+          "square"
+        ) {
+          ctx.strokeRect(
+            shape[1],
+            shape[2],
+            shape[3],
+            shape[3]
+          );
+        }
+
+        if (
+          shape[0] ===
+          "triangle"
+        ) {
+          ctx.beginPath();
+
+          ctx.moveTo(
+            shape[1] +
+            shape[3] / 2,
+            shape[2]
+          );
+
+          ctx.lineTo(
+            shape[1],
+            shape[2] +
+            shape[3]
+          );
+
+          ctx.lineTo(
+            shape[1] +
+            shape[3],
+            shape[2] +
+            shape[3]
+          );
+
+          ctx.closePath();
+          ctx.stroke();
+        }
+      }
+    );
+
+    pushHistory();
+  }
+
+  function drawFaceTemplate() {
+    clearCanvas(false);
+
+    ctx.strokeStyle =
+      "#c7b8df";
+
+    ctx.lineWidth =
+      8;
+
+    ctx.beginPath();
+
+    ctx.arc(
+      480,
+      355,
+      250,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.arc(
+      390,
+      300,
+      28,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.arc(
+      570,
+      300,
+      28,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.stroke();
+
+    ctx.beginPath();
+
+    ctx.arc(
+      480,
+      395,
+      110,
+      0,
+      Math.PI
+    );
+
+    ctx.stroke();
+
+    pushHistory();
+  }
+
+  function drawHouseTemplate() {
+    clearCanvas(false);
+
+    ctx.strokeStyle =
+      "#c7b8df";
+
+    ctx.lineWidth =
+      8;
+
+    ctx.strokeRect(
+      300,
+      310,
+      360,
+      280
+    );
+
+    ctx.beginPath();
+
+    ctx.moveTo(
+      250,
+      315
+    );
+
+    ctx.lineTo(
+      480,
+      120
+    );
+
+    ctx.lineTo(
+      710,
+      315
+    );
+
+    ctx.closePath();
+    ctx.stroke();
+
+    ctx.strokeRect(
+      440,
+      440,
+      80,
+      150
+    );
+
+    pushHistory();
+  }
+
+  function renderPalette() {
+    const box =
+      $("palette");
+
+    box.replaceChildren();
+
+    colors.forEach(
+      color => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          `color${
+            color ===
+            currentColor
+              ? " active"
+              : ""
+          }`;
+
+        button.style.background =
+          color;
+
+        button.type =
+          "button";
+
+        button.addEventListener(
+          "click",
+          () => {
+            currentColor =
+              color;
+
+            renderPalette();
+          }
+        );
+
+        box.appendChild(
+          button
+        );
+      }
+    );
+  }
+
+  function renderStamps() {
+    const box =
+      $("stampGrid");
+
+    box.replaceChildren();
+
+    stamps.forEach(
+      stamp => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          "stamp";
+
+        button.type =
+          "button";
+
+        button.textContent =
+          stamp;
+
+        button.addEventListener(
+          "click",
+          () => {
+            selectedStamp =
+              stamp;
+
+            setTool(
+              "stamp"
+            );
+
+            toast(
+              `${stamp} stamp selected`
+            );
+          }
+        );
+
+        box.appendChild(
+          button
+        );
+      }
+    );
+  }
+
+  function renderTemplates() {
+    const box =
+      $("templateGrid");
+
+    box.replaceChildren();
+
+    templates.forEach(
+      template => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.className =
+          "template";
+
+        button.type =
+          "button";
+
+        button.textContent =
+          template.label;
+
+        button.addEventListener(
+          "click",
+          template.action
+        );
+
+        box.appendChild(
+          button
+        );
+      }
+    );
+  }
+
+  function openWorkspace(mode) {
+    currentMode =
+      mode;
+
+    const data =
+      modes[mode];
+
+    $("workspaceIcon").textContent =
+      data.icon;
+
+    $("workspaceTitle").textContent =
+      data.title;
+
+    $("workspaceCopy").textContent =
+      data.copy;
+
+    if (
+      mode ===
+      "drawing"
+    ) {
+      setTool(
+        "pencil"
+      );
+    } else if (
+      mode ===
+      "digital"
+    ) {
+      setTool(
+        "rectangle"
+      );
+    } else if (
+      mode ===
+      "crafts"
+    ) {
+      setTool(
+        "stamp"
+      );
+    } else {
+      setTool(
+        "brush"
+      );
+    }
+
+    openOverlay(
+      "workspaceOverlay"
+    );
+
+    requestAnimationFrame(
+      resizeCanvasDisplay
+    );
+  }
+
+  function resizeCanvasDisplay() {
+    const wrap =
+      canvas.parentElement;
+
+    const availableWidth =
+      wrap.clientWidth -
+      12;
+
+    const availableHeight =
+      wrap.clientHeight -
+      12;
+
+    const ratio =
+      canvas.width /
+      canvas.height;
+
+    let width =
+      availableWidth;
+
+    let height =
+      width /
+      ratio;
+
+    if (
+      height >
+      availableHeight
+    ) {
+      height =
+        availableHeight;
+
+      width =
+        height *
+        ratio;
+    }
+
+    canvas.style.width =
+      `${Math.max(260,width)}px`;
+
+    canvas.style.height =
+      `${Math.max(195,height)}px`;
+  }
+
+  function saveArtwork() {
+    const createdAt =
+      new Date();
+
+    const item = {
+      id:
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : String(Date.now()),
+
+      mode:
+        currentMode,
+
+      title:
+        `${modes[currentMode].title} Creation`,
+
+      image:
+        canvas.toDataURL(
+          "image/png"
+        ),
+
+      createdAt:
+        createdAt.toISOString()
+    };
+
+    gallery.unshift(
+      item
+    );
+
+    gallery =
+      gallery.slice(
+        0,
+        30
+      );
+
+    try {
+      localStorage.setItem(
+        GALLERY_KEY,
+        JSON.stringify(gallery)
+      );
+    } catch {
+      gallery.pop();
+
+      toast(
+        "This device has reached its artwork storage limit."
+      );
+
+      return;
+    }
+
+    profile.coins =
+      Number(
+        profile.coins ||
+        0
+      ) +
+      10;
+
+    profile.xp =
+      Number(
+        profile.xp ||
+        0
+      ) +
+      15;
+
+    profile.totalXp =
+      Number(
+        profile.totalXp ||
+        0
+      ) +
+      15;
+
+    saveProfile();
+
+    toast(
+      "Artwork saved! +10 coins and +15 XP"
+    );
+  }
+
+  function renderGallery() {
+    const grid =
+      $("galleryGrid");
+
+    grid.replaceChildren();
+
+    if (!gallery.length) {
+      grid.innerHTML = `
+        <div class="empty-gallery">
+          🎨 Your Gallery Wall is waiting for its first masterpiece!
+        </div>
+      `;
+
+      return;
+    }
+
+    gallery.forEach(
+      item => {
+        const card =
+          document.createElement(
+            "article"
+          );
+
+        card.className =
+          "art-card";
+
+        const date =
+          new Date(
+            item.createdAt
+          );
+
+        card.innerHTML = `
+          <img
+            src="${item.image}"
+            alt="${item.title}">
+
+          <h4>
+            ${item.title}
+          </h4>
+
+          <p>
+            ${
+              date.toLocaleDateString()
+            }
+          </p>
+
+          <div class="card-actions">
+            <button
+              class="open-art"
+              type="button">
+              Open
+            </button>
+
+            <button
+              class="delete-art"
+              type="button">
+              Delete
+            </button>
+          </div>
+        `;
+
+        card
+          .querySelector(
+            ".open-art"
+          )
+          .addEventListener(
+            "click",
+            () => {
+              const image =
+                new Image();
+
+              image.onload =
+                () => {
+                  ctx.clearRect(
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+
+                  ctx.drawImage(
+                    image,
+                    0,
+                    0,
+                    canvas.width,
+                    canvas.height
+                  );
+
+                  currentMode =
+                    item.mode ||
+                    "painting";
+
+                  history = [];
+                  historyIndex = -1;
+                  pushHistory();
+
+                  closeOverlay(
+                    "galleryOverlay"
+                  );
+
+                  openWorkspace(
+                    currentMode
+                  );
+                };
+
+              image.src =
+                item.image;
+            }
+          );
+
+        card
+          .querySelector(
+            ".delete-art"
+          )
+          .addEventListener(
+            "click",
+            () => {
+              gallery =
+                gallery.filter(
+                  piece =>
+                    piece.id !==
+                    item.id
+                );
+
+              localStorage.setItem(
+                GALLERY_KEY,
+                JSON.stringify(gallery)
+              );
+
+              renderGallery();
+            }
+          );
+
+        grid.appendChild(
+          card
+        );
+      }
+    );
+  }
+
+  function openGallery() {
+    renderGallery();
+
+    openOverlay(
+      "galleryOverlay"
+    );
+  }
+
+  function showSimple(
+    title,
+    options
+  ) {
+    $("simpleTitle").textContent =
+      title;
+
+    const list =
+      $("simpleList");
+
+    list.replaceChildren();
+
+    options.forEach(
+      option => {
+        const box =
+          document.createElement(
+            "div"
+          );
+
+        box.className =
+          "option";
+
+        box.innerHTML = `
+          <div>
+            ${option.copy}
+          </div>
+        `;
+
+        if (
+          option.button
+        ) {
+          const button =
+            document.createElement(
+              "button"
+            );
+
+          button.type =
+            "button";
+
+          button.textContent =
+            option.button;
+
+          button.addEventListener(
+            "click",
+            () => {
+              option.action?.();
+            }
+          );
+
+          box.appendChild(
+            button
+          );
+        }
+
+        list.appendChild(
+          box
+        );
+      }
+    );
+
+    openOverlay(
+      "simpleOverlay"
+    );
+  }
+
+  function openInspiration() {
+    showSimple(
+      "📚 Inspiration Shelf",
+      [
+        {
+          copy:
+            "🌈 Draw a magical place using only three colors.",
+          button:
+            "Start Painting",
+          action:
+            () => {
+              closeOverlay(
+                "simpleOverlay"
+              );
+
+              openWorkspace(
+                "painting"
+              );
+            }
+        },
+
+        {
+          copy:
+            "🦋 Draw an animal with a surprising new superpower.",
+          button:
+            "Start Drawing",
+          action:
+            () => {
+              closeOverlay(
+                "simpleOverlay"
+              );
+
+              openWorkspace(
+                "drawing"
+              );
+            }
+        },
+
+        {
+          copy:
+            "🏠 Design a dream house for a tiny fantasy creature.",
+          button:
+            "Use House Template",
+          action:
+            () => {
+              closeOverlay(
+                "simpleOverlay"
+              );
+
+              openWorkspace(
+                "drawing"
+              );
+
+              setTimeout(
+                drawHouseTemplate,
+                100
+              );
+            }
+        }
+      ]
+    );
+  }
+
+  function openSupplies() {
+    showSimple(
+      "🖌️ Art Supplies",
+      [
+        {
+          copy:
+            "✅ Brushes, pencils, markers, eraser, fill bucket, lines, rectangles, and circles are available."
+        },
+
+        {
+          copy:
+            "✅ Twelve paint colors, adjustable tool sizes, backgrounds, templates, stamps, undo, and redo are available."
+        },
+
+        {
+          copy:
+            "More supplies can later be added as coin rewards without rebuilding the Art Studio."
+        }
+      ]
+    );
+  }
+
+  function dailyChallenge() {
+    const challengeIndex =
+      Math.floor(
+        Date.now() /
+        86400000
+      ) %
+      5;
+
+    const challenges = [
+      {
+        copy:
+          "🎨 Create a picture using blue, purple, and yellow.",
+        mode:
+          "painting"
+      },
+
+      {
+        copy:
+          "✏️ Draw a friendly animal doing something silly.",
+        mode:
+          "drawing"
+      },
+
+      {
+        copy:
+          "💻 Build a digital picture using at least three shapes.",
+        mode:
+          "digital"
+      },
+
+      {
+        copy:
+          "✂️ Make a collage using five different stamps.",
+        mode:
+          "crafts"
+      },
+
+      {
+        copy:
+          "🌈 Create a scene that shows your favorite kind of weather.",
+        mode:
+          "painting"
+      }
+    ];
+
+    const challenge =
+      challenges[
+        challengeIndex
+      ];
+
+    showSimple(
+      "✨ Creative Challenge",
+      [
+        {
+          copy:
+            challenge.copy,
+
+          button:
+            "Start Challenge",
+
+          action:
+            () => {
+              localStorage.setItem(
+                CHALLENGE_KEY,
+                JSON.stringify({
+                  date:
+                    new Date()
+                      .toLocaleDateString(
+                        "en-CA"
+                      ),
+
+                  mode:
+                    challenge.mode
+                })
+              );
+
+              closeOverlay(
+                "simpleOverlay"
+              );
+
+              openWorkspace(
+                challenge.mode
+              );
+            }
+        },
+
+        {
+          copy:
+            "Saving the finished artwork awards the normal +10 coins and +15 XP."
+        }
+      ]
+    );
+  }
+
+  document
+    .querySelectorAll(
+      "[data-feature]"
+    )
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
+            const feature =
+              button.dataset.feature;
+
+            if (
+              ["painting","drawing","digital","crafts"]
+                .includes(feature)
+            ) {
+              openWorkspace(
+                feature
+              );
+            }
+
+            if (
+              feature ===
+              "gallery"
+            ) {
+              openGallery();
+            }
+
+            if (
+              feature ===
+              "inspiration"
+            ) {
+              openInspiration();
+            }
+
+            if (
+              feature ===
+              "supplies"
+            ) {
+              openSupplies();
+            }
+
+            if (
+              feature ===
+              "challenge"
+            ) {
+              dailyChallenge();
+            }
+          }
+        );
+      }
+    );
+
+  document
+    .querySelectorAll(
+      "[data-tool]"
+    )
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
+            setTool(
+              button.dataset.tool
+            );
+          }
+        );
+      }
+    );
+
+  document
+    .querySelectorAll(
+      "[data-close]"
+    )
+    .forEach(
+      button => {
+        button.addEventListener(
+          "click",
+          () => {
+            closeOverlay(
+              button.dataset.close
+            );
+          }
+        );
+      }
+    );
+
+  document
+    .querySelectorAll(
+      ".overlay"
+    )
+    .forEach(
+      overlay => {
+        overlay.addEventListener(
+          "click",
+          event => {
+            if (
+              event.target ===
+              overlay
+            ) {
+              closeOverlay(
+                overlay.id
+              );
+            }
+          }
+        );
+      }
+    );
+
+  $("galleryTop").addEventListener(
+    "click",
+    openGallery
+  );
+
+  $("cityTop").addEventListener(
+    "click",
+    () => {
+      location.href =
+        "my-city.html";
+    }
+  );
+
+  $("sizeRange").addEventListener(
+    "input",
+    event => {
+      toolSize =
+        Number(
+          event.target.value
+        );
+    }
+  );
+
+  $("undoButton").addEventListener(
+    "click",
+    () => {
+      if (
+        historyIndex >
+        0
+      ) {
+        historyIndex -=
+          1;
+
+        restoreHistory(
+          historyIndex
+        );
+      }
+    }
+  );
+
+  $("redoButton").addEventListener(
+    "click",
+    () => {
+      if (
+        historyIndex <
+        history.length -
+        1
+      ) {
+        historyIndex +=
+          1;
+
+        restoreHistory(
+          historyIndex
+        );
+      }
+    }
+  );
+
+  $("clearButton").addEventListener(
+    "click",
+    () => {
+      clearCanvas(
+        true
+      );
+    }
+  );
+
+  $("backgroundButton").addEventListener(
+    "click",
+    cycleBackground
+  );
+
+  $("newCanvasButton").addEventListener(
+    "click",
+    () => {
+      clearCanvas(
+        true
+      );
+
+      toast(
+        "New canvas ready"
+      );
+    }
+  );
+
+  $("saveButton").addEventListener(
+    "click",
+    saveArtwork
+  );
+
+  canvas.addEventListener(
+    "pointerdown",
+    pointerDown
+  );
+
+  canvas.addEventListener(
+    "pointermove",
+    pointerMove
+  );
+
+  canvas.addEventListener(
+    "pointerup",
+    pointerUp
+  );
+
+  canvas.addEventListener(
+    "pointerleave",
+    pointerUp
+  );
+
+  canvas.addEventListener(
+    "pointercancel",
+    pointerUp
+  );
+
+  window.addEventListener(
+    "resize",
+    resizeCanvasDisplay
+  );
+
+  function syncHeader() {
+    const header =
+      document.querySelector(
+        ".topbar"
+      );
+
+    if (header) {
+      document.documentElement
+        .style
+        .setProperty(
+          "--header-height",
+          `${Math.ceil(
+            header
+              .getBoundingClientRect()
+              .height
+          )}px`
+        );
+    }
+  }
+
+  window.addEventListener(
+    "resize",
+    syncHeader
+  );
+
+  window.addEventListener(
+    "orientationchange",
+    () => {
+      setTimeout(
+        () => {
+          syncHeader();
+          resizeCanvasDisplay();
+        },
+        180
+      );
+    }
+  );
+
+  renderStats();
+  renderPalette();
+  renderStamps();
+  renderTemplates();
+
+  clearCanvas(false);
+  pushHistory();
   syncHeader();
+
+  const backgroundTest =
+    new Image();
+
+  backgroundTest.onerror =
+    () => {
+      toast(
+        "Upload art-studio-background-final.png beside sky-world.html."
+      );
+    };
+
+  backgroundTest.src =
+    "art-studio-background-final.png?v=4";
 })();
 </script>
 
 <script type="module" src="notification-bell.js"></script>
 <script type="module" src="global-navigation.js?v=1"></script>
+
 </body>
 </html>
