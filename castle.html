@@ -245,6 +245,14 @@ main{width:min(1280px,100%);margin:auto;padding:18px}
       <span class="tag">Always Open</span>
     </button>
 
+
+    <button class="room primary" data-room="salon" data-open="true">
+      <div class="icon">💄👑</div>
+      <h2>Royal Salon</h2>
+      <p>Choose hairstyles, face paint, crowns, jewelry, and royal outfits.</p>
+      <span class="tag">Always Open</span>
+    </button>
+
     <button class="room" data-room="treasure" data-stars="25">
       <div class="icon">🎁</div>
       <h2>Treasure Room</h2>
@@ -349,6 +357,7 @@ main{width:min(1280px,100%);margin:auto;padding:18px}
     sky:{icon:'☁️🌈',title:'Sky World Portal',text:'The portal is always open. Step through the glowing doors and travel to Sky World.',go:'sky-world.html',label:'Travel to Sky World'},
     throne:{icon:'👑',title:'Royal Hall',text:`Welcome, ${name}! Your royal title is Castle Explorer. As your learning stars grow, this hall will gain banners, lights, trophies, and magical decorations.`,go:'progress.html',label:'See World Progress'},
     map:{icon:'🗺️',title:'World Map Room',text:'Choose an adventure: return to My City, visit School, customize your character, or travel to Sky World.',go:'my-city.html',label:'Return to My City'},
+    salon:{icon:'💄👑',title:'Royal Salon',text:'Step into the Royal Salon to choose hairstyles, face paint, crowns, jewelry, and complete royal looks.',go:'salon.html',label:'Enter the Royal Salon'},
     treasure:{icon:'🎁',title:'Treasure Room',text:'Your treasure room is open! This will become the home for special rewards, collected objects, and rare ELCraft items.',go:'market.html',label:'Visit the Market'},
     stories:{icon:'📖✨',title:'Story Chamber',text:'The Story Chamber turns reading and writing progress into magical tales. More story features can be added here next.',go:'reading.html',label:'Visit Reading'},
     magic:{icon:'🔮',title:'Magic Workshop',text:'The Magic Workshop combines art, music, science, patterns, and imagination. It is ready to grow into a creative activity room.',go:'sky-world.html',label:'Enter Sky World'}
@@ -390,5 +399,9 @@ main{width:min(1280px,100%);margin:auto;padding:18px}
   src="global-navigation.js?v=1">
 </script>
   
+  <script
+    type="module"
+    src="integration-core.js?v=2">
+  </script>
 </body>
 </html>
