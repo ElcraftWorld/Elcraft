@@ -1971,5 +1971,22 @@
     type="module"
     src="parent-art-approvals.js?v=2">
   </script>
+
+  <script>
+    /* Fail-safe navigation: this remains active even if dashboard data loading fails. */
+    document.addEventListener("DOMContentLoaded", () => {
+      const familyCastleButton = document.getElementById("castleButton");
+      const familyCastleCardButton = document.getElementById("openCastleButton");
+
+      [familyCastleButton, familyCastleCardButton]
+        .filter(Boolean)
+        .forEach(button => {
+          button.addEventListener("click", () => {
+            window.location.assign("family-castle.html");
+          });
+        });
+    });
+  </script>
+
 </body>
 </html>
