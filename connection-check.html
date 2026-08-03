@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#5c4fd0">
+  <title>ELCraft Connection Check</title>
+  <style>
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}
+    body{padding:24px;color:#37365d;background:linear-gradient(145deg,#dff5ff,#eee7ff 55%,#fff0d8);font-family:Arial,Helvetica,sans-serif}
+    .page{width:min(1100px,100%);margin:0 auto}.hero,.panel{border:5px solid white;border-radius:28px;padding:20px;background:rgba(255,255,255,.96);box-shadow:0 18px 48px rgba(55,49,121,.18)}
+    .hero h1{margin:0;color:#554ecb;font-size:clamp(30px,6vw,48px)}.hero p{margin:8px 0 0;color:#747a98;font-weight:800;line-height:1.5}
+    .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}button,a{min-height:44px;border:0;border-radius:14px;padding:11px 15px;color:white;background:#7758df;font-weight:1000;text-decoration:none;cursor:pointer}.secondary{color:#5b4f90;background:#eee9ff}
+    .panel{margin-top:18px}.summary{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:14px}.summary-card{border:3px solid #e8e1f5;border-radius:17px;padding:13px;background:#fbfaff;text-align:center}.summary-card strong{display:block;color:#554ecb;font-size:25px}
+    .grid{display:grid;gap:9px}.row{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:10px;align-items:center;border:3px solid #e8e1f5;border-radius:15px;padding:10px;background:white}.row.ok{border-color:#cceac9;background:#f4fff2}.row.fail{border-color:#f0c8d0;background:#fff3f6}
+    .status{font-size:22px;text-align:center}.name{color:#4d4770;font-weight:1000}.path{margin-top:3px;color:#8589a4;font-size:10px;font-weight:800}.open-link{min-height:36px;padding:8px 11px;font-size:10px}
+    @media(max-width:620px){body{padding:10px}.summary{grid-template-columns:1fr}.row{grid-template-columns:34px minmax(0,1fr)}.open-link{grid-column:1/-1;text-align:center}}
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <h1>🔌 ELCraft Connection Check</h1>
+      <p>Private developer page. It checks whether each important room and shared script exists in the current Vercel deployment.</p>
+      <div class="actions">
+        <button id="runCheck" type="button">Run Full Check</button>
+        <a class="secondary" href="parent-dashboard.html">Parent Dashboard</a>
+        <a class="secondary" href="my-city.html">My City</a>
+      </div>
+    </section>
+    <section class="panel">
+      <div class="summary">
+        <div class="summary-card"><strong id="totalCount">0</strong>Checked</div>
+        <div class="summary-card"><strong id="passCount">0</strong>Available</div>
+        <div class="summary-card"><strong id="failCount">0</strong>Missing</div>
+      </div>
+      <div id="results" class="grid"></div>
+    </section>
+  </main>
+  <script>
+    const targets=[
+      ["Parent Dashboard","parent-dashboard.html"],["Family Castle","family-castle.html"],["Profiles","profiles.html"],["My City","my-city.html"],["School","school.html"],["Library","library.html"],["Art Studio","sky-world.html"],["Clubhouse","clubhouse.html"],["Castle","castle.html"],["Royal Salon","salon.html"],["Music Studio","music-studio.html"],["Market","market.html"],["Inventory","inventory.html"],["Character","my-character.html"],["Farm","farm.html"],["Discovery","discovery.html"],["Adventure Mountain","mountain.html"],["Quests","quests.html"],["Progress","progress.html"],["Integration Core","integration-core.js"],["Global Navigation","global-navigation.js"],["Parent Gate","parent-gate.js"],["Inventory Module","inventory.js"],["Clubhouse Art Wall","clubhouse-art-wall.js"],["Parent Art Approvals","parent-art-approvals.js"],["Supabase Client","supabase-client.js"],["Auth Guard","auth-guard.js"],["World Engine","world-engine.js"]
+    ];
+    const results=document.getElementById("results");
+    const totalCount=document.getElementById("totalCount");
+    const passCount=document.getElementById("passCount");
+    const failCount=document.getElementById("failCount");
+    async function checkTarget(name,path){
+      const row=document.createElement("div");row.className="row";
+      row.innerHTML=`<div class="status">⏳</div><div><div class="name">${name}</div><div class="path">${path}</div></div><a class="open-link" href="${path}" target="_blank" rel="noopener">Open</a>`;
+      results.appendChild(row);
+      try{
+        const response=await fetch(`${path}?connection_check=${Date.now()}`,{method:"GET",cache:"no-store"});
+        if(!response.ok)throw new Error(`HTTP ${response.status}`);
+        row.classList.add("ok");row.querySelector(".status").textContent="✅";return true;
+      }catch(error){
+        row.classList.add("fail");row.querySelector(".status").textContent="❌";row.querySelector(".path").textContent=`${path} — ${error.message}`;return false;
+      }
+    }
+    async function runCheck(){
+      results.replaceChildren();totalCount.textContent=targets.length;passCount.textContent="0";failCount.textContent="0";
+      let passed=0;
+      for(const [name,path] of targets){
+        const success=await checkTarget(name,path);if(success)passed+=1;
+        passCount.textContent=passed;failCount.textContent=targets.length-passed;
+      }
+    }
+    document.getElementById("runCheck").addEventListener("click",runCheck);
+    runCheck();
+  </script>
+</body>
+</html>
