@@ -11,12 +11,12 @@
 
   <title>ELCraft Interactive School</title>
 
-  <!-- final build: no changing lesson panel -->
+  <!-- final responsive build: full artwork always visible -->
 
   <link
     rel="preload"
     as="image"
-    href="school-background-final.png?v=2">
+    href="school-background-final.png?v=3">
 
   <style>
     * {
@@ -31,6 +31,7 @@
       --green: #6cc855;
       --ink: #35385d;
       --muted: #747a98;
+      --school-header-height: 72px;
     }
 
     html,
@@ -63,16 +64,21 @@
       inset: 0;
 
       display: grid;
-      grid-template-rows: auto 1fr;
+      grid-template-rows: auto minmax(0, 1fr);
 
-      background: #21133d;
+      background:
+        radial-gradient(
+          circle at 50% 30%,
+          #39245e,
+          #160d29 72%
+        );
     }
 
     .topbar {
       position: relative;
       z-index: 100;
 
-      min-height: 72px;
+      min-height: var(--school-header-height, 72px);
 
       display: flex;
       align-items: center;
@@ -154,22 +160,66 @@
 
     .scene-shell {
       position: relative;
+      min-width: 0;
       min-height: 0;
+
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
       overflow: hidden;
+
+      padding:
+        clamp(4px, 1vw, 12px);
     }
 
+    /*
+      The approved School artwork is 1536 × 1024, which is a 3:2 ratio.
+
+      The scene itself now keeps that exact ratio and becomes the largest
+      rectangle that fits inside the available screen. Because every hotspot
+      is positioned inside this scene, the artwork and clickable areas scale
+      together on every device.
+    */
     .scene {
-      position: absolute;
-      inset: 0;
+      position: relative;
+
+      width:
+        min(
+          100%,
+          calc(
+            (
+              100dvh -
+              var(--school-header-height, 72px) -
+              clamp(8px, 2vw, 24px)
+            ) *
+            1.5
+          )
+        );
+
+      max-height: 100%;
+
+      aspect-ratio: 3 / 2;
 
       overflow: hidden;
+
+      border:
+        clamp(2px, .35vw, 6px)
+        solid
+        rgba(255,255,255,.16);
+
+      border-radius:
+        clamp(8px, 1vw, 16px);
 
       background:
         #21133d
-        url("school-background-final.png?v=2")
+        url("school-background-final.png?v=3")
         center center /
-        cover
+        100% 100%
         no-repeat;
+
+      box-shadow:
+        0 20px 50px rgba(8,4,20,.38);
     }
 
     .scene::after {
@@ -226,7 +276,7 @@
 
       position: absolute;
       left: 50%;
-      bottom: -42px;
+      bottom: 8px;
 
       transform: translateX(-50%);
 
@@ -390,9 +440,10 @@
       position: absolute;
       left: 50%;
       bottom:
-        max(
-          9px,
-          env(safe-area-inset-bottom)
+        clamp(
+          4px,
+          1.1%,
+          12px
         );
       z-index: 20;
 
@@ -749,28 +800,102 @@
       }
     }
 
-    @media (max-width: 900px) {
+    @media (max-width: 1000px) {
+      :root {
+        --school-header-height: 64px;
+      }
+
+      .topbar {
+        padding: 8px 10px;
+      }
+
+      .brand-icon {
+        font-size: 30px;
+      }
+
+      .brand h1 {
+        font-size: clamp(18px, 3.4vw, 26px);
+      }
+
       .brand p,
       .top-actions .stat {
         display: none;
       }
 
+      .top-button {
+        min-height: 39px;
+        padding: 7px 9px;
+      }
+
       .floating-tip {
+        width: min(650px, calc(100% - 18px));
+        padding: 7px 11px;
         font-size: 9px;
       }
 
       .hotspot::after {
         font-size: 9px;
+        padding: 6px 9px;
       }
     }
 
-    @media (max-width: 680px) {
+    @media (max-width: 700px) {
+      :root {
+        --school-header-height: 58px;
+      }
+
+      .topbar {
+        min-height: 58px;
+      }
+
+      .brand {
+        gap: 7px;
+      }
+
+      .brand-icon {
+        font-size: 25px;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+      }
+
       .top-actions {
         display: none;
       }
 
+      .scene-shell {
+        padding: 4px;
+      }
+
       .scene {
-        background-size: auto 100%;
+        width:
+          min(
+            100%,
+            calc(
+              (
+                100dvh -
+                var(--school-header-height) -
+                8px
+              ) *
+              1.5
+            )
+          );
+
+        border-radius: 8px;
+      }
+
+      /*
+        Labels are hidden on small touch screens because hover is not a
+        reliable interaction there. The classroom artwork already labels
+        each doorway.
+      */
+      .hotspot::after {
+        display: none !important;
+      }
+
+      .floating-tip {
+        display: none;
       }
 
       .progress-grid,
@@ -781,6 +906,42 @@
 
       .modal-actions {
         flex-direction: column;
+      }
+    }
+
+    @media (orientation: portrait) and (max-width: 700px) {
+      .scene-shell {
+        align-items: flex-start;
+        padding-top: 8px;
+      }
+
+      .scene {
+        width: calc(100vw - 8px);
+        height: auto;
+      }
+    }
+
+    @media (max-height: 650px) and (orientation: landscape) {
+      :root {
+        --school-header-height: 52px;
+      }
+
+      .topbar {
+        min-height: 52px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+      }
+
+      .brand-icon {
+        font-size: 24px;
+      }
+
+      .brand h1 {
+        font-size: 18px;
+      }
+
+      .scene-shell {
+        padding: 3px;
       }
     }
   </style>
@@ -1203,6 +1364,42 @@
     id="confetti"
     class="confetti">
   </div>
+
+
+  <script>
+    function updateSchoolHeaderHeight() {
+      const topbar =
+        document.querySelector(
+          ".topbar"
+        );
+
+      if (!topbar) {
+        return;
+      }
+
+      document.documentElement.style.setProperty(
+        "--school-header-height",
+        `${Math.ceil(topbar.getBoundingClientRect().height)}px`
+      );
+    }
+
+    window.addEventListener(
+      "resize",
+      updateSchoolHeaderHeight
+    );
+
+    window.addEventListener(
+      "orientationchange",
+      () => {
+        window.setTimeout(
+          updateSchoolHeaderHeight,
+          180
+        );
+      }
+    );
+
+    updateSchoolHeaderHeight();
+  </script>
 
   <script>
     (() => {
@@ -2387,7 +2584,7 @@
         };
 
       backgroundTest.src =
-        "school-background-final.png?v=2";
+        "school-background-final.png?v=3";
 
       render();
     })();
