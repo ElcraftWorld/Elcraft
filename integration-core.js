@@ -489,9 +489,6 @@ function canonicalRedirect() {
       .toLowerCase();
 
   const redirects = {
-    "salon.html":
-      ELCraftRoutes.artStudio,
-
     "music.html":
       ELCraftRoutes.musicStudio
   };
