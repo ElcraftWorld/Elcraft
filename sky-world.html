@@ -7,7 +7,7 @@
     content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#2b174d">
   <title>ELCraft Art Studio</title>
-<!-- Permanent Art Studio scene: Painting Easels complete, stations separated -->
+<!-- Permanent Art Studio scene: complete multi-station build -->
 
   <link
     rel="preload"
@@ -537,6 +537,99 @@
       color: #5d527b;
     }
 
+
+    .mode-extra-grid {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .mode-extra-button {
+      min-height: 44px;
+      border: 3px solid #e7e0f4;
+      border-radius: 12px;
+      padding: 7px;
+      color: #51486f;
+      background: white;
+      font-size: 9px;
+      font-weight: 1000;
+    }
+
+    .mode-extra-button.active {
+      border-color: #ff76ad;
+      color: #9a3465;
+      background: #fff0f7;
+    }
+
+    .favorite-art {
+      color: #8e4e05;
+      background: #fff1c7;
+    }
+
+    .favorite-art.active {
+      color: #9a315e;
+      background: #ffe2ef;
+    }
+
+    .clubhouse-art.pending {
+      color: #815c08;
+      background: #fff3c9;
+    }
+
+    .clubhouse-art.approved {
+      color: #2e7a38;
+      background: #e3f8e5;
+    }
+
+    .clubhouse-art.denied {
+      color: #8e394c;
+      background: #ffe5eb;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 6px;
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 8px;
+      font-weight: 1000;
+    }
+
+    .status-chip.pending {
+      color: #7f5d0f;
+      background: #fff1bd;
+    }
+
+    .status-chip.approved {
+      color: #2d7638;
+      background: #e1f7e5;
+    }
+
+    .status-chip.denied {
+      color: #8b3a4c;
+      background: #ffe2e9;
+    }
+
+    .clubhouse-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill,minmax(180px,1fr));
+      gap: 12px;
+    }
+
+    .pixel-note {
+      border: 3px solid #ddd2ef;
+      border-radius: 12px;
+      padding: 8px;
+      color: #66547f;
+      background: #f7f2ff;
+      font-size: 9px;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+
     .save-card {
       margin-top: 10px;
       border: 3px solid #ddcff1;
@@ -864,6 +957,10 @@
         🖼️ My Gallery
       </button>
 
+      <button id="clubhouseTop" class="pill" type="button">
+        🏠 Clubhouse Art
+      </button>
+
       <button id="cityTop" class="pill" type="button">
         🏙️ My City
       </button>
@@ -1062,6 +1159,10 @@
 
         <h3 id="sideTitle">Creative Extras</h3>
 
+        <div id="modeExtras"></div>
+
+        <h3 style="margin-top:14px;">Stamps & Pieces</h3>
+
         <div id="stampGrid" class="stamp-grid"></div>
 
         <h3 style="margin-top:14px;">Templates</h3>
@@ -1069,7 +1170,8 @@
         <div id="templateGrid" class="template-grid"></div>
 
         <div class="save-card">
-          Paintings save to the Gallery Wall on this device. Saving awards coins and XP. From the Gallery, a child can request parent approval to display a painting in the Clubhouse.
+          Artwork saves to the Gallery Wall on this device. Saving awards coins and XP.
+          From the Gallery, a child can favorite art or request parent approval to display it in the Clubhouse.
         </div>
 
       </aside>
@@ -1098,6 +1200,29 @@
     </div>
 
     <div id="galleryGrid" class="gallery-grid"></div>
+
+  </div>
+
+</section>
+
+<section id="clubhouseOverlay" class="overlay" role="dialog" aria-modal="true">
+
+  <div class="gallery-panel">
+
+    <div class="gallery-head">
+      <div>
+        <h2>🏠 Clubhouse Art Wall</h2>
+        <div style="font-size:10px;font-weight:900;color:#766b8d;margin-top:3px;">
+          Only parent-approved artwork appears here
+        </div>
+      </div>
+
+      <button class="close" data-close="clubhouseOverlay" type="button">
+        ×
+      </button>
+    </div>
+
+    <div id="clubhouseGrid" class="clubhouse-grid"></div>
 
   </div>
 
@@ -1132,6 +1257,8 @@
   const SUPPLIES_KEY = "elcraft_art_supplies_v1";
   const CHALLENGE_KEY = "elcraft_art_challenge_v1";
   const CLUBHOUSE_REQUESTS_KEY = "elcraft_clubhouse_art_requests_v1";
+  const CLUBHOUSE_APPROVED_KEY = "elcraft_clubhouse_art_approved_v1";
+  const FAVORITES_KEY = "elcraft_art_favorites_v1";
 
   const childName =
     localStorage.getItem(NAME_KEY) ||
@@ -1222,6 +1349,23 @@
   let historyIndex = -1;
   let selectedStamp = "⭐";
   let backgroundIndex = 0;
+  let digitalGridSize = 24;
+  let craftPiece = "🔺";
+  let favorites = [];
+
+  try {
+    favorites =
+      JSON.parse(
+        localStorage.getItem(FAVORITES_KEY) ||
+        "[]"
+      );
+
+    if (!Array.isArray(favorites)) {
+      favorites = [];
+    }
+  } catch {
+    favorites = [];
+  }
 
   const colors = [
     "#ff4f91",
@@ -1740,6 +1884,23 @@
 
     if (
       currentTool ===
+      "pixel"
+    ) {
+      drawPixel(
+        point.x,
+        point.y
+      );
+
+      drawing =
+        true;
+
+      pushHistory();
+
+      return;
+    }
+
+    if (
+      currentTool ===
       "fill"
     ) {
       floodFill(
@@ -1805,6 +1966,18 @@
 
     const point =
       canvasPoint(event);
+
+    if (
+      currentTool ===
+      "pixel"
+    ) {
+      drawPixel(
+        point.x,
+        point.y
+      );
+
+      return;
+    }
 
     if (
       ["brush","pencil","marker","eraser"]
@@ -2634,6 +2807,10 @@
       );
     }
 
+    renderModeExtras(
+      mode
+    );
+
     openOverlay(
       "workspaceOverlay"
     );
@@ -2641,6 +2818,522 @@
     requestAnimationFrame(
       resizeCanvasDisplay
     );
+  }
+
+
+  function renderModeExtras(mode) {
+    const box =
+      $("modeExtras");
+
+    box.replaceChildren();
+
+    const grid =
+      document.createElement(
+        "div"
+      );
+
+    grid.className =
+      "mode-extra-grid";
+
+    const addButton =
+      (
+        label,
+        action,
+        active = false
+      ) => {
+        const button =
+          document.createElement(
+            "button"
+          );
+
+        button.type =
+          "button";
+
+        button.className =
+          `mode-extra-button${
+            active
+              ? " active"
+              : ""
+          }`;
+
+        button.textContent =
+          label;
+
+        button.addEventListener(
+          "click",
+          action
+        );
+
+        grid.appendChild(
+          button
+        );
+      };
+
+    if (
+      mode ===
+      "painting"
+    ) {
+      addButton(
+        "🎨 Free Paint",
+        () => {
+          setTool(
+            "brush"
+          );
+        },
+        true
+      );
+
+      addButton(
+        "🖌️ Watercolor",
+        () => {
+          setTool(
+            "marker"
+          );
+
+          toolSize =
+            22;
+
+          $("sizeRange").value =
+            22;
+        }
+      );
+
+      addButton(
+        "🪣 Color Fill",
+        () => {
+          setTool(
+            "fill"
+          );
+        }
+      );
+
+      addButton(
+        "🌈 New Background",
+        cycleBackground
+      );
+    }
+
+    if (
+      mode ===
+      "drawing"
+    ) {
+      addButton(
+        "✏️ Pencil",
+        () => {
+          setTool(
+            "pencil"
+          );
+        },
+        true
+      );
+
+      addButton(
+        "🖍️ Crayon",
+        () => {
+          setTool(
+            "marker"
+          );
+
+          toolSize =
+            11;
+
+          $("sizeRange").value =
+            11;
+        }
+      );
+
+      addButton(
+        "🙂 Face Trace",
+        drawFaceTemplate
+      );
+
+      addButton(
+        "🏠 House Trace",
+        drawHouseTemplate
+      );
+
+      addButton(
+        "🔷 Shape Trace",
+        drawShapeTemplate
+      );
+
+      addButton(
+        "📄 Blank Page",
+        () => clearCanvas(
+          true
+        )
+      );
+    }
+
+    if (
+      mode ===
+      "digital"
+    ) {
+      addButton(
+        "▦ 16×16 Grid",
+        () => {
+          digitalGridSize =
+            16;
+
+          drawPixelGrid(
+            16
+          );
+        }
+      );
+
+      addButton(
+        "▦ 24×24 Grid",
+        () => {
+          digitalGridSize =
+            24;
+
+          drawPixelGrid(
+            24
+          );
+        },
+        true
+      );
+
+      addButton(
+        "▦ 32×32 Grid",
+        () => {
+          digitalGridSize =
+            32;
+
+          drawPixelGrid(
+            32
+          );
+        }
+      );
+
+      addButton(
+        "🟪 Pixel Brush",
+        () => {
+          setTool(
+            "pixel"
+          );
+        }
+      );
+
+      addButton(
+        "✨ Stickers",
+        () => {
+          setTool(
+            "stamp"
+          );
+        }
+      );
+
+      addButton(
+        "🌌 Digital Background",
+        cycleBackground
+      );
+    }
+
+    if (
+      mode ===
+      "crafts"
+    ) {
+      [
+        "🔺",
+        "🟦",
+        "🟡",
+        "❤️",
+        "🌸",
+        "⭐"
+      ].forEach(
+        piece => {
+          addButton(
+            `${piece} Piece`,
+            () => {
+              craftPiece =
+                piece;
+
+              selectedStamp =
+                piece;
+
+              setTool(
+                "stamp"
+              );
+            },
+            craftPiece ===
+              piece
+          );
+        }
+      );
+
+      addButton(
+        "💌 Card",
+        drawCardTemplate
+      );
+
+      addButton(
+        "🧩 Collage",
+        drawCollageTemplate
+      );
+    }
+
+    box.appendChild(
+      grid
+    );
+
+    const note =
+      document.createElement(
+        "div"
+      );
+
+    note.className =
+      "pixel-note";
+
+    note.textContent =
+      mode ===
+      "digital"
+        ? "Choose a pixel grid, select Pixel Brush, then tap squares to color them."
+        : mode ===
+          "crafts"
+          ? "Choose a craft piece, then tap the canvas to place it. Add shapes, stamps, and colors to build a collage."
+          : mode ===
+            "drawing"
+            ? "Use pencils, crayons, tracing templates, shapes, and stamps."
+            : "Use brushes, colors, fills, backgrounds, shapes, and stamps.";
+
+    box.appendChild(
+      note
+    );
+  }
+
+  function drawPixelGrid(size) {
+    clearCanvas(
+      false
+    );
+
+    ctx.save();
+
+    ctx.strokeStyle =
+      "#d8cfe7";
+
+    ctx.lineWidth =
+      1;
+
+    const cellWidth =
+      canvas.width /
+      size;
+
+    const cellHeight =
+      canvas.height /
+      size;
+
+    for (
+      let x =
+        0;
+      x <=
+        size;
+      x +=
+        1
+    ) {
+      ctx.beginPath();
+
+      ctx.moveTo(
+        x *
+        cellWidth,
+        0
+      );
+
+      ctx.lineTo(
+        x *
+        cellWidth,
+        canvas.height
+      );
+
+      ctx.stroke();
+    }
+
+    for (
+      let y =
+        0;
+      y <=
+        size;
+      y +=
+        1
+    ) {
+      ctx.beginPath();
+
+      ctx.moveTo(
+        0,
+        y *
+        cellHeight
+      );
+
+      ctx.lineTo(
+        canvas.width,
+        y *
+        cellHeight
+      );
+
+      ctx.stroke();
+    }
+
+    ctx.restore();
+
+    pushHistory();
+
+    setTool(
+      "pixel"
+    );
+  }
+
+  function drawPixel(
+    x,
+    y
+  ) {
+    const cellWidth =
+      canvas.width /
+      digitalGridSize;
+
+    const cellHeight =
+      canvas.height /
+      digitalGridSize;
+
+    const column =
+      Math.floor(
+        x /
+        cellWidth
+      );
+
+    const row =
+      Math.floor(
+        y /
+        cellHeight
+      );
+
+    ctx.fillStyle =
+      currentColor;
+
+    ctx.fillRect(
+      column *
+      cellWidth +
+      1,
+      row *
+      cellHeight +
+      1,
+      cellWidth -
+      2,
+      cellHeight -
+      2
+    );
+
+    ctx.strokeStyle =
+      "#d8cfe7";
+
+    ctx.lineWidth =
+      1;
+
+    ctx.strokeRect(
+      column *
+      cellWidth,
+      row *
+      cellHeight,
+      cellWidth,
+      cellHeight
+    );
+  }
+
+  function drawCardTemplate() {
+    clearCanvas(
+      false
+    );
+
+    ctx.fillStyle =
+      "#fff6df";
+
+    ctx.fillRect(
+      90,
+      70,
+      780,
+      580
+    );
+
+    ctx.strokeStyle =
+      "#c8a862";
+
+    ctx.lineWidth =
+      10;
+
+    ctx.strokeRect(
+      90,
+      70,
+      780,
+      580
+    );
+
+    ctx.fillStyle =
+      "#8d6acb";
+
+    ctx.font =
+      "bold 54px Arial";
+
+    ctx.textAlign =
+      "center";
+
+    ctx.fillText(
+      "Create a Card",
+      480,
+      150
+    );
+
+    pushHistory();
+  }
+
+  function drawCollageTemplate() {
+    clearCanvas(
+      false
+    );
+
+    const blocks = [
+      ["#ffd3e5",80,80,250,210],
+      ["#d9f0ff",350,80,260,210],
+      ["#fff0b5",630,80,250,210],
+      ["#e2d5ff",80,320,260,280],
+      ["#d9f5d3",370,320,240,280],
+      ["#ffd8bd",640,320,240,280]
+    ];
+
+    blocks.forEach(
+      (
+        [
+          color,
+          x,
+          y,
+          width,
+          height
+        ]
+      ) => {
+        ctx.fillStyle =
+          color;
+
+        ctx.fillRect(
+          x,
+          y,
+          width,
+          height
+        );
+
+        ctx.strokeStyle =
+          "#ffffff";
+
+        ctx.lineWidth =
+          8;
+
+        ctx.strokeRect(
+          x,
+          y,
+          width,
+          height
+        );
+      }
+    );
+
+    pushHistory();
   }
 
   function resizeCanvasDisplay() {
@@ -2689,6 +3382,16 @@
     const createdAt =
       new Date();
 
+    const defaultTitle =
+      `${modes[currentMode].title} Creation`;
+
+    const title =
+      window.prompt(
+        "Name your artwork:",
+        defaultTitle
+      ) ||
+      defaultTitle;
+
     const item = {
       id:
         crypto.randomUUID
@@ -2699,7 +3402,7 @@
         currentMode,
 
       title:
-        `${modes[currentMode].title} Creation`,
+        title,
 
       image:
         canvas.toDataURL(
@@ -2707,7 +3410,10 @@
         ),
 
       createdAt:
-        createdAt.toISOString()
+        createdAt.toISOString(),
+
+      favorite:
+        false
     };
 
     gallery.unshift(
@@ -2848,6 +3554,29 @@
         )
       );
 
+      const galleryItem =
+        gallery.find(
+          piece =>
+            piece.id ===
+            item.id
+        );
+
+      if (
+        galleryItem
+      ) {
+        galleryItem.clubhouseStatus =
+          "pending";
+
+        localStorage.setItem(
+          GALLERY_KEY,
+          JSON.stringify(
+            gallery
+          )
+        );
+      }
+
+      renderGallery();
+
       toast(
         "Sent to a parent for Clubhouse approval."
       );
@@ -2901,8 +3630,30 @@
           <p>
             ${
               date.toLocaleDateString()
+            } · ${
+              modes[
+                item.mode ||
+                "painting"
+              ]?.title ||
+              "Art"
             }
           </p>
+
+          ${
+            item.clubhouseStatus
+              ? `
+                <div class="status-chip ${item.clubhouseStatus}">
+                  ${
+                    item.clubhouseStatus === "pending"
+                      ? "⏳ Waiting for parent"
+                      : item.clubhouseStatus === "approved"
+                      ? "✅ In Clubhouse"
+                      : "❌ Not approved"
+                  }
+                </div>
+              `
+              : ""
+          }
 
           <div class="card-actions">
             <button
@@ -2912,7 +3663,13 @@
             </button>
 
             <button
-              class="clubhouse-art"
+              class="favorite-art ${item.favorite ? "active" : ""}"
+              type="button">
+              ${item.favorite ? "♥" : "♡"}
+            </button>
+
+            <button
+              class="clubhouse-art ${item.clubhouseStatus || ""}"
               type="button">
               Clubhouse
             </button>
@@ -2976,6 +3733,27 @@
 
         card
           .querySelector(
+            ".favorite-art"
+          )
+          .addEventListener(
+            "click",
+            () => {
+              item.favorite =
+                !item.favorite;
+
+              localStorage.setItem(
+                GALLERY_KEY,
+                JSON.stringify(
+                  gallery
+                )
+              );
+
+              renderGallery();
+            }
+          );
+
+        card
+          .querySelector(
             ".clubhouse-art"
           )
           .addEventListener(
@@ -3014,6 +3792,127 @@
           card
         );
       }
+    );
+  }
+
+  function getApprovedClubhouseArt() {
+    let approved = [];
+
+    try {
+      approved =
+        JSON.parse(
+          localStorage.getItem(
+            CLUBHOUSE_APPROVED_KEY
+          ) ||
+          "[]"
+        );
+
+      if (
+        !Array.isArray(
+          approved
+        )
+      ) {
+        approved = [];
+      }
+    } catch {
+      approved = [];
+    }
+
+    const galleryApproved =
+      gallery.filter(
+        item =>
+          item.clubhouseStatus ===
+          "approved"
+      );
+
+    const combined =
+      [
+        ...galleryApproved,
+        ...approved
+      ];
+
+    const seen =
+      new Set();
+
+    return combined.filter(
+      item => {
+        const id =
+          item.id ||
+          item.artworkId;
+
+        if (
+          seen.has(id)
+        ) {
+          return false;
+        }
+
+        seen.add(id);
+
+        return true;
+      }
+    );
+  }
+
+  function renderClubhouse() {
+    const grid =
+      $("clubhouseGrid");
+
+    grid.replaceChildren();
+
+    const approved =
+      getApprovedClubhouseArt();
+
+    if (
+      !approved.length
+    ) {
+      grid.innerHTML = `
+        <div class="empty-gallery">
+          🏠 No artwork has been parent-approved for the Clubhouse yet.
+        </div>
+      `;
+
+      return;
+    }
+
+    approved.forEach(
+      item => {
+        const card =
+          document.createElement(
+            "article"
+          );
+
+        card.className =
+          "art-card";
+
+        card.innerHTML = `
+          <img
+            src="${item.image}"
+            alt="${item.title || "Clubhouse artwork"}">
+
+          <h4>
+            ${item.title || "Clubhouse Artwork"}
+          </h4>
+
+          <p>
+            By ${
+              item.artistName ||
+              childName
+            }
+          </p>
+        `;
+
+        grid.appendChild(
+          card
+        );
+      }
+    );
+  }
+
+  function openClubhouse() {
+    renderClubhouse();
+
+    openOverlay(
+      "clubhouseOverlay"
     );
   }
 
@@ -3092,62 +3991,29 @@
 
 
   function openDrawingStation() {
-    showSimple(
-      "✏️ Drawing Table",
-      [
-        {
-          copy:
-            "The Drawing Table will focus on pencils, crayons, markers, tracing, coloring pages, and step-by-step drawing lessons."
-        },
-        {
-          copy:
-            "This is a separate station from Painting Easels. It will not open the painting canvas."
-        },
-        {
-          copy:
-            "Status: room connected and ready for the dedicated Drawing module."
-        }
-      ]
+    openWorkspace(
+      "drawing"
     );
   }
 
   function openDigitalStation() {
-    showSimple(
-      "💻 Digital Art Desk",
-      [
-        {
-          copy:
-            "The Digital Art Desk will focus on pixel art, stickers, layers, scene decorating, shapes, and digital backgrounds."
-        },
-        {
-          copy:
-            "This station will have its own controls and will not reuse the Painting Easels experience."
-        },
-        {
-          copy:
-            "Status: room connected and ready for the dedicated Digital Art module."
-        }
-      ]
+    openWorkspace(
+      "digital"
+    );
+
+    setTimeout(
+      () => {
+        drawPixelGrid(
+          digitalGridSize
+        );
+      },
+      80
     );
   }
 
   function openCraftStation() {
-    showSimple(
-      "✂️ Craft Station",
-      [
-        {
-          copy:
-            "The Craft Station will focus on digital paper crafts, collages, greeting cards, stamps, shapes, and decorations."
-        },
-        {
-          copy:
-            "Children will drag and arrange craft pieces instead of painting on a blank canvas."
-        },
-        {
-          copy:
-            "Status: room connected and ready for the dedicated Craft module."
-        }
-      ]
+    openWorkspace(
+      "crafts"
     );
   }
 
@@ -3157,7 +4023,7 @@
       [
         {
           copy:
-            "🌈 Draw a magical place using only three colors.",
+            "🎨 Paint a magical place using only three colors.",
           button:
             "Start Painting",
           action:
@@ -3174,7 +4040,7 @@
 
         {
           copy:
-            "🦋 Draw an animal with a surprising new superpower.",
+            "✏️ Draw an animal with a surprising new superpower.",
           button:
             "Start Drawing",
           action:
@@ -3191,9 +4057,24 @@
 
         {
           copy:
-            "🏠 Design a dream house for a tiny fantasy creature.",
+            "💻 Create pixel art of a tiny castle.",
           button:
-            "Use House Template",
+            "Start Pixel Art",
+          action:
+            () => {
+              closeOverlay(
+                "simpleOverlay"
+              );
+
+              openDigitalStation();
+            }
+        },
+
+        {
+          copy:
+            "✂️ Make a colorful card for someone you love.",
+          button:
+            "Start Craft",
           action:
             () => {
               closeOverlay(
@@ -3201,12 +4082,12 @@
               );
 
               openWorkspace(
-                "drawing"
+                "crafts"
               );
 
               setTimeout(
-                drawHouseTemplate,
-                100
+                drawCardTemplate,
+                80
               );
             }
         }
@@ -3220,17 +4101,17 @@
       [
         {
           copy:
-            "✅ Brushes, pencils, markers, eraser, fill bucket, lines, rectangles, and circles are available."
+            "✅ Brushes, pencils, crayons, marker, eraser, fill bucket, lines, rectangles, circles, pixel brush, craft pieces, and stamps are available."
         },
 
         {
           copy:
-            "✅ Twelve paint colors, adjustable tool sizes, backgrounds, templates, stamps, undo, and redo are available."
+            "✅ Twelve colors, adjustable sizes, backgrounds, templates, tracing pages, pixel grids, greeting cards, collages, undo, and redo are available."
         },
 
         {
           copy:
-            "More supplies can later be added as coin rewards without rebuilding the Art Studio."
+            "New supplies can later be unlocked with coins without replacing the permanent room artwork."
         }
       ]
     );
@@ -3247,30 +4128,30 @@
     const challenges = [
       {
         copy:
-          "🎨 Paint a magical place using blue, purple, and yellow.",
+          "🎨 Paint your dream world using at least five colors.",
         mode:
           "painting"
       },
 
       {
         copy:
-          "🌈 Paint your dream world with at least five colors.",
+          "✏️ Draw a friendly animal doing something silly.",
         mode:
-          "painting"
+          "drawing"
       },
 
       {
         copy:
-          "🏰 Paint a castle floating above the clouds.",
+          "💻 Create pixel art using at least four colors.",
         mode:
-          "painting"
+          "digital"
       },
 
       {
         copy:
-          "🦋 Paint a garden filled with unusual creatures.",
+          "✂️ Make a digital greeting card using five craft pieces.",
         mode:
-          "painting"
+          "crafts"
       },
 
       {
@@ -3318,23 +4199,14 @@
 
               if (
                 challenge.mode ===
-                "painting"
+                "digital"
               ) {
-                openWorkspace(
-                  "painting"
-                );
+                openDigitalStation();
               } else {
-                closeOverlay(
-                  "simpleOverlay"
+                openWorkspace(
+                  challenge.mode
                 );
-
-                showSimple(
-                  "✨ Challenge Saved",
-                  [
-                    {
-                      copy:
-                        "This challenge belongs to a station that is connected but not built yet. Choose the Painting Easels challenge today, or return after that station is completed."
-                    }
+              }
                   ]
                 );
               }
@@ -3482,6 +4354,11 @@
   $("galleryTop").addEventListener(
     "click",
     openGallery
+  );
+
+  $("clubhouseTop").addEventListener(
+    "click",
+    openClubhouse
   );
 
   $("cityTop").addEventListener(
