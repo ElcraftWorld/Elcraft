@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="theme-color" content="#2a174d">
 <title>ELCraft Art Studio</title>
-<link rel="preload" as="image" href="art-studio-background.png?v=1">
+<!-- Safe Art Studio build: no missing-page routes -->
+<link rel="preload" as="image" href="art-studio-background.png?v=2">
 <style>
 *{box-sizing:border-box}html,body{width:100%;height:100%;margin:0}
 :root{--purple:#7758df;--dark:#4e3ca6;--header:68px}
@@ -16,7 +17,7 @@ button{font:inherit;cursor:pointer}
 .brand{display:flex;align-items:center;gap:10px;min-width:0}.brand-icon{font-size:34px}.brand h1{margin:0;font-size:clamp(20px,3vw,31px);line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand p{margin:4px 0 0;font-size:10px;font-weight:900;color:#ffffffc7}
 .actions{display:flex;gap:8px;align-items:center}.pill{min-height:41px;border:3px solid #ffffffb8;border-radius:14px;padding:8px 11px;color:#fff;background:#ffffff17;font-size:11px;font-weight:1000}
 .shell{min-width:0;min-height:0;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:clamp(4px,1vw,11px)}
-.stage{position:relative;width:min(100%,calc(100dvh - var(--header) - clamp(8px,2vw,22px)));max-height:100%;aspect-ratio:1/1;overflow:hidden;border:clamp(2px,.35vw,6px) solid #ffffff28;border-radius:clamp(8px,1vw,16px);background:#eea17e url("art-studio-background.png?v=1") center/100% 100% no-repeat;box-shadow:0 22px 55px #0804146b}
+.stage{position:relative;width:min(100%,calc(100dvh - var(--header) - clamp(8px,2vw,22px)));max-height:100%;aspect-ratio:1/1;overflow:hidden;border:clamp(2px,.35vw,6px) solid #ffffff28;border-radius:clamp(8px,1vw,16px);background:#eea17e url("art-studio-background.png?v=2") center/100% 100% no-repeat;box-shadow:0 22px 55px #0804146b}
 .hotspot{position:absolute;z-index:10;border:3px solid transparent;border-radius:18px;background:transparent;transition:.16s}
 .hotspot:hover,.hotspot:focus-visible{border-color:#ffe56f;background:#fff3a422;box-shadow:0 0 0 5px #7758df35,0 0 28px #ffdd5c7d;outline:none;transform:translateY(-2px)}
 .hotspot:after{content:attr(data-label);position:absolute;left:50%;bottom:8px;transform:translateX(-50%);display:none;min-width:max-content;border:3px solid #fff;border-radius:999px;padding:7px 11px;color:#fff;background:linear-gradient(145deg,#7758df,#4e3ca6);font-size:10px;font-weight:1000;white-space:nowrap}
@@ -79,8 +80,8 @@ button{font:inherit;cursor:pointer}
 
 <section id="infoModal" class="modal" role="dialog" aria-modal="true">
 <div class="panel">
-  <div class="panel-top"><h2>Art Studio artwork missing</h2><button class="close" data-close="infoModal" type="button">×</button></div>
-  <div class="message">Upload art-studio-background.png in the same folder as sky-world.html, then refresh the page.</div>
+  <div class="panel-top"><h2>Art Studio</h2><button class="close" data-close="infoModal" type="button">×</button></div>
+  <div class="message">This Art Studio station is ready to be built and connected.</div>
 </div>
 </section>
 
@@ -91,14 +92,14 @@ button{font:inherit;cursor:pointer}
   try{profile={...profile,...JSON.parse(localStorage.getItem("elcraft_profile_v1")||"{}")}}catch{}
 
   const features = {
-    painting:{icon:"🎨",title:"Painting Easels",message:`Choose an easel and create a colorful masterpiece, ${childName}!`,items:["Free painting","Coloring pages","Brushes, stamps, and shapes"],route:"art.html"},
-    drawing:{icon:"✏️",title:"Drawing Table",message:"Draw with pencils, crayons, markers, and shapes.",items:["Free draw","Tracing","Learn to draw"],route:"drawing.html"},
-    digital:{icon:"💻",title:"Digital Art Desk",message:"Create digital pictures and decorate scenes.",items:["Digital canvas","Pixel art","Stickers and backgrounds"],route:"digital-art.html"},
-    crafts:{icon:"✂️",title:"Craft Station",message:"Build paper crafts, clay creations, and collages.",items:["Paper crafts","Clay and sculpture","Collages"],route:"crafts.html"},
-    gallery:{icon:"🖼️",title:"My Art Gallery",message:"See every masterpiece saved from the Art Studio.",items:["Saved paintings","Saved drawings","Favorite creations"],route:"my-art.html"},
-    inspiration:{icon:"📚",title:"Inspiration Shelf",message:"Explore art ideas and simple drawing lessons.",items:["Color ideas","Art inspiration","Step-by-step lessons"],route:"art-lessons.html"},
-    supplies:{icon:"🖌️",title:"Art Supply Shelf",message:"Explore brushes, paints, stamps, and creative tools.",items:["Brush collection","Color palettes","Stamps and stickers"],route:"art-supplies.html"},
-    challenge:{icon:"✨",title:"Creative Challenge",message:`Welcome, ${childName}! Choose a station and make something special.`,items:["Try a new color","Draw from imagination","Save art to your gallery"],route:"art.html"}
+    painting:{icon:"🎨",title:"Painting Easels",message:`Choose an easel and create a colorful masterpiece, ${childName}!`,items:["Free painting","Coloring pages","Brushes, stamps, and shapes"],route:null},
+    drawing:{icon:"✏️",title:"Drawing Table",message:"Draw with pencils, crayons, markers, and shapes.",items:["Free draw","Tracing","Learn to draw"],route:null},
+    digital:{icon:"💻",title:"Digital Art Desk",message:"Create digital pictures and decorate scenes.",items:["Digital canvas","Pixel art","Stickers and backgrounds"],route:null},
+    crafts:{icon:"✂️",title:"Craft Station",message:"Build paper crafts, clay creations, and collages.",items:["Paper crafts","Clay and sculpture","Collages"],route:null},
+    gallery:{icon:"🖼️",title:"My Art Gallery",message:"See every masterpiece saved from the Art Studio.",items:["Saved paintings","Saved drawings","Favorite creations"],route:null},
+    inspiration:{icon:"📚",title:"Inspiration Shelf",message:"Explore art ideas and simple drawing lessons.",items:["Color ideas","Art inspiration","Step-by-step lessons"],route:null},
+    supplies:{icon:"🖌️",title:"Art Supply Shelf",message:"Explore brushes, paints, stamps, and creative tools.",items:["Brush collection","Color palettes","Stamps and stickers"],route:null},
+    challenge:{icon:"✨",title:"Creative Challenge",message:`Welcome, ${childName}! Choose a station and make something special.`,items:["Try a new color","Draw from imagination","Save art to your gallery"],route:null}
   };
 
   let active = null;
@@ -121,7 +122,10 @@ button{font:inherit;cursor:pointer}
       row.textContent=`✨ ${item}`;
       $("featureList").appendChild(row);
     });
-    $("enterFeature").textContent=feature.title==="My Art Gallery"?"Open Gallery":"Start Creating";
+    $("enterFeature").textContent =
+      feature.route
+        ? (feature.title === "My Art Gallery" ? "Open Gallery" : "Start Creating")
+        : "See This Station";
     open("featureModal");
   }
 
@@ -129,14 +133,43 @@ button{font:inherit;cursor:pointer}
     button.addEventListener("click",()=>showFeature(features[button.dataset.feature]));
   });
   $("galleryTop").addEventListener("click",()=>showFeature(features.gallery));
-  $("cityTop").addEventListener("click",()=>location.href="my-city.html");
-  $("enterFeature").addEventListener("click",()=>{if(active) location.href=active.route});
+  $("cityTop").addEventListener("click",()=>{
+    location.href = "my-city.html";
+  });
+  $("enterFeature").addEventListener("click",()=>{
+    if(!active){
+      return;
+    }
+
+    if(active.route){
+      location.href=active.route;
+      return;
+    }
+
+    close("featureModal");
+
+    $("infoModal").querySelector("h2").textContent =
+      `${active.icon} ${active.title}`;
+
+    $("infoModal").querySelector(".message").textContent =
+      `${active.title} is safely connected to the new Art Studio, but its creative activity has not been built yet. We can build this station next without sending the child to a missing page.`;
+
+    open("infoModal");
+  });
   document.querySelectorAll("[data-close]").forEach(button=>button.addEventListener("click",()=>close(button.dataset.close)));
   document.querySelectorAll(".modal").forEach(modal=>modal.addEventListener("click",event=>{if(event.target===modal)close(modal.id)}));
 
   const image = new Image();
-  image.onerror=()=>open("infoModal");
-  image.src="art-studio-background.png?v=1";
+  image.onerror=()=>{
+    $("infoModal").querySelector("h2").textContent =
+      "Art Studio artwork missing";
+
+    $("infoModal").querySelector(".message").textContent =
+      "Upload art-studio-background.png in the same folder as sky-world.html, then refresh the page.";
+
+    open("infoModal");
+  };
+  image.src="art-studio-background.png?v=2";
 
   function syncHeader(){
     const header=document.querySelector(".topbar");
