@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#6f61d8">
+  <title>Adventure Mountain | ELCraft</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+
+      display: grid;
+      place-items: center;
+
+      padding: 22px;
+
+      color: #3f3a68;
+      background:
+        radial-gradient(
+          circle at 25% 20%,
+          rgba(255,255,255,.75),
+          transparent 24%
+        ),
+        linear-gradient(
+          145deg,
+          #8fe1ff,
+          #8caeff 52%,
+          #a987ef
+        );
+
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .card {
+      width: min(680px,100%);
+
+      border: 6px solid white;
+      border-radius: 32px;
+      padding: clamp(24px,5vw,44px);
+
+      background: rgba(255,255,255,.96);
+
+      box-shadow:
+        0 25px 70px rgba(48,43,112,.28);
+
+      text-align: center;
+    }
+
+    .icon {
+      font-size: 82px;
+    }
+
+    h1 {
+      margin: 10px 0 8px;
+
+      color: #554ecb;
+
+      font-size:
+        clamp(
+          32px,
+          7vw,
+          52px
+        );
+    }
+
+    p {
+      margin: 0 auto;
+
+      max-width: 520px;
+
+      color: #707797;
+
+      font-size: 16px;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+
+      margin-top: 24px;
+    }
+
+    button {
+      min-height: 48px;
+
+      border: 0;
+      border-radius: 15px;
+      padding: 12px 18px;
+
+      color: white;
+      background: #7758df;
+
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .secondary {
+      color: #5c4e96;
+      background: #eee9ff;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="card">
+
+    <div class="icon">
+      🏔️
+    </div>
+
+    <h1>
+      Adventure Mountain
+    </h1>
+
+    <p>
+      This part of ELCraft is still being built. The mountain is connected
+      safely now, so children will not be sent to a missing page.
+    </p>
+
+    <div class="actions">
+
+      <button
+        type="button"
+        onclick="location.href='my-city.html'">
+        Return to My City
+      </button>
+
+      <button
+        class="secondary"
+        type="button"
+        onclick="location.href='quests.html'">
+        Open Quests
+      </button>
+
+    </div>
+
+  </main>
+
+  <script
+    type="module"
+    src="integration-core.js?v=2">
+  </script>
+
+  <script
+    type="module"
+    src="global-navigation.js?v=1">
+  </script>
+
+</body>
+</html>
