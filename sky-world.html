@@ -7,7 +7,7 @@
     content="width=device-width,initial-scale=1,viewport-fit=cover">
   <meta name="theme-color" content="#2b174d">
   <title>ELCraft Art Studio</title>
-<!-- Permanent Art Studio scene: future updates are code-only -->
+<!-- Permanent Art Studio scene: Painting Easels complete, stations separated -->
 
   <link
     rel="preload"
@@ -642,6 +642,11 @@
       background: var(--purple);
     }
 
+    .clubhouse-art {
+      color: #5d438e;
+      background: #eee7ff;
+    }
+
     .delete-art {
       color: #9b3a50;
       background: #ffe8ee;
@@ -1064,8 +1069,7 @@
         <div id="templateGrid" class="template-grid"></div>
 
         <div class="save-card">
-          Finished artwork saves to the Gallery Wall on this device.
-          Saving also awards coins and XP once per new piece.
+          Paintings save to the Gallery Wall on this device. Saving awards coins and XP. From the Gallery, a child can request parent approval to display a painting in the Clubhouse.
         </div>
 
       </aside>
@@ -1127,6 +1131,7 @@
   const GALLERY_KEY = "elcraft_art_gallery_v1";
   const SUPPLIES_KEY = "elcraft_art_supplies_v1";
   const CHALLENGE_KEY = "elcraft_art_challenge_v1";
+  const CLUBHOUSE_REQUESTS_KEY = "elcraft_clubhouse_art_requests_v1";
 
   const childName =
     localStorage.getItem(NAME_KEY) ||
@@ -2758,6 +2763,101 @@
     );
   }
 
+
+  function requestClubhouseApproval(item) {
+    let requests = [];
+
+    try {
+      requests =
+        JSON.parse(
+          localStorage.getItem(
+            CLUBHOUSE_REQUESTS_KEY
+          ) ||
+          "[]"
+        );
+
+      if (
+        !Array.isArray(
+          requests
+        )
+      ) {
+        requests = [];
+      }
+    } catch {
+      requests = [];
+    }
+
+    const existing =
+      requests.find(
+        request =>
+          request.artworkId ===
+            item.id &&
+          request.status ===
+            "pending"
+      );
+
+    if (
+      existing
+    ) {
+      toast(
+        "This artwork is already waiting for parent approval."
+      );
+
+      return;
+    }
+
+    requests.unshift({
+      id:
+        crypto.randomUUID
+          ? crypto.randomUUID()
+          : String(
+              Date.now()
+            ),
+
+      artworkId:
+        item.id,
+
+      title:
+        item.title,
+
+      image:
+        item.image,
+
+      artistName:
+        childName,
+
+      requestedAt:
+        new Date()
+          .toISOString(),
+
+      status:
+        "pending",
+
+      destination:
+        "clubhouse"
+    });
+
+    try {
+      localStorage.setItem(
+        CLUBHOUSE_REQUESTS_KEY,
+        JSON.stringify(
+          requests.slice(
+            0,
+            20
+          )
+        )
+      );
+
+      toast(
+        "Sent to a parent for Clubhouse approval."
+      );
+    } catch {
+      toast(
+        "This device could not save the approval request."
+      );
+    }
+  }
+
   function renderGallery() {
     const grid =
       $("galleryGrid");
@@ -2809,6 +2909,12 @@
               class="open-art"
               type="button">
               Open
+            </button>
+
+            <button
+              class="clubhouse-art"
+              type="button">
+              Clubhouse
             </button>
 
             <button
@@ -2865,6 +2971,19 @@
 
               image.src =
                 item.image;
+            }
+          );
+
+        card
+          .querySelector(
+            ".clubhouse-art"
+          )
+          .addEventListener(
+            "click",
+            () => {
+              requestClubhouseApproval(
+                item
+              );
             }
           );
 
@@ -2971,6 +3090,67 @@
     );
   }
 
+
+  function openDrawingStation() {
+    showSimple(
+      "✏️ Drawing Table",
+      [
+        {
+          copy:
+            "The Drawing Table will focus on pencils, crayons, markers, tracing, coloring pages, and step-by-step drawing lessons."
+        },
+        {
+          copy:
+            "This is a separate station from Painting Easels. It will not open the painting canvas."
+        },
+        {
+          copy:
+            "Status: room connected and ready for the dedicated Drawing module."
+        }
+      ]
+    );
+  }
+
+  function openDigitalStation() {
+    showSimple(
+      "💻 Digital Art Desk",
+      [
+        {
+          copy:
+            "The Digital Art Desk will focus on pixel art, stickers, layers, scene decorating, shapes, and digital backgrounds."
+        },
+        {
+          copy:
+            "This station will have its own controls and will not reuse the Painting Easels experience."
+        },
+        {
+          copy:
+            "Status: room connected and ready for the dedicated Digital Art module."
+        }
+      ]
+    );
+  }
+
+  function openCraftStation() {
+    showSimple(
+      "✂️ Craft Station",
+      [
+        {
+          copy:
+            "The Craft Station will focus on digital paper crafts, collages, greeting cards, stamps, shapes, and decorations."
+        },
+        {
+          copy:
+            "Children will drag and arrange craft pieces instead of painting on a blank canvas."
+        },
+        {
+          copy:
+            "Status: room connected and ready for the dedicated Craft module."
+        }
+      ]
+    );
+  }
+
   function openInspiration() {
     showSimple(
       "📚 Inspiration Shelf",
@@ -3067,35 +3247,35 @@
     const challenges = [
       {
         copy:
-          "🎨 Create a picture using blue, purple, and yellow.",
+          "🎨 Paint a magical place using blue, purple, and yellow.",
         mode:
           "painting"
       },
 
       {
         copy:
-          "✏️ Draw a friendly animal doing something silly.",
+          "🌈 Paint your dream world with at least five colors.",
         mode:
-          "drawing"
+          "painting"
       },
 
       {
         copy:
-          "💻 Build a digital picture using at least three shapes.",
+          "🏰 Paint a castle floating above the clouds.",
         mode:
-          "digital"
+          "painting"
       },
 
       {
         copy:
-          "✂️ Make a collage using five different stamps.",
+          "🦋 Paint a garden filled with unusual creatures.",
         mode:
-          "crafts"
+          "painting"
       },
 
       {
         copy:
-          "🌈 Create a scene that shows your favorite kind of weather.",
+          "🌙 Paint what the Art Studio might look like at night.",
         mode:
           "painting"
       }
@@ -3136,9 +3316,28 @@
                 "simpleOverlay"
               );
 
-              openWorkspace(
-                challenge.mode
-              );
+              if (
+                challenge.mode ===
+                "painting"
+              ) {
+                openWorkspace(
+                  "painting"
+                );
+              } else {
+                closeOverlay(
+                  "simpleOverlay"
+                );
+
+                showSimple(
+                  "✨ Challenge Saved",
+                  [
+                    {
+                      copy:
+                        "This challenge belongs to a station that is connected but not built yet. Choose the Painting Easels challenge today, or return after that station is completed."
+                    }
+                  ]
+                );
+              }
             }
         },
 
@@ -3163,12 +3362,33 @@
               button.dataset.feature;
 
             if (
-              ["painting","drawing","digital","crafts"]
-                .includes(feature)
+              feature ===
+              "painting"
             ) {
               openWorkspace(
-                feature
+                "painting"
               );
+            }
+
+            if (
+              feature ===
+              "drawing"
+            ) {
+              openDrawingStation();
+            }
+
+            if (
+              feature ===
+              "digital"
+            ) {
+              openDigitalStation();
+            }
+
+            if (
+              feature ===
+              "crafts"
+            ) {
+              openCraftStation();
             }
 
             if (
