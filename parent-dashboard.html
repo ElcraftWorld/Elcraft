@@ -947,6 +947,11 @@
               <div class="panel-heading">
                 <div>
                   <h3>🎮 Who’s Playing?</h3>
+                  <div
+                    id="playerSyncStatus"
+                    style="margin-top:5px;color:#7b7198;font-size:10px;font-weight:900;">
+                    Syncing players…
+                  </div>
                   <p>
                     Choose a child to enter their ELCraft home, or manage their account.
                   </p>
@@ -1208,6 +1213,9 @@
     const childrenCount =
       document.getElementById("childrenCount");
 
+    const playerSyncStatus =
+      document.getElementById("playerSyncStatus");
+
     const familyCount =
       document.getElementById("familyCount");
 
@@ -1420,6 +1428,15 @@
         String(
           profiles.length
         );
+
+      playerSyncStatus.textContent =
+        profiles.length
+          ? `${profiles.length} player${
+              profiles.length === 1
+                ? ""
+                : "s"
+            } connected`
+          : "No players connected yet";
 
       if (
         !profiles.length
@@ -2579,6 +2596,46 @@
       }
     );
 
+
+    manageChildrenButton.addEventListener(
+      "click",
+      () => {
+        addChildError.textContent =
+          "";
+
+        newChildName.value =
+          "";
+
+        selectedNewAvatar =
+          "🌟";
+
+        document
+          .querySelectorAll(
+            ".avatar-option"
+          )
+          .forEach(
+            button => {
+              button.classList.toggle(
+                "selected",
+                button.dataset.avatar ===
+                  "🌟"
+              );
+            }
+          );
+
+        addChildModal.classList.add(
+          "open"
+        );
+
+        window.setTimeout(
+          () => {
+            newChildName.focus();
+          },
+          100
+        );
+      }
+    );
+
     document
       .querySelectorAll(
         ".avatar-option"
@@ -2906,6 +2963,9 @@
 
       loading.hidden = true;
       dashboardContent.hidden = false;
+
+      playerSyncStatus.textContent =
+        "Player sync needs attention";
 
       showError(
         error?.message ||
