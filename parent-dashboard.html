@@ -2539,6 +2539,46 @@
     );
 
 
+
+    manageChildrenButton.addEventListener(
+      "click",
+      () => {
+        addChildError.textContent =
+          "";
+
+        newChildName.value =
+          "";
+
+        selectedNewAvatar =
+          "🌟";
+
+        document
+          .querySelectorAll(
+            ".avatar-option"
+          )
+          .forEach(
+            button => {
+              button.classList.toggle(
+                "selected",
+                button.dataset.avatar ===
+                  "🌟"
+              );
+            }
+          );
+
+        addChildModal.classList.add(
+          "open"
+        );
+
+        window.setTimeout(
+          () => {
+            newChildName.focus();
+          },
+          100
+        );
+      }
+    );
+
     document
       .querySelectorAll(
         ".avatar-option"
