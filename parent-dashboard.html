@@ -268,7 +268,185 @@
 
     .children-list {
       display: grid;
-      gap: 13px;
+      gap: 15px;
+    }
+
+    .child-card {
+      grid-template-columns:
+        auto
+        minmax(0,1fr);
+    }
+
+    .child-actions {
+      grid-column: 1 / -1;
+
+      display: grid;
+      grid-template-columns:
+        repeat(3,minmax(0,1fr));
+      gap: 8px;
+    }
+
+    .child-action-button {
+      min-height: 42px;
+
+      border: 0;
+      border-radius: 13px;
+      padding: 9px 11px;
+
+      color: white;
+      background:
+        linear-gradient(
+          135deg,
+          #6559f4,
+          #9168ff
+        );
+
+      font-size: 11px;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .child-action-button.secondary {
+      color: #574c8e;
+      background: #eee9ff;
+    }
+
+    .child-action-button.manage {
+      color: #6e4a1c;
+      background: #fff0c8;
+    }
+
+    .add-child-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 100000;
+
+      display: none;
+      align-items: center;
+      justify-content: center;
+
+      padding: 18px;
+
+      background: rgba(28,17,54,.72);
+      backdrop-filter: blur(8px);
+    }
+
+    .add-child-modal.open {
+      display: flex;
+    }
+
+    .add-child-card {
+      width: min(520px,100%);
+
+      border: 6px solid white;
+      border-radius: 28px;
+      padding: 22px;
+
+      background:
+        linear-gradient(
+          145deg,
+          #f8efff,
+          #fff9e9
+        );
+
+      box-shadow:
+        0 28px 70px rgba(25,14,49,.42);
+    }
+
+    .add-child-card h3 {
+      margin: 0;
+      color: #554ecb;
+      font-size: 29px;
+    }
+
+    .add-child-card p {
+      color: #747a98;
+      font-weight: 800;
+    }
+
+    .add-child-field {
+      display: grid;
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .add-child-field label {
+      color: #554c82;
+      font-size: 11px;
+      font-weight: 1000;
+    }
+
+    .add-child-field input {
+      width: 100%;
+      min-height: 46px;
+
+      border: 3px solid #ded5ef;
+      border-radius: 14px;
+      padding: 10px 12px;
+
+      color: #3e3a64;
+      background: white;
+    }
+
+    .avatar-options {
+      display: grid;
+      grid-template-columns:
+        repeat(6,minmax(0,1fr));
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .avatar-option {
+      aspect-ratio: 1;
+
+      border: 3px solid #e2d9f1;
+      border-radius: 14px;
+
+      background: white;
+      font-size: 27px;
+      cursor: pointer;
+    }
+
+    .avatar-option.selected {
+      border-color: #ff76ad;
+      background: #fff0f7;
+      box-shadow: 0 0 0 3px #ff76ad33;
+    }
+
+    .add-child-actions {
+      display: flex;
+      gap: 9px;
+      margin-top: 18px;
+    }
+
+    .add-child-actions button {
+      flex: 1;
+      min-height: 44px;
+
+      border: 0;
+      border-radius: 14px;
+      padding: 10px;
+
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .add-child-save {
+      color: white;
+      background: #6559f4;
+    }
+
+    .add-child-cancel {
+      color: #5d538b;
+      background: #ebe7f5;
+    }
+
+    .add-child-error {
+      min-height: 19px;
+      margin-top: 10px;
+      color: #a43e55;
+      font-size: 11px;
+      font-weight: 900;
     }
 
     .child-card {
@@ -653,9 +831,8 @@
         grid-template-columns: auto 1fr;
       }
 
-      .play-button {
-        grid-column: 1 / -1;
-        width: 100%;
+      .child-actions {
+        grid-template-columns: 1fr;
       }
 
       .panel-heading {
@@ -716,13 +893,13 @@
 
       <div
         id="loading"
-        class="loading">
-        Loading your dashboard...
+        class="loading"
+        hidden>
+        Syncing your family account...
       </div>
 
       <div
-        id="dashboardContent"
-        hidden>
+        id="dashboardContent">
 
         <section class="summary-grid">
           <article class="summary-card">
@@ -769,9 +946,9 @@
             <section class="panel">
               <div class="panel-heading">
                 <div>
-                  <h3>👧 Children</h3>
+                  <h3>🎮 Who’s Playing?</h3>
                   <p>
-                    View each child's current ELCraft progress.
+                    Choose a child to enter their ELCraft home, or manage their account.
                   </p>
                 </div>
 
@@ -779,7 +956,7 @@
                   id="manageChildrenButton"
                   class="panel-button"
                   type="button">
-                  Manage Children
+                  ➕ Add Child
                 </button>
               </div>
 
@@ -925,6 +1102,85 @@
 
   </main>
 
+
+  <section
+    id="addChildModal"
+    class="add-child-modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="addChildTitle">
+
+    <form
+      id="addChildForm"
+      class="add-child-card">
+
+      <h3 id="addChildTitle">
+        ➕ Add a Child
+      </h3>
+
+      <p>
+        Create a child profile without leaving the Parent Dashboard.
+      </p>
+
+      <div class="add-child-field">
+        <label for="newChildName">
+          Child’s first name
+        </label>
+
+        <input
+          id="newChildName"
+          type="text"
+          maxlength="20"
+          autocomplete="off"
+          required>
+      </div>
+
+      <div class="add-child-field">
+        <label>
+          Starting avatar
+        </label>
+
+        <div
+          id="newChildAvatars"
+          class="avatar-options">
+
+          <button class="avatar-option selected" data-avatar="🌟" type="button">🌟</button>
+          <button class="avatar-option" data-avatar="🦄" type="button">🦄</button>
+          <button class="avatar-option" data-avatar="🐱" type="button">🐱</button>
+          <button class="avatar-option" data-avatar="🐶" type="button">🐶</button>
+          <button class="avatar-option" data-avatar="🦋" type="button">🦋</button>
+          <button class="avatar-option" data-avatar="🚀" type="button">🚀</button>
+
+        </div>
+      </div>
+
+      <div
+        id="addChildError"
+        class="add-child-error">
+      </div>
+
+      <div class="add-child-actions">
+
+        <button
+          id="cancelAddChild"
+          class="add-child-cancel"
+          type="button">
+          Cancel
+        </button>
+
+        <button
+          id="saveAddChild"
+          class="add-child-save"
+          type="submit">
+          Create Child
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
+
   <script type="module">
     import { supabase } from "./supabase-client.js";
 
@@ -996,6 +1252,27 @@
 
     const logoutButton =
       document.getElementById("logoutButton");
+
+    const addChildModal =
+      document.getElementById("addChildModal");
+
+    const addChildForm =
+      document.getElementById("addChildForm");
+
+    const newChildName =
+      document.getElementById("newChildName");
+
+    const addChildError =
+      document.getElementById("addChildError");
+
+    const cancelAddChild =
+      document.getElementById("cancelAddChild");
+
+    const saveAddChild =
+      document.getElementById("saveAddChild");
+
+    let selectedNewAvatar =
+      "🌟";
 
     let currentUser = null;
     let currentFamilyId = null;
@@ -1133,116 +1410,351 @@
       );
 
       window.location.href =
-        "my-city.html";
+        "index.html";
     }
 
     function renderChildren(profiles) {
       childrenList.replaceChildren();
 
       childrenCount.textContent =
-        String(profiles.length);
+        String(
+          profiles.length
+        );
 
-      if (!profiles.length) {
+      if (
+        !profiles.length
+      ) {
         const empty =
-          document.createElement("div");
+          document.createElement(
+            "div"
+          );
 
-        empty.className = "empty-state";
-        empty.textContent =
-          "No child profiles yet. Use Manage Children to create one.";
+        empty.className =
+          "empty-state";
 
-        childrenList.appendChild(empty);
+        empty.innerHTML = `
+          <strong>
+            No child profiles are connected yet.
+          </strong>
+
+          <div style="margin-top:7px;">
+            Press “Add Child” to create the first player.
+          </div>
+        `;
+
+        childrenList.appendChild(
+          empty
+        );
+
         return;
       }
 
-      profiles.forEach(profile => {
-        const card =
-          document.createElement("article");
+      profiles.forEach(
+        profile => {
+          const card =
+            document.createElement(
+              "article"
+            );
 
-        card.className = "child-card";
+          card.className =
+            "child-card";
 
-        const avatar =
-          document.createElement("div");
+          const avatar =
+            document.createElement(
+              "div"
+            );
 
-        avatar.className = "child-avatar";
-        avatar.textContent =
-          profile.avatar || "🌟";
+          avatar.className =
+            "child-avatar";
 
-        const details =
-          document.createElement("div");
+          avatar.textContent =
+            profile.avatar ||
+            "🌟";
 
-        details.className = "child-details";
+          const details =
+            document.createElement(
+              "div"
+            );
 
-        const name =
-          document.createElement("h4");
+          details.className =
+            "child-details";
 
-        name.className = "child-name";
-        name.textContent =
-          profile.display_name || "Player";
+          const name =
+            document.createElement(
+              "h4"
+            );
 
-        const stats =
-          document.createElement("div");
+          name.className =
+            "child-name";
 
-        stats.className = "child-stats";
+          name.textContent =
+            profile.display_name ||
+            "Player";
 
-        const level =
-          document.createElement("span");
+          const stats =
+            document.createElement(
+              "div"
+            );
 
-        level.textContent =
-          `Level ${profile.level || 1}`;
+          stats.className =
+            "child-stats";
 
-        const stars =
-          document.createElement("span");
+          const level =
+            document.createElement(
+              "span"
+            );
 
-        stars.textContent =
-          `⭐ ${profile.stars || 0} stars`;
+          level.textContent =
+            `Level ${
+              profile.level ||
+              1
+            }`;
 
-        const experience =
-          document.createElement("span");
+          const stars =
+            document.createElement(
+              "span"
+            );
 
-        experience.textContent =
-          `✨ ${profile.experience || 0} XP`;
+          stars.textContent =
+            `⭐ ${
+              profile.stars ||
+              0
+            } stars`;
 
-        stats.append(
-          level,
-          stars,
-          experience
-        );
+          const experience =
+            document.createElement(
+              "span"
+            );
 
-        const lastPlayed =
-          document.createElement("div");
+          experience.textContent =
+            `✨ ${
+              profile.experience ||
+              0
+            } XP`;
 
-        lastPlayed.className =
-          "last-played";
+          stats.append(
+            level,
+            stars,
+            experience
+          );
 
-        lastPlayed.textContent =
-          formatLastPlayed(profile);
+          const lastPlayed =
+            document.createElement(
+              "div"
+            );
 
-        details.append(
-          name,
-          stats,
-          lastPlayed
-        );
+          lastPlayed.className =
+            "last-played";
 
-        const play =
-          document.createElement("button");
+          lastPlayed.textContent =
+            formatLastPlayed(
+              profile
+            );
 
-        play.className = "play-button";
-        play.type = "button";
-        play.textContent = "▶ Continue";
+          details.append(
+            name,
+            stats,
+            lastPlayed
+          );
 
-        play.addEventListener(
-          "click",
-          () => enterChild(profile)
-        );
+          const actions =
+            document.createElement(
+              "div"
+            );
 
-        card.append(
-          avatar,
-          details,
-          play
-        );
+          actions.className =
+            "child-actions";
 
-        childrenList.appendChild(card);
-      });
+          const enterHome =
+            document.createElement(
+              "button"
+            );
+
+          enterHome.className =
+            "child-action-button";
+
+          enterHome.type =
+            "button";
+
+          enterHome.textContent =
+            "▶ Enter Home";
+
+          enterHome.addEventListener(
+            "click",
+            () => {
+              enterChild(
+                profile
+              );
+            }
+          );
+
+          const progress =
+            document.createElement(
+              "button"
+            );
+
+          progress.className =
+            "child-action-button secondary";
+
+          progress.type =
+            "button";
+
+          progress.textContent =
+            "📊 View Progress";
+
+          progress.addEventListener(
+            "click",
+            () => {
+              localStorage.setItem(
+                SELECTED_CHILD_ID_KEY,
+                profile.id
+              );
+
+              localStorage.setItem(
+                CHILD_NAME_KEY,
+                profile.display_name ||
+                "Player"
+              );
+
+              localStorage.setItem(
+                CHILD_AVATAR_KEY,
+                profile.avatar ||
+                "🌟"
+              );
+
+              window.location.href =
+                "progress.html";
+            }
+          );
+
+          const manage =
+            document.createElement(
+              "button"
+            );
+
+          manage.className =
+            "child-action-button manage";
+
+          manage.type =
+            "button";
+
+          manage.textContent =
+            "⚙️ Manage Child";
+
+          manage.addEventListener(
+            "click",
+            async () => {
+              const currentName =
+                profile.display_name ||
+                "Player";
+
+              const newName =
+                window.prompt(
+                  "Update the child’s display name:",
+                  currentName
+                );
+
+              if (
+                newName ===
+                null
+              ) {
+                return;
+              }
+
+              const cleanedName =
+                String(
+                  newName
+                )
+                  .trim()
+                  .replace(
+                    /\s+/g,
+                    " "
+                  )
+                  .slice(
+                    0,
+                    20
+                  );
+
+              if (
+                !cleanedName
+              ) {
+                showError(
+                  "The child’s name cannot be blank."
+                );
+
+                return;
+              }
+
+              manage.disabled =
+                true;
+
+              manage.textContent =
+                "Saving...";
+
+              const {
+                error
+              } =
+                await supabase
+                  .from(
+                    "child_profiles"
+                  )
+                  .update({
+                    display_name:
+                      cleanedName
+                  })
+                  .eq(
+                    "id",
+                    profile.id
+                  );
+
+              if (
+                error
+              ) {
+                console.error(
+                  "Child update error:",
+                  error
+                );
+
+                showError(
+                  error.message ||
+                  "Unable to update the child."
+                );
+
+                manage.disabled =
+                  false;
+
+                manage.textContent =
+                  "⚙️ Manage Child";
+
+                return;
+              }
+
+              profile.display_name =
+                cleanedName;
+
+              renderChildren(
+                profiles
+              );
+            }
+          );
+
+          actions.append(
+            enterHome,
+            progress,
+            manage
+          );
+
+          card.append(
+            avatar,
+            details,
+            actions
+          );
+
+          childrenList.appendChild(
+            card
+          );
+        }
+      );
     }
 
     function createFamilyRow({
@@ -2023,6 +2535,205 @@
       () => {
         window.location.href =
           "profiles.html";
+      }
+    );
+
+
+    document
+      .querySelectorAll(
+        ".avatar-option"
+      )
+      .forEach(
+        button => {
+          button.addEventListener(
+            "click",
+            () => {
+              selectedNewAvatar =
+                button.dataset.avatar ||
+                "🌟";
+
+              document
+                .querySelectorAll(
+                  ".avatar-option"
+                )
+                .forEach(
+                  option => {
+                    option.classList.toggle(
+                      "selected",
+                      option ===
+                        button
+                    );
+                  }
+                );
+            }
+          );
+        }
+      );
+
+    cancelAddChild.addEventListener(
+      "click",
+      () => {
+        addChildModal.classList.remove(
+          "open"
+        );
+      }
+    );
+
+    addChildModal.addEventListener(
+      "click",
+      event => {
+        if (
+          event.target ===
+          addChildModal
+        ) {
+          addChildModal.classList.remove(
+            "open"
+          );
+        }
+      }
+    );
+
+    addChildForm.addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+
+        addChildError.textContent =
+          "";
+
+        const displayName =
+          String(
+            newChildName.value ||
+            ""
+          )
+            .trim()
+            .replace(
+              /\s+/g,
+              " "
+            )
+            .slice(
+              0,
+              20
+            );
+
+        if (
+          !displayName
+        ) {
+          addChildError.textContent =
+            "Please enter the child’s first name.";
+
+          return;
+        }
+
+        if (
+          !currentUser
+        ) {
+          addChildError.textContent =
+            "The parent account is not ready yet.";
+
+          return;
+        }
+
+        saveAddChild.disabled =
+          true;
+
+        saveAddChild.textContent =
+          "Creating...";
+
+        try {
+          const {
+            data:
+              child,
+            error:
+              childError
+          } =
+            await supabase
+              .from(
+                "child_profiles"
+              )
+              .insert({
+                parent_id:
+                  familyOwnerUserId ||
+                  currentUser.id,
+
+                display_name:
+                  displayName,
+
+                avatar:
+                  selectedNewAvatar
+              })
+              .select(
+                "id,display_name,avatar,stars,level,experience,created_at,updated_at"
+              )
+              .single();
+
+          if (
+            childError
+          ) {
+            throw childError;
+          }
+
+          if (
+            !child
+          ) {
+            throw new Error(
+              "The new child profile was not returned."
+            );
+          }
+
+          const {
+            error:
+              cityError
+          } =
+            await supabase
+              .from(
+                "cities"
+              )
+              .insert({
+                child_id:
+                  child.id,
+
+                city_name:
+                  `${displayName}'s City`,
+
+                city_level:
+                  1
+              });
+
+          if (
+            cityError
+          ) {
+            console.warn(
+              "City creation warning:",
+              cityError
+            );
+          }
+
+          addChildModal.classList.remove(
+            "open"
+          );
+
+          await loadDashboard();
+
+        } catch (
+          error
+        ) {
+          console.error(
+            "Child creation error:",
+            error
+          );
+
+          addChildError.textContent =
+            error?.message ||
+            "Unable to create the child profile.";
+
+        } finally {
+          saveAddChild.disabled =
+            false;
+
+          saveAddChild.textContent =
+            "Create Child";
+        }
       }
     );
 
