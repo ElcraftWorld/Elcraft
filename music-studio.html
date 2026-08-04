@@ -183,7 +183,7 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px
 
   <header class="topbar">
     <div class="leftbar">
-      <button class="nav-btn" id="academyBtn">← Academy</button>
+      <button class="nav-btn" id="academyBtn">📚 Music Academy</button>
       <div class="logo">ELCraft</div>
     </div>
     <div class="stats">
@@ -629,6 +629,21 @@ main{position:relative;z-index:3;width:min(1450px,100%);margin:auto;padding:16px
   };
 
   render();
+
+  /*
+    Music Studio is a creation room first.
+    Open the composer immediately; Music Academy remains available behind it.
+  */
+  window.setTimeout(
+    () => {
+      composerModal.classList.add(
+        "show"
+      );
+
+      renderComposer();
+    },
+    180
+  );
 })();
 </script>
   <script
