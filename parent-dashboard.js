@@ -435,7 +435,7 @@ async function loadPlayers() {
           "child_profiles"
         )
         .select(
-          "id,parent_id,display_name,avatar,stars,experience,level,created_at,updated_at"
+          "id,parent_id,display_name,avatar,stars,experience,level,created_at"
         )
         .eq(
           "parent_id",
@@ -466,7 +466,7 @@ async function loadPlayers() {
             "child_profiles"
           )
           .select(
-            "id,parent_id,display_name,avatar,stars,experience,level,created_at,updated_at"
+            "id,parent_id,display_name,avatar,stars,experience,level,created_at"
           )
           .order(
             "created_at",
@@ -1513,7 +1513,7 @@ async function createChild(
               state.selectedNewAvatar
           })
           .select(
-            "id,parent_id,display_name,avatar,stars,experience,level,created_at,updated_at"
+            "id,parent_id,display_name,avatar,stars,experience,level,created_at"
           )
           .single(),
         9000
