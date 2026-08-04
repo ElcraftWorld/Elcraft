@@ -568,21 +568,17 @@
       localStorage.setItem(CHILD_AVATAR_KEY,child.avatar || "");
     }
 
-    function playGame() {
-      const selectedId =
+    async function playGame() {
+      let selectedId =
         localStorage.getItem(
           SELECTED_CHILD_ID_KEY
         );
 
-      const selectedName =
+      let selectedName =
         localStorage.getItem(
           CHILD_NAME_KEY
         );
 
-      /*
-        Return to the active child's Home even when the Family Castle's
-        optional Supabase child list has not finished loading.
-      */
       if (
         selectedId &&
         selectedName
@@ -610,9 +606,60 @@
       }
 
       /*
-        There is no active player yet. Go to the combined Parent Dashboard,
-        where the parent can choose or create one.
+        Final recovery: ask Supabase for any child profile this signed-in
+        adult is allowed to access, select it, and open the child's Home.
       */
+      try {
+        const {
+          data:
+            accessibleChildren,
+          error:
+            accessibleError
+        } =
+          await supabase
+            .from(
+              "child_profiles"
+            )
+            .select(
+              "id,display_name,avatar"
+            )
+            .order(
+              "created_at",
+              {
+                ascending:
+                  true
+              }
+            )
+            .limit(
+              1
+            );
+
+        if (
+          !accessibleError &&
+          accessibleChildren?.length
+        ) {
+          saveSelectedChild(
+            accessibleChildren[0]
+          );
+
+          window.location.href =
+            "index.html";
+
+          return;
+        }
+      } catch (
+        error
+      ) {
+        console.error(
+          "Return to Game recovery failed:",
+          error
+        );
+      }
+
+      window.alert(
+        "Choose or create a player on the Parent Dashboard first."
+      );
+
       window.location.href =
         "parent-dashboard.html";
     }
