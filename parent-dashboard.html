@@ -1570,6 +1570,184 @@
         });
     }
 
+    function timeoutAfter(
+      milliseconds,
+      message
+    ) {
+      return new Promise(
+        (
+          _resolve,
+          reject
+        ) => {
+          window.setTimeout(
+            () => {
+              reject(
+                new Error(
+                  message
+                )
+              );
+            },
+            milliseconds
+          );
+        }
+      );
+    }
+
+    async function loadAccessibleChildren() {
+      const parentIds =
+        [
+          familyOwnerUserId,
+          currentUser?.id
+        ]
+          .filter(Boolean)
+          .filter(
+            (
+              value,
+              index,
+              list
+            ) =>
+              list.indexOf(value) ===
+              index
+          );
+
+      let filteredResult = {
+        data: [],
+        error: null
+      };
+
+      if (
+        parentIds.length
+      ) {
+        try {
+          filteredResult =
+            await Promise.race([
+              supabase
+                .from("child_profiles")
+                .select("*")
+                .in(
+                  "parent_id",
+                  parentIds
+                )
+                .order(
+                  "created_at",
+                  {
+                    ascending: true
+                  }
+                ),
+
+              timeoutAfter(
+                7000,
+                "Child profiles took too long to load."
+              )
+            ]);
+        } catch (
+          error
+        ) {
+          filteredResult = {
+            data: [],
+            error
+          };
+        }
+      }
+
+      if (
+        !filteredResult.error &&
+        filteredResult.data?.length
+      ) {
+        return filteredResult;
+      }
+
+      /*
+        Profiles created under older family versions may not match the
+        current owner lookup. RLS will still restrict this unfiltered
+        query to child profiles the signed-in adult is allowed to see.
+      */
+      try {
+        const accessibleResult =
+          await Promise.race([
+            supabase
+              .from("child_profiles")
+              .select("*")
+              .order(
+                "created_at",
+                {
+                  ascending: true
+                }
+              ),
+
+            timeoutAfter(
+              7000,
+              "Accessible child profiles took too long to load."
+            )
+          ]);
+
+        if (
+          !accessibleResult.error &&
+          accessibleResult.data?.length
+        ) {
+          return accessibleResult;
+        }
+      } catch (
+        error
+      ) {
+        console.warn(
+          "Accessible child fallback failed:",
+          error
+        );
+      }
+
+      const selectedId =
+        localStorage.getItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+      const selectedName =
+        localStorage.getItem(
+          CHILD_NAME_KEY
+        );
+
+      if (
+        selectedId &&
+        selectedName
+      ) {
+        return {
+          data: [
+            {
+              id:
+                selectedId,
+
+              display_name:
+                selectedName,
+
+              avatar:
+                localStorage.getItem(
+                  CHILD_AVATAR_KEY
+                ) ||
+                "🌟",
+
+              level:
+                1,
+
+              stars:
+                0,
+
+              experience:
+                0
+            }
+          ],
+
+          error:
+            null
+        };
+      }
+
+      return {
+        data: [],
+        error:
+          filteredResult.error
+      };
+    }
+
     async function loadDashboard() {
       const {
         data: userData,
@@ -1594,6 +1772,13 @@
 
       welcomeTitle.textContent =
         `Welcome back, ${displayNameFromUser(currentUser)}!`;
+
+      /*
+        Do not keep the entire dashboard hidden while optional family
+        tables load. The parent can still use navigation and approvals.
+      */
+      loading.hidden = true;
+      dashboardContent.hidden = false;
 
       const {
         data: memberships,
@@ -1718,19 +1903,7 @@
         invitationsResult,
         activityResult
       ] = await Promise.all([
-        supabase
-          .from("child_profiles")
-          .select("*")
-          .eq(
-            "parent_id",
-            familyOwnerUserId
-          )
-          .order(
-            "created_at",
-            {
-              ascending: true
-            }
-          ),
+        loadAccessibleChildren(),
 
         supabase
           .from("family_invitations")
@@ -1779,7 +1952,10 @@
       };
 
       if (childrenResult.error) {
-        throw childrenResult.error;
+        console.warn(
+          "Child profiles could not be fully loaded:",
+          childrenResult.error
+        );
       }
 
       if (familyResult.error) {
