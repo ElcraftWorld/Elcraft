@@ -569,15 +569,52 @@
     }
 
     function playGame() {
-      if (!children.length) {
-        window.location.href = "profiles.html";
+      const selectedId =
+        localStorage.getItem(
+          SELECTED_CHILD_ID_KEY
+        );
+
+      const selectedName =
+        localStorage.getItem(
+          CHILD_NAME_KEY
+        );
+
+      /*
+        Return to the active child's Home even when the Family Castle's
+        optional Supabase child list has not finished loading.
+      */
+      if (
+        selectedId &&
+        selectedName
+      ) {
+        window.location.href =
+          "index.html";
+
         return;
       }
 
-      const selectedId = localStorage.getItem(SELECTED_CHILD_ID_KEY);
-      const selectedChild = children.find(child => child.id === selectedId) || children[0];
-      saveSelectedChild(selectedChild);
-      window.location.href = "index.html";
+      if (
+        children.length
+      ) {
+        const selectedChild =
+          children[0];
+
+        saveSelectedChild(
+          selectedChild
+        );
+
+        window.location.href =
+          "index.html";
+
+        return;
+      }
+
+      /*
+        There is no active player yet. Go to the combined Parent Dashboard,
+        where the parent can choose or create one.
+      */
+      window.location.href =
+        "parent-dashboard.html";
     }
 
     async function loadCastle() {
