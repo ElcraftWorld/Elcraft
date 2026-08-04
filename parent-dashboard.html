@@ -5,1121 +5,500 @@
 
   <meta
     name="viewport"
-    content="width=device-width, initial-scale=1.0">
+    content="width=device-width,initial-scale=1,viewport-fit=cover">
 
-  <meta name="theme-color" content="#6ec6ff">
+  <meta name="theme-color" content="#efe9ff">
 
-  <title>Parent Dashboard | ELCraft</title>
+  <title>ELCraft Parent Control Center</title>
 
-  <!-- ELCraft family access build: shared-family-v3 -->
-
-  <style>
-    * {
-      box-sizing: border-box;
-    }
-
-    html,
-    body {
-      min-height: 100%;
-      margin: 0;
-    }
-
-    body {
-      min-height: 100vh;
-      min-height: 100dvh;
-      padding: 24px;
-
-      color: #30365d;
-      font-family: Arial, Helvetica, sans-serif;
-
-      background:
-        radial-gradient(
-          circle at 15% 15%,
-          rgba(255, 255, 255, 0.7),
-          transparent 24%
-        ),
-        radial-gradient(
-          circle at 85% 80%,
-          rgba(176, 115, 255, 0.42),
-          transparent 28%
-        ),
-        linear-gradient(
-          145deg,
-          #72d5ff 0%,
-          #72b9ff 46%,
-          #a889ff 100%
-        );
-    }
-
-    button {
-      font: inherit;
-    }
-
-    .page {
-      width: min(1120px, 100%);
-      margin: 0 auto;
-    }
-
-    .topbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-      margin-bottom: 22px;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      color: white;
-      text-shadow: 0 3px 8px rgba(39, 46, 111, 0.3);
-    }
-
-    .brand-icon {
-      font-size: 42px;
-    }
-
-    .brand h1 {
-      margin: 0;
-      font-size: clamp(28px, 5vw, 42px);
-    }
-
-    .logout-button {
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 14px;
-      padding: 11px 16px;
-
-      color: #554dbd;
-      background: rgba(255, 255, 255, 0.94);
-
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .main-card {
-      border: 4px solid rgba(255, 255, 255, 0.85);
-      border-radius: 32px;
-      padding: clamp(22px, 5vw, 42px);
-
-      background: rgba(255, 255, 255, 0.97);
-
-      box-shadow:
-        0 24px 65px rgba(42, 48, 120, 0.28);
-    }
-
-    .heading {
-      margin-bottom: 28px;
-      text-align: center;
-    }
-
-    .heading h2 {
-      margin: 0;
-
-      color: #554ecb;
-      font-size: clamp(30px, 6vw, 48px);
-    }
-
-    .heading p {
-      margin: 10px 0 0;
-
-      color: #697198;
-      font-size: 17px;
-      font-weight: 700;
-    }
-
-    .account-email {
-      margin-top: 8px;
-
-      color: #8a8fab;
-      font-size: 13px;
-      overflow-wrap: anywhere;
-    }
-
-    .loading {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      min-height: 260px;
-
-      color: #5b54c9;
-      font-size: 18px;
-      font-weight: 900;
-    }
-
-    .summary-grid {
-      display: grid;
-      grid-template-columns:
-        repeat(3, minmax(0, 1fr));
-      gap: 14px;
-      margin-bottom: 28px;
-    }
-
-    .summary-card {
-      border: 2px solid #e4e1f8;
-      border-radius: 20px;
-      padding: 18px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #ffffff,
-          #f5f2ff
-        );
-
-      text-align: center;
-    }
-
-    .summary-icon {
-      font-size: 30px;
-    }
-
-    .summary-number {
-      margin-top: 5px;
-
-      color: #5149c1;
-      font-size: 31px;
-      font-weight: 900;
-    }
-
-    .summary-label {
-      margin-top: 3px;
-
-      color: #757b9b;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .dashboard-layout {
-      display: grid;
-      grid-template-columns:
-        minmax(0, 1.55fr)
-        minmax(280px, 0.85fr);
-      gap: 20px;
-    }
-
-    .panel {
-      border: 3px solid #e4e1f8;
-      border-radius: 25px;
-      padding: 22px;
-
-      background:
-        linear-gradient(
-          150deg,
-          #ffffff,
-          #f8f6ff
-        );
-
-      box-shadow:
-        0 9px 20px rgba(73, 65, 157, 0.1);
-    }
-
-    .panel + .panel {
-      margin-top: 20px;
-    }
-
-    .panel-heading {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 14px;
-
-      margin-bottom: 17px;
-    }
-
-    .panel-heading h3 {
-      margin: 0;
-
-      color: #4d47ba;
-      font-size: 25px;
-    }
-
-    .panel-heading p {
-      margin: 5px 0 0;
-
-      color: #787e9e;
-      font-size: 13px;
-      font-weight: 700;
-    }
-
-    .panel-button {
-      flex: 0 0 auto;
-
-      border: 0;
-      border-radius: 13px;
-      padding: 10px 13px;
-
-      color: white;
-      background:
-        linear-gradient(
-          135deg,
-          #6559f4,
-          #9168ff
-        );
-
-      box-shadow: 0 4px 0 #4942bc;
-
-      font-size: 13px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .children-list {
-      display: grid;
-      gap: 15px;
-    }
-
-    .child-card {
-      grid-template-columns:
-        auto
-        minmax(0,1fr);
-    }
-
-    .child-actions {
-      grid-column: 1 / -1;
-
-      display: grid;
-      grid-template-columns:
-        repeat(3,minmax(0,1fr));
-      gap: 8px;
-    }
-
-    .child-action-button {
-      min-height: 42px;
-
-      border: 0;
-      border-radius: 13px;
-      padding: 9px 11px;
-
-      color: white;
-      background:
-        linear-gradient(
-          135deg,
-          #6559f4,
-          #9168ff
-        );
-
-      font-size: 11px;
-      font-weight: 1000;
-      cursor: pointer;
-    }
-
-    .child-action-button.secondary {
-      color: #574c8e;
-      background: #eee9ff;
-    }
-
-    .child-action-button.manage {
-      color: #6e4a1c;
-      background: #fff0c8;
-    }
-
-    .add-child-modal {
-      position: fixed;
-      inset: 0;
-      z-index: 100000;
-
-      display: none;
-      align-items: center;
-      justify-content: center;
-
-      padding: 18px;
-
-      background: rgba(28,17,54,.72);
-      backdrop-filter: blur(8px);
-    }
-
-    .add-child-modal.open {
-      display: flex;
-    }
-
-    .add-child-card {
-      width: min(520px,100%);
-
-      border: 6px solid white;
-      border-radius: 28px;
-      padding: 22px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #f8efff,
-          #fff9e9
-        );
-
-      box-shadow:
-        0 28px 70px rgba(25,14,49,.42);
-    }
-
-    .add-child-card h3 {
-      margin: 0;
-      color: #554ecb;
-      font-size: 29px;
-    }
-
-    .add-child-card p {
-      color: #747a98;
-      font-weight: 800;
-    }
-
-    .add-child-field {
-      display: grid;
-      gap: 7px;
-      margin-top: 14px;
-    }
-
-    .add-child-field label {
-      color: #554c82;
-      font-size: 11px;
-      font-weight: 1000;
-    }
-
-    .add-child-field input {
-      width: 100%;
-      min-height: 46px;
-
-      border: 3px solid #ded5ef;
-      border-radius: 14px;
-      padding: 10px 12px;
-
-      color: #3e3a64;
-      background: white;
-    }
-
-    .avatar-options {
-      display: grid;
-      grid-template-columns:
-        repeat(6,minmax(0,1fr));
-      gap: 8px;
-      margin-top: 8px;
-    }
-
-    .avatar-option {
-      aspect-ratio: 1;
-
-      border: 3px solid #e2d9f1;
-      border-radius: 14px;
-
-      background: white;
-      font-size: 27px;
-      cursor: pointer;
-    }
-
-    .avatar-option.selected {
-      border-color: #ff76ad;
-      background: #fff0f7;
-      box-shadow: 0 0 0 3px #ff76ad33;
-    }
-
-    .add-child-actions {
-      display: flex;
-      gap: 9px;
-      margin-top: 18px;
-    }
-
-    .add-child-actions button {
-      flex: 1;
-      min-height: 44px;
-
-      border: 0;
-      border-radius: 14px;
-      padding: 10px;
-
-      font-weight: 1000;
-      cursor: pointer;
-    }
-
-    .add-child-save {
-      color: white;
-      background: #6559f4;
-    }
-
-    .add-child-cancel {
-      color: #5d538b;
-      background: #ebe7f5;
-    }
-
-    .add-child-error {
-      min-height: 19px;
-      margin-top: 10px;
-      color: #a43e55;
-      font-size: 11px;
-      font-weight: 900;
-    }
-
-    .child-card {
-      display: grid;
-      grid-template-columns: auto 1fr auto;
-      align-items: center;
-      gap: 14px;
-
-      border: 2px solid #e3e0f7;
-      border-radius: 19px;
-      padding: 15px;
-
-      background: white;
-    }
-
-    .child-avatar {
-      width: 60px;
-      height: 60px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border: 4px solid white;
-      border-radius: 50%;
-
-      background:
-        linear-gradient(
-          145deg,
-          #82d8ff,
-          #b28cff
-        );
-
-      box-shadow: 0 6px 15px rgba(68, 65, 145, 0.2);
-
-      font-size: 33px;
-    }
-
-    .child-details {
-      min-width: 0;
-    }
-
-    .child-name {
-      margin: 0;
-
-      color: #4d47ba;
-      font-size: 20px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .child-stats {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px 12px;
-
-      margin-top: 5px;
-
-      color: #737999;
-      font-size: 13px;
-      font-weight: 900;
-    }
-
-    .last-played {
-      margin-top: 5px;
-
-      color: #8b90aa;
-      font-size: 12px;
-      font-weight: 700;
-    }
-
-    .play-button {
-      border: 0;
-      border-radius: 13px;
-      padding: 11px 13px;
-
-      color: white;
-      background: #5b54d5;
-
-      font-size: 13px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    .empty-state {
-      border: 2px dashed #d7d3f2;
-      border-radius: 17px;
-      padding: 20px;
-
-      color: #777d9c;
-      text-align: center;
-      font-weight: 800;
-    }
-
-    .family-list {
-      display: grid;
-      gap: 10px;
-    }
-
-    .family-row {
-      display: flex;
-      align-items: center;
-      gap: 11px;
-
-      border: 2px solid #e4e1f7;
-      border-radius: 16px;
-      padding: 12px;
-
-      background: white;
-    }
-
-    .family-avatar {
-      flex: 0 0 auto;
-
-      width: 43px;
-      height: 43px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 50%;
-
-      background: #ebe7ff;
-      font-size: 23px;
-    }
-
-    .family-copy {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .family-copy strong {
-      display: block;
-
-      color: #4d47ba;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    .family-copy small {
-      display: block;
-      margin-top: 2px;
-
-      color: #7d829f;
-      overflow-wrap: anywhere;
-    }
-
-    .status {
-      flex: 0 0 auto;
-
-      border-radius: 999px;
-      padding: 6px 8px;
-
-      color: #287342;
-      background: #e4f7ea;
-
-      font-size: 10px;
-      font-weight: 900;
-    }
-
-    .status.pending {
-      color: #8a5d19;
-      background: #fff1d7;
-    }
-
-    .quick-actions {
-      display: grid;
-      gap: 11px;
-    }
-
-    .quick-action {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-
-      width: 100%;
-
-      border: 2px solid #e3e0f7;
-      border-radius: 16px;
-      padding: 13px;
-
-      color: #444a75;
-      background: white;
-
-      font-weight: 900;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .quick-action span {
-      font-size: 25px;
-    }
-
-    .coming-soon {
-      margin-left: auto;
-
-      border-radius: 999px;
-      padding: 5px 7px;
-
-      color: #795c1b;
-      background: #fff1d4;
-
-      font-size: 9px;
-      font-weight: 900;
-    }
-
-    .quick-action:disabled {
-      opacity: 0.66;
-      cursor: default;
-    }
-
-    .message {
-      display: none;
-
-      margin: 20px 0 0;
-      padding: 13px 16px;
-
-      border-radius: 14px;
-
-      font-weight: 800;
-      line-height: 1.4;
-      text-align: center;
-    }
-
-    .message.error {
-      display: block;
-
-      border: 1px solid #eeaab2;
-
-      color: #a52d40;
-      background: #ffe8ec;
-    }
-
-
-    .activity-list {
-      display: grid;
-      gap: 11px;
-    }
-
-    .activity-row {
-      display: grid;
-      grid-template-columns: auto 1fr;
-      align-items: start;
-      gap: 11px;
-
-      border: 2px solid #e4e1f7;
-      border-radius: 17px;
-      padding: 13px;
-
-      background: white;
-    }
-
-    .activity-avatar {
-      width: 45px;
-      height: 45px;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      border-radius: 14px;
-
-      background:
-        linear-gradient(
-          145deg,
-          #eeeaff,
-          #e5f5ff
-        );
-
-      font-size: 24px;
-    }
-
-    .activity-copy {
-      min-width: 0;
-    }
-
-    .activity-title {
-      color: #4d47ba;
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.35;
-    }
-
-    .activity-message {
-      margin-top: 3px;
-
-      color: #767c9b;
-      font-size: 11px;
-      font-weight: 700;
-      line-height: 1.45;
-    }
-
-    .activity-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 5px 9px;
-
-      margin-top: 6px;
-
-      color: #969aaf;
-      font-size: 9px;
-      font-weight: 800;
-    }
-
-    .activity-reward {
-      border-radius: 999px;
-      padding: 4px 7px;
-
-      color: #7d5c13;
-      background: #fff1c7;
-    }
-
-    .topbar-actions {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-    }
-
-    .castle-button {
-      border: 2px solid rgba(255, 255, 255, 0.8);
-      border-radius: 14px;
-      padding: 11px 16px;
-
-      color: white;
-      background:
-        linear-gradient(
-          135deg,
-          #6559f4,
-          #9168ff
-        );
-
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    @media (max-width: 850px) {
-      .dashboard-layout {
-        grid-template-columns: 1fr;
-      }
-
-      .panel + .panel {
-        margin-top: 0;
-      }
-
-      .right-column {
-        display: grid;
-        grid-template-columns:
-          repeat(2, minmax(0, 1fr));
-        gap: 20px;
-      }
-    }
-
-    @media (max-width: 620px) {
-      body {
-        padding: 14px;
-      }
-
-      .topbar {
-        align-items: flex-start;
-      }
-
-      .brand-icon {
-        font-size: 34px;
-      }
-
-      .main-card {
-        border-radius: 25px;
-      }
-
-      .summary-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .right-column {
-        grid-template-columns: 1fr;
-      }
-
-      .child-card {
-        grid-template-columns: auto 1fr;
-      }
-
-      .child-actions {
-        grid-template-columns: 1fr;
-      }
-
-      .panel-heading {
-        align-items: stretch;
-        flex-direction: column;
-      }
-
-      .panel-button {
-        width: 100%;
-      }
-    }
-  </style>
+  <link
+    rel="stylesheet"
+    href="parent-dashboard.css?v=2">
 </head>
 
 <body>
-  <main class="page">
+
+  <div class="dashboard-shell">
 
     <header class="topbar">
-      <div class="brand">
-        <div class="brand-icon">🏰</div>
-        <h1>ELCraft</h1>
-      </div>
+
+      <a
+        class="brand"
+        href="parent-dashboard.html"
+        aria-label="ELCraft Parent Control Center">
+
+        <span class="brand-name">
+          ELCraft
+        </span>
+
+        <span class="brand-subtitle">
+          Parent Control Center
+        </span>
+
+      </a>
 
       <div class="topbar-actions">
+
         <button
-          id="castleButton" onclick="window.location.href='family-castle.html'"
-          onclick="window.location.href='family-castle.html'"
-          class="castle-button"
+          id="familyGuideButton"
+          class="topbar-button soft"
           type="button">
-          🏰 Family Castle
+          📚 Family Guide
+        </button>
+
+        <button
+          id="parentMenuButton"
+          class="topbar-button"
+          type="button"
+          aria-expanded="false"
+          aria-controls="parentMenu">
+          👑 <span id="parentGreeting">Hi, Parent</span>⌄
+        </button>
+
+      </div>
+
+      <div
+        id="parentMenu"
+        class="parent-menu"
+        hidden>
+
+        <div class="parent-menu-email">
+          <strong id="parentMenuName">Parent Account</strong>
+          <span id="parentMenuEmail">Loading account…</span>
+        </div>
+
+        <button
+          id="manageAccountButton"
+          type="button">
+          👤 Manage Account
         </button>
 
         <button
           id="logoutButton"
-          class="logout-button"
+          class="danger"
           type="button">
-          Log Out
+          🚪 Log Out
         </button>
+
       </div>
+
     </header>
 
-    <section class="main-card">
+    <main class="dashboard-main">
 
-      <div class="heading">
-        <h2 id="welcomeTitle">
-          Parent Dashboard
-        </h2>
+      <section class="hero-panel">
 
-        <p>
-          Your ELCraft family at a glance.
-        </p>
+        <div class="section-heading">
 
-        <div
-          id="accountEmail"
-          class="account-email">
+          <div>
+            <h1>👥 Who’s Playing?</h1>
+            <p>
+              Choose a player to enter their own ELCraft world.
+            </p>
+          </div>
+
+          <div
+            id="syncBadge"
+            class="status-badge syncing">
+            Syncing players…
+          </div>
+
         </div>
-      </div>
 
-      
+        <div class="player-layout">
 
-      <div
-        id="dashboardContent">
+          <div
+            id="playerGrid"
+            class="player-grid">
 
-        <section class="summary-grid">
-          <article class="summary-card">
-            <div class="summary-icon">👧</div>
-            <div
-              id="childrenCount"
-              class="summary-number">
-              0
-            </div>
-            <div class="summary-label">
-              Children
-            </div>
-          </article>
+            <article class="player-card loading-card">
+              <div class="avatar-skeleton"></div>
+              <div class="line-skeleton wide"></div>
+              <div class="line-skeleton"></div>
+            </article>
 
-          <article class="summary-card">
-            <div class="summary-icon">👨‍👩‍👧</div>
-            <div
-              id="familyCount"
-              class="summary-number">
-              0
-            </div>
-            <div class="summary-label">
-              Connected Family
-            </div>
-          </article>
-
-          <article class="summary-card">
-            <div class="summary-icon">✉️</div>
-            <div
-              id="pendingCount"
-              class="summary-number">
-              0
-            </div>
-            <div class="summary-label">
-              Pending Invitations
-            </div>
-          </article>
-        </section>
-
-        <section class="dashboard-layout">
-
-          <div class="left-column">
-
-            <section class="panel">
-              <div class="panel-heading">
-                <div>
-                  <h3>🎮 Who’s Playing?</h3>
-                  <div
-                    id="playerSyncStatus"
-                    style="margin-top:5px;color:#7b7198;font-size:10px;font-weight:900;">
-                    Syncing players…
-                  </div>
-                  <p>
-                    Choose a child to enter their ELCraft home, or manage their account.
-                  </p>
-                </div>
-
-                <button
-                  id="manageChildrenButton"
-                  class="panel-button"
-                  type="button">
-                  ➕ Add Child
-                </button>
-              </div>
-
-              <div
-                id="childrenList"
-                class="children-list">
-              </div>
-            </section>
-
-            <section class="panel">
-              <div class="panel-heading">
-                <div>
-                  <h3>✨ Recent Activity</h3>
-                  <p>
-                    The latest learning, rewards, pets, books, and family moments.
-                  </p>
-                </div>
-
-                <button
-                  id="openFeedButton" onclick="window.location.href='family-feed.html'"
-                  class="panel-button"
-                  type="button">
-                  View Full Feed
-                </button>
-              </div>
-
-              <div
-                id="activityList"
-                class="activity-list">
-              </div>
-            </section>
+            <article class="player-card loading-card">
+              <div class="avatar-skeleton"></div>
+              <div class="line-skeleton wide"></div>
+              <div class="line-skeleton"></div>
+            </article>
 
           </div>
 
-          <div class="right-column">
+          <aside class="quick-return-card">
 
-            <section class="panel">
-              <div class="panel-heading">
-                <div>
-                  <h3>👨‍👩‍👧 Family</h3>
-                  <p>
-                    Connected members and open invitations.
-                  </p>
-                </div>
+            <div class="quick-return-icon">
+              🎮
+            </div>
 
-                <button
-                  id="manageFamilyButton"
-                  class="panel-button"
-                  type="button">
-                  Manage
-                </button>
-              </div>
+            <h2>Quick Return</h2>
 
-              <div
-                id="familyList"
-                class="family-list">
-              </div>
-            </section>
+            <p>
+              Continue playing as
+            </p>
 
-            <section class="panel">
-              <div class="panel-heading">
-                <div>
-                  <h3>Quick Actions</h3>
-                  <p>
-                    Jump directly to a parent tool.
-                  </p>
-                </div>
-              </div>
+            <div
+              id="quickReturnName"
+              class="quick-return-name">
+              No player selected
+            </div>
 
-              <div class="quick-actions">
+            <button
+              id="quickReturnButton"
+              class="primary-button"
+              type="button"
+              disabled>
+              🏠 Enter Home
+            </button>
 
-                
+            <small id="quickReturnDetail">
+              Choose a player first
+            </small>
 
-                <button
-                  id="openCastleButton" onclick="window.location.href='family-castle.html'"
-                  class="quick-action"
-                  type="button">
-                  <span>🏰</span>
-                  Family Castle
-                </button>
+          </aside>
 
-                <button
-                  id="openFamilyFeedButton" onclick="window.location.href='family-feed.html'"
-                  class="quick-action"
-                  type="button">
-                  <span>💜</span>
-                  Family Feed
-                </button>
+        </div>
 
-                <button
-                  id="inviteFamilyButton"
-                  class="quick-action"
-                  type="button">
-                  <span>✉️</span>
-                  Invite Family
-                </button>
+      </section>
 
-                <button
-                  class="quick-action"
-                  type="button"
-                  disabled>
-                  <span>🎨</span>
-                  Drawings
-                  <small class="coming-soon">
-                    Coming Soon
-                  </small>
-                </button>
+      <section class="tools-panel">
 
-                <button
-                  class="quick-action"
-                  type="button"
-                  disabled>
-                  <span>📅</span>
-                  Family Calendar
-                  <small class="coming-soon">
-                    Coming Soon
-                  </small>
-                </button>
+        <div class="section-heading compact">
 
-              </div>
-            </section>
+          <div>
+            <h2>🧰 Parent Tools</h2>
+            <p>
+              Everything needed to manage your family’s adventure.
+            </p>
+          </div>
+
+        </div>
+
+        <div class="tool-grid">
+
+          <button
+            id="viewProgressButton"
+            class="tool-card"
+            type="button">
+
+            <span class="tool-icon">📊</span>
+
+            <span>
+              <strong>View Progress</strong>
+              <small>Learning and game growth</small>
+            </span>
+
+          </button>
+
+          <button
+            id="manageChildButton"
+            class="tool-card"
+            type="button">
+
+            <span class="tool-icon">👤</span>
+
+            <span>
+              <strong>Manage Child</strong>
+              <small>Edit the selected player</small>
+            </span>
+
+          </button>
+
+          <button
+            id="addChildButton"
+            class="tool-card"
+            type="button">
+
+            <span class="tool-icon">➕</span>
+
+            <span>
+              <strong>Add Child</strong>
+              <small>Create a separate player world</small>
+            </span>
+
+          </button>
+
+          <button
+            id="familyCastleButton"
+            class="tool-card"
+            type="button">
+
+            <span class="tool-icon">🏰</span>
+
+            <span>
+              <strong>Family Castle</strong>
+              <small>Family, invitations, and mail</small>
+            </span>
+
+          </button>
+
+          <button
+            id="clubhouseApprovalsButton"
+            class="tool-card"
+            type="button">
+
+            <span class="tool-icon">🎨</span>
+
+            <span>
+              <strong>Clubhouse Approvals</strong>
+              <small>
+                <span id="approvalToolCount">0</span>
+                artwork requests
+              </small>
+            </span>
+
+          </button>
+
+        </div>
+
+      </section>
+
+      <section class="dashboard-grid">
+
+        <article class="content-card">
+
+          <div class="card-heading">
+            <div>
+              <h2>⭐ Progress Overview</h2>
+              <p>See how every player is growing.</p>
+            </div>
+          </div>
+
+          <div
+            id="progressList"
+            class="progress-list">
+
+            <div class="empty-state">
+              Player progress will appear here.
+            </div>
 
           </div>
 
-        </section>
+          <button
+            id="fullProgressButton"
+            class="wide-link-button"
+            type="button">
+            View Full Progress ›
+          </button>
 
-      </div>
+        </article>
+
+        <article
+          id="approvalCard"
+          class="content-card">
+
+          <div class="card-heading">
+
+            <div>
+              <h2>🎨 Clubhouse Approvals</h2>
+              <p>Artwork waiting for your review.</p>
+            </div>
+
+            <span
+              id="approvalCountBadge"
+              class="mini-badge">
+              0
+            </span>
+
+          </div>
+
+          <div
+            id="approvalList"
+            class="approval-list">
+
+            <div class="empty-state">
+              No artwork is waiting for approval.
+            </div>
+
+          </div>
+
+          <button
+            id="reviewAllArtworkButton"
+            class="wide-link-button"
+            type="button">
+            Review All Artwork ›
+          </button>
+
+        </article>
+
+        <article class="content-card">
+
+          <div class="card-heading">
+            <div>
+              <h2>🏰 Family Castle</h2>
+              <p>Your family hub.</p>
+            </div>
+          </div>
+
+          <div
+            id="familyList"
+            class="family-list">
+
+            <div class="empty-state">
+              Family members will appear here.
+            </div>
+
+          </div>
+
+          <button
+            id="openFamilyCastleButton"
+            class="wide-link-button"
+            type="button">
+            Open Family Castle ›
+          </button>
+
+        </article>
+
+      </section>
+
+      <section class="lower-grid">
+
+        <article class="content-card">
+
+          <div class="card-heading">
+
+            <div>
+              <h2>🕒 Recent Activity</h2>
+              <p>What has been happening.</p>
+            </div>
+
+            <button
+              id="viewActivityButton"
+              class="small-link-button"
+              type="button">
+              View All
+            </button>
+
+          </div>
+
+          <div
+            id="activityList"
+            class="activity-list">
+
+            <div class="empty-state">
+              Recent activity will appear here.
+            </div>
+
+          </div>
+
+        </article>
+
+        <article class="tips-card">
+
+          <div>
+            <h2>💡 Tips & Reminders</h2>
+
+            <p id="tipText">
+              Choose a player above to review their world and progress.
+            </p>
+          </div>
+
+          <div class="tip-art">
+            🪄
+          </div>
+
+        </article>
+
+      </section>
+
+      <footer class="account-footer">
+
+        <button
+          id="footerAccountButton"
+          class="footer-action"
+          type="button">
+
+          <span>👤</span>
+
+          <span>
+            <strong>Parent Account</strong>
+            <small id="footerEmail">Loading email…</small>
+          </span>
+
+        </button>
+
+        <button
+          id="helpButton"
+          class="footer-action"
+          type="button">
+
+          <span>❓</span>
+
+          <span>
+            <strong>Need Help?</strong>
+            <small>Guides and support</small>
+          </span>
+
+        </button>
+
+        <button
+          id="footerLogoutButton"
+          class="footer-action logout"
+          type="button">
+
+          <span>🚪</span>
+
+          <span>
+            <strong>Log Out</strong>
+            <small>Sign out of the parent account</small>
+          </span>
+
+        </button>
+
+        <div class="footer-crest">
+          ELC
+        </div>
+
+      </footer>
 
       <div
         id="pageMessage"
-        class="message"
+        class="page-message"
         role="status"
         aria-live="polite">
       </div>
 
-    </section>
+    </main>
 
-  </main>
-
+  </div>
 
   <section
     id="addChildModal"
-    class="add-child-modal"
+    class="modal"
     role="dialog"
     aria-modal="true"
-    aria-labelledby="addChildTitle">
+    aria-labelledby="addChildTitle"
+    hidden>
 
     <form
       id="addChildForm"
-      class="add-child-card">
+      class="modal-card">
 
-      <h3 id="addChildTitle">
-        ➕ Add a Child
-      </h3>
+      <div class="modal-heading">
 
-      <p>
-        Create a child profile without leaving the Parent Dashboard.
-      </p>
+        <div>
+          <h2 id="addChildTitle">
+            ➕ Add a Child
+          </h2>
 
-      <div class="add-child-field">
-        <label for="newChildName">
-          Child’s first name
-        </label>
+          <p>
+            Every child receives a separate ELCraft world and save.
+          </p>
+        </div>
+
+        <button
+          id="closeAddChildButton"
+          class="modal-close"
+          type="button"
+          aria-label="Close">
+          ×
+        </button>
+
+      </div>
+
+      <label class="field">
+
+        <span>Child’s first name</span>
 
         <input
           id="newChildName"
@@ -1127,44 +506,80 @@
           maxlength="20"
           autocomplete="off"
           required>
-      </div>
 
-      <div class="add-child-field">
-        <label>
-          Starting avatar
-        </label>
+      </label>
+
+      <fieldset class="avatar-field">
+
+        <legend>Starting icon</legend>
 
         <div
-          id="newChildAvatars"
+          id="avatarOptions"
           class="avatar-options">
 
-          <button class="avatar-option selected" data-avatar="🌟" type="button">🌟</button>
-          <button class="avatar-option" data-avatar="🦄" type="button">🦄</button>
-          <button class="avatar-option" data-avatar="🐱" type="button">🐱</button>
-          <button class="avatar-option" data-avatar="🐶" type="button">🐶</button>
-          <button class="avatar-option" data-avatar="🦋" type="button">🦋</button>
-          <button class="avatar-option" data-avatar="🚀" type="button">🚀</button>
+          <button
+            class="avatar-option selected"
+            data-avatar="🌟"
+            type="button">
+            🌟
+          </button>
+
+          <button
+            class="avatar-option"
+            data-avatar="🦄"
+            type="button">
+            🦄
+          </button>
+
+          <button
+            class="avatar-option"
+            data-avatar="🚀"
+            type="button">
+            🚀
+          </button>
+
+          <button
+            class="avatar-option"
+            data-avatar="🦋"
+            type="button">
+            🦋
+          </button>
+
+          <button
+            class="avatar-option"
+            data-avatar="🐱"
+            type="button">
+            🐱
+          </button>
+
+          <button
+            class="avatar-option"
+            data-avatar="🐶"
+            type="button">
+            🐶
+          </button>
 
         </div>
-      </div>
+
+      </fieldset>
 
       <div
         id="addChildError"
-        class="add-child-error">
+        class="form-error">
       </div>
 
-      <div class="add-child-actions">
+      <div class="modal-actions">
 
         <button
-          id="cancelAddChild"
-          class="add-child-cancel"
+          id="cancelAddChildButton"
+          class="secondary-button"
           type="button">
           Cancel
         </button>
 
         <button
-          id="saveAddChild"
-          class="add-child-save"
+          id="saveChildButton"
+          class="primary-button"
           type="submit">
           Create Child
         </button>
@@ -1175,1921 +590,82 @@
 
   </section>
 
-  <script type="module">
-    import { supabase } from "./supabase-client.js";
+  <section
+    id="manageChildModal"
+    class="modal"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="manageChildTitle"
+    hidden>
+
+    <form
+      id="manageChildForm"
+      class="modal-card">
+
+      <div class="modal-heading">
+
+        <div>
+          <h2 id="manageChildTitle">
+            👤 Manage Child
+          </h2>
+
+          <p>
+            Update the selected player’s dashboard profile.
+          </p>
+        </div>
+
+        <button
+          id="closeManageChildButton"
+          class="modal-close"
+          type="button"
+          aria-label="Close">
+          ×
+        </button>
+
+      </div>
+
+      <label class="field">
+
+        <span>Display name</span>
+
+        <input
+          id="manageChildName"
+          type="text"
+          maxlength="20"
+          required>
+
+      </label>
+
+      <div
+        id="manageChildError"
+        class="form-error">
+      </div>
+
+      <div class="modal-actions">
+
+        <button
+          id="cancelManageChildButton"
+          class="secondary-button"
+          type="button">
+          Cancel
+        </button>
+
+        <button
+          id="saveManagedChildButton"
+          class="primary-button"
+          type="submit">
+          Save Changes
+        </button>
+
+      </div>
+
+    </form>
+
+  </section>
 
-    const SELECTED_CHILD_ID_KEY =
-      "elcraft_selected_child_id";
-
-    const CHILD_NAME_KEY =
-      "elcraft_child_name";
-
-    const CHILD_AVATAR_KEY =
-      "elcraft_child_avatar";
-
-    const loading =
-      document.getElementById("loading");
-
-    const dashboardContent =
-      document.getElementById("dashboardContent");
-
-    const welcomeTitle =
-      document.getElementById("welcomeTitle");
-
-    const accountEmail =
-      document.getElementById("accountEmail");
-
-    const childrenCount =
-      document.getElementById("childrenCount");
-
-    const playerSyncStatus =
-      document.getElementById("playerSyncStatus");
-
-    const familyCount =
-      document.getElementById("familyCount");
-
-    const pendingCount =
-      document.getElementById("pendingCount");
-
-    const childrenList =
-      document.getElementById("childrenList");
-
-    const familyList =
-      document.getElementById("familyList");
-
-    const activityList =
-      document.getElementById("activityList");
-
-    const pageMessage =
-      document.getElementById("pageMessage");
-
-    const manageChildrenButton =
-      document.getElementById("manageChildrenButton");
-
-    const manageFamilyButton =
-      document.getElementById("manageFamilyButton");
-
-    const choosePlayerButton =
-      document.getElementById("choosePlayerButton");
-
-    const inviteFamilyButton =
-      document.getElementById("inviteFamilyButton");
-
-    const castleButton =
-      document.getElementById("castleButton");
-
-    const openCastleButton =
-      document.getElementById("openCastleButton");
-
-    const openFamilyFeedButton =
-      document.getElementById("openFamilyFeedButton");
-
-    const openFeedButton =
-      document.getElementById("openFeedButton");
-
-    const logoutButton =
-      document.getElementById("logoutButton");
-
-    const addChildModal =
-      document.getElementById("addChildModal");
-
-    const addChildForm =
-      document.getElementById("addChildForm");
-
-    const newChildName =
-      document.getElementById("newChildName");
-
-    const addChildError =
-      document.getElementById("addChildError");
-
-    const cancelAddChild =
-      document.getElementById("cancelAddChild");
-
-    const saveAddChild =
-      document.getElementById("saveAddChild");
-
-    let selectedNewAvatar =
-      "🌟";
-
-    let currentUser = null;
-    let currentFamilyId = null;
-    let currentMembership = null;
-    let familyOwnerUserId = null;
-
-    function showError(text) {
-      pageMessage.textContent = text;
-      pageMessage.className = "message error";
-    }
-
-    function displayNameFromUser(user) {
-      const metadataName =
-        user?.user_metadata?.display_name ||
-        user?.user_metadata?.full_name ||
-        user?.user_metadata?.name;
-
-      if (metadataName) {
-        return String(metadataName)
-          .trim()
-          .split(/\s+/)[0]
-          .slice(0, 30);
-      }
-
-      const emailName =
-        String(user?.email || "")
-          .split("@")[0]
-          .replace(/[._-]+/g, " ")
-          .trim()
-          .split(/\s+/)[0];
-
-      if (!emailName) {
-        return "Parent";
-      }
-
-      return emailName
-        .charAt(0)
-        .toUpperCase() +
-        emailName.slice(1);
-    }
-
-    function relationshipLabel(value) {
-      const labels = {
-        parent: "Parent / Stepparent",
-        grandparent: "Grandparent",
-        older_sibling: "Older sibling",
-        aunt_uncle: "Aunt / Uncle",
-        guardian: "Guardian",
-        family_member: "Family member"
-      };
-
-      return labels[value] ||
-        "Family member";
-    }
-
-    function relationshipEmoji(value) {
-      const emojis = {
-        parent: "👨‍👩‍👧",
-        grandparent: "👵",
-        older_sibling: "🧑",
-        aunt_uncle: "💜",
-        guardian: "🛡️",
-        family_member: "⭐"
-      };
-
-      return emojis[value] || "⭐";
-    }
-
-    function formatLastPlayed(profile) {
-      const dateValue =
-        profile.last_played_at ||
-        profile.last_active_at ||
-        profile.updated_at ||
-        null;
-
-      if (!dateValue) {
-        return "Last played: Not recorded yet";
-      }
-
-      const date =
-        new Date(dateValue);
-
-      if (Number.isNaN(date.getTime())) {
-        return "Last played: Not recorded yet";
-      }
-
-      const today =
-        new Date();
-
-      const startToday =
-        new Date(
-          today.getFullYear(),
-          today.getMonth(),
-          today.getDate()
-        );
-
-      const startDate =
-        new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          date.getDate()
-        );
-
-      const dayDifference =
-        Math.round(
-          (startToday - startDate) /
-          86400000
-        );
-
-      if (dayDifference === 0) {
-        return "Last played: Today";
-      }
-
-      if (dayDifference === 1) {
-        return "Last played: Yesterday";
-      }
-
-      return `Last played: ${date.toLocaleDateString()}`;
-    }
-
-    function enterChild(profile) {
-      localStorage.setItem(
-        SELECTED_CHILD_ID_KEY,
-        profile.id
-      );
-
-      localStorage.setItem(
-        CHILD_NAME_KEY,
-        profile.display_name || "Player"
-      );
-
-      localStorage.setItem(
-        CHILD_AVATAR_KEY,
-        profile.avatar || "🌟"
-      );
-
-      window.location.href =
-        "index.html";
-    }
-
-    function renderChildren(profiles) {
-      childrenList.replaceChildren();
-
-      childrenCount.textContent =
-        String(
-          profiles.length
-        );
-
-      playerSyncStatus.textContent =
-        profiles.length
-          ? `${profiles.length} player${
-              profiles.length === 1
-                ? ""
-                : "s"
-            } connected`
-          : "No players connected yet";
-
-      if (
-        !profiles.length
-      ) {
-        const empty =
-          document.createElement(
-            "div"
-          );
-
-        empty.className =
-          "empty-state";
-
-        empty.innerHTML = `
-          <strong>
-            No child profiles are connected yet.
-          </strong>
-
-          <div style="margin-top:7px;">
-            Press “Add Child” to create the first player.
-          </div>
-        `;
-
-        childrenList.appendChild(
-          empty
-        );
-
-        return;
-      }
-
-      profiles.forEach(
-        profile => {
-          const card =
-            document.createElement(
-              "article"
-            );
-
-          card.className =
-            "child-card";
-
-          const avatar =
-            document.createElement(
-              "div"
-            );
-
-          avatar.className =
-            "child-avatar";
-
-          avatar.textContent =
-            profile.avatar ||
-            "🌟";
-
-          const details =
-            document.createElement(
-              "div"
-            );
-
-          details.className =
-            "child-details";
-
-          const name =
-            document.createElement(
-              "h4"
-            );
-
-          name.className =
-            "child-name";
-
-          name.textContent =
-            profile.display_name ||
-            "Player";
-
-          const stats =
-            document.createElement(
-              "div"
-            );
-
-          stats.className =
-            "child-stats";
-
-          const level =
-            document.createElement(
-              "span"
-            );
-
-          level.textContent =
-            `Level ${
-              profile.level ||
-              1
-            }`;
-
-          const stars =
-            document.createElement(
-              "span"
-            );
-
-          stars.textContent =
-            `⭐ ${
-              profile.stars ||
-              0
-            } stars`;
-
-          const experience =
-            document.createElement(
-              "span"
-            );
-
-          experience.textContent =
-            `✨ ${
-              profile.experience ||
-              0
-            } XP`;
-
-          stats.append(
-            level,
-            stars,
-            experience
-          );
-
-          const lastPlayed =
-            document.createElement(
-              "div"
-            );
-
-          lastPlayed.className =
-            "last-played";
-
-          lastPlayed.textContent =
-            formatLastPlayed(
-              profile
-            );
-
-          details.append(
-            name,
-            stats,
-            lastPlayed
-          );
-
-          const actions =
-            document.createElement(
-              "div"
-            );
-
-          actions.className =
-            "child-actions";
-
-          const enterHome =
-            document.createElement(
-              "button"
-            );
-
-          enterHome.className =
-            "child-action-button";
-
-          enterHome.type =
-            "button";
-
-          enterHome.textContent =
-            "▶ Enter Home";
-
-          enterHome.addEventListener(
-            "click",
-            () => {
-              enterChild(
-                profile
-              );
-            }
-          );
-
-          const progress =
-            document.createElement(
-              "button"
-            );
-
-          progress.className =
-            "child-action-button secondary";
-
-          progress.type =
-            "button";
-
-          progress.textContent =
-            "📊 View Progress";
-
-          progress.addEventListener(
-            "click",
-            () => {
-              localStorage.setItem(
-                SELECTED_CHILD_ID_KEY,
-                profile.id
-              );
-
-              localStorage.setItem(
-                CHILD_NAME_KEY,
-                profile.display_name ||
-                "Player"
-              );
-
-              localStorage.setItem(
-                CHILD_AVATAR_KEY,
-                profile.avatar ||
-                "🌟"
-              );
-
-              window.location.href =
-                "progress.html";
-            }
-          );
-
-          const manage =
-            document.createElement(
-              "button"
-            );
-
-          manage.className =
-            "child-action-button manage";
-
-          manage.type =
-            "button";
-
-          manage.textContent =
-            "⚙️ Manage Child";
-
-          manage.addEventListener(
-            "click",
-            async () => {
-              const currentName =
-                profile.display_name ||
-                "Player";
-
-              const newName =
-                window.prompt(
-                  "Update the child’s display name:",
-                  currentName
-                );
-
-              if (
-                newName ===
-                null
-              ) {
-                return;
-              }
-
-              const cleanedName =
-                String(
-                  newName
-                )
-                  .trim()
-                  .replace(
-                    /\s+/g,
-                    " "
-                  )
-                  .slice(
-                    0,
-                    20
-                  );
-
-              if (
-                !cleanedName
-              ) {
-                showError(
-                  "The child’s name cannot be blank."
-                );
-
-                return;
-              }
-
-              manage.disabled =
-                true;
-
-              manage.textContent =
-                "Saving...";
-
-              const {
-                error
-              } =
-                await supabase
-                  .from(
-                    "child_profiles"
-                  )
-                  .update({
-                    display_name:
-                      cleanedName
-                  })
-                  .eq(
-                    "id",
-                    profile.id
-                  );
-
-              if (
-                error
-              ) {
-                console.error(
-                  "Child update error:",
-                  error
-                );
-
-                showError(
-                  error.message ||
-                  "Unable to update the child."
-                );
-
-                manage.disabled =
-                  false;
-
-                manage.textContent =
-                  "⚙️ Manage Child";
-
-                return;
-              }
-
-              profile.display_name =
-                cleanedName;
-
-              renderChildren(
-                profiles
-              );
-            }
-          );
-
-          actions.append(
-            enterHome,
-            progress,
-            manage
-          );
-
-          card.append(
-            avatar,
-            details,
-            actions
-          );
-
-          childrenList.appendChild(
-            card
-          );
-        }
-      );
-    }
-
-    function createFamilyRow({
-      name,
-      email,
-      relationship,
-      pending = false
-    }) {
-      const row =
-        document.createElement("article");
-
-      row.className = "family-row";
-
-      const avatar =
-        document.createElement("div");
-
-      avatar.className = "family-avatar";
-      avatar.textContent =
-        pending
-          ? "✉️"
-          : relationshipEmoji(relationship);
-
-      const copy =
-        document.createElement("div");
-
-      copy.className = "family-copy";
-
-      const strong =
-        document.createElement("strong");
-
-      strong.textContent =
-        name || "Family member";
-
-      const small =
-        document.createElement("small");
-
-      const relationshipText =
-        relationshipLabel(relationship);
-
-      small.textContent =
-        email
-          ? `${relationshipText} · ${email}`
-          : relationshipText;
-
-      copy.append(
-        strong,
-        small
-      );
-
-      const status =
-        document.createElement("span");
-
-      status.className =
-        pending
-          ? "status pending"
-          : "status";
-
-      status.textContent =
-        pending
-          ? "Pending"
-          : "Connected";
-
-      row.append(
-        avatar,
-        copy,
-        status
-      );
-
-      return row;
-    }
-
-    function renderFamily(
-      members,
-      invitations
-    ) {
-      familyList.replaceChildren();
-
-      const connectedMembers =
-        members.filter(
-          member =>
-            member.member_role !== "owner"
-        );
-
-      familyCount.textContent =
-        String(connectedMembers.length);
-
-      pendingCount.textContent =
-        String(invitations.length);
-
-      const visibleMembers =
-        connectedMembers.slice(0, 4);
-
-      const visibleInvitations =
-        invitations.slice(
-          0,
-          Math.max(
-            0,
-            5 - visibleMembers.length
-          )
-        );
-
-      visibleMembers.forEach(member => {
-        familyList.appendChild(
-          createFamilyRow({
-            name:
-              member.display_name,
-            email:
-              member.email,
-            relationship:
-              member.relationship
-          })
-        );
-      });
-
-      visibleInvitations.forEach(invitation => {
-        familyList.appendChild(
-          createFamilyRow({
-            name:
-              invitation.display_name,
-            email:
-              invitation.email,
-            relationship:
-              invitation.relationship,
-            pending: true
-          })
-        );
-      });
-
-      if (
-        !visibleMembers.length &&
-        !visibleInvitations.length
-      ) {
-        const empty =
-          document.createElement("div");
-
-        empty.className = "empty-state";
-        empty.textContent =
-          "No connected family members or pending invitations yet.";
-
-        familyList.appendChild(empty);
-      }
-    }
-
-
-    function formatActivityDate(value) {
-      if (!value) {
-        return "";
-      }
-
-      const date =
-        new Date(value);
-
-      if (Number.isNaN(date.getTime())) {
-        return "";
-      }
-
-      const difference =
-        Date.now() - date.getTime();
-
-      const minutes =
-        Math.floor(
-          difference / 60000
-        );
-
-      const hours =
-        Math.floor(
-          difference / 3600000
-        );
-
-      const days =
-        Math.floor(
-          difference / 86400000
-        );
-
-      if (minutes < 1) {
-        return "Just now";
-      }
-
-      if (minutes < 60) {
-        return `${minutes}m ago`;
-      }
-
-      if (hours < 24) {
-        return `${hours}h ago`;
-      }
-
-      if (days === 1) {
-        return "Yesterday";
-      }
-
-      if (days < 7) {
-        return `${days} days ago`;
-      }
-
-      return date.toLocaleDateString();
-    }
-
-    function renderActivity(activities) {
-      activityList.replaceChildren();
-
-      if (!activities.length) {
-        const empty =
-          document.createElement("div");
-
-        empty.className =
-          "empty-state";
-
-        empty.textContent =
-          "Family activity will appear here as Ella learns, earns rewards, adopts pets, reads books, and receives encouragement.";
-
-        activityList.appendChild(
-          empty
-        );
-
-        return;
-      }
-
-      activities
-        .slice(0, 6)
-        .forEach(activity => {
-          const row =
-            document.createElement("article");
-
-          row.className =
-            "activity-row";
-
-          const avatar =
-            document.createElement("div");
-
-          avatar.className =
-            "activity-avatar";
-
-          avatar.textContent =
-            activity.icon || "✨";
-
-          const copy =
-            document.createElement("div");
-
-          copy.className =
-            "activity-copy";
-
-          const title =
-            document.createElement("div");
-
-          title.className =
-            "activity-title";
-
-          title.textContent =
-            activity.title ||
-            "New family activity";
-
-          copy.appendChild(title);
-
-          if (activity.message) {
-            const message =
-              document.createElement("div");
-
-            message.className =
-              "activity-message";
-
-            message.textContent =
-              activity.message;
-
-            copy.appendChild(message);
-          }
-
-          const meta =
-            document.createElement("div");
-
-          meta.className =
-            "activity-meta";
-
-          const date =
-            document.createElement("span");
-
-          date.textContent =
-            formatActivityDate(
-              activity.created_at
-            );
-
-          meta.appendChild(date);
-
-          if (
-            Number(
-              activity.stars_earned || 0
-            ) > 0
-          ) {
-            const stars =
-              document.createElement("span");
-
-            stars.className =
-              "activity-reward";
-
-            stars.textContent =
-              `⭐ +${activity.stars_earned}`;
-
-            meta.appendChild(stars);
-          }
-
-          if (
-            Number(
-              activity.xp_earned || 0
-            ) > 0
-          ) {
-            const xp =
-              document.createElement("span");
-
-            xp.className =
-              "activity-reward";
-
-            xp.textContent =
-              `✨ +${activity.xp_earned} XP`;
-
-            meta.appendChild(xp);
-          }
-
-          copy.appendChild(meta);
-
-          row.append(
-            avatar,
-            copy
-          );
-
-          activityList.appendChild(row);
-        });
-    }
-
-    function timeoutAfter(
-      milliseconds,
-      message
-    ) {
-      return new Promise(
-        (
-          _resolve,
-          reject
-        ) => {
-          window.setTimeout(
-            () => {
-              reject(
-                new Error(
-                  message
-                )
-              );
-            },
-            milliseconds
-          );
-        }
-      );
-    }
-
-    async function loadAccessibleChildren() {
-      const parentIds =
-        [
-          familyOwnerUserId,
-          currentUser?.id
-        ]
-          .filter(Boolean)
-          .filter(
-            (
-              value,
-              index,
-              list
-            ) =>
-              list.indexOf(value) ===
-              index
-          );
-
-      let filteredResult = {
-        data: [],
-        error: null
-      };
-
-      if (
-        parentIds.length
-      ) {
-        try {
-          filteredResult =
-            await Promise.race([
-              supabase
-                .from("child_profiles")
-                .select("*")
-                .in(
-                  "parent_id",
-                  parentIds
-                )
-                .order(
-                  "created_at",
-                  {
-                    ascending: true
-                  }
-                ),
-
-              timeoutAfter(
-                7000,
-                "Child profiles took too long to load."
-              )
-            ]);
-        } catch (
-          error
-        ) {
-          filteredResult = {
-            data: [],
-            error
-          };
-        }
-      }
-
-      if (
-        !filteredResult.error &&
-        filteredResult.data?.length
-      ) {
-        return filteredResult;
-      }
-
-      /*
-        Profiles created under older family versions may not match the
-        current owner lookup. RLS will still restrict this unfiltered
-        query to child profiles the signed-in adult is allowed to see.
-      */
-      try {
-        const accessibleResult =
-          await Promise.race([
-            supabase
-              .from("child_profiles")
-              .select("*")
-              .order(
-                "created_at",
-                {
-                  ascending: true
-                }
-              ),
-
-            timeoutAfter(
-              7000,
-              "Accessible child profiles took too long to load."
-            )
-          ]);
-
-        if (
-          !accessibleResult.error &&
-          accessibleResult.data?.length
-        ) {
-          return accessibleResult;
-        }
-      } catch (
-        error
-      ) {
-        console.warn(
-          "Accessible child fallback failed:",
-          error
-        );
-      }
-
-      const selectedId =
-        localStorage.getItem(
-          SELECTED_CHILD_ID_KEY
-        );
-
-      const selectedName =
-        localStorage.getItem(
-          CHILD_NAME_KEY
-        );
-
-      if (
-        selectedId &&
-        selectedName
-      ) {
-        return {
-          data: [
-            {
-              id:
-                selectedId,
-
-              display_name:
-                selectedName,
-
-              avatar:
-                localStorage.getItem(
-                  CHILD_AVATAR_KEY
-                ) ||
-                "🌟",
-
-              level:
-                1,
-
-              stars:
-                0,
-
-              experience:
-                0
-            }
-          ],
-
-          error:
-            null
-        };
-      }
-
-      return {
-        data: [],
-        error:
-          filteredResult.error
-      };
-    }
-
-    async function loadDashboard() {
-      const {
-        data: userData,
-        error: userError
-      } = await supabase.auth.getUser();
-
-      if (
-        userError ||
-        !userData.user
-      ) {
-        window.location.replace(
-          "auth.html"
-        );
-        return;
-      }
-
-      currentUser =
-        userData.user;
-
-      accountEmail.textContent =
-        currentUser.email || "";
-
-      welcomeTitle.textContent =
-        `Welcome back, ${displayNameFromUser(currentUser)}!`;
-
-      /*
-        Do not keep the entire dashboard hidden while optional family
-        tables load. The parent can still use navigation and approvals.
-      */
-      if (loading) loading.hidden = true;
-      dashboardContent.hidden = false;
-
-      const {
-        data: memberships,
-        error: membershipError
-      } = await supabase
-        .from("family_members")
-        .select(
-          "id, family_id, member_role, status"
-        )
-        .eq(
-          "user_id",
-          currentUser.id
-        )
-        .eq(
-          "status",
-          "active"
-        );
-
-      if (membershipError) {
-        throw membershipError;
-      }
-
-      const membershipList =
-        memberships || [];
-
-      currentMembership =
-        membershipList.find(
-          membership =>
-            membership.member_role === "owner"
-        ) ||
-        membershipList[0] ||
-        null;
-
-      if (!currentMembership) {
-        showError(
-          "This account is not connected to an ELCraft family."
-        );
-
-        if (loading) loading.hidden = true;
-        dashboardContent.hidden = false;
-        return;
-      }
-
-      /*
-        Family owners already had passwords before invitations existed.
-        Invited family members must finish the new password setup.
-      */
-      const isFamilyOwner =
-        currentMembership.member_role ===
-        "owner";
-
-      const passwordIsSet =
-        currentUser.user_metadata
-          ?.password_set ===
-        true;
-
-      if (
-        !isFamilyOwner &&
-        !passwordIsSet
-      ) {
-        window.location.replace(
-          "accept-invite.html?v=3"
-        );
-
-        return;
-      }
-
-      currentFamilyId =
-        currentMembership.family_id;
-
-      const {
-        data: familyMembersForOwner,
-        error: familyOwnerError
-      } = await supabase
-        .from("family_members")
-        .select(
-          "id, user_id, display_name, email, relationship, member_role, status, created_at"
-        )
-        .eq(
-          "family_id",
-          currentFamilyId
-        )
-        .eq(
-          "status",
-          "active"
-        )
-        .order(
-          "created_at",
-          {
-            ascending: true
-          }
-        );
-
-      if (familyOwnerError) {
-        throw familyOwnerError;
-      }
-
-      const ownerRecord =
-        (familyMembersForOwner || [])
-          .find(
-            member =>
-              member.member_role ===
-              "owner"
-          );
-
-      familyOwnerUserId =
-        ownerRecord?.user_id ||
-        (
-          isFamilyOwner
-            ? currentUser.id
-            : null
-        );
-
-      if (!familyOwnerUserId) {
-        throw new Error(
-          "ELCraft could not identify the family owner."
-        );
-      }
-
-      const [
-        childrenResult,
-        invitationsResult,
-        activityResult
-      ] = await Promise.all([
-        loadAccessibleChildren(),
-
-        supabase
-          .from("family_invitations")
-          .select(
-            "id, display_name, email, relationship, status, created_at, expires_at"
-          )
-          .eq(
-            "family_id",
-            currentFamilyId
-          )
-          .eq(
-            "status",
-            "pending"
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          ),
-
-        supabase
-          .from("family_activity")
-          .select(
-            "id, activity_type, title, message, icon, stars_earned, xp_earned, created_at"
-          )
-          .eq(
-            "family_id",
-            currentFamilyId
-          )
-          .order(
-            "created_at",
-            {
-              ascending: false
-            }
-          )
-          .limit(12)
-      ]);
-
-      const familyResult = {
-        data:
-          familyMembersForOwner ||
-          [],
-        error:
-          null
-      };
-
-      if (childrenResult.error) {
-        console.warn(
-          "Child profiles could not be fully loaded:",
-          childrenResult.error
-        );
-      }
-
-      if (familyResult.error) {
-        throw familyResult.error;
-      }
-
-      if (invitationsResult.error) {
-        throw invitationsResult.error;
-      }
-
-      if (activityResult.error) {
-        console.warn(
-          "Recent activity could not be loaded:",
-          activityResult.error
-        );
-      }
-
-      renderChildren(
-        childrenResult.data || []
-      );
-
-      renderFamily(
-        familyResult.data || [],
-        invitationsResult.data || []
-      );
-
-      renderActivity(
-        activityResult.error
-          ? []
-          : activityResult.data || []
-      );
-
-      const isFamilyOwner =
-        currentMembership
-          ?.member_role ===
-        "owner";
-
-      [
-        manageChildrenButton,
-        manageFamilyButton,
-        inviteFamilyButton
-      ].forEach(button => {
-        if (!button) {
-          return;
-        }
-
-        button.hidden =
-          !isFamilyOwner;
-      });
-
-      if (loading) loading.hidden = true;
-      dashboardContent.hidden = false;
-    }
-
-    manageChildrenButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "profiles.html";
-      }
-    );
-
-    choosePlayerButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "profiles.html";
-      }
-    );
-
-
-
-    manageChildrenButton.addEventListener(
-      "click",
-      () => {
-        addChildError.textContent =
-          "";
-
-        newChildName.value =
-          "";
-
-        selectedNewAvatar =
-          "🌟";
-
-        document
-          .querySelectorAll(
-            ".avatar-option"
-          )
-          .forEach(
-            button => {
-              button.classList.toggle(
-                "selected",
-                button.dataset.avatar ===
-                  "🌟"
-              );
-            }
-          );
-
-        addChildModal.classList.add(
-          "open"
-        );
-
-        window.setTimeout(
-          () => {
-            newChildName.focus();
-          },
-          100
-        );
-      }
-    );
-
-
-    manageChildrenButton.addEventListener(
-      "click",
-      () => {
-        addChildError.textContent =
-          "";
-
-        newChildName.value =
-          "";
-
-        selectedNewAvatar =
-          "🌟";
-
-        document
-          .querySelectorAll(
-            ".avatar-option"
-          )
-          .forEach(
-            button => {
-              button.classList.toggle(
-                "selected",
-                button.dataset.avatar ===
-                  "🌟"
-              );
-            }
-          );
-
-        addChildModal.classList.add(
-          "open"
-        );
-
-        window.setTimeout(
-          () => {
-            newChildName.focus();
-          },
-          100
-        );
-      }
-    );
-
-
-    manageChildrenButton.addEventListener(
-      "click",
-      () => {
-        addChildError.textContent =
-          "";
-
-        newChildName.value =
-          "";
-
-        selectedNewAvatar =
-          "🌟";
-
-        document
-          .querySelectorAll(
-            ".avatar-option"
-          )
-          .forEach(
-            button => {
-              button.classList.toggle(
-                "selected",
-                button.dataset.avatar ===
-                  selectedNewAvatar
-              );
-            }
-          );
-
-        addChildModal.classList.add(
-          "open"
-        );
-
-        window.setTimeout(
-          () => {
-            newChildName.focus();
-          },
-          100
-        );
-      }
-    );
-
-    document
-      .querySelectorAll(
-        ".avatar-option"
-      )
-      .forEach(
-        button => {
-          button.addEventListener(
-            "click",
-            () => {
-              selectedNewAvatar =
-                button.dataset.avatar ||
-                "🌟";
-
-              document
-                .querySelectorAll(
-                  ".avatar-option"
-                )
-                .forEach(
-                  option => {
-                    option.classList.toggle(
-                      "selected",
-                      option ===
-                        button
-                    );
-                  }
-                );
-            }
-          );
-        }
-      );
-
-    cancelAddChild.addEventListener(
-      "click",
-      () => {
-        addChildModal.classList.remove(
-          "open"
-        );
-      }
-    );
-
-    addChildModal.addEventListener(
-      "click",
-      event => {
-        if (
-          event.target ===
-          addChildModal
-        ) {
-          addChildModal.classList.remove(
-            "open"
-          );
-        }
-      }
-    );
-
-    addChildForm.addEventListener(
-      "submit",
-      async event => {
-        event.preventDefault();
-
-        addChildError.textContent =
-          "";
-
-        const displayName =
-          String(
-            newChildName.value ||
-            ""
-          )
-            .trim()
-            .replace(
-              /\s+/g,
-              " "
-            )
-            .slice(
-              0,
-              20
-            );
-
-        if (
-          !displayName
-        ) {
-          addChildError.textContent =
-            "Please enter the child’s first name.";
-
-          return;
-        }
-
-        if (
-          !currentUser
-        ) {
-          addChildError.textContent =
-            "The parent account is not ready yet.";
-
-          return;
-        }
-
-        saveAddChild.disabled =
-          true;
-
-        saveAddChild.textContent =
-          "Creating...";
-
-        try {
-          const {
-            data:
-              child,
-            error:
-              childError
-          } =
-            await supabase
-              .from(
-                "child_profiles"
-              )
-              .insert({
-                parent_id:
-                  familyOwnerUserId ||
-                  currentUser.id,
-
-                display_name:
-                  displayName,
-
-                avatar:
-                  selectedNewAvatar
-              })
-              .select(
-                "id,display_name,avatar,stars,level,experience,created_at,updated_at"
-              )
-              .single();
-
-          if (
-            childError
-          ) {
-            throw childError;
-          }
-
-          if (
-            !child
-          ) {
-            throw new Error(
-              "The new child profile was not returned."
-            );
-          }
-
-          const {
-            error:
-              cityError
-          } =
-            await supabase
-              .from(
-                "cities"
-              )
-              .insert({
-                child_id:
-                  child.id,
-
-                city_name:
-                  `${displayName}'s City`,
-
-                city_level:
-                  1
-              });
-
-          if (
-            cityError
-          ) {
-            console.warn(
-              "City creation warning:",
-              cityError
-            );
-          }
-
-          addChildModal.classList.remove(
-            "open"
-          );
-
-          await loadDashboard();
-
-        } catch (
-          error
-        ) {
-          console.error(
-            "Child creation error:",
-            error
-          );
-
-          addChildError.textContent =
-            error?.message ||
-            "Unable to create the child profile.";
-
-        } finally {
-          saveAddChild.disabled =
-            false;
-
-          saveAddChild.textContent =
-            "Create Child";
-        }
-      }
-    );
-
-    manageFamilyButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-portal.html";
-      }
-    );
-
-    inviteFamilyButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-portal.html?invite=true";
-      }
-    );
-
-    castleButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-castle.html";
-      }
-    );
-
-    openCastleButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-castle.html";
-      }
-    );
-
-    openFamilyFeedButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-feed.html";
-      }
-    );
-
-    openFeedButton.addEventListener(
-      "click",
-      () => {
-        window.location.href =
-          "family-feed.html";
-      }
-    );
-
-    logoutButton.addEventListener(
-      "click",
-      async () => {
-        logoutButton.disabled = true;
-        logoutButton.textContent =
-          "Logging out...";
-
-        localStorage.removeItem(
-          SELECTED_CHILD_ID_KEY
-        );
-
-        localStorage.removeItem(
-          CHILD_NAME_KEY
-        );
-
-        localStorage.removeItem(
-          CHILD_AVATAR_KEY
-        );
-
-        const {
-          error
-        } = await supabase.auth.signOut();
-
-        if (error) {
-          console.error(
-            "Logout error:",
-            error
-          );
-
-          logoutButton.disabled = false;
-          logoutButton.textContent =
-            "Log Out";
-
-          showError(
-            error.message ||
-              "Unable to log out."
-          );
-
-          return;
-        }
-
-        window.location.replace(
-          "auth.html"
-        );
-      }
-    );
-
-    const DASHBOARD_TIMEOUT_MS =
-      12000;
-
-    function dashboardTimeout() {
-      return new Promise(
-        (
-          _resolve,
-          reject
-        ) => {
-          window.setTimeout(
-            () => {
-              reject(
-                new Error(
-                  "The dashboard took too long to load. Please refresh and try again."
-                )
-              );
-            },
-            DASHBOARD_TIMEOUT_MS
-          );
-        }
-      );
-    }
-
-    Promise.race([
-      loadDashboard(),
-      dashboardTimeout()
-    ]).catch(error => {
-      console.error(
-        "Dashboard loading error:",
-        error
-      );
-
-      if (loading) loading.hidden = true;
-      dashboardContent.hidden = false;
-
-      playerSyncStatus.textContent =
-        "Player sync needs attention";
-
-      showError(
-        error?.message ||
-          "Unable to load the parent dashboard."
-      );
-    });
-  </script>
-  <script
-  type="module"
-  src="global-navigation.js?v=1">
-</script>
   <script
     type="module"
-    src="integration-core.js?v=2">
-  </script>
-  <script
-    type="module"
-    src="parent-art-approvals.js?v=2">
-  </script>
-
-  <script>
-    /* Fail-safe navigation: this remains active even if dashboard data loading fails. */
-    document.addEventListener("DOMContentLoaded", () => {
-      const familyCastleButton = document.getElementById("castleButton");
-      const familyCastleCardButton = document.getElementById("openCastleButton");
-
-      [familyCastleButton, familyCastleCardButton]
-        .filter(Boolean)
-        .forEach(button => {
-          button.addEventListener("click", () => {
-            window.location.assign("family-castle.html");
-          });
-        });
-    });
-  </script>
-
-
-  <script type="module">
-    import { supabase as fallbackSupabase } from "./supabase-client.js";
-
-    const fallbackLogoutButton =
-      document.getElementById(
-        "logoutButton"
-      );
-
-    if (
-      fallbackLogoutButton &&
-      !fallbackLogoutButton.dataset.fallbackReady
-    ) {
-      fallbackLogoutButton.dataset.fallbackReady =
-        "true";
-
-      fallbackLogoutButton.addEventListener(
-        "click",
-        async event => {
-          event.stopImmediatePropagation();
-
-          fallbackLogoutButton.disabled =
-            true;
-
-          fallbackLogoutButton.textContent =
-            "Logging out...";
-
-          try {
-            localStorage.removeItem(
-              "elcraft_selected_child_id"
-            );
-
-            localStorage.removeItem(
-              "elcraft_child_name"
-            );
-
-            localStorage.removeItem(
-              "elcraft_child_avatar"
-            );
-
-            await fallbackSupabase.auth.signOut();
-          } catch (
-            error
-          ) {
-            console.error(
-              "Fallback logout error:",
-              error
-            );
-          }
-
-          window.location.replace(
-            "auth.html"
-          );
-        },
-        {
-          capture: true
-        }
-      );
-    }
+    src="parent-dashboard.js?v=2">
   </script>
 
 </body>
