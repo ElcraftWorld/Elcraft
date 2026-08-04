@@ -775,48 +775,6 @@
     </div>
 
 
-    <!-- Dynamic city announcement board — content loads from Supabase -->
-    <aside
-      id="cityAnnouncement"
-      class="city-announcement"
-      aria-label="City announcement">
-
-      <div
-        id="announcementIcon"
-        class="announcement-icon"
-        aria-hidden="true">
-        📢
-      </div>
-
-      <div class="announcement-copy">
-        <div
-          id="announcementTitle"
-          class="announcement-title">
-          City News
-        </div>
-
-        <div
-          id="announcementMessage"
-          class="announcement-message">
-          Something magical is coming soon!
-        </div>
-
-        <div
-          id="announcementCountdown"
-          class="announcement-countdown"
-          hidden>
-        </div>
-
-        <button
-          id="announcementButton"
-          class="announcement-button"
-          type="button"
-          hidden>
-          Learn More
-        </button>
-      </div>
-    </aside>
-
     <!-- Message Toast -->
 
     <div
@@ -2596,212 +2554,6 @@
 </script>
 
 
-<script type="module">
-  import { supabase } from "./supabase-client.js";
-
-  const announcement =
-    document.getElementById("cityAnnouncement");
-
-  const announcementIcon =
-    document.getElementById("announcementIcon");
-
-  const announcementTitle =
-    document.getElementById("announcementTitle");
-
-  const announcementMessage =
-    document.getElementById("announcementMessage");
-
-  const announcementCountdown =
-    document.getElementById("announcementCountdown");
-
-  const announcementButton =
-    document.getElementById("announcementButton");
-
-  let countdownTimer = null;
-  let announcementLink = "";
-
-  function applyAnnouncement(data) {
-    const item = data || {
-      icon: "📢",
-      title: "City News",
-      message:
-        "Something magical is coming soon!",
-      button_text: "",
-      link_url: "",
-      ends_at: null
-    };
-
-    announcementIcon.textContent =
-      item.icon || "📢";
-
-    announcementTitle.textContent =
-      item.title || "City News";
-
-    announcementMessage.textContent =
-      item.message ||
-      "Something magical is coming soon!";
-
-    announcementLink =
-      String(item.link_url || "").trim();
-
-    const buttonText =
-      String(item.button_text || "").trim();
-
-    if (buttonText && announcementLink) {
-      announcementButton.textContent =
-        buttonText;
-
-      announcementButton.hidden = false;
-    } else {
-      announcementButton.hidden = true;
-    }
-
-    startCountdown(item.ends_at);
-    announcement.hidden = false;
-  }
-
-  function startCountdown(endsAt) {
-    clearInterval(countdownTimer);
-    announcementCountdown.hidden = true;
-    announcementCountdown.textContent = "";
-
-    if (!endsAt) {
-      return;
-    }
-
-    const endTime =
-      new Date(endsAt).getTime();
-
-    if (!Number.isFinite(endTime)) {
-      return;
-    }
-
-    function updateCountdown() {
-      const remaining =
-        endTime - Date.now();
-
-      if (remaining <= 0) {
-        clearInterval(countdownTimer);
-        announcementCountdown.hidden = true;
-        return;
-      }
-
-      const totalMinutes =
-        Math.floor(remaining / 60000);
-
-      const days =
-        Math.floor(totalMinutes / 1440);
-
-      const hours =
-        Math.floor(
-          (totalMinutes % 1440) / 60
-        );
-
-      const minutes =
-        totalMinutes % 60;
-
-      const parts = [];
-
-      if (days > 0) {
-        parts.push(
-          `${days} day${days === 1 ? "" : "s"}`
-        );
-      }
-
-      if (hours > 0 || days > 0) {
-        parts.push(
-          `${hours} hr`
-        );
-      }
-
-      parts.push(
-        `${minutes} min`
-      );
-
-      announcementCountdown.textContent =
-        `⏰ ${parts.join(" • ")}`;
-
-      announcementCountdown.hidden = false;
-    }
-
-    updateCountdown();
-
-    countdownTimer =
-      setInterval(updateCountdown, 60000);
-  }
-
-  async function loadAnnouncement() {
-    const now =
-      new Date().toISOString();
-
-    const {
-      data,
-      error
-    } = await supabase
-      .from("city_announcements")
-      .select(
-        "id, title, message, icon, button_text, link_url, starts_at, ends_at, priority"
-      )
-      .eq("is_active", true)
-      .lte("starts_at", now)
-      .or(
-        `ends_at.is.null,ends_at.gte.${now}`
-      )
-      .order(
-        "priority",
-        {
-          ascending: false
-        }
-      )
-      .order(
-        "created_at",
-        {
-          ascending: false
-        }
-      )
-      .limit(1)
-      .maybeSingle();
-
-    if (error) {
-      console.warn(
-        "Announcement loading warning:",
-        error
-      );
-
-      applyAnnouncement(null);
-      return;
-    }
-
-    applyAnnouncement(data);
-  }
-
-  announcementButton.addEventListener(
-    "click",
-    () => {
-      if (!announcementLink) {
-        return;
-      }
-
-      if (
-        announcementLink.startsWith("http://") ||
-        announcementLink.startsWith("https://")
-      ) {
-        window.open(
-          announcementLink,
-          "_blank",
-          "noopener,noreferrer"
-        );
-        return;
-      }
-
-      window.location.href =
-        announcementLink;
-    }
-  );
-
-  loadAnnouncement();
-</script>
-
 
 <script>
 (() => {
@@ -2846,7 +2598,7 @@
 </script>
 
 
-<!-- My City correction: player identity + duplicate news cleanup -->
+<!-- My City correction: player identity -->
 <script>
 (() => {
   'use strict';
@@ -2889,45 +2641,9 @@
     }
   }
 
-  function removeDuplicateTopNews() {
-    const controls = [
-      ...document.querySelectorAll('button, a')
-    ];
-
-    controls.forEach(control => {
-      const label = String(control.textContent || '')
-        .trim()
-        .toLowerCase();
-
-      if (label !== 'view announcements') {
-        return;
-      }
-
-      let panel = control.parentElement;
-
-      while (
-        panel &&
-        panel !== document.body &&
-        panel.id !== 'cityAnnouncement' &&
-        !panel.classList.contains('city-announcement')
-      ) {
-        const text = String(panel.textContent || '')
-          .toLowerCase();
-
-        if (text.includes('city news')) {
-          panel.remove();
-          return;
-        }
-
-        panel = panel.parentElement;
-      }
-    });
-  }
-
   function applyMyCityCorrection() {
     placeEmojiAbovePlayer();
     updatePlayerIdentity();
-    removeDuplicateTopNews();
   }
 
   applyMyCityCorrection();
@@ -2947,21 +2663,6 @@
     applyMyCityCorrection
   );
 
-  const observer =
-    new MutationObserver(removeDuplicateTopNews);
-
-  observer.observe(
-    document.body,
-    {
-      childList: true,
-      subtree: true
-    }
-  );
-
-  setTimeout(
-    () => observer.disconnect(),
-    8000
-  );
 })();
 </script>
 
