@@ -345,6 +345,53 @@ function injectStyles() {
       background: #ffe0ea;
     }
 
+
+    .elcraft-quick-route {
+      position: fixed;
+      left:
+        max(
+          14px,
+          env(safe-area-inset-left)
+        );
+      bottom:
+        max(
+          18px,
+          env(safe-area-inset-bottom)
+        );
+      z-index: 99997;
+
+      min-height: 52px;
+
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+
+      border: 5px solid white;
+      border-radius: 18px;
+      padding: 10px 14px;
+
+      color: white;
+      background:
+        linear-gradient(
+          145deg,
+          #7758df,
+          #4f35a7
+        );
+
+      box-shadow:
+        0 8px 0 rgba(55,37,119,.2),
+        0 15px 30px rgba(45,31,94,.24);
+
+      font-size: 12px;
+      font-weight: 1000;
+      cursor: pointer;
+    }
+
+    .elcraft-quick-route:hover {
+      transform:
+        translateY(-2px);
+    }
+
     @keyframes elcraftNavPop {
       from {
         opacity: 0;
@@ -959,6 +1006,81 @@ async function buildNavigation() {
 
   root.appendChild(
     toggle
+  );
+
+  const quickRoute =
+    document.createElement(
+      "button"
+    );
+
+  quickRoute.type =
+    "button";
+
+  quickRoute.className =
+    "elcraft-quick-route";
+
+  if (
+    childIsActive
+  ) {
+    const currentlyInMyCity =
+      isCurrentRoute(
+        ROUTES.childWorld
+      );
+
+    quickRoute.textContent =
+      currentlyInMyCity
+        ? "🏰 Family Castle"
+        : "← My City";
+
+    quickRoute.addEventListener(
+      "click",
+      () => {
+        navigate(
+          currentlyInMyCity
+            ? ROUTES.familyCastle
+            : ROUTES.childWorld
+        );
+      }
+    );
+  } else if (
+    account.isAdult
+  ) {
+    const currentlyInCastle =
+      isCurrentRoute(
+        ROUTES.familyCastle
+      );
+
+    quickRoute.textContent =
+      currentlyInCastle
+        ? "← Parent Dashboard"
+        : "🏰 Family Castle";
+
+    quickRoute.addEventListener(
+      "click",
+      () => {
+        navigate(
+          currentlyInCastle
+            ? ROUTES.dashboard
+            : ROUTES.familyCastle
+        );
+      }
+    );
+  } else {
+    quickRoute.textContent =
+      "🔐 Parent Sign In";
+
+    quickRoute.addEventListener(
+      "click",
+      () => {
+        navigate(
+          ROUTES.auth
+        );
+      }
+    );
+  }
+
+  document.body.appendChild(
+    quickRoute
   );
 
   document.body.appendChild(
