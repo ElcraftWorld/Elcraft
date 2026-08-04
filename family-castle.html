@@ -634,14 +634,134 @@
       const owner = members.find(member => member.member_role === "owner");
       const ownerUserId = owner?.user_id || currentUser.id;
 
-      const { data:childRows, error:childrenError } = await supabase
-        .from("child_profiles")
-        .select("id,display_name,avatar,level,stars,experience,created_at,updated_at")
-        .eq("parent_id",ownerUserId)
-        .order("created_at",{ascending:true});
+      const parentIds =
+        [
+          ownerUserId,
+          currentUser.id
+        ]
+          .filter(Boolean)
+          .filter(
+            (
+              value,
+              index,
+              list
+            ) =>
+              list.indexOf(value) ===
+              index
+          );
 
-      if (childrenError) throw childrenError;
-      children = childRows || [];
+      let {
+        data:
+          childRows,
+        error:
+          childrenError
+      } =
+        await supabase
+          .from("child_profiles")
+          .select(
+            "id,display_name,avatar,level,stars,experience,created_at,updated_at"
+          )
+          .in(
+            "parent_id",
+            parentIds
+          )
+          .order(
+            "created_at",
+            {
+              ascending:
+                true
+            }
+          );
+
+      if (
+        childrenError ||
+        !childRows?.length
+      ) {
+        const {
+          data:
+            accessibleRows,
+          error:
+            accessibleError
+        } =
+          await supabase
+            .from("child_profiles")
+            .select(
+              "id,display_name,avatar,level,stars,experience,created_at,updated_at"
+            )
+            .order(
+              "created_at",
+              {
+                ascending:
+                  true
+              }
+            );
+
+        if (
+          !accessibleError &&
+          accessibleRows?.length
+        ) {
+          childRows =
+            accessibleRows;
+
+          childrenError =
+            null;
+        } else if (
+          accessibleError
+        ) {
+          console.warn(
+            "Family Castle child fallback failed:",
+            accessibleError
+          );
+        }
+      }
+
+      children =
+        childRows ||
+        [];
+
+      if (
+        !children.length
+      ) {
+        const selectedId =
+          localStorage.getItem(
+            SELECTED_CHILD_ID_KEY
+          );
+
+        const selectedName =
+          localStorage.getItem(
+            CHILD_NAME_KEY
+          );
+
+        if (
+          selectedId &&
+          selectedName
+        ) {
+          children = [
+            {
+              id:
+                selectedId,
+
+              display_name:
+                selectedName,
+
+              avatar:
+                localStorage.getItem(
+                  CHILD_AVATAR_KEY
+                ) ||
+                "🌟",
+
+              level:
+                1,
+
+              stars:
+                0,
+
+              experience:
+                0
+            }
+          ];
+        }
+      }
 
       const familyName = owner?.display_name
         ? String(owner.display_name).trim().split(/\s+/)[0]
