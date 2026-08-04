@@ -1677,6 +1677,24 @@
     toast(
       "Artwork saved! +10 coins and +15 XP"
     );
+
+    window.setTimeout(
+      () => {
+        const sendToClubhouse =
+          window.confirm(
+            "Would you like to send this artwork to a parent for Clubhouse approval?"
+          );
+
+        if (
+          sendToClubhouse
+        ) {
+          requestClubhouseApproval(
+            item
+          );
+        }
+      },
+      150
+    );
   }
 
   function requestClubhouseApproval(item) {
