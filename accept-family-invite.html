@@ -473,9 +473,9 @@
     <a
       id="continueButton"
       class="button"
-      href="family-castle.html"
+      href="adult-profile-setup.html"
       hidden>
-      Enter the Family Castle
+      Create My Family Profile
     </a>
 
   </main>
@@ -692,7 +692,7 @@
         }.`;
 
       show(
-        "Your family profile is ready. You can now enter the Family Castle and access the child profiles shared with you.",
+        "You joined the existing family. Next, create your own adult profile and personal ELCraft Home.",
         "success"
       );
 
@@ -702,6 +702,15 @@
 
       continueButton.hidden =
         false;
+
+      window.setTimeout(
+        () => {
+          window.location.replace(
+            "adult-profile-setup.html"
+          );
+        },
+        900
+      );
 
       loading.hidden =
         true;
