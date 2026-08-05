@@ -569,99 +569,32 @@
     }
 
     async function playGame() {
-      let selectedId =
+      const { data: realm } =
+        await supabase.rpc(
+          "get_my_family_realm"
+        );
+
+      if (realm?.world) {
+        window.location.href =
+          "adult-home.html";
+
+        return;
+      }
+
+      const selectedId =
         localStorage.getItem(
           SELECTED_CHILD_ID_KEY
         );
 
-      let selectedName =
-        localStorage.getItem(
-          CHILD_NAME_KEY
-        );
-
-      if (
-        selectedId &&
-        selectedName
-      ) {
+      if (selectedId) {
         window.location.href =
           "index.html";
 
         return;
       }
-
-      if (
-        children.length
-      ) {
-        const selectedChild =
-          children[0];
-
-        saveSelectedChild(
-          selectedChild
-        );
-
-        window.location.href =
-          "index.html";
-
-        return;
-      }
-
-      /*
-        Final recovery: ask Supabase for any child profile this signed-in
-        adult is allowed to access, select it, and open the child's Home.
-      */
-      try {
-        const {
-          data:
-            accessibleChildren,
-          error:
-            accessibleError
-        } =
-          await supabase
-            .from(
-              "child_profiles"
-            )
-            .select(
-              "id,display_name,avatar"
-            )
-            .order(
-              "created_at",
-              {
-                ascending:
-                  true
-              }
-            )
-            .limit(
-              1
-            );
-
-        if (
-          !accessibleError &&
-          accessibleChildren?.length
-        ) {
-          saveSelectedChild(
-            accessibleChildren[0]
-          );
-
-          window.location.href =
-            "index.html";
-
-          return;
-        }
-      } catch (
-        error
-      ) {
-        console.error(
-          "Return to Game recovery failed:",
-          error
-        );
-      }
-
-      window.alert(
-        "Choose or create a player on the Parent Dashboard first."
-      );
 
       window.location.href =
-        "parent-dashboard.html";
+        "adult-profile-setup.html";
     }
 
     async function loadCastle() {
