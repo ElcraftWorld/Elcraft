@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7c5ce7">
+  <title>My ELCraft Home</title>
+  <style>
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}
+    body{min-height:100vh;color:#3e3a64;background:linear-gradient(180deg,#72d6ff 0 48%,#98d884 48%);font-family:Arial,Helvetica,sans-serif}
+    .topbar{width:min(1100px,calc(100% - 24px));margin:12px auto;padding:13px 15px;display:flex;align-items:center;justify-content:space-between;gap:12px;border:4px solid white;border-radius:21px;background:rgba(255,255,255,.92);box-shadow:0 15px 32px rgba(52,49,102,.2)}
+    .topbar h1{margin:0;color:#5b48c9}.actions{display:flex;gap:8px;flex-wrap:wrap}button{border:0;border-radius:13px;padding:10px 13px;color:white;background:#7159dd;font-weight:1000;cursor:pointer}
+    .scene{width:min(1100px,calc(100% - 24px));min-height:600px;margin:0 auto 22px;display:grid;place-items:center;position:relative;overflow:hidden;border:5px solid rgba(255,255,255,.8);border-radius:30px;background:linear-gradient(180deg,rgba(255,255,255,.2),rgba(255,255,255,.05));box-shadow:0 24px 55px rgba(43,57,91,.25)}
+    .home{width:min(620px,90%);border:8px solid #7252a8;border-radius:36px 36px 20px 20px;padding:35px;background:linear-gradient(145deg,#fff1cf,#f4ddff);box-shadow:0 25px 0 rgba(78,51,111,.17);text-align:center}
+    .avatar{font-size:90px}.home h2{margin:5px 0;color:#573b9d;font-size:clamp(30px,6vw,48px)}.home p{color:#756d8d;font-weight:800}
+    .rooms{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:22px}.room{min-height:95px;display:grid;place-items:center;border:3px solid white;border-radius:17px;color:#574592;background:rgba(255,255,255,.88);font-size:12px;font-weight:1000}.room span{display:block;font-size:31px}
+    .notice{margin-top:18px;border:3px dashed #d4c4eb;border-radius:16px;padding:13px;color:#6f6688;background:white;font-size:11px;font-weight:900}
+    @media(max-width:620px){.topbar{align-items:flex-start;flex-direction:column}.rooms{grid-template-columns:1fr}.scene{min-height:720px}}
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <h1 id="title">My ELCraft Home</h1>
+      <div id="relationship" style="color:#77708f;font-size:11px;font-weight:900"></div>
+    </div>
+    <div class="actions">
+      <button id="castleButton" type="button">🏰 Family Castle</button>
+      <button id="logoutButton" type="button">Log Out</button>
+    </div>
+  </header>
+
+  <main class="scene">
+    <section class="home">
+      <div id="avatar" class="avatar">✨</div>
+      <h2 id="worldName">Opening your Home…</h2>
+      <p>
+        This is your personal ELCraft world. Your creations and progress belong only to you.
+      </p>
+
+      <div class="rooms">
+        <button class="room" data-page="sky-world.html"><span>🎨</span>Make Art</button>
+        <button class="room" data-page="music-studio.html"><span>🎵</span>Make Music</button>
+        <button class="room" data-page="library.html"><span>📚</span>Read</button>
+        <button class="room" data-page="family-feed.html"><span>💌</span>Family Mail</button>
+        <button class="room" data-page="salon.html"><span>👑</span>Style Room</button>
+        <button class="room" data-page="adult-home.html"><span>🏡</span>Decorate Home</button>
+      </div>
+
+      <div class="notice">
+        World visiting and live play with Ella are the next Family Realms module.
+      </div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+    import { getAdultRealm, clearAdultRealm } from "./family-session.js";
+
+    async function initialize() {
+      const realm = await getAdultRealm();
+
+      if (!realm?.profile || !realm?.world) {
+        window.location.replace("adult-profile-setup.html");
+        return;
+      }
+
+      document.getElementById("avatar").textContent =
+        realm.profile.avatar || "✨";
+
+      document.getElementById("worldName").textContent =
+        realm.world.world_name || "My Home";
+
+      document.getElementById("title").textContent =
+        `${realm.profile.display_name || "My"}'s ELCraft Home`;
+
+      document.getElementById("relationship").textContent =
+        realm.profile.relationship || "Family member";
+    }
+
+    document.querySelectorAll("[data-page]").forEach(button => {
+      button.addEventListener("click", () => {
+        window.location.href = button.dataset.page;
+      });
+    });
+
+    document.getElementById("castleButton").addEventListener("click", () => {
+      window.location.href = "family-castle.html";
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      clearAdultRealm();
+      await supabase.auth.signOut();
+      window.location.replace("auth.html");
+    });
+
+    initialize().catch(error => {
+      console.error(error);
+      window.location.replace("adult-profile-setup.html");
+    });
+  </script>
+</body>
+</html>
