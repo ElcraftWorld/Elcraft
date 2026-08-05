@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#7c5ce7">
+  <title>Create Your ELCraft Profile</title>
+  <style>
+    *{box-sizing:border-box}html,body{min-height:100%;margin:0}
+    body{display:grid;place-items:center;padding:18px;color:#34325e;background:linear-gradient(145deg,#7bd7ff,#9a83f0 55%,#ffd7ee);font-family:Arial,Helvetica,sans-serif}
+    .card{width:min(720px,100%);border:6px solid white;border-radius:31px;padding:clamp(22px,5vw,38px);background:rgba(255,255,255,.97);box-shadow:0 28px 72px rgba(45,30,94,.32)}
+    h1{margin:0;color:#5a45c8;font-size:clamp(30px,6vw,48px)}p{color:#737895;font-weight:800;line-height:1.5}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.field{display:grid;gap:7px}.field.full{grid-column:1/-1}
+    label,legend{color:#514a78;font-size:11px;font-weight:1000}input,select{width:100%;min-height:48px;border:3px solid #e0d9ee;border-radius:14px;padding:10px 12px;background:#fff}
+    .avatars{display:grid;grid-template-columns:repeat(6,1fr);gap:8px}.avatar{aspect-ratio:1;border:3px solid #e1d9ef;border-radius:15px;background:white;font-size:30px}.avatar.selected{border-color:#8d5deb;background:#f3ebff}
+    .button{width:100%;min-height:50px;margin-top:20px;border:0;border-radius:16px;color:white;background:linear-gradient(135deg,#6652dc,#9b61ed);font-weight:1000;box-shadow:0 8px 0 rgba(73,48,147,.2)}
+    .message{min-height:20px;margin-top:12px;color:#a43c54;font-size:11px;font-weight:900}
+    @media(max-width:620px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.avatars{grid-template-columns:repeat(3,1fr)}}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>✨ Create Your Family Profile</h1>
+    <p>
+      You joined an existing ELCraft family. Create your own identity and personal Home.
+      You will not replace Ella or become the family owner.
+    </p>
+
+    <form id="profileForm">
+      <div class="grid">
+        <label class="field full">
+          <span>Your display name</span>
+          <input id="displayName" type="text" maxlength="40" required>
+        </label>
+
+        <fieldset class="field full" style="border:0;padding:0;margin:0">
+          <legend>Choose your icon</legend>
+          <div id="avatars" class="avatars">
+            <button class="avatar selected" data-avatar="👵" type="button">👵</button>
+            <button class="avatar" data-avatar="👴" type="button">👴</button>
+            <button class="avatar" data-avatar="👩" type="button">👩</button>
+            <button class="avatar" data-avatar="👨" type="button">👨</button>
+            <button class="avatar" data-avatar="🌸" type="button">🌸</button>
+            <button class="avatar" data-avatar="⭐" type="button">⭐</button>
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span>Favorite color</span>
+          <input id="favoriteColor" type="color" value="#8b5cf6">
+        </label>
+
+        <label class="field">
+          <span>Your Home style</span>
+          <select id="houseTheme">
+            <option value="cozy_cottage">Cozy Cottage</option>
+            <option value="flower_garden">Flower Garden Home</option>
+            <option value="storybook_house">Storybook House</option>
+            <option value="modern_home">Modern Home</option>
+            <option value="treehouse">Treehouse</option>
+          </select>
+        </label>
+      </div>
+
+      <button id="saveButton" class="button" type="submit">
+        Create My Profile & Home
+      </button>
+
+      <div id="message" class="message"></div>
+    </form>
+  </main>
+
+  <script type="module">
+    import { supabase } from "./supabase-client.js";
+    import { getAdultRealm, ensureAdultRealm } from "./family-session.js";
+
+    const form = document.getElementById("profileForm");
+    const displayName = document.getElementById("displayName");
+    const favoriteColor = document.getElementById("favoriteColor");
+    const houseTheme = document.getElementById("houseTheme");
+    const saveButton = document.getElementById("saveButton");
+    const message = document.getElementById("message");
+    let selectedAvatar = "👵";
+
+    document.querySelectorAll(".avatar").forEach(button => {
+      button.addEventListener("click", () => {
+        selectedAvatar = button.dataset.avatar;
+        document.querySelectorAll(".avatar").forEach(option => {
+          option.classList.toggle("selected", option === button);
+        });
+      });
+    });
+
+    async function initialize() {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (!user) {
+        window.location.replace("auth.html");
+        return;
+      }
+
+      const existing = await getAdultRealm();
+
+      if (existing?.profile && existing?.world) {
+        window.location.replace("adult-home.html");
+        return;
+      }
+
+      displayName.value =
+        user.user_metadata?.display_name ||
+        user.user_metadata?.full_name ||
+        "";
+    }
+
+    form.addEventListener("submit", async event => {
+      event.preventDefault();
+      message.textContent = "";
+      saveButton.disabled = true;
+      saveButton.textContent = "Creating your Home…";
+
+      try {
+        await ensureAdultRealm({
+          displayName: displayName.value.trim(),
+          avatar: selectedAvatar,
+          favoriteColor: favoriteColor.value,
+          houseTheme: houseTheme.value
+        });
+
+        window.location.replace("adult-home.html");
+      } catch (error) {
+        console.error(error);
+        message.textContent =
+          error?.message ||
+          "Unable to create your family profile.";
+        saveButton.disabled = false;
+        saveButton.textContent = "Create My Profile & Home";
+      }
+    });
+
+    initialize().catch(error => {
+      console.error(error);
+      message.textContent =
+        error?.message ||
+        "Unable to open profile setup.";
+    });
+  </script>
+</body>
+</html>
